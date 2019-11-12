@@ -6,8 +6,8 @@ Noteo est une application web permettant à des **enseignants** de *gérer des e
 
 Noteo est dévelopée dans le cadre d'un projet tutoré au sein de l'IUT de Bayonne
 et du Pays Basque par le groupe composé de :
-  ..* Patrick Etcheverry : Tuteur et commanditaire
-  ..* Arthur Murillo - Chef de projet
-  ..* Xabi Avellan
-  ..* Sofian Eon
-  ..* Dylan Mendiboure
+  ⋅⋅⋅-Patrick Etcheverry : Tuteur et commanditaire
+  ⋅⋅⋅-Arthur Murillo - Chef de projet
+  ⋅⋅⋅-Xabi Avellan
+  ⋅⋅⋅-Sofian Eon
+  ⋅⋅⋅-Dylan Mendiboure
