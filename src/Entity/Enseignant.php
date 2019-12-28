@@ -2,6 +2,8 @@
 
 namespace App\Entity;
 
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
@@ -35,6 +37,16 @@ class Enseignant
      * @ORM\Column(type="boolean")
      */
     private $estAdmin;
+
+    /**
+     * @ORM\OneToMany(targetEntity="App\Entity\GroupeEtudiant", mappedBy="enseignant")
+     */
+    private $groupes;
+
+    public function __construct()
+    {
+        $this->groupes = new ArrayCollection();
+    }
 
     public function getId(): ?int
     {
@@ -85,6 +97,37 @@ class Enseignant
     public function setEstAdmin(bool $estAdmin): self
     {
         $this->estAdmin = $estAdmin;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|GroupeEtudiant[]
+     */
+    public function getGroupes(): Collection
+    {
+        return $this->groupes;
+    }
+
+    public function addGroupe(GroupeEtudiant $groupe): self
+    {
+        if (!$this->groupes->contains($groupe)) {
+            $this->groupes[] = $groupe;
+            $groupe->setEnseignant($this);
+        }
+
+        return $this;
+    }
+
+    public function removeGroupe(GroupeEtudiant $groupe): self
+    {
+        if ($this->groupes->contains($groupe)) {
+            $this->groupes->removeElement($groupe);
+            // set the owning side to null (unless already changed)
+            if ($groupe->getEnseignant() === $this) {
+                $groupe->setEnseignant(null);
+            }
+        }
 
         return $this;
     }
