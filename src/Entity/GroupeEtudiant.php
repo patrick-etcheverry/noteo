@@ -135,7 +135,7 @@ class GroupeEtudiant
       return $this->root;
     }
 
-    public function setParent(Category $parent = null)
+    public function setParent(GroupeEtudiant $parent = null)
     {
         $this->parent = $parent;
     }
