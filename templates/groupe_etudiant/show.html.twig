@@ -1,0 +1,46 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}GroupeEtudiant{% endblock %}
+
+{% block body %}
+    <h1>GroupeEtudiant</h1>
+
+    <table class="table">
+        <tbody>
+            <tr>
+                <th>Id</th>
+                <td>{{ groupe_etudiant.id }}</td>
+            </tr>
+            <tr>
+                <th>Nom</th>
+                <td>{{ groupe_etudiant.nom }}</td>
+            </tr>
+            <tr>
+                <th>Description</th>
+                <td>{{ groupe_etudiant.description }}</td>
+            </tr>
+            <tr>
+                <th>EstEvaluable</th>
+                <td>{{ groupe_etudiant.estEvaluable ? 'Yes' : 'No' }}</td>
+            </tr>
+            <tr>
+                <th>Lft</th>
+                <td>{{ groupe_etudiant.lft }}</td>
+            </tr>
+            <tr>
+                <th>Lvl</th>
+                <td>{{ groupe_etudiant.lvl }}</td>
+            </tr>
+            <tr>
+                <th>Rgt</th>
+                <td>{{ groupe_etudiant.rgt }}</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <a href="{{ path('groupe_etudiant_index') }}">back to list</a>
+
+    <a href="{{ path('groupe_etudiant_edit', {'id': groupe_etudiant.id}) }}">edit</a>
+
+    {{ include('groupe_etudiant/_delete_form.html.twig') }}
+{% endblock %}
