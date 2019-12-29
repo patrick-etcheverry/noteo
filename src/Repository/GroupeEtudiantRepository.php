@@ -3,7 +3,7 @@
 namespace App\Repository;
 
 use App\Entity\GroupeEtudiant;
-use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Gedmo\Tree\Entity\Repository\NestedTreeRepository;
 use Doctrine\Common\Persistence\ManagerRegistry;
 
 /**
@@ -12,7 +12,7 @@ use Doctrine\Common\Persistence\ManagerRegistry;
  * @method GroupeEtudiant[]    findAll()
  * @method GroupeEtudiant[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
  */
-class GroupeEtudiantRepository extends ServiceEntityRepository
+class GroupeEtudiantRepository extends NestedTreeRepository
 {
     public function __construct(ManagerRegistry $registry)
     {

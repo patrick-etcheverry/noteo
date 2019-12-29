@@ -1,0 +1,39 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}GroupeEtudiant index{% endblock %}
+
+{% block body %}
+    <h1>GroupeEtudiant index</h1>
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th>Nom</th>
+                <th>Description</th>
+                <th>EstEvaluable</th>
+                <th>actions</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for groupe_etudiant in groupe_etudiants %}
+            <tr>
+                <td>{{ groupe_etudiant.id }}</td>
+                <td>{{ groupe_etudiant.nom }}</td>
+                <td>{{ groupe_etudiant.description }}</td>
+                <td>{{ groupe_etudiant.estEvaluable ? 'Yes' : 'No' }}</td>
+                <td>
+                    <a href="{{ path('groupe_etudiant_show', {'id': groupe_etudiant.id}) }}">show</a>
+                    <a href="{{ path('groupe_etudiant_edit', {'id': groupe_etudiant.id}) }}">edit</a>
+                </td>
+            </tr>
+        {% else %}
+            <tr>
+                <td colspan="8">no records found</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+    <a href="{{ path('groupe_etudiant_new') }}">Create new</a>
+{% endblock %}
