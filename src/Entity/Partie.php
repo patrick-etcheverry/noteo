@@ -2,6 +2,8 @@
 
 namespace App\Entity;
 
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
@@ -25,6 +27,21 @@ class Partie
      * @ORM\Column(type="float", nullable=true)
      */
     private $bareme;
+
+    /**
+     * @ORM\OneToMany(targetEntity="App\Entity\Points", mappedBy="partie")
+     */
+    private $notes;
+
+    /**
+     * @ORM\ManyToOne(targetEntity="App\Entity\Evaluation", inversedBy="parties")
+     */
+    private $evaluation;
+
+    public function __construct()
+    {
+        $this->notes = new ArrayCollection();
+    }
 
     public function getId(): ?int
     {
@@ -51,6 +68,49 @@ class Partie
     public function setBareme(?float $bareme): self
     {
         $this->bareme = $bareme;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|Points[]
+     */
+    public function getNotes(): Collection
+    {
+        return $this->notes;
+    }
+
+    public function addNote(Points $note): self
+    {
+        if (!$this->notes->contains($note)) {
+            $this->notes[] = $note;
+            $note->setPartie($this);
+        }
+
+        return $this;
+    }
+
+    public function removeNote(Points $note): self
+    {
+        if ($this->notes->contains($note)) {
+            $this->notes->removeElement($note);
+            // set the owning side to null (unless already changed)
+            if ($note->getPartie() === $this) {
+                $note->setPartie(null);
+            }
+        }
+
+        return $this;
+    }
+
+    public function getEvaluation(): ?Evaluation
+    {
+        return $this->evaluation;
+    }
+
+    public function setEvaluation(?Evaluation $evaluation): self
+    {
+        $this->evaluation = $evaluation;
 
         return $this;
     }

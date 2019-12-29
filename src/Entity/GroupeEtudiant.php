@@ -2,6 +2,8 @@
 
 namespace App\Entity;
 
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Mapping\Annotation as Gedmo;
 
@@ -77,6 +79,22 @@ class GroupeEtudiant
      */
     private $children;
 
+    /**
+     * @ORM\ManyToMany(targetEntity="App\Entity\Etudiant", mappedBy="groupes")
+     */
+    private $etudiants;
+
+    /**
+     * @ORM\OneToMany(targetEntity="App\Entity\Evaluation", mappedBy="groupe")
+     */
+    private $evaluations;
+
+    public function __construct()
+    {
+        $this->etudiants = new ArrayCollection();
+        $this->evaluations = new ArrayCollection();
+    }
+
     public function getId(): ?int
     {
         return $this->id;
@@ -143,5 +161,64 @@ class GroupeEtudiant
     public function getParent()
     {
         return $this->parent;
+    }
+
+    /**
+     * @return Collection|Etudiant[]
+     */
+    public function getEtudiants(): Collection
+    {
+        return $this->etudiants;
+    }
+
+    public function addEtudiant(Etudiant $etudiant): self
+    {
+        if (!$this->etudiants->contains($etudiant)) {
+            $this->etudiants[] = $etudiant;
+            $etudiant->addGroupe($this);
+        }
+
+        return $this;
+    }
+
+    public function removeEtudiant(Etudiant $etudiant): self
+    {
+        if ($this->etudiants->contains($etudiant)) {
+            $this->etudiants->removeElement($etudiant);
+            $etudiant->removeGroupe($this);
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|Evaluation[]
+     */
+    public function getEvaluations(): Collection
+    {
+        return $this->evaluations;
+    }
+
+    public function addEvaluation(Evaluation $evaluation): self
+    {
+        if (!$this->evaluations->contains($evaluation)) {
+            $this->evaluations[] = $evaluation;
+            $evaluation->setGroupe($this);
+        }
+
+        return $this;
+    }
+
+    public function removeEvaluation(Evaluation $evaluation): self
+    {
+        if ($this->evaluations->contains($evaluation)) {
+            $this->evaluations->removeElement($evaluation);
+            // set the owning side to null (unless already changed)
+            if ($evaluation->getGroupe() === $this) {
+                $evaluation->setGroupe(null);
+            }
+        }
+
+        return $this;
     }
 }

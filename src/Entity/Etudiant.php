@@ -7,9 +7,9 @@ use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
- * @ORM\Entity(repositoryClass="App\Repository\EnseignantRepository")
+ * @ORM\Entity(repositoryClass="App\Repository\EtudiantRepository")
  */
-class Enseignant
+class Etudiant
 {
     /**
      * @ORM\Id()
@@ -36,22 +36,29 @@ class Enseignant
     /**
      * @ORM\Column(type="boolean")
      */
-    private $estAdmin;
+    private $estDemissionaire;
 
     /**
-     * @ORM\OneToMany(targetEntity="App\Entity\GroupeEtudiant", mappedBy="enseignant")
+     * @ORM\ManyToMany(targetEntity="App\Entity\GroupeEtudiant", inversedBy="etudiants")
      */
     private $groupes;
 
     /**
-     * @ORM\OneToMany(targetEntity="App\Entity\Evaluation", mappedBy="enseignant")
+     * @ORM\ManyToMany(targetEntity="App\Entity\Statut", mappedBy="etudiants")
      */
-    private $evaluations;
+    private $statuts;
+
+    /**
+     * @ORM\OneToMany(targetEntity="App\Entity\Points", mappedBy="etudiant")
+     */
+    private $points;
+
 
     public function __construct()
     {
         $this->groupes = new ArrayCollection();
-        $this->evaluations = new ArrayCollection();
+        $this->statuts = new ArrayCollection();
+        $this->points = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -95,14 +102,14 @@ class Enseignant
         return $this;
     }
 
-    public function getEstAdmin(): ?bool
+    public function getEstDemissionaire(): ?bool
     {
-        return $this->estAdmin;
+        return $this->estDemissionaire;
     }
 
-    public function setEstAdmin(bool $estAdmin): self
+    public function setEstDemissionaire(bool $estDemissionaire): self
     {
-        $this->estAdmin = $estAdmin;
+        $this->estDemissionaire = $estDemissionaire;
 
         return $this;
     }
@@ -119,7 +126,6 @@ class Enseignant
     {
         if (!$this->groupes->contains($groupe)) {
             $this->groupes[] = $groupe;
-            $groupe->setEnseignant($this);
         }
 
         return $this;
@@ -129,43 +135,68 @@ class Enseignant
     {
         if ($this->groupes->contains($groupe)) {
             $this->groupes->removeElement($groupe);
-            // set the owning side to null (unless already changed)
-            if ($groupe->getEnseignant() === $this) {
-                $groupe->setEnseignant(null);
-            }
         }
 
         return $this;
     }
 
     /**
-     * @return Collection|Evaluation[]
+     * @return Collection|Statut[]
      */
-    public function getEvaluations(): Collection
+    public function getStatuts(): Collection
     {
-        return $this->evaluations;
+        return $this->statuts;
     }
 
-    public function addEvaluation(Evaluation $evaluation): self
+    public function addStatut(Statut $statut): self
     {
-        if (!$this->evaluations->contains($evaluation)) {
-            $this->evaluations[] = $evaluation;
-            $evaluation->setEnseignant($this);
+        if (!$this->statuts->contains($statut)) {
+            $this->statuts[] = $statut;
+            $statut->addEtudiant($this);
         }
 
         return $this;
     }
 
-    public function removeEvaluation(Evaluation $evaluation): self
+    public function removeStatut(Statut $statut): self
     {
-        if ($this->evaluations->contains($evaluation)) {
-            $this->evaluations->removeElement($evaluation);
+        if ($this->statuts->contains($statut)) {
+            $this->statuts->removeElement($statut);
+            $statut->removeEtudiant($this);
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|Points[]
+     */
+    public function getPoints(): Collection
+    {
+        return $this->points;
+    }
+
+    public function addPoint(Points $point): self
+    {
+        if (!$this->points->contains($point)) {
+            $this->points[] = $point;
+            $point->setEtudiant($this);
+        }
+
+        return $this;
+    }
+
+    public function removePoint(Points $point): self
+    {
+        if ($this->points->contains($point)) {
+            $this->points->removeElement($point);
             // set the owning side to null (unless already changed)
-            if ($evaluation->getEnseignant() === $this) {
-                $evaluation->setEnseignant(null);
+            if ($point->getEtudiant() === $this) {
+                $point->setEtudiant(null);
             }
         }
 
         return $this;
     }
+
 }
