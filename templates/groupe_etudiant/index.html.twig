@@ -12,9 +12,6 @@
                 <th>Nom</th>
                 <th>Description</th>
                 <th>EstEvaluable</th>
-                <th>Lft</th>
-                <th>Lvl</th>
-                <th>Rgt</th>
                 <th>actions</th>
             </tr>
         </thead>
@@ -25,9 +22,6 @@
                 <td>{{ groupe_etudiant.nom }}</td>
                 <td>{{ groupe_etudiant.description }}</td>
                 <td>{{ groupe_etudiant.estEvaluable ? 'Yes' : 'No' }}</td>
-                <td>{{ groupe_etudiant.lft }}</td>
-                <td>{{ groupe_etudiant.lvl }}</td>
-                <td>{{ groupe_etudiant.rgt }}</td>
                 <td>
                     <a href="{{ path('groupe_etudiant_show', {'id': groupe_etudiant.id}) }}">show</a>
                     <a href="{{ path('groupe_etudiant_edit', {'id': groupe_etudiant.id}) }}">edit</a>

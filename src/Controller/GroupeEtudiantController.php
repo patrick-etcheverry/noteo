@@ -11,17 +11,19 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
 /**
- * @Route("/groupe/etudiant")
+ * @Route("/groupes")
  */
 class GroupeEtudiantController extends AbstractController
 {
     /**
      * @Route("/", name="groupe_etudiant_index", methods={"GET"})
      */
-    public function index(NestedTreeRepository $nestedTreeRepository): Response
+    public function index(): Response
     {
+        $repo = $this->getDoctrine()->getRepository(GroupeEtudiant::class);
+
         return $this->render('groupe_etudiant/index.html.twig', [
-            'groupe_etudiants' => $nestedTreeRepository->findAll(),
+            'groupe_etudiants' => $repo->findAll(),
         ]);
     }
 
