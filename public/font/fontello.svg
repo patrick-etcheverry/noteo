@@ -6,6 +6,8 @@
 <font id="fontello" horiz-adv-x="1000" >
 <font-face font-family="fontello" font-weight="400" font-stretch="normal" units-per-em="1000" ascent="850" descent="-150" />
 <missing-glyph horiz-adv-x="1000" />
+<glyph glyph-name="logo-noteo" unicode="&#xe801;" d="M546 350l0-409 68 0 68 0 0 409 0 409-68 0-68 0 0-409z m-455-57l0-352 68 0 68 0 0 352 0 353-68 0-68 0 0-353z m682-79l0-273 68 0 68 0 0 273 0 272-68 0-68 0 0-272z m-455-103l0-170 68 0 69 0 0 170 0 171-69 0-68 0 0-171z" horiz-adv-x="1000" />
+
 <glyph glyph-name="circle-empty" unicode="&#xf10c;" d="M429 654q-83 0-153-41t-110-111-41-152 41-152 110-111 153-41 152 41 110 111 41 152-41 152-110 111-152 41z m428-304q0-117-57-215t-156-156-215-58-216 58-155 156-58 215 58 215 155 156 216 58 215-58 156-156 57-215z" horiz-adv-x="857.1" />
 </font>
 </defs>
