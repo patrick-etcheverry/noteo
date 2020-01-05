@@ -1,10 +1,10 @@
-{% extends 'base.html.twig' %}
+{% extends 'admin_base.html.twig' %}
 
-{% block title %}Edit Etudiant{% endblock %}
+{% block tirePage %}Modifier un étudiants{% endblock %}
 
-{% block body %}
-    <h1>Edit Etudiant</h1>
+{% block etudiants %}active{% endblock %}
 
+{% block contenu %}
     {{ include('etudiant/_form.html.twig', {'button_label': 'Update'}) }}
 
     <a href="{{ path('etudiant_index') }}">back to list</a>
