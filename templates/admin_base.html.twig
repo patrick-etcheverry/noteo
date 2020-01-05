@@ -41,7 +41,7 @@
 
       <!-- Nav Item - Étudiants -->
       <li class="nav-item {% block etudiants %}{% endblock %}">
-        <a class="nav-link" href="index.html">
+        <a class="nav-link" href="{{path('etudiant_index')}}">
           <i class="icon-circle-empty"></i>
           <span>Étudiants</span></a>
         </li>
@@ -51,7 +51,7 @@
 
         <!-- Nav Item - Groupes -->
         <li class="nav-item {% block groupes %}{% endblock %}">
-          <a class="nav-link" href="index.html">
+          <a class="nav-link" href="{{path('groupe_etudiant_index')}}">
             <i class="icon-circle-empty"></i>
             <span>Groupes</span></a>
           </li>
@@ -61,7 +61,7 @@
 
           <!-- Nav Item - Enseignants -->
           <li class="nav-item {% block enseignants %}{% endblock %}">
-            <a class="nav-link" href="index.html">
+            <a class="nav-link" href="{{path('enseignant_index')}}">
               <i class="icon-circle-empty"></i>
               <span>Enseignants</span></a>
             </li>
@@ -77,8 +77,8 @@
               </a>
               <div id="collapseTwo" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionSidebar">
                 <div class="bg-white py-2 collapse-inner rounded">
-                  <a class="collapse-item" href="buttons.html">Mes évaluations</a>
-                  <a class="collapse-item" href="cards.html">Autres évaluations</a>
+                  <a class="collapse-item" href="{{path('evaluation_index')}}">Mes évaluations</a>
+                  <a class="collapse-item" href="{{path('evaluation_index')}}">Autres évaluations</a>
                 </div>
               </div>
             </li>
@@ -88,7 +88,7 @@
 
             <!-- Nav Item - Statuts étudiants -->
             <li class="nav-item {% block statutsEtudiants %}{% endblock %}">
-              <a class="nav-link" href="charts.html">
+              <a class="nav-link" href="{{path('statut_index')}}">
                 <i class="icon-circle-empty"></i>
                 <span>Statuts étudiants</span></a>
               </li>
