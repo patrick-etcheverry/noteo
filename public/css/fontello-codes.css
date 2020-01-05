@@ -1,3 +1,7 @@
 
+.icon-teacher:before { content: '\e800'; } /* '' */
 .icon-logo-noteo:before { content: '\e801'; } /* '' */
-.icon-circle-empty:before { content: '\f10c'; } /* '' */
+.icon-user:before { content: '\e802'; } /* '' */
+.icon-users:before { content: '\e803'; } /* '' */
+.icon-evaluation:before { content: '\e804'; } /* '' */
+.icon-tags:before { content: '\e806'; } /* '' */
