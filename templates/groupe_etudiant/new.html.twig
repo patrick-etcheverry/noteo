@@ -1,9 +1,10 @@
-{% extends 'base.html.twig' %}
+{% extends 'admin_base.html.twig' %}
 
-{% block title %}New GroupeEtudiant{% endblock %}
+{% block tirePage %}Créer un groupe{% endblock %}
 
-{% block body %}
-    <h1>Create new GroupeEtudiant</h1>
+{% block groupes %}active{% endblock %}
+
+{% block contenu %}
 
     {{ include('groupe_etudiant/_form.html.twig') }}
 

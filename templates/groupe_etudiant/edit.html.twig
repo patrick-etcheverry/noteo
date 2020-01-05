@@ -1,9 +1,10 @@
-{% extends 'base.html.twig' %}
+{% extends 'admin_base.html.twig' %}
 
-{% block title %}Edit GroupeEtudiant{% endblock %}
+{% block tirePage %}Modifier un groupe{% endblock %}
 
-{% block body %}
-    <h1>Edit GroupeEtudiant</h1>
+{% block groupes %}active{% endblock %}
+
+{% block contenu %}
 
     {{ include('groupe_etudiant/_form.html.twig', {'button_label': 'Update'}) }}
 

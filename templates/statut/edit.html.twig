@@ -1,9 +1,10 @@
-{% extends 'base.html.twig' %}
+{% extends 'admin_base.html.twig' %}
 
-{% block title %}Edit Statut{% endblock %}
+{% block tirePage %}Modifier un statut étudiant{% endblock %}
 
-{% block body %}
-    <h1>Edit Statut</h1>
+{% block statutsEtudiants %}active{% endblock %}
+
+{% block contenu %}
 
     {{ include('statut/_form.html.twig', {'button_label': 'Update'}) }}
 
