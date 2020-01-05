@@ -1,9 +1,10 @@
-{% extends 'base.html.twig' %}
+{% extends 'admin_base.html.twig' %}
 
-{% block title %}New Partie{% endblock %}
+{% block tirePage %}Créer une partie{% endblock %}
 
-{% block body %}
-    <h1>Create new Partie</h1>
+{% block evaluations %}active{% endblock %}
+
+{% block contenu %}
 
     {{ include('partie/_form.html.twig') }}
 

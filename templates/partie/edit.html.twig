@@ -1,9 +1,10 @@
-{% extends 'base.html.twig' %}
+{% extends 'admin_base.html.twig' %}
 
-{% block title %}Edit Partie{% endblock %}
+{% block tirePage %}Modifier une partie{% endblock %}
 
-{% block body %}
-    <h1>Edit Partie</h1>
+{% block evaluations %}active{% endblock %}
+
+{% block contenu %}
 
     {{ include('partie/_form.html.twig', {'button_label': 'Update'}) }}
 
