@@ -1,9 +1,10 @@
-{% extends 'base.html.twig' %}
+{% extends 'admin_base.html.twig' %}
 
-{% block title %}New Statut{% endblock %}
+{% block tirePage %}Créer un statut étudiant{% endblock %}
 
-{% block body %}
-    <h1>Create new Statut</h1>
+{% block statutsEtudiants %}active{% endblock %}
+
+{% block contenu %}
 
     {{ include('statut/_form.html.twig') }}
 
