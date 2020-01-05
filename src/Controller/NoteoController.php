@@ -8,11 +8,10 @@ use Symfony\Component\Routing\Annotation\Route;
 class NoteoController extends AbstractController
 {
     /**
-     * @Route("/", name="Noteo_accueil")
+     * @Route("/", name="noteo_test")
      */
-    public function index()
+    public function test()
     {
-        return $this->render('noteo/index.html.twig'
-        );
+        return $this->render('noteo/test.html.twig');
     }
 }
