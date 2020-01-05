@@ -5,25 +5,21 @@
 {% block etudiants %}active{% endblock %}
 
 {% block contenu %}
-    <table class="table">
+    <table class="table" id ="table">
         <thead>
             <tr>
-                <th>Id</th>
                 <th>Nom</th>
                 <th>Prenom</th>
                 <th>Mail</th>
-                <th>EstDemissionaire</th>
                 <th>actions</th>
             </tr>
         </thead>
         <tbody>
         {% for etudiant in etudiants %}
             <tr>
-                <td>{{ etudiant.id }}</td>
                 <td>{{ etudiant.nom }}</td>
                 <td>{{ etudiant.prenom }}</td>
                 <td>{{ etudiant.mail }}</td>
-                <td>{{ etudiant.estDemissionaire ? 'Yes' : 'No' }}</td>
                 <td>
                     <a href="{{ path('etudiant_show', {'id': etudiant.id}) }}">show</a>
                     <a href="{{ path('etudiant_edit', {'id': etudiant.id}) }}">edit</a>
@@ -31,11 +27,34 @@
             </tr>
         {% else %}
             <tr>
-                <td colspan="6">no records found</td>
+                <td colspan="5">no records found</td>
             </tr>
         {% endfor %}
         </tbody>
     </table>
 
     <a href="{{ path('etudiant_new') }}">Create new</a>
+{% endblock %}
+
+{% block datatables %}
+
+<script type="text/javascript">
+$(document).ready(function() {
+  $('#table').dataTable({
+    language: {
+      "url": "https://cdn.datatables.net/plug-ins/9dcbecd42ad/i18n/French.json"
+    },
+    order: [
+      [0, "asc"]
+    ],
+    columns: [null, null,{"orderable": false},{"orderable": false}],
+    lengthMenu: [
+      [10, 25, 50, -1],
+      [10, 25, 50, "Tout"]
+    ],
+    info: false,
+  });
+});
+</script>
+
 {% endblock %}
