@@ -6,7 +6,7 @@
 
 {% block contenu %}
 
-    <table class="table">
+    <table class="table" id="table">
         <thead>
             <tr>
                 <th>Id</th>
@@ -35,4 +35,27 @@
     </table>
 
     <a href="{{ path('evaluation_new') }}">Create new</a>
+{% endblock %}
+
+{% block datatables %}
+
+<script type="text/javascript">
+$(document).ready(function() {
+  $('#table').dataTable({
+    language: {
+      "url": "https://cdn.datatables.net/plug-ins/9dcbecd42ad/i18n/French.json"
+    },
+    order: [
+      [0, "asc"]
+    ],
+    columns: [null, null, null,{"orderable": false}],
+    lengthMenu: [
+      [10, 25, 50, -1],
+      [10, 25, 50, "Tout"]
+    ],
+    info: false,
+  });
+});
+</script>
+
 {% endblock %}
