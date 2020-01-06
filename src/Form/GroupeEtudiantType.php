@@ -15,13 +15,6 @@ class GroupeEtudiantType extends AbstractType
             ->add('nom')
             ->add('description')
             ->add('estEvaluable')
-            ->add('lft')
-            ->add('lvl')
-            ->add('rgt')
-            ->add('enseignant')
-            ->add('root')
-            ->add('parent')
-            ->add('etudiants')
         ;
     }
 

@@ -16,8 +16,6 @@ class EtudiantType extends AbstractType
             ->add('prenom')
             ->add('mail')
             ->add('estDemissionaire')
-            ->add('groupes')
-            ->add('statuts')
         ;
     }
 

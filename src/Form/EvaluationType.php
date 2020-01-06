@@ -14,8 +14,7 @@ class EvaluationType extends AbstractType
         $builder
             ->add('nom')
             ->add('date')
-            ->add('enseignant')
-            ->add('groupe')
+
         ;
     }
 
