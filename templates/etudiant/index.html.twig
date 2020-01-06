@@ -11,7 +11,7 @@
                 <th>Nom</th>
                 <th>Prenom</th>
                 <th>Mail</th>
-                <th>Actions</th>
+                <th></th>
             </tr>
         </thead>
         <tbody>
@@ -21,8 +21,8 @@
                 <td>{{ etudiant.prenom }}</td>
                 <td>{{ etudiant.mail }}</td>
                 <td>
-                    <a href="{{ path('etudiant_show', {'id': etudiant.id}) }}">show</a>
-                    <a href="{{ path('etudiant_edit', {'id': etudiant.id}) }}">edit</a>
+                    <a href="{{ path('etudiant_show', {'id': etudiant.id}) }}"><i class="icon-eye"></i></a>
+                    <a href="{{ path('etudiant_edit', {'id': etudiant.id}) }}"><i class="icon-pencil-1"></i></a>
                 </td>
             </tr>
         {% else %}
