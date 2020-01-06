@@ -9,18 +9,20 @@
     <table class="table" id="table">
         <thead>
             <tr>
-                <th>Id</th>
                 <th>Nom</th>
                 <th>Date</th>
+                <th>Moyenne</th>
+                <th>Groupe</th>
                 <th>actions</th>
             </tr>
         </thead>
         <tbody>
         {% for evaluation in evaluations %}
             <tr>
-                <td>{{ evaluation.id }}</td>
                 <td>{{ evaluation.nom }}</td>
                 <td>{{ evaluation.date }}</td>
+                <td> </td>
+                <td>{{ evaluation.groupe.nom}}</td>
                 <td>
                     <a href="{{ path('evaluation_show', {'id': evaluation.id}) }}">show</a>
                     <a href="{{ path('evaluation_edit', {'id': evaluation.id}) }}">edit</a>
@@ -48,7 +50,6 @@ $(document).ready(function() {
     order: [
       [0, "asc"]
     ],
-    columns: [null, null, null,{"orderable": false}],
     lengthMenu: [
       [10, 25, 50, -1],
       [10, 25, 50, "Tout"]

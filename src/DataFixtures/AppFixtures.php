@@ -91,6 +91,7 @@ class AppFixtures extends Fixture
           $evaluation->setNom($faker->fileExtension);
           $evaluation->setDate($faker->date($format = 'Y-m-d', $max = 'now'));
           $evaluation->setEnseignant($enseignant);
+          $evaluation->setGroupe($groupe2);
 
           ////////////PARTIES//////////////
           $partie1 = new Partie();

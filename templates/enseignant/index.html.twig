@@ -9,22 +9,22 @@
     <table class="table" id="table">
         <thead>
             <tr>
-                <th>Id</th>
+
                 <th>Nom</th>
                 <th>Prenom</th>
                 <th>Mail</th>
-                <th>EstAdmin</th>
-                <th>actions</th>
+                <th>Administrateur</th>
+                <th>Actions</th>
             </tr>
         </thead>
         <tbody>
         {% for enseignant in enseignants %}
             <tr>
-                <td>{{ enseignant.id }}</td>
+
                 <td>{{ enseignant.nom }}</td>
                 <td>{{ enseignant.prenom }}</td>
                 <td>{{ enseignant.mail }}</td>
-                <td>{{ enseignant.estAdmin ? 'Yes' : 'No' }}</td>
+                <td>{{ enseignant.estAdmin ? 'Oui' : 'Non' }}</td>
                 <td>
                     <a href="{{ path('enseignant_show', {'id': enseignant.id}) }}">show</a>
                     <a href="{{ path('enseignant_edit', {'id': enseignant.id}) }}">edit</a>
@@ -52,7 +52,7 @@ $(document).ready(function() {
     order: [
       [0, "asc"]
     ],
-    columns: [null, null, null,{"orderable": false}, null,{"orderable": false}],
+    columns: [null, null, {"orderable": false},null, {"orderable": false}],
     lengthMenu: [
       [10, 25, 50, -1],
       [10, 25, 50, "Tout"]

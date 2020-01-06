@@ -9,18 +9,18 @@
     <table class="table" id="table">
         <thead>
             <tr>
-                <th>Id</th>
                 <th>Nom</th>
                 <th>Description</th>
+                <th>Createur</th>
                 <th>actions</th>
             </tr>
         </thead>
         <tbody>
         {% for statut in statuts %}
             <tr>
-                <td>{{ statut.id }}</td>
                 <td>{{ statut.nom }}</td>
                 <td>{{ statut.description }}</td>
+                <td>{{ statut.enseignant.nom}} {{ statut.enseignant.prenom}}</td>
                 <td>
                     <a href="{{ path('statut_show', {'id': statut.id}) }}">show</a>
                     <a href="{{ path('statut_edit', {'id': statut.id}) }}">edit</a>
@@ -48,7 +48,7 @@ $(document).ready(function() {
     order: [
       [0, "asc"]
     ],
-    columns: [null, null,{"orderable": false},{"orderable": false}],
+    columns: [null, {"orderable": false},null,{"orderable": false}],
     lengthMenu: [
       [10, 25, 50, -1],
       [10, 25, 50, "Tout"]

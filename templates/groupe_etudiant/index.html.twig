@@ -9,20 +9,21 @@
     <table class="table" id="table">
         <thead>
             <tr>
-                <th>Id</th>
+
                 <th>Nom</th>
+                <th>Effectif</th>
                 <th>Description</th>
-                <th>EstEvaluable</th>
-                <th>actions</th>
+                <th>Createur</th>
+                <th>Actions</th>
             </tr>
         </thead>
         <tbody>
         {% for groupe_etudiant in groupe_etudiants %}
             <tr>
-                <td>{{ groupe_etudiant.id }}</td>
                 <td>{{ groupe_etudiant.nom }}</td>
+                <td> </td>
                 <td>{{ groupe_etudiant.description }}</td>
-                <td>{{ groupe_etudiant.estEvaluable ? 'Yes' : 'No' }}</td>
+                <td>{{ groupe_etudiant.enseignant.nom}} {{ groupe_etudiant.enseignant.prenom}}</td>
                 <td>
                     <a href="{{ path('groupe_etudiant_show', {'id': groupe_etudiant.id}) }}">show</a>
                     <a href="{{ path('groupe_etudiant_edit', {'id': groupe_etudiant.id}) }}">edit</a>
@@ -50,7 +51,7 @@ $(document).ready(function() {
     order: [
       [0, "asc"]
     ],
-    columns: [null, null,{"orderable": false}, null,{"orderable": false}],
+    columns: [null, null, {"orderable": false}, null, {"orderable": false}],
     lengthMenu: [
       [10, 25, 50, -1],
       [10, 25, 50, "Tout"]
