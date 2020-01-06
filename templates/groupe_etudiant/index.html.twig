@@ -14,7 +14,7 @@
                 <th>Effectif</th>
                 <th>Description</th>
                 <th>Createur</th>
-                <th>Actions</th>
+                <th></th>
             </tr>
         </thead>
         <tbody>
@@ -25,8 +25,8 @@
                 <td>{{ groupe_etudiant.description }}</td>
                 <td>{{ groupe_etudiant.enseignant.nom}} {{ groupe_etudiant.enseignant.prenom}}</td>
                 <td>
-                    <a href="{{ path('groupe_etudiant_show', {'id': groupe_etudiant.id}) }}">show</a>
-                    <a href="{{ path('groupe_etudiant_edit', {'id': groupe_etudiant.id}) }}">edit</a>
+                    <a href="{{ path('groupe_etudiant_show', {'id': groupe_etudiant.id}) }}"><i class="icon-eye"></i></a>
+                    <a href="{{ path('groupe_etudiant_edit', {'id': groupe_etudiant.id}) }}"><i class="icon-pencil-1"></i></a>
                 </td>
             </tr>
         {% else %}

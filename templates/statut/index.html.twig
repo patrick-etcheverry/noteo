@@ -12,7 +12,7 @@
                 <th>Nom</th>
                 <th>Description</th>
                 <th>Createur</th>
-                <th>actions</th>
+                <th></th>
             </tr>
         </thead>
         <tbody>
@@ -22,8 +22,8 @@
                 <td>{{ statut.description }}</td>
                 <td>{{ statut.enseignant.nom}} {{ statut.enseignant.prenom}}</td>
                 <td>
-                    <a href="{{ path('statut_show', {'id': statut.id}) }}">show</a>
-                    <a href="{{ path('statut_edit', {'id': statut.id}) }}">edit</a>
+                    <a href="{{ path('statut_show', {'id': statut.id}) }}"><i class="icon-eye"></i></a>
+                    <a href="{{ path('statut_edit', {'id': statut.id}) }}"><i class="icon-pencil-1"></i></a>
                 </td>
             </tr>
         {% else %}
