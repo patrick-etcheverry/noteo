@@ -33,6 +33,12 @@ class Statut
      */
     private $etudiants;
 
+    /**
+     * @ORM\ManyToOne(targetEntity="App\Entity\Enseignant", inversedBy="statuts")
+     * @ORM\JoinColumn(nullable=false)
+     */
+    private $enseignant;
+
     public function __construct()
     {
         $this->etudiants = new ArrayCollection();
@@ -89,6 +95,18 @@ class Statut
         if ($this->etudiants->contains($etudiant)) {
             $this->etudiants->removeElement($etudiant);
         }
+
+        return $this;
+    }
+
+    public function getEnseignant(): ?Enseignant
+    {
+        return $this->enseignant;
+    }
+
+    public function setEnseignant(?Enseignant $enseignant): self
+    {
+        $this->enseignant = $enseignant;
 
         return $this;
     }
