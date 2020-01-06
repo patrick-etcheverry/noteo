@@ -35,10 +35,12 @@ class AppFixtures extends Fixture
           $statut1 = new Statut();
           $statut1->setNom($faker->jobTitle);
           $statut1->setDescription($faker->text(75));
+          $statut1->setEnseignant($enseignant);
 
           $statut2 = new Statut();
           $statut2->setNom($faker->jobTitle);
           $statut2->setDescription($faker->text(75));
+          $statut2->setEnseignant($enseignant);
 
           ////////////GROUPE//////////////
           $groupe = new GroupeEtudiant();

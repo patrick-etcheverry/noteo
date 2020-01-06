@@ -48,10 +48,16 @@ class Enseignant
      */
     private $evaluations;
 
+    /**
+     * @ORM\OneToMany(targetEntity="App\Entity\Statut", mappedBy="enseignant", orphanRemoval=true)
+     */
+    private $statuts;
+
     public function __construct()
     {
         $this->groupes = new ArrayCollection();
         $this->evaluations = new ArrayCollection();
+        $this->statuts = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -163,6 +169,37 @@ class Enseignant
             // set the owning side to null (unless already changed)
             if ($evaluation->getEnseignant() === $this) {
                 $evaluation->setEnseignant(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|Statut[]
+     */
+    public function getStatuts(): Collection
+    {
+        return $this->statuts;
+    }
+
+    public function addStatut(Statut $statut): self
+    {
+        if (!$this->statuts->contains($statut)) {
+            $this->statuts[] = $statut;
+            $statut->setEnseignant($this);
+        }
+
+        return $this;
+    }
+
+    public function removeStatut(Statut $statut): self
+    {
+        if ($this->statuts->contains($statut)) {
+            $this->statuts->removeElement($statut);
+            // set the owning side to null (unless already changed)
+            if ($statut->getEnseignant() === $this) {
+                $statut->setEnseignant(null);
             }
         }
 
