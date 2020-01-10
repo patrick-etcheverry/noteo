@@ -68,7 +68,7 @@ class GroupeEtudiant
 
     /**
      * @Gedmo\TreeParent
-     * @ORM\ManyToOne(targetEntity="GroupeEtudiant", inversedBy="children")
+     * @ORM\ManyToOne(targetEntity="GroupeEtudiant", inversedBy="children", cascade={"persist"})
      * @ORM\JoinColumn(name="parent_id", referencedColumnName="id", onDelete="CASCADE")
      */
     private $parent;
