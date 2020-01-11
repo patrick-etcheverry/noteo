@@ -57,6 +57,7 @@ class GroupeEtudiantController extends AbstractController
     {
         return $this->render('groupe_etudiant/show.html.twig', [
             'groupe_etudiant' => $groupeEtudiant,
+            'etudiants' => $groupeEtudiant->getEtudiants()
         ]);
     }
 
