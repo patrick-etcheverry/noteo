@@ -9,7 +9,6 @@
     <table class="table" id="table">
         <thead>
             <tr>
-
                 <th>Nom</th>
                 <th>Effectif</th>
                 <th>Description</th>
@@ -18,26 +17,50 @@
             </tr>
         </thead>
         <tbody>
-        {% for groupe_etudiant in groupe_etudiants %}
+        {% for semestre in arbre[0].__children %}
+        <tr>
+            <td>{{ semestre.nom }}</td>
+            <td>{{ infos[semestre.id].Effectif}}</td>
+            <td>{{ semestre.description }}</td>
+            <td>{{ infos[semestre.id].Nom }} {{ infos[semestre.id].Prenom }}</td>
+            <td>
+                <a href="{{ path('groupe_etudiant_show', {'id': semestre.id}) }}"><i class="icon-eye"></i></a>
+                <a href="{{ path('groupe_etudiant_edit', {'id': semestre.id}) }}"><i class="icon-pencil-1"></i></a>
+            </td>
+        </tr>
+            {% for td in semestre.__children %}
             <tr>
-                <td>{{ groupe_etudiant.nom }}</td>
-                <td> </td>
-                <td>{{ groupe_etudiant.description }}</td>
-                <td>{{ groupe_etudiant.enseignant.nom}} {{ groupe_etudiant.enseignant.prenom}}</td>
+                <td> &emsp; {{ td.nom }}</td> <!--&emsp; permet d'ajouter 4 espaces pour faire une sorte d'indentation-->
+                <td>{{ infos[td.id].Effectif}}</td>
+                <td>{{ td.description }}</td>
+                <td>{{ infos[td.id].Nom }} {{ infos[td.id].Prenom }}</td>
                 <td>
-                    <a href="{{ path('groupe_etudiant_show', {'id': groupe_etudiant.id}) }}"><i class="icon-eye"></i></a>
-                    <a href="{{ path('groupe_etudiant_edit', {'id': groupe_etudiant.id}) }}"><i class="icon-pencil-1"></i></a>
+                    <a href="{{ path('groupe_etudiant_show', {'id': td.id}) }}"><i class="icon-eye"></i></a>
+                    <a href="{{ path('groupe_etudiant_edit', {'id': td.id}) }}"><i class="icon-pencil-1"></i></a>
                 </td>
             </tr>
-        {% else %}
-            <tr>
-                <td colspan="8">no records found</td>
-            </tr>
+                {% for tp in td.__children %}
+                <tr>
+                    <td> &emsp;  &emsp; {{ tp.nom }}</td>
+                    <td>{{ infos[tp.id].Effectif}}</td>
+                    <td>{{ tp.description }}</td>
+                    <td>{{ infos[tp.id].Nom }} {{ infos[tp.id].Prenom }}</td>
+                    <td>
+                        <a href="{{ path('groupe_etudiant_show', {'id': tp.id}) }}"><i class="icon-eye"></i></a>
+                        <a href="{{ path('groupe_etudiant_edit', {'id': tp.id}) }}"><i class="icon-pencil-1"></i></a>
+                    </td>
+                </tr>
+                {% endfor %}
+
+            {% endfor %}
+
         {% endfor %}
+
         </tbody>
     </table>
 
     <a href="{{ path('groupe_etudiant_new') }}">Create new</a>
+
 {% endblock %}
 
 {% block datatables %}
@@ -45,12 +68,10 @@
 <script type="text/javascript">
 $(document).ready(function() {
   $('#table').dataTable({
+    aaSorting: [], // Pour désactiver le tri automatique
     language: {
       "url": "{{asset('tradfr.json')}}"
     },
-    order: [
-      [0, "asc"]
-    ],
     columns: [null, null, {"orderable": false}, null, {"orderable": false}],
     lengthMenu: [
       [10, 25, 50, -1],

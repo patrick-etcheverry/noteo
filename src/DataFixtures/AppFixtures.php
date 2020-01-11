@@ -279,7 +279,7 @@ class AppFixtures extends Fixture
             $IPI->setNom('IPI');
             $IPI->setDescription('Les etudiants du parcours IPI du S4');
             $IPI->setEstEvaluable(true);
-            $IPI->setParent($DUT);
+            $IPI->setParent($S4);
             $IPI->setEnseignant($enseignant);
 
                 ////////////TPs//////////////
@@ -301,7 +301,7 @@ class AppFixtures extends Fixture
             $PEL->setNom('PEL');
             $PEL->setDescription('Les etudiants du parcours PEL du S4');
             $PEL->setEstEvaluable(true);
-            $PEL->setParent($DUT);
+            $PEL->setParent($S4);
             $PEL->setEnseignant($enseignant);
 
                 ////////////TPs//////////////

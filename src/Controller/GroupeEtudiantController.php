@@ -22,8 +22,21 @@ class GroupeEtudiantController extends AbstractController
     {
         $repo = $this->getDoctrine()->getRepository(GroupeEtudiant::class);
 
+        /* Preparation d'un tableau vide qui donnera le nom et prénom de l'enseignant correspondant a l'id du groupe situé en index du tableau.
+        Il donne également l'effectif de ce groupe. Ce tableau est nécessaire car la méthode childrenHierarchy utilisée plus bas ne renvoie pas
+        d'objet enseignant correspondant au groupe, et car l'effectif n'est pas un attribtut, il faut donc le calculer. */
+        $infos = array();
+
+        //Remplissage du tableau
+        $groupes = $repo->findAll();
+        foreach ($groupes as $key => $groupe) {
+          $infos[$groupe->getId()] = array("Nom" => $groupe->getEnseignant()->getNom(), "Prenom" => $groupe->getEnseignant()->getPrenom(), "Effectif" => count($groupe->getEtudiants()));
+        }
+
+
         return $this->render('groupe_etudiant/index.html.twig', [
-            'groupe_etudiants' => $repo->findAll(),
+            'infos' => $infos,
+            'arbre' => $repo->childrenHierarchy(),
         ]);
     }
 
