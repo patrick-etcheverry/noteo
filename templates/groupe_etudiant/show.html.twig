@@ -9,11 +9,7 @@
     <table class="table">
         <tbody>
             <tr>
-                <th>Id</th>
-                <td>{{ groupe_etudiant.id }}</td>
-            </tr>
-            <tr>
-                <th>Nom</th>
+                <th>Nom du groupe</th>
                 <td>{{ groupe_etudiant.nom }}</td>
             </tr>
             <tr>
@@ -21,15 +17,70 @@
                 <td>{{ groupe_etudiant.description }}</td>
             </tr>
             <tr>
-                <th>EstEvaluable</th>
-                <td>{{ groupe_etudiant.estEvaluable ? 'Yes' : 'No' }}</td>
+                <th>Groupe évaluable :</th>
+                <td>{{ groupe_etudiant.estEvaluable ? 'Oui' : 'Non' }}</td>
             </tr>
         </tbody>
     </table>
+
+    <h1 class="h3 mb-0 text-gray-800">Liste des étudiants du groupe</h1> <br>
+
+    {% if etudiants is not empty %}
+
+    <table class="table" id="etud">
+      <thead>
+        <tr>
+          <th>Nom</th>
+          <th>Prénom</th>
+          <th>Mail</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for etudiant in etudiants %}
+        <tr>
+          <td>{{etudiant.nom}}</td>
+          <td>{{etudiant.prenom}}</td>
+          <td>{{etudiant.mail}}</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+
+
+
+    {% else %}
+    <center> <h1><small class="text-muted">Pas d'étudiants trouvés pour ce groupe</small></h3> </h1></center>
+    {% endif %}
+
 
     <a href="{{ path('groupe_etudiant_index') }}">back to list</a>
 
     <a href="{{ path('groupe_etudiant_edit', {'id': groupe_etudiant.id}) }}">edit</a>
 
     {{ include('groupe_etudiant/_delete_form.html.twig') }}
+
+{% endblock %}
+
+{% block datatables %}
+
+<script type="text/javascript">
+
+$(document).ready(function() {
+  $('#etud').dataTable({
+    language: {
+      "url": "{{asset('tradfr.json')}}"
+    },
+    order: [
+      [0, "asc"]
+    ],
+    columns: [null, null, {"orderable": false}],
+    lengthMenu: [
+      [10, 25, 50, -1],
+      [10, 25, 50, "Tout"]
+    ],
+    info: false,
+  });
+});
+</script>
+
 {% endblock %}
