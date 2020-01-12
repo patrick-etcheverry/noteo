@@ -80,19 +80,19 @@ class AppFixtures extends Fixture
             $S1TD2->setEnseignant($enseignant);
 
                 ////////////TPs//////////////
-                $S1TD2TP1 = new GroupeEtudiant();
-                $S1TD2TP1->setNom('TP1');
-                $S1TD2TP1->setDescription('Les etudiants du TP1 du TD2 du S1');
-                $S1TD2TP1->setEstEvaluable(true);
-                $S1TD2TP1->setParent($S1TD2);
-                $S1TD2TP1->setEnseignant($enseignant);
+                $S1TD2TP3 = new GroupeEtudiant();
+                $S1TD2TP3->setNom('TP3');
+                $S1TD2TP3->setDescription('Les etudiants du TP3 du TD2 du S1');
+                $S1TD2TP3->setEstEvaluable(true);
+                $S1TD2TP3->setParent($S1TD2);
+                $S1TD2TP3->setEnseignant($enseignant);
 
-                $S1TD2TP2 = new GroupeEtudiant();
-                $S1TD2TP2->setNom('TP2');
-                $S1TD2TP2->setDescription('Les etudiants du TP2 du TD2 du S1');
-                $S1TD2TP2->setEstEvaluable(true);
-                $S1TD2TP2->setParent($S1TD2);
-                $S1TD2TP2->setEnseignant($enseignant);
+                $S1TD2TP4 = new GroupeEtudiant();
+                $S1TD2TP4->setNom('TP4');
+                $S1TD2TP4->setDescription('Les etudiants du TP4 du TD2 du S1');
+                $S1TD2TP4->setEstEvaluable(true);
+                $S1TD2TP4->setParent($S1TD2);
+                $S1TD2TP4->setEnseignant($enseignant);
 
             $S1TD3 = new GroupeEtudiant();
             $S1TD3->setNom('TD3');
@@ -102,20 +102,12 @@ class AppFixtures extends Fixture
             $S1TD3->setEnseignant($enseignant);
 
                 ////////////TPs//////////////
-                $S1TD3TP1 = new GroupeEtudiant();
-                $S1TD3TP1->setNom('TP1');
-                $S1TD3TP1->setDescription('Les etudiants du TP1 du TD3 du S1');
-                $S1TD3TP1->setEstEvaluable(true);
-                $S1TD3TP1->setParent($S1TD3);
-                $S1TD3TP1->setEnseignant($enseignant);
-
-                $S1TD3TP2 = new GroupeEtudiant();
-                $S1TD3TP2->setNom('TP2');
-                $S1TD3TP2->setDescription('Les etudiants du TP2 du TD3 du S1');
-                $S1TD3TP2->setEstEvaluable(true);
-                $S1TD3TP2->setParent($S1TD3);
-                $S1TD3TP2->setEnseignant($enseignant);
-
+                $S1TD3TP5 = new GroupeEtudiant();
+                $S1TD3TP5->setNom('TP5');
+                $S1TD3TP5->setDescription('Les etudiants du TP5 du TD3 du S1');
+                $S1TD3TP5->setEstEvaluable(true);
+                $S1TD3TP5->setParent($S1TD3);
+                $S1TD3TP5->setEnseignant($enseignant);
 
         $S2 = new GroupeEtudiant();
         $S2->setNom('S2');
@@ -155,19 +147,19 @@ class AppFixtures extends Fixture
                     $S2TD2->setEnseignant($enseignant);
 
                         ////////////TPs//////////////
-                        $S2TD2TP1 = new GroupeEtudiant();
-                        $S2TD2TP1->setNom('TP1');
-                        $S2TD2TP1->setDescription('Les etudiants du TP1 du TD2 du S2');
-                        $S2TD2TP1->setEstEvaluable(true);
-                        $S2TD2TP1->setParent($S2TD2);
-                        $S2TD2TP1->setEnseignant($enseignant);
+                        $S2TD2TP3 = new GroupeEtudiant();
+                        $S2TD2TP3->setNom('TP3');
+                        $S2TD2TP3->setDescription('Les etudiants du TP3 du TD2 du S2');
+                        $S2TD2TP3->setEstEvaluable(true);
+                        $S2TD2TP3->setParent($S2TD2);
+                        $S2TD2TP3->setEnseignant($enseignant);
 
-                        $S2TD2TP2 = new GroupeEtudiant();
-                        $S2TD2TP2->setNom('TP2');
-                        $S2TD2TP2->setDescription('Les etudiants du TP2 du TD2 du S2');
-                        $S2TD2TP2->setEstEvaluable(true);
-                        $S2TD2TP2->setParent($S2TD2);
-                        $S2TD2TP2->setEnseignant($enseignant);
+                        $S2TD2TP4 = new GroupeEtudiant();
+                        $S2TD2TP4->setNom('TP4');
+                        $S2TD2TP4->setDescription('Les etudiants du TP4 du TD2 du S2');
+                        $S2TD2TP4->setEstEvaluable(true);
+                        $S2TD2TP4->setParent($S2TD2);
+                        $S2TD2TP4->setEnseignant($enseignant);
 
                     $S2TD3 = new GroupeEtudiant();
                     $S2TD3->setNom('TD3');
@@ -177,19 +169,12 @@ class AppFixtures extends Fixture
                     $S2TD3->setEnseignant($enseignant);
 
                         ////////////TPs//////////////
-                        $S2TD3TP1 = new GroupeEtudiant();
-                        $S2TD3TP1->setNom('TP1');
-                        $S2TD3TP1->setDescription('Les etudiants du TP1 du TD3 du S2');
-                        $S2TD3TP1->setEstEvaluable(true);
-                        $S2TD3TP1->setParent($S2TD3);
-                        $S2TD3TP1->setEnseignant($enseignant);
-
-                        $S2TD3TP2 = new GroupeEtudiant();
-                        $S2TD3TP2->setNom('TP2');
-                        $S2TD3TP2->setDescription('Les etudiants du TP2 du TD3 du S2');
-                        $S2TD3TP2->setEstEvaluable(true);
-                        $S2TD3TP2->setParent($S2TD3);
-                        $S2TD3TP2->setEnseignant($enseignant);
+                        $S2TD3TP5 = new GroupeEtudiant();
+                        $S2TD3TP5->setNom('TP5');
+                        $S2TD3TP5->setDescription('Les etudiants du TP5 du TD3 du S2');
+                        $S2TD3TP5->setEstEvaluable(true);
+                        $S2TD3TP5->setParent($S2TD3);
+                        $S2TD3TP5->setEnseignant($enseignant);
 
         $S3 = new GroupeEtudiant();
         $S3->setNom('S3');
@@ -230,19 +215,19 @@ class AppFixtures extends Fixture
                             $S3TD2->setEnseignant($enseignant);
 
                                 ////////////TPs//////////////
-                                $S3TD2TP1 = new GroupeEtudiant();
-                                $S3TD2TP1->setNom('TP1');
-                                $S3TD2TP1->setDescription('Les etudiants du TP1 du TD2 du S3');
-                                $S3TD2TP1->setEstEvaluable(true);
-                                $S3TD2TP1->setParent($S3TD2);
-                                $S3TD2TP1->setEnseignant($enseignant);
+                                $S3TD2TP3 = new GroupeEtudiant();
+                                $S3TD2TP3->setNom('TP3');
+                                $S3TD2TP3->setDescription('Les etudiants du TP3 du TD2 du S3');
+                                $S3TD2TP3->setEstEvaluable(true);
+                                $S3TD2TP3->setParent($S3TD2);
+                                $S3TD2TP3->setEnseignant($enseignant);
 
-                                $S3TD2TP2 = new GroupeEtudiant();
-                                $S3TD2TP2->setNom('TP2');
-                                $S3TD2TP2->setDescription('Les etudiants du TP2 du TD2 du S3');
-                                $S3TD2TP2->setEstEvaluable(true);
-                                $S3TD2TP2->setParent($S3TD2);
-                                $S3TD2TP2->setEnseignant($enseignant);
+                                $S3TD2TP4 = new GroupeEtudiant();
+                                $S3TD2TP4->setNom('TP4');
+                                $S3TD2TP4->setDescription('Les etudiants du TP4 du TD2 du S3');
+                                $S3TD2TP4->setEstEvaluable(true);
+                                $S3TD2TP4->setParent($S3TD2);
+                                $S3TD2TP4->setEnseignant($enseignant);
 
                             $S3TD3 = new GroupeEtudiant();
                             $S3TD3->setNom('TD3');
@@ -252,20 +237,12 @@ class AppFixtures extends Fixture
                             $S3TD3->setEnseignant($enseignant);
 
                                 ////////////TPs//////////////
-                                $S3TD3TP1 = new GroupeEtudiant();
-                                $S3TD3TP1->setNom('TP1');
-                                $S3TD3TP1->setDescription('Les etudiants du TP1 du TD3 du S3');
-                                $S3TD3TP1->setEstEvaluable(true);
-                                $S3TD3TP1->setParent($S3TD3);
-                                $S3TD3TP1->setEnseignant($enseignant);
-
-                                $S3TD3TP2 = new GroupeEtudiant();
-                                $S3TD3TP2->setNom('TP2');
-                                $S3TD3TP2->setDescription('Les etudiants du TP2 du TD3 du S3');
-                                $S3TD3TP2->setEstEvaluable(true);
-                                $S3TD3TP2->setParent($S3TD3);
-                                $S3TD3TP2->setEnseignant($enseignant);
-
+                                $S3TD3TP5 = new GroupeEtudiant();
+                                $S3TD3TP5->setNom('TP5');
+                                $S3TD3TP5->setDescription('Les etudiants du TP5 du TD3 du S3');
+                                $S3TD3TP5->setEstEvaluable(true);
+                                $S3TD3TP5->setParent($S3TD3);
+                                $S3TD3TP5->setEnseignant($enseignant);
 
         $S4 = new GroupeEtudiant();
         $S4->setNom('S4');
@@ -305,20 +282,6 @@ class AppFixtures extends Fixture
             $PEL->setEnseignant($enseignant);
 
                 ////////////TPs//////////////
-                $S4PELTP1 = new GroupeEtudiant();
-                $S4PELTP1->setNom('TP1');
-                $S4PELTP1->setDescription('Les etudiants du TP1 parcours PEL du S4');
-                $S4PELTP1->setEstEvaluable(true);
-                $S4PELTP1->setParent($PEL);
-                $S4PELTP1->setEnseignant($enseignant);
-
-                $S4PELTP2 = new GroupeEtudiant();
-                $S4PELTP2->setNom('TP2');
-                $S4PELTP2->setDescription('Les etudiants du TP2 parcours PEL du S4');
-                $S4PELTP2->setEstEvaluable(true);
-                $S4PELTP2->setParent($PEL);
-                $S4PELTP2->setEnseignant($enseignant);
-
                 $S4PELTP3 = new GroupeEtudiant();
                 $S4PELTP3->setNom('TP3');
                 $S4PELTP3->setDescription('Les etudiants du TP3 parcours PEL du S4');
@@ -326,48 +289,59 @@ class AppFixtures extends Fixture
                 $S4PELTP3->setParent($PEL);
                 $S4PELTP3->setEnseignant($enseignant);
 
+                $S4PELTP4 = new GroupeEtudiant();
+                $S4PELTP4->setNom('TP4');
+                $S4PELTP4->setDescription('Les etudiants du TP4 parcours PEL du S4');
+                $S4PELTP4->setEstEvaluable(true);
+                $S4PELTP4->setParent($PEL);
+                $S4PELTP4->setEnseignant($enseignant);
+
+                $S4PELTP5 = new GroupeEtudiant();
+                $S4PELTP5->setNom('TP5');
+                $S4PELTP5->setDescription('Les etudiants du TP5 parcours PEL du S4');
+                $S4PELTP5->setEstEvaluable(true);
+                $S4PELTP5->setParent($PEL);
+                $S4PELTP5->setEnseignant($enseignant);
+
         //Enregistrement des groupes
         $manager->persist($S1);
         $manager->persist($S1TD1);
         $manager->persist($S1TD1TP1);
         $manager->persist($S1TD1TP2);
         $manager->persist($S1TD2);
-        $manager->persist($S1TD2TP1);
-        $manager->persist($S1TD2TP2);
+        $manager->persist($S1TD2TP3);
+        $manager->persist($S1TD2TP4);
         $manager->persist($S1TD3);
-        $manager->persist($S1TD3TP1);
-        $manager->persist($S1TD3TP2);
+        $manager->persist($S1TD3TP5);
 
         $manager->persist($S2);
         $manager->persist($S2TD1);
         $manager->persist($S2TD1TP1);
         $manager->persist($S2TD1TP2);
         $manager->persist($S2TD2);
-        $manager->persist($S2TD2TP1);
-        $manager->persist($S2TD2TP2);
+        $manager->persist($S2TD2TP3);
+        $manager->persist($S2TD2TP4);
         $manager->persist($S2TD3);
-        $manager->persist($S2TD3TP1);
-        $manager->persist($S2TD3TP2);
+        $manager->persist($S2TD3TP5);
 
         $manager->persist($S3);
         $manager->persist($S3TD1);
         $manager->persist($S3TD1TP1);
         $manager->persist($S3TD1TP2);
         $manager->persist($S3TD2);
-        $manager->persist($S3TD2TP1);
-        $manager->persist($S3TD2TP2);
+        $manager->persist($S3TD2TP3);
+        $manager->persist($S3TD2TP4);
         $manager->persist($S3TD3);
-        $manager->persist($S3TD3TP1);
-        $manager->persist($S3TD3TP2);
+        $manager->persist($S3TD3TP5);
 
         $manager->persist($S4);
         $manager->persist($IPI);
         $manager->persist($S4IPITP1);
         $manager->persist($S4IPITP2);
         $manager->persist($PEL);
-        $manager->persist($S4PELTP1);
-        $manager->persist($S4PELTP2);
         $manager->persist($S4PELTP3);
+        $manager->persist($S4PELTP4);
+        $manager->persist($S4PELTP5);
 
 
 
@@ -398,7 +372,7 @@ class AppFixtures extends Fixture
           $etudiant1->setMail($faker->email);
           $etudiant1->setEstDemissionaire($faker->boolean);
           $etudiant1->addStatut($statut1);
-          $etudiant1->addGroupe($S3TD3TP2);
+          $etudiant1->addGroupe($S3TD3TP5);
 
           $etudiant2 = new Etudiant();
           $etudiant2->setPrenom($faker->firstNameMale);
@@ -406,7 +380,7 @@ class AppFixtures extends Fixture
           $etudiant2->setMail($faker->email);
           $etudiant2->setEstDemissionaire($faker->boolean);
           $etudiant2->addStatut($statut2);
-          $etudiant2->addGroupe($S4PELTP1);
+          $etudiant2->addGroupe($S4PELTP3);
 
           ////////////EVALUATION//////////////
           $evaluation = new Evaluation();

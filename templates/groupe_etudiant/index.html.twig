@@ -12,17 +12,27 @@
                 <th>Nom</th>
                 <th>Effectif</th>
                 <th>Description</th>
-                <th>Createur</th>
+                <th>Créateur</th>
                 <th></th>
             </tr>
         </thead>
         <tbody>
+        <tr>
+          <td>{{ arbre[0].nom }}</td>
+          <td>{{ infos[arbre[0].id].Effectif }}</td>
+          <td>{{ arbre[0].description }}</td>
+          <td>{{ infos[arbre[0].id].Prenom }} {{ infos[arbre[0].id].Nom }}</td>
+          <td>
+              <a href="{{ path('groupe_etudiant_show', {'id': arbre[0].id}) }}"><i class="icon-eye"></i></a>
+              <a href="{{ path('groupe_etudiant_edit', {'id': arbre[0].id}) }}"><i class="icon-pencil-1"></i></a>
+          </td>
+        </tr>
         {% for semestre in arbre[0].__children %}
         <tr>
-            <td>{{ semestre.nom }}</td>
+            <td>&emsp;{{ semestre.nom }}</td>
             <td>{{ infos[semestre.id].Effectif}}</td>
             <td>{{ semestre.description }}</td>
-            <td>{{ infos[semestre.id].Nom }} {{ infos[semestre.id].Prenom }}</td>
+            <td>{{ infos[semestre.id].Prenom }} {{ infos[semestre.id].Nom }}</td>
             <td>
                 <a href="{{ path('groupe_etudiant_show', {'id': semestre.id}) }}"><i class="icon-eye"></i></a>
                 <a href="{{ path('groupe_etudiant_edit', {'id': semestre.id}) }}"><i class="icon-pencil-1"></i></a>
@@ -30,10 +40,10 @@
         </tr>
             {% for td in semestre.__children %}
             <tr>
-                <td> &emsp; {{ td.nom }}</td> <!--&emsp; permet d'ajouter 4 espaces pour faire une sorte d'indentation-->
+                <td>&emsp;&emsp; {{ td.nom }}</td> <!--&emsp; permet d'ajouter 4 espaces pour faire une sorte d'indentation-->
                 <td>{{ infos[td.id].Effectif}}</td>
                 <td>{{ td.description }}</td>
-                <td>{{ infos[td.id].Nom }} {{ infos[td.id].Prenom }}</td>
+                <td> {{ infos[td.id].Prenom }} {{ infos[td.id].Nom }}</td>
                 <td>
                     <a href="{{ path('groupe_etudiant_show', {'id': td.id}) }}"><i class="icon-eye"></i></a>
                     <a href="{{ path('groupe_etudiant_edit', {'id': td.id}) }}"><i class="icon-pencil-1"></i></a>
@@ -41,10 +51,10 @@
             </tr>
                 {% for tp in td.__children %}
                 <tr>
-                    <td> &emsp;  &emsp; {{ tp.nom }}</td>
+                    <td>&emsp;&emsp;&emsp; {{ tp.nom }}</td>
                     <td>{{ infos[tp.id].Effectif}}</td>
                     <td>{{ tp.description }}</td>
-                    <td>{{ infos[tp.id].Nom }} {{ infos[tp.id].Prenom }}</td>
+                    <td>{{ infos[tp.id].Prenom }} {{ infos[tp.id].Nom }}</td>
                     <td>
                         <a href="{{ path('groupe_etudiant_show', {'id': tp.id}) }}"><i class="icon-eye"></i></a>
                         <a href="{{ path('groupe_etudiant_edit', {'id': tp.id}) }}"><i class="icon-pencil-1"></i></a>
