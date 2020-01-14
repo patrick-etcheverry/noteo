@@ -1,3 +1,4 @@
+
 {{ form_start(form) }}
 
     <table align="center" class="table">
@@ -8,14 +9,10 @@
         </tr>
         <tr>
           <td><strong>{{ form_label(form.description, 'Description') }}</strong> </td>
-          <td>{{ form_widget(form.description,{ 'attr': {'cols': '50', 'rows' : 5} }) }}</td>
+          <td>{{ form_widget(form.description,{ 'attr': {'cols': '50', 'rows' : 3, 'maxlength' : 100} }) }}</td>
         </tr>
         <tr>
-          <td><strong>{{ form_label(form.estEvaluable, 'Évaluable') }}&emsp;<a href="#"><i class="icon-help-circled"></i></a></strong> </td>
-          <td>{{ form_widget(form.estEvaluable) }}</td>
-        </tr>
-        <tr>
-          <td><strong>{{ form_label(form.fichier, 'Fichier') }}</strong> </td>
+          <td><strong>{{ form_label(form.fichier, 'Fichier CSV') }} (<a href="{{asset('template.csv')}}">Télécharger un modèle</a>)</strong> </td>
           <td>{{ form_widget(form.fichier) }}</td>
         </tr>
         <tr>
