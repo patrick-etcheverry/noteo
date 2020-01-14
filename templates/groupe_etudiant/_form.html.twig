@@ -1,4 +1,26 @@
 {{ form_start(form) }}
-    {{ form_widget(form) }}
+
+    <table class="table">
+      <tbody>
+        <tr>
+          <td><strong>{{ form_label(form.nom, 'Nom :') }}</strong></td>
+          <td>{{ form_widget(form.nom) }}</td>
+        </tr>
+        <tr>
+          <td><strong>{{ form_label(form.description, 'Description :') }}</strong> </td>
+          <td>{{ form_widget(form.description,{ 'attr': {'cols': '50', 'rows' : 4} }) }}</td>
+        </tr>
+        <tr>
+          <td><strong>{{ form_label(form.estEvaluable, 'Groupe Evaluable :') }}</strong> </td>
+          <td>{{ form_widget(form.estEvaluable) }}</td>
+        </tr>
+        <tr>
+          <td><strong>{{ form_label(form.enseignant, 'Enseignant (temporaire) :') }}</strong> </td>
+          <td>{{ form_widget(form.enseignant) }}</td>
+        </tr>
+      </tbody>
+    </table>
+
     <button class="btn">{{ button_label|default('Save') }}</button>
+
 {{ form_end(form) }}

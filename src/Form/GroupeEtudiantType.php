@@ -9,6 +9,8 @@ use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Form\Extension\Core\Type\FileType;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
+use Symfony\Component\Form\Extension\Core\Type\TextareaType;
+use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 
 class GroupeEtudiantType extends AbstractType
 {
@@ -16,8 +18,8 @@ class GroupeEtudiantType extends AbstractType
     {
         $builder
             ->add('nom')
-            ->add('description')
-            ->add('estEvaluable')
+            ->add('description', TextareaType::class)
+            ->add('estEvaluable', ChoiceType::class, ['choices' => ['Oui' => true, 'Non' => false], 'expanded' => true])
             ->add('enseignant', EntityType::class, ['class' => Enseignant::class, 'choice_label' => 'nom'])
             ->add('fichier', FileType::class, ['mapped' => false])
         ;
