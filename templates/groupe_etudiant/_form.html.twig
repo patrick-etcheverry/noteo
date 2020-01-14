@@ -1,27 +1,32 @@
-
 {{ form_start(form) }}
 
-    <table align="center" class="table">
-      <tbody>
-        <tr>
-          <td><strong>{{ form_label(form.nom, 'Nom') }}</strong></td>
-          <td>{{ form_widget(form.nom) }}</td>
-        </tr>
-        <tr>
-          <td><strong>{{ form_label(form.description, 'Description') }}</strong> </td>
-          <td>{{ form_widget(form.description,{ 'attr': {'cols': '50', 'rows' : 3, 'maxlength' : 100} }) }}</td>
-        </tr>
-        <tr>
-          <td><strong>{{ form_label(form.fichier, 'Fichier CSV') }} (<a href="{{asset('template.csv')}}">Télécharger un modèle</a>)</strong> </td>
-          <td>{{ form_widget(form.fichier) }}</td>
-        </tr>
-        <tr>
-          <td><strong>{{ form_label(form.enseignant, 'Enseignant (temporaire)') }}</strong> </td>
-          <td>{{ form_widget(form.enseignant) }}</td>
-        </tr>
-      </tbody>
-    </table>
+<table align="center" class="table">
+  <tbody>
+    <tr>
+      <td><strong>{{ form_label(form.nom, 'Nom') }}</strong></td>
+      <td>{{ form_widget(form.nom, {'attr' : {'placeholder':'Nom court'}}) }}</td>
+    </tr>
+    <tr>
+      <td><strong>{{ form_label(form.description, 'Description') }}</strong> </td>
+      <td>{{ form_widget(form.description,{ 'attr': {'cols': 50, 'rows' : 5, 'placeholder' : 'Description claire du groupe'}}) }}</td>
+    </tr>
+    <tr>
+      <td><strong>{{ form_label(form.fichier, 'Fichier CSV') }} (<a href="{{asset('template.csv')}}">Télécharger un modèle</a>)</strong> </td>
+      <td>
+        <div class="custom-file">
+        {{ form_widget(form.fichier, {'attr' : {'id' : 'saisieFichier'} }) }}
+        <label class="custom-file-label" for="saisieFichier">Selectionner un fichier</label>
+        </div>
+    </td>
+    </tr>
+    <tr>
+      <td><strong>{{ form_label(form.enseignant, 'Enseignant (temporaire)') }}</strong> </td>
+      <td>{{ form_widget(form.enseignant) }}</td>
+    </tr>
+  </tbody>
+</table>
 
-    <center><button class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm">{{ button_label|default('Créer le groupe') }}</button>
+<center><button class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm">{{ button_label|default('Créer le groupe') }}</button>
 
-{{ form_end(form) }}
+
+  {{ form_end(form) }}

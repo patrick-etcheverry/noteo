@@ -20,8 +20,8 @@ class GroupeEtudiantType extends AbstractType
         $builder
             ->add('nom', TextType::class, ['attr' => array('style' => 'width: 400px')])
             ->add('description', TextareaType::class, ['attr' => array('style' => 'width: 400px')])
-            ->add('enseignant', EntityType::class, ['class' => Enseignant::class, 'choice_label' => 'nom'])
-            ->add('fichier', FileType::class, ['mapped' => false])
+            ->add('enseignant', EntityType::class, ['class' => Enseignant::class, 'choice_label' => 'nom', 'attr' => array('style' => 'width: 400px')])
+            ->add('fichier', FileType::class, ['mapped' => false, 'attr' => array('style' => 'width: 400px')])
         ;
     }
 
