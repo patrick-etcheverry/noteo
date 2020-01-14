@@ -16,6 +16,8 @@
   <!-- Custom styles for this template-->
   <link href="{{asset("css/sb-admin-2.min.css")}}" rel="stylesheet">
   <link href="{{asset('vendor/datatables/dataTables.bootstrap4.css')}}" rel="stylesheet">
+  <!-- Surcharge du CSS de Bootstrap -->
+  <link rel="stylesheet" href="{{ asset('css/css_perso.css') }}">
   <!-- Fontello -->
   <link rel="stylesheet" href="{{asset('/css/fontello.css')}}">
 
@@ -225,6 +227,6 @@
 
 
           {% block datatables %}{% endblock %}
-          
+
         </body>
         </html>

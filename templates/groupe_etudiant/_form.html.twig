@@ -1,26 +1,30 @@
 {{ form_start(form) }}
 
-    <table class="table">
+    <table align="center" class="table">
       <tbody>
         <tr>
-          <td><strong>{{ form_label(form.nom, 'Nom :') }}</strong></td>
+          <td><strong>{{ form_label(form.nom, 'Nom') }}</strong></td>
           <td>{{ form_widget(form.nom) }}</td>
         </tr>
         <tr>
-          <td><strong>{{ form_label(form.description, 'Description :') }}</strong> </td>
-          <td>{{ form_widget(form.description,{ 'attr': {'cols': '50', 'rows' : 4} }) }}</td>
+          <td><strong>{{ form_label(form.description, 'Description') }}</strong> </td>
+          <td>{{ form_widget(form.description,{ 'attr': {'cols': '50', 'rows' : 5} }) }}</td>
         </tr>
         <tr>
-          <td><strong>{{ form_label(form.estEvaluable, 'Groupe Evaluable :') }}</strong> </td>
+          <td><strong>{{ form_label(form.estEvaluable, 'Évaluable') }}<a href="#"><i class="icon-help-circled"></i></a></strong> </td>
           <td>{{ form_widget(form.estEvaluable) }}</td>
         </tr>
         <tr>
-          <td><strong>{{ form_label(form.enseignant, 'Enseignant (temporaire) :') }}</strong> </td>
+          <td><strong>{{ form_label(form.fichier, 'Fichier') }}</strong> </td>
+          <td>{{ form_widget(form.fichier) }}</td>
+        </tr>
+        <tr>
+          <td><strong>{{ form_label(form.enseignant, 'Enseignant (temporaire)') }}</strong> </td>
           <td>{{ form_widget(form.enseignant) }}</td>
         </tr>
       </tbody>
     </table>
 
-    <button class="btn">{{ button_label|default('Save') }}</button>
+    <center><button class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm">{{ button_label|default('Créer le groupe') }}</button>
 
 {{ form_end(form) }}
