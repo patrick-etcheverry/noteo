@@ -1,4 +1,4 @@
-{% extends 'admin_base.html.twig' %}
+{% extends 'base.html.twig' %}
 
 {% block tirePage %}Modifier un groupe{% endblock %}
 
@@ -6,7 +6,7 @@
 
 {% block contenu %}
 
-    {{ include('groupe_etudiant/_form.html.twig', {'button_label': 'Update'}) }}
+    {{ include('groupe_etudiant/_update_form.html.twig', {'button_label': 'Update'}) }}
 
     <a href="{{ path('groupe_etudiant_index') }}">back to list</a>
 

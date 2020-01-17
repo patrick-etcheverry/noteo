@@ -26,14 +26,9 @@ class GroupeEtudiant
     private $nom;
 
     /**
-     * @ORM\Column(type="string", length=100)
+     * @ORM\Column(type="text")
      */
     private $description;
-
-    /**
-     * @ORM\Column(type="boolean")
-     */
-    private $estEvaluable;
 
     /**
      * @ORM\ManyToOne(targetEntity="App\Entity\Enseignant", inversedBy="groupes")
@@ -120,18 +115,6 @@ class GroupeEtudiant
     public function setDescription(string $description): self
     {
         $this->description = $description;
-
-        return $this;
-    }
-
-    public function getEstEvaluable(): ?bool
-    {
-        return $this->estEvaluable;
-    }
-
-    public function setEstEvaluable(bool $estEvaluable): self
-    {
-        $this->estEvaluable = $estEvaluable;
 
         return $this;
     }

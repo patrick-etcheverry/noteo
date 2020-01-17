@@ -45,11 +45,15 @@ class GroupeEtudiantController extends AbstractController
      */
     public function new(Request $request): Response
     {
+
         $groupeEtudiant = new GroupeEtudiant();
         $form = $this->createForm(GroupeEtudiantType::class, $groupeEtudiant);
         $form->handleRequest($request);
 
+
         if ($form->isSubmitted() && $form->isValid()) {
+
+
             $entityManager = $this->getDoctrine()->getManager();
             $entityManager->persist($groupeEtudiant);
             $entityManager->flush();
@@ -57,9 +61,10 @@ class GroupeEtudiantController extends AbstractController
             return $this->redirectToRoute('groupe_etudiant_index');
         }
 
+
         return $this->render('groupe_etudiant/new.html.twig', [
             'groupe_etudiant' => $groupeEtudiant,
-            'form' => $form->createView(),
+            'form' => $form->createView()
         ]);
     }
 

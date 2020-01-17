@@ -1,4 +1,4 @@
-{% extends 'admin_base.html.twig' %}
+{% extends 'base.html.twig' %}
 
 {% block tirePage %}Consulter un groupe{% endblock %}
 
@@ -15,10 +15,6 @@
             <tr>
                 <th>Description</th>
                 <td>{{ groupe_etudiant.description }}</td>
-            </tr>
-            <tr>
-                <th>Groupe évaluable :</th>
-                <td>{{ groupe_etudiant.estEvaluable ? 'Oui' : 'Non' }}</td>
             </tr>
         </tbody>
     </table>
