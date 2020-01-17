@@ -18,10 +18,10 @@ class GroupeEtudiantType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
-            ->add('nom', TextType::class, ['attr' => array('style' => 'width: 400px')])
-            ->add('description', TextareaType::class, ['attr' => array('style' => 'width: 400px')])
-            ->add('enseignant', EntityType::class, ['class' => Enseignant::class, 'choice_label' => 'nom', 'attr' => array('style' => 'width: 400px')])
-            ->add('fichier', FileType::class, ['mapped' => false, 'attr' => array('style' => 'width: 400px')])
+            ->add('nom', TextType::class)
+            ->add('description', TextareaType::class)
+            ->add('enseignant', EntityType::class, ['class' => Enseignant::class, 'choice_label' => 'nom'])
+            ->add('fichier', FileType::class, ['mapped' => false])
         ;
     }
 

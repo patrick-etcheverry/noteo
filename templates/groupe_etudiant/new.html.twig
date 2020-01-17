@@ -1,5 +1,5 @@
-{% extends 'base.html.twig' %}
 
+{% extends 'base.html.twig' %}
 {% block tirePage %}Créer un groupe{% endblock %}
 
 {% block groupes %}active{% endblock %}
@@ -7,7 +7,22 @@
 {% block contenu %}
 
 
-{{ include('groupe_etudiant/_form.html.twig') }}
+{{ include('groupe_etudiant/_add_form.html.twig') }}
 <a href="{{ path('groupe_etudiant_index') }}" class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm">Annuler</a></center>
 
+{% endblock %}
+
+{% block javascripts %}
+<script>
+
+/* Cette fonction est utilisée pour faire apparaitre le nom du fichier importé
+dans le input type file du formulaire. Elle est nécéssaire à cause du CSS de Boostrap.
+*/
+
+$(".custom-file-input").on("change", function() {
+  var fileName = $(this).val().split("\\").pop();
+  $(this).siblings(".custom-file-label").addClass("selected").html(fileName);
+});
+
+</script>
 {% endblock %}
