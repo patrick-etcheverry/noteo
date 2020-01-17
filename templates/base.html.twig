@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html>
+
 <head>
   <meta charset="utf-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -23,7 +24,7 @@
   {% block stylesheets %}
   {% endblock %}
 
-  <link rel="shortcut icon" href="{{asset('/ico/logo_noteo_blanc.ico')}}"/>
+  <link rel="shortcut icon" href="{{asset('/ico/logo_noteo_blanc.ico')}}" />
 </head>
 
 <body id="page-top">
@@ -50,187 +51,187 @@
         <a class="nav-link" href="{{path('etudiant_index')}}">
           <i class="icon-user"></i>
           <span>Étudiants</span></a>
-        </li>
+      </li>
 
-        <!-- Divider -->
-        <hr class="sidebar-divider my-0">
+      <!-- Divider -->
+      <hr class="sidebar-divider my-0">
 
-        <!-- Nav Item - Groupes -->
-        <li class="nav-item {% block groupes %}{% endblock %}">
-          <a class="nav-link" href="{{path('groupe_etudiant_index')}}">
-            <i class="icon-users"></i>
-            <span>Groupes</span></a>
-          </li>
+      <!-- Nav Item - Groupes -->
+      <li class="nav-item {% block groupes %}{% endblock %}">
+        <a class="nav-link" href="{{path('groupe_etudiant_index')}}">
+          <i class="icon-users"></i>
+          <span>Groupes</span></a>
+      </li>
 
-          <!-- Divider -->
-          <hr class="sidebar-divider my-0">
+      <!-- Divider -->
+      <hr class="sidebar-divider my-0">
 
-          <!-- Nav Item - Enseignants -->
-          <li class="nav-item {% block enseignants %}{% endblock %}">
-            <a class="nav-link" href="{{path('enseignant_index')}}">
-              <i class="icon-teacher"></i>
-              <span>Enseignants</span></a>
-            </li>
+      <!-- Nav Item - Enseignants -->
+      <li class="nav-item {% block enseignants %}{% endblock %}">
+        <a class="nav-link" href="{{path('enseignant_index')}}">
+          <i class="icon-teacher"></i>
+          <span>Enseignants</span></a>
+      </li>
 
-            <!-- Divider -->
-            <hr class="sidebar-divider my-0">
+      <!-- Divider -->
+      <hr class="sidebar-divider my-0">
 
-            <!-- Nav Item - Évaluations -->
-            <li class="nav-item {% block evaluations %}{% endblock %}">
-              <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseTwo" aria-expanded="true" aria-controls="collapseTwo">
-                <i class="icon-evaluation"></i>
-                <span>Évaluations</span>
+      <!-- Nav Item - Évaluations -->
+      <li class="nav-item {% block evaluations %}{% endblock %}">
+        <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseTwo" aria-expanded="true" aria-controls="collapseTwo">
+          <i class="icon-evaluation"></i>
+          <span>Évaluations</span>
+        </a>
+        <div id="collapseTwo" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionSidebar">
+          <div class="bg-white py-2 collapse-inner rounded">
+            <a class="collapse-item" href="{{path('evaluation_index')}}">Mes évaluations</a>
+            <a class="collapse-item" href="{{path('evaluation_index')}}">Autres évaluations</a>
+          </div>
+        </div>
+      </li>
+
+      <!-- Divider -->
+      <hr class="sidebar-divider my-0">
+
+      <!-- Nav Item - Statuts étudiants -->
+      <li class="nav-item {% block statutsEtudiants %}{% endblock %}">
+        <a class="nav-link" href="{{path('statut_index')}}">
+          <i class="icon-tags"></i>
+          <span>Statuts étudiants</span></a>
+      </li>
+
+      <!-- Divider -->
+      <hr class="sidebar-divider d-none d-md-block">
+
+      <!-- Sidebar Toggler (Sidebar) -->
+      <div class="text-center d-none d-md-inline">
+        <button class="rounded-circle border-0" id="sidebarToggle"></button>
+      </div>
+
+    </ul>
+    <!-- End of Sidebar -->
+
+    <!-- Content Wrapper -->
+    <div id="content-wrapper" class="d-flex flex-column">
+
+      <!-- Main Content -->
+      <div id="content">
+
+        <!-- Topbar -->
+        <nav class="navbar navbar-expand navbar-light bg-white topbar mb-4 static-top shadow">
+
+          <!-- Sidebar Toggle (Topbar) -->
+          <button id="sidebarToggleTop" class="btn btn-link d-md-none rounded-circle mr-3">
+            <i class="fa fa-bars"></i>
+          </button>
+
+          <!-- Page Heading -->
+          <h1 class="h3 mb-0 text-gray-800">{% block tirePage %}{% endblock %}</h1>
+
+          <!-- Topbar Navbar -->
+          <ul class="navbar-nav ml-auto">
+            <!-- Nav Item - User Information -->
+            <li class="nav-item dropdown no-arrow">
+              <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                <span class="mr-2 d-none d-lg-inline text-gray-600 small">Patrick Etcheverry</span>
+                <img class="img-profile rounded-circle" src="https://zupimages.net/up/20/02/hjok.png">
               </a>
-              <div id="collapseTwo" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionSidebar">
-                <div class="bg-white py-2 collapse-inner rounded">
-                  <a class="collapse-item" href="{{path('evaluation_index')}}">Mes évaluations</a>
-                  <a class="collapse-item" href="{{path('evaluation_index')}}">Autres évaluations</a>
-                </div>
+              <!-- Dropdown - User Information -->
+              <div class="dropdown-menu dropdown-menu-right shadow animated--grow-in" aria-labelledby="userDropdown">
+                <a class="dropdown-item" href="#">
+                  <i class="fas fa-user fa-sm fa-fw mr-2 text-gray-400"></i>
+                  Profil
+                </a>
+                <div class="dropdown-divider"></div>
+                <a class="dropdown-item" href="#" data-toggle="modal" data-target="#logoutModal">
+                  <i class="fas fa-sign-out-alt fa-sm fa-fw mr-2 text-gray-400"></i>
+                  Déconnexion
+                </a>
               </div>
             </li>
 
-            <!-- Divider -->
-            <hr class="sidebar-divider my-0">
+          </ul>
 
-            <!-- Nav Item - Statuts étudiants -->
-            <li class="nav-item {% block statutsEtudiants %}{% endblock %}">
-              <a class="nav-link" href="{{path('statut_index')}}">
-                <i class="icon-tags"></i>
-                <span>Statuts étudiants</span></a>
-              </li>
+        </nav>
+        <!-- End of Topbar -->
 
-              <!-- Divider -->
-              <hr class="sidebar-divider d-none d-md-block">
+        <!-- Begin Page Content -->
+        <div class="container-fluid">
 
-              <!-- Sidebar Toggler (Sidebar) -->
-              <div class="text-center d-none d-md-inline">
-                <button class="rounded-circle border-0" id="sidebarToggle"></button>
-              </div>
+        <!-- Page content -->
+        {% block contenu %}
+        {% endblock %}
 
-            </ul>
-            <!-- End of Sidebar -->
+        </div>
+      </div>
+      <!-- End of Main Content -->
 
-            <!-- Content Wrapper -->
-            <div id="content-wrapper" class="d-flex flex-column">
-
-              <!-- Main Content -->
-              <div id="content">
-
-                <!-- Topbar -->
-                <nav class="navbar navbar-expand navbar-light bg-white topbar mb-4 static-top shadow">
-
-                  <!-- Sidebar Toggle (Topbar) -->
-                  <button id="sidebarToggleTop" class="btn btn-link d-md-none rounded-circle mr-3">
-                    <i class="fa fa-bars"></i>
-                  </button>
-
-                  <!-- Topbar Navbar -->
-                  <ul class="navbar-nav ml-auto">
-
-                    <!-- Nav Item - User Information -->
-                    <li class="nav-item dropdown no-arrow">
-                      <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                        <span class="mr-2 d-none d-lg-inline text-gray-600 small">Patrick Etcheverry</span>
-                        <img class="img-profile rounded-circle" src="https://zupimages.net/up/20/02/hjok.png">
-                      </a>
-                      <!-- Dropdown - User Information -->
-                      <div class="dropdown-menu dropdown-menu-right shadow animated--grow-in" aria-labelledby="userDropdown">
-                        <a class="dropdown-item" href="#">
-                          <i class="fas fa-user fa-sm fa-fw mr-2 text-gray-400"></i>
-                          Profil
-                        </a>
-                        <div class="dropdown-divider"></div>
-                        <a class="dropdown-item" href="#" data-toggle="modal" data-target="#logoutModal">
-                          <i class="fas fa-sign-out-alt fa-sm fa-fw mr-2 text-gray-400"></i>
-                          Déconnexion
-                        </a>
-                      </div>
-                    </li>
-
-                  </ul>
-
-                </nav>
-                <!-- End of Topbar -->
-
-                <!-- Begin Page Content -->
-                <div class="container-fluid">
-
-                  <!-- Page Heading -->
-                  <div class="d-sm-flex align-items-center justify-content-between mb-4">
-                    <h1 class="h3 mb-0 text-gray-800">{% block tirePage %}{% endblock %}</h1>
-                  </div>
-                  {% block contenu %}
-                  {% endblock %}
-                </div>
-                <!-- /.container-fluid -->
-              </div>
-              <!-- End of Main Content -->
-
-              <!-- Footer -->
-              <footer class="sticky-footer bg-white">
-                <div class="container my-auto">
-                  <div class="copyright text-center my-auto">
-                    <span>Copyright &copy; Noteo 2020</span>
-                  </div>
-                </div>
-              </footer>
-              <!-- End of Footer -->
-
-            </div>
-            <!-- End of Content Wrapper -->
-
+      <!-- Footer -->
+      <footer class="sticky-footer bg-white">
+        <div class="container my-auto">
+          <div class="copyright text-center my-auto">
+            <span>Copyright &copy; Noteo 2020</span>
           </div>
-          <!-- End of Page Wrapper -->
+        </div>
+      </footer>
+      <!-- End of Footer -->
 
-          <!-- Scroll to Top Button-->
-          <a class="scroll-to-top rounded" href="#page-top">
-            <i class="fas fa-angle-up"></i>
-          </a>
+    </div>
+    <!-- End of Content Wrapper -->
 
-          <!-- Logout Modal-->
-          <div class="modal fade" id="logoutModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-            <div class="modal-dialog" role="document">
-              <div class="modal-content">
-                <div class="modal-header">
-                  <h5 class="modal-title" id="exampleModalLabel">Ready to Leave?</h5>
-                  <button class="close" type="button" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">×</span>
-                  </button>
-                </div>
-                <div class="modal-body">Select "Logout" below if you are ready to end your current session.</div>
-                <div class="modal-footer">
-                  <button class="btn btn-secondary" type="button" data-dismiss="modal">Cancel</button>
-                  <a class="btn btn-primary" href="login.html">Logout</a>
-                </div>
-              </div>
-            </div>
-          </div>
+  </div>
+  <!-- End of Page Wrapper -->
 
+  <!-- Scroll to Top Button-->
+  <a class="scroll-to-top rounded" href="#page-top">
+    <i class="fas fa-angle-up"></i>
+  </a>
 
-          <!-- Bootstrap core JavaScript-->
-          <script src="{{asset("vendor/jquery/jquery.min.js")}}"></script>
-          <script src="{{asset("vendor/bootstrap/js/bootstrap.bundle.min.js")}}"></script>
-
-          <!-- Core plugin JavaScript-->
-          <script src="{{asset("vendor/jquery-easing/jquery.easing.min.js")}}"></script>
-
-          <!-- Custom scripts for all pages-->
-          <script src="{{asset("js/sb-admin-2.min.js")}}"></script>
-
-          <!-- Page level plugins -->
-          <script src="{{asset("vendor/chart.js/Chart.min.js")}}"></script>
-          <script src="{{asset('vendor/datatables/jquery.dataTables.js')}}"></script>
-          <script src="{{asset('vendor/datatables/dataTables.bootstrap4.js')}}"></script>
-
-          <!-- Page level custom scripts -->
-          <script src="{{asset("js/demo/chart-area-demo.js")}}"></script>
-          <script src="{{asset("js/demo/chart-pie-demo.js")}}"></script>
-
-          {% block javascripts %}
-          {% endblock %}
+  <!-- Logout Modal-->
+  <div class="modal fade" id="logoutModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="exampleModalLabel">Ready to Leave?</h5>
+          <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">×</span>
+          </button>
+        </div>
+        <div class="modal-body">Select "Logout" below if you are ready to end your current session.</div>
+        <div class="modal-footer">
+          <button class="btn btn-secondary" type="button" data-dismiss="modal">Cancel</button>
+          <a class="btn btn-primary" href="login.html">Logout</a>
+        </div>
+      </div>
+    </div>
+  </div>
 
 
-          {% block datatables %}{% endblock %}
+  <!-- Bootstrap core JavaScript-->
+  <script src="{{asset("vendor/jquery/jquery.min.js")}}"></script>
+  <script src="{{asset("vendor/bootstrap/js/bootstrap.bundle.min.js")}}"></script>
 
-        </body>
-        </html>
+  <!-- Core plugin JavaScript-->
+  <script src="{{asset("vendor/jquery-easing/jquery.easing.min.js")}}"></script>
+
+  <!-- Custom scripts for all pages-->
+  <script src="{{asset("js/sb-admin-2.min.js")}}"></script>
+
+  <!-- Page level plugins -->
+  <script src="{{asset("vendor/chart.js/Chart.min.js")}}"></script>
+  <script src="{{asset('vendor/datatables/jquery.dataTables.js')}}"></script>
+  <script src="{{asset('vendor/datatables/dataTables.bootstrap4.js')}}"></script>
+
+  <!-- Page level custom scripts -->
+  <script src="{{asset("js/demo/chart-area-demo.js")}}"></script>
+  <script src="{{asset("js/demo/chart-pie-demo.js")}}"></script>
+
+  {% block javascripts %}
+  {% endblock %}
+
+
+  {% block datatables %}{% endblock %}
+
+</body>
+
+</html>
