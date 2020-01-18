@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Entity\GroupeEtudiant;
+use App\Entity\Etudiant;
 use App\Form\GroupeEtudiantType;
 use Gedmo\Tree\Entity\Repository\NestedTreeRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -53,14 +54,45 @@ class GroupeEtudiantController extends AbstractController
 
         if ($form->isSubmitted() && $form->isValid()) {
 
-
             $entityManager = $this->getDoctrine()->getManager();
             $entityManager->persist($groupeEtudiant);
+
+            // Récupération du fichier CSV
+            $fichierCSV = $form['fichier']->getData();
+
+            // Ouverture du fichier CSV
+            $fichier = fopen($fichierCSV,"r");
+
+            // Pour éviter la dernière ligne du fichier
+            $nbLignes = count(file($fichierCSV));
+
+            // Récupération première ligne du fichier
+            $ligne = chop(fgets($fichier));
+
+            // Vérification première ligne du fichier
+            if($ligne == "PRENOM;NOM;MAIL") {
+              for ($i=0; $i < $nbLignes - 1; $i++) {
+                $ligne = fgets($fichier);
+                $ligneDecoupee = explode(";",$ligne);
+
+                // Création de l'étudiant
+                $etudiant = new Etudiant();
+                $etudiant->setPrenom($ligneDecoupee[0]);
+                $etudiant->setNom($ligneDecoupee[1]);
+                $etudiant->setMail($ligneDecoupee[2]);
+                $etudiant->setEstDemissionaire(false);
+                // Ajout de l'étudiant au groupe
+                $etudiant->addGroupe($groupeEtudiant);
+
+                $entityManager->persist($etudiant);
+
+              }
+            }
+
             $entityManager->flush();
 
             return $this->redirectToRoute('groupe_etudiant_index');
         }
-
 
         return $this->render('groupe_etudiant/new.html.twig', [
             'groupe_etudiant' => $groupeEtudiant,

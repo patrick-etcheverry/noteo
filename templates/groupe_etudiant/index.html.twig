@@ -16,6 +16,7 @@
                 <th></th>
             </tr>
         </thead>
+        {% if arbre is not empty %}
         <tbody>
         <tr>
           <td>{{ arbre[0].nom }}</td>
@@ -67,6 +68,7 @@
         {% endfor %}
 
         </tbody>
+        {% endif %}
     </table>
 
     <a href="{{ path('groupe_etudiant_new') }}" class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm">Créer un groupe</a>
