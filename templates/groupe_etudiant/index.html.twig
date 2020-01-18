@@ -26,6 +26,7 @@
           <td>
               <a href="{{ path('groupe_etudiant_show', {'id': arbre[0].id}) }}"><i class="icon-eye"></i></a>
               <a href="{{ path('groupe_etudiant_edit', {'id': arbre[0].id}) }}"><i class="icon-pencil-1"></i></a>
+              <a href="{{ path('groupe_etudiant_delete', {'id': arbre[0].id}) }}"><i class="icon-trash"></i></a>
           </td>
         </tr>
         {% for semestre in arbre[0].__children %}
@@ -37,6 +38,7 @@
             <td>
                 <a href="{{ path('groupe_etudiant_show', {'id': semestre.id}) }}"><i class="icon-eye"></i></a>
                 <a href="{{ path('groupe_etudiant_edit', {'id': semestre.id}) }}"><i class="icon-pencil-1"></i></a>
+                <a href="{{ path('groupe_etudiant_delete', {'id': arbre[0].id}) }}"><i class="icon-trash"></i></a>
             </td>
         </tr>
             {% for td in semestre.__children %}
@@ -48,6 +50,7 @@
                 <td>
                     <a href="{{ path('groupe_etudiant_show', {'id': td.id}) }}"><i class="icon-eye"></i></a>
                     <a href="{{ path('groupe_etudiant_edit', {'id': td.id}) }}"><i class="icon-pencil-1"></i></a>
+                    <a href="{{ path('groupe_etudiant_delete', {'id': arbre[0].id}) }}"><i class="icon-trash"></i></a>
                 </td>
             </tr>
                 {% for tp in td.__children %}
@@ -59,6 +62,7 @@
                     <td>
                         <a href="{{ path('groupe_etudiant_show', {'id': tp.id}) }}"><i class="icon-eye"></i></a>
                         <a href="{{ path('groupe_etudiant_edit', {'id': tp.id}) }}"><i class="icon-pencil-1"></i></a>
+                        <a href="{{ path('groupe_etudiant_delete', {'id': arbre[0].id}) }}"><i class="icon-trash"></i></a>
                     </td>
                 </tr>
                 {% endfor %}
