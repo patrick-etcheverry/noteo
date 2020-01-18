@@ -1,11 +1,11 @@
 @font-face {
-  font-family: 'fontello';
-  src: url('../font/fontello.eot?4817523');
-  src: url('../font/fontello.eot?4817523#iefix') format('embedded-opentype'),
-       url('../font/fontello.woff2?4817523') format('woff2'),
-       url('../font/fontello.woff?4817523') format('woff'),
-       url('../font/fontello.ttf?4817523') format('truetype'),
-       url('../font/fontello.svg?4817523#fontello') format('svg');
+  font-family: 'noteo';
+  src: url('../font/noteo.eot?91457165');
+  src: url('../font/noteo.eot?91457165#iefix') format('embedded-opentype'),
+       url('../font/noteo.woff2?91457165') format('woff2'),
+       url('../font/noteo.woff?91457165') format('woff'),
+       url('../font/noteo.ttf?91457165') format('truetype'),
+       url('../font/noteo.svg?91457165#noteo') format('svg');
   font-weight: normal;
   font-style: normal;
 }
@@ -14,14 +14,14 @@
 /*
 @media screen and (-webkit-min-device-pixel-ratio:0) {
   @font-face {
-    font-family: 'fontello';
-    src: url('../font/fontello.svg?4817523#fontello') format('svg');
+    font-family: 'noteo';
+    src: url('../font/noteo.svg?91457165#noteo') format('svg');
   }
 }
 */
  
  [class^="icon-"]:before, [class*=" icon-"]:before {
-  font-family: "fontello";
+  font-family: "noteo";
   font-style: normal;
   font-weight: normal;
   speak: none;
