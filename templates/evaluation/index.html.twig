@@ -17,6 +17,7 @@
             </tr>
         </thead>
         <tbody>
+        {% if evaluations is not empty %}
         {% for evaluation in evaluations %}
             <tr>
                 <td>{{ evaluation.nom }}</td>
@@ -33,6 +34,7 @@
                 <td colspan="4">no records found</td>
             </tr>
         {% endfor %}
+        {% endif %}
         </tbody>
     </table>
 

@@ -15,6 +15,7 @@
             </tr>
         </thead>
         <tbody>
+        {% if etudiants is not empty %}
         {% for etudiant in etudiants %}
             <tr>
                 <td>{{ etudiant.nom }}</td>
@@ -30,6 +31,7 @@
                 <td colspan="5">no records found</td>
             </tr>
         {% endfor %}
+        {% endif %}
         </tbody>
     </table>
 

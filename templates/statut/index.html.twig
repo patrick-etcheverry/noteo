@@ -16,6 +16,7 @@
             </tr>
         </thead>
         <tbody>
+        {% if statuts is not empty %}
         {% for statut in statuts %}
             <tr>
                 <td>{{ statut.nom }}</td>
@@ -31,6 +32,7 @@
                 <td colspan="4">no records found</td>
             </tr>
         {% endfor %}
+        {% endif %}
         </tbody>
     </table>
 
