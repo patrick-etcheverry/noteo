@@ -84,6 +84,11 @@ class GroupeEtudiant
      */
     private $evaluations;
 
+    /**
+     * @ORM\Column(type="boolean")
+     */
+    private $estEvaluable;
+
     public function __construct()
     {
         $this->etudiants = new ArrayCollection();
@@ -201,6 +206,18 @@ class GroupeEtudiant
                 $evaluation->setGroupe(null);
             }
         }
+
+        return $this;
+    }
+
+    public function getEstEvaluable(): ?bool
+    {
+        return $this->estEvaluable;
+    }
+
+    public function setEstEvaluable(bool $estEvaluable): self
+    {
+        $this->estEvaluable = $estEvaluable;
 
         return $this;
     }

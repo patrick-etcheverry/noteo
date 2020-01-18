@@ -22,6 +22,7 @@ class GroupeEtudiantType extends AbstractType
             ->add('description', TextareaType::class)
             ->add('enseignant', EntityType::class, ['class' => Enseignant::class, 'choice_label' => 'nom'])
             ->add('fichier', FileType::class, ['mapped' => false])
+            ->add('estEvaluable', ChoiceType::class, ['choices' => ['Oui' => true, 'Non' => False], 'expanded' => true])
         ;
     }
 
