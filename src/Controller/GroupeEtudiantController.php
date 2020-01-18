@@ -70,15 +70,15 @@ class GroupeEtudiantController extends AbstractController
             $ligne = chop(fgets($fichier));
 
             // Vérification première ligne du fichier
-            if($ligne == "NOM;PRENOM;MAIL") {
+            if($ligne == "PRENOM;NOM;MAIL") {
               for ($i=0; $i < $nbLignes - 1; $i++) {
                 $ligne = fgets($fichier);
                 $ligneDecoupee = explode(";",$ligne);
 
                 // Création de l'étudiant
                 $etudiant = new Etudiant();
-                $etudiant->setNom($ligneDecoupee[0]);
-                $etudiant->setPrenom($ligneDecoupee[1]);
+                $etudiant->setPrenom($ligneDecoupee[0]);
+                $etudiant->setNom($ligneDecoupee[1]);
                 $etudiant->setMail($ligneDecoupee[2]);
                 $etudiant->setEstDemissionaire(false);
                 // Ajout de l'étudiant au groupe
