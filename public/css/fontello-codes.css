@@ -9,4 +9,7 @@
 .icon-pencil-1:before { content: '\e807'; } /* '' */
 .icon-help-circled:before { content: '\e808'; } /* '' */
 .icon-down-open:before { content: '\e809'; } /* '' */
+.icon-plus:before { content: '\e80a'; } /* '' */
+.icon-doc:before { content: '\f04a'; } /* '' */
+.icon-circle-empty:before { content: '\f10c'; } /* '' */
 .icon-trash:before { content: '\f1f8'; } /* '' */
