@@ -11,6 +11,10 @@
       <td>{{ form_widget(form.description,{ 'attr': {'rows' : 5, 'placeholder' : 'Une belle description'}}) }}</td>
     </tr>
     <tr>
+      <td><strong>{{ form_label(form.estEvaluable, 'Evaluable')}}</strong></td>
+      <td>{{form_widget(form.estEvaluable)}}</td>
+    </tr>
+    <tr>
       <td><strong>{{ form_label(form.fichier, 'Fichier CSV') }} (<a href="{{asset('template.csv')}}">Télécharger un modèle</a>)</strong> </td>
       <td>
         {{form_widget(form.fichier, {'attr' : {'placeholder':'Importer un fichier', 'accept' : '.csv'}})}}
