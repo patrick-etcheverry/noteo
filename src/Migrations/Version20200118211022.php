@@ -10,7 +10,7 @@ use Doctrine\Migrations\AbstractMigration;
 /**
  * Auto-generated Migration: Please modify to your needs!
  */
-final class Version20200106103415 extends AbstractMigration
+final class Version20200118211022 extends AbstractMigration
 {
     public function getDescription() : string
     {
@@ -22,9 +22,7 @@ final class Version20200106103415 extends AbstractMigration
         // this up() migration is auto-generated, please modify it to your needs
         $this->abortIf($this->connection->getDatabasePlatform()->getName() !== 'mysql', 'Migration can only be executed safely on \'mysql\'.');
 
-        $this->addSql('ALTER TABLE statut ADD enseignant_id INT NOT NULL');
-        $this->addSql('ALTER TABLE statut ADD CONSTRAINT FK_E564F0BFE455FCC0 FOREIGN KEY (enseignant_id) REFERENCES enseignant (id)');
-        $this->addSql('CREATE INDEX IDX_E564F0BFE455FCC0 ON statut (enseignant_id)');
+        $this->addSql('ALTER TABLE groupe_etudiant ADD est_evaluable TINYINT(1) NOT NULL');
     }
 
     public function down(Schema $schema) : void
@@ -32,8 +30,6 @@ final class Version20200106103415 extends AbstractMigration
         // this down() migration is auto-generated, please modify it to your needs
         $this->abortIf($this->connection->getDatabasePlatform()->getName() !== 'mysql', 'Migration can only be executed safely on \'mysql\'.');
 
-        $this->addSql('ALTER TABLE statut DROP FOREIGN KEY FK_E564F0BFE455FCC0');
-        $this->addSql('DROP INDEX IDX_E564F0BFE455FCC0 ON statut');
-        $this->addSql('ALTER TABLE statut DROP enseignant_id');
+        $this->addSql('ALTER TABLE groupe_etudiant DROP est_evaluable');
     }
 }
