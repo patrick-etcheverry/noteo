@@ -18,6 +18,7 @@
             </tr>
         </thead>
         <tbody>
+        {% if enseignants is not empty %}
         {% for enseignant in enseignants %}
             <tr>
 
@@ -35,6 +36,7 @@
                 <td colspan="6">no records found</td>
             </tr>
         {% endfor %}
+        {% endif %}
         </tbody>
     </table>
 
