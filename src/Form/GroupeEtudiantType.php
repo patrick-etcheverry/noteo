@@ -18,11 +18,39 @@ class GroupeEtudiantType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
-            ->add('nom', TextType::class)
-            ->add('description', TextareaType::class)
-            ->add('enseignant', EntityType::class, ['class' => Enseignant::class, 'choice_label' => 'nom'])
-            ->add('fichier', FileType::class, ['mapped' => false])
-            ->add('estEvaluable', ChoiceType::class, ['choices' => ['Oui' => true, 'Non' => False], 'expanded' => true])
+            ->add('nom', TextType::class, [
+              'attr' => [
+                'placeholder' => 'DUT Info'
+              ]
+            ])
+
+            ->add('description', TextareaType::class, [
+              'attr' => [
+                'placeholder' => 'Une belle description',
+                'rows' => 6
+              ]
+            ])
+
+            ->add('enseignant', EntityType::class, [
+              'class' => Enseignant::class, 'choice_label' => 'nom'
+            ])
+
+            ->add('estEvaluable', ChoiceType::class, [
+              'choices' => ['Oui' => true, 'Non' => false],
+              'data' => true,
+              'expanded' => true,
+              'label_attr' =>  [
+                'class'=>'radio-inline'
+              ]
+            ])
+
+            ->add('fichier', FileType::class, [
+              'mapped' => false,
+              'attr' => [
+                'placeholder' => 'Aucun fichier choisi',
+                'accept' => '.csv'
+              ]
+            ])
         ;
     }
 

@@ -6,6 +6,8 @@
 
 {% block contenu %}
 
+{% if arbre is not empty %}
+
     <table class="table" id="table">
         <thead>
             <tr>
@@ -16,7 +18,7 @@
                 <th></th>
             </tr>
         </thead>
-        {% if arbre is not empty %}
+
         <tbody>
         <tr>
           <td>{{ arbre[0].nom }}</td>
@@ -26,8 +28,12 @@
           <td>
               <a href="{{ path('groupe_etudiant_show', {'id': arbre[0].id}) }}"><i class="icon-eye"></i></a>
               <a href="#"><i class="icon-plus"></i></a>
+
+              {% if arbre[0].estEvaluable %}
               <a href="#"><i class="icon-circle-empty"></i></a>
               <a href="#"><i class="icon-circle-empty"></i></a>
+              {% endif %}
+
               <a href="{{ path('groupe_etudiant_edit', {'id': arbre[0].id}) }}"><i class="icon-pencil-1"></i></a>
               <a href="{{ path('groupe_etudiant_delete', {'id': arbre[0].id}) }}" data-toggle="modal" data-target="#delGroupe"><i class="icon-trash"></i></a>
 
@@ -40,9 +46,16 @@
             <td>{{ semestre.description }}</td>
             <td>{{ infos[semestre.id].Prenom }} {{ infos[semestre.id].Nom }}</td>
             <td>
-                <a href="{{ path('groupe_etudiant_show', {'id': semestre.id}) }}"><i class="icon-eye"></i></a>
-                <a href="{{ path('groupe_etudiant_edit', {'id': semestre.id}) }}"><i class="icon-pencil-1"></i></a>
-                <a href="{{ path('groupe_etudiant_delete', {'id': semestre.id}) }}" data-toggle="modal" data-target="#delGroupe"><i class="icon-trash"></i></a>
+              <a href="{{ path('groupe_etudiant_show', {'id':semestre.id}) }}"><i class="icon-eye"></i></a>
+              <a href="#"><i class="icon-plus"></i></a>
+
+              {% if semestre.estEvaluable %}
+              <a href="#"><i class="icon-circle-empty"></i></a>
+              <a href="#"><i class="icon-circle-empty"></i></a>
+              {% endif %}
+
+              <a href="{{ path('groupe_etudiant_edit', {'id': semestre.id}) }}"><i class="icon-pencil-1"></i></a>
+              <a href="#"><i class="icon-trash"></i></a>
             </td>
         </tr>
             {% for td in semestre.__children %}
@@ -52,9 +65,16 @@
                 <td>{{ td.description }}</td>
                 <td> {{ infos[td.id].Prenom }} {{ infos[td.id].Nom }}</td>
                 <td>
-                    <a href="{{ path('groupe_etudiant_show', {'id': td.id}) }}"><i class="icon-eye"></i></a>
-                    <a href="{{ path('groupe_etudiant_edit', {'id': td.id}) }}"><i class="icon-pencil-1"></i></a>
-                    <a href="{{ path('groupe_etudiant_delete', {'id': td.id}) }}" data-toggle="modal" data-target="#delGroupe"><i class="icon-trash"></i></a>
+                  <a href="{{ path('groupe_etudiant_show', {'id':td.id}) }}"><i class="icon-eye"></i></a>
+                  <a href="#"><i class="icon-plus"></i></a>
+
+                  {% if td.estEvaluable %}
+                  <a href="#"><i class="icon-circle-empty"></i></a>
+                  <a href="#"><i class="icon-circle-empty"></i></a>
+                  {% endif %}
+
+                  <a href="{{ path('groupe_etudiant_edit', {'id': td.id}) }}"><i class="icon-pencil-1"></i></a>
+                  <a href="#"><i class="icon-trash"></i></a>
                 </td>
             </tr>
                 {% for tp in td.__children %}
@@ -64,9 +84,16 @@
                     <td>{{ tp.description }}</td>
                     <td>{{ infos[tp.id].Prenom }} {{ infos[tp.id].Nom }}</td>
                     <td>
-                        <a href="{{ path('groupe_etudiant_show', {'id': tp.id}) }}"><i class="icon-eye"></i></a>
-                        <a href="{{ path('groupe_etudiant_edit', {'id': tp.id}) }}"><i class="icon-pencil-1"></i></a>
-                        <a href="{{ path('groupe_etudiant_delete', {'id': tp.id}) }}" data-toggle="modal" data-target="#delGroupe"><i class="icon-trash"></i></a>
+                      <a href="{{ path('groupe_etudiant_show', {'id':tp.id}) }}"><i class="icon-eye"></i></a>
+                      <a href="#"><i class="icon-plus"></i></a>
+
+                      {% if tp.estEvaluable %}
+                      <a href="#"><i class="icon-circle-empty"></i></a>
+                      <a href="#"><i class="icon-circle-empty"></i></a>
+                      {% endif %}
+
+                      <a href="{{ path('groupe_etudiant_edit', {'id': tp.id}) }}"><i class="icon-pencil-1"></i></a>
+                      <a href="#"><i class="icon-trash"></i></a>
                     </td>
                 </tr>
                 {% endfor %}
@@ -79,7 +106,14 @@
         {% endif %}
     </table>
 
-    <a href="{{ path('groupe_etudiant_new') }}" class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm">Créer un groupe</a>
+    {% if arbre is empty %}
+    <div class="info">
+      <h2 class="h4 mb-0 text-gray-800">Vous n'avez aucun groupe</h1>
+    </div>
+    <div class="bouton">
+      <a href="{{ path('groupe_etudiant_new') }}" class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm">Créer un groupe</a>
+    </div>
+    {% endif %}
 
     <div class="modal fade" id="delGroupe" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
       <div class="modal-dialog" role="document">
