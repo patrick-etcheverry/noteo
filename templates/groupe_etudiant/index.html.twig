@@ -35,7 +35,9 @@
               {% endif %}
 
               <a href="{{ path('groupe_etudiant_edit', {'id': arbre[0].id}) }}"><i class="icon-pencil-1"></i></a>
-              <a href="{{ path('groupe_etudiant_delete', {'id': arbre[0].id}) }}" data-toggle="modal" data-target="#delGroupe"><i class="icon-trash"></i></a>
+              <a href="{{ path('groupe_etudiant_delete', {'id': arbre[0].id}) }}" data-toggle="modal" data-target="#delGroupe" >
+                <i class="icon-trash" data-toggle="tooltip" title="Supprimer groupe"></i>
+              </a>
 
           </td>
         </tr>
@@ -115,13 +117,14 @@
     </div>
     {% endif %}
 
+
     <div class="modal fade" id="delGroupe" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
       <div class="modal-dialog" role="document">
         <div class="modal-content">
           <div class="modal-header">
             <h5 class="modal-title" id="exampleModalLabel">Avertissement</h5>
             <button class="close" type="button" data-dismiss="modal" aria-label="Close">
-              <span aria-hidden="true">×</span>
+              <span aria-hidden="true">x</span>
             </button>
           </div>
           <div class="modal-body">Etes vous sur de vouloir supprimer le groupe : </div>
