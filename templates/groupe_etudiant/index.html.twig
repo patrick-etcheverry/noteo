@@ -36,7 +36,7 @@
 
               <a href="{{ path('groupe_etudiant_edit', {'id': arbre[0].id}) }}"><i class="icon-pencil-1"></i></a>
               <a href="{{ path('groupe_etudiant_delete', {'id': arbre[0].id}) }}" data-toggle="modal" data-target="#delGroupe" >
-                <i class="icon-trash" data-toggle="tooltip" title="Supprimer groupe"></i>
+                <i class="icon-trash" data-toggle="tooltip" title="Supprimer le groupe"></i>
               </a>
 
           </td>
@@ -49,7 +49,7 @@
             <td>{{ infos[semestre.id].Prenom }} {{ infos[semestre.id].Nom }}</td>
             <td>
               <a href="{{ path('groupe_etudiant_show', {'id':semestre.id}) }}"><i class="icon-eye"></i></a>
-              <a href="#"><i class="icon-plus"></i></a>
+              <a href="#" ><i class="icon-plus"></i></a>
 
               {% if semestre.estEvaluable %}
               <a href="#"><i class="icon-circle-empty"></i></a>
@@ -57,7 +57,7 @@
               {% endif %}
 
               <a href="{{ path('groupe_etudiant_edit', {'id': semestre.id}) }}"><i class="icon-pencil-1"></i></a>
-              <a href="#"><i class="icon-trash"></i></a>
+              <a href="#" data-toggle="modal" data-target="#delGroupe"><i class="icon-trash" data-toggle="tooltip" title="Supprimer le groupe"></i></a>
             </td>
         </tr>
             {% for td in semestre.__children %}
@@ -76,7 +76,7 @@
                   {% endif %}
 
                   <a href="{{ path('groupe_etudiant_edit', {'id': td.id}) }}"><i class="icon-pencil-1"></i></a>
-                  <a href="#"><i class="icon-trash"></i></a>
+                  <a href="#" data-toggle="modal" data-target="#delGroupe"><i class="icon-trash" data-toggle="tooltip" title="Supprimer le groupe"></i></a>
                 </td>
             </tr>
                 {% for tp in td.__children %}
@@ -95,7 +95,7 @@
                       {% endif %}
 
                       <a href="{{ path('groupe_etudiant_edit', {'id': tp.id}) }}"><i class="icon-pencil-1"></i></a>
-                      <a href="#"><i class="icon-trash"></i></a>
+                      <a href="#" data-toggle="modal" data-target="#delGroupe"><i class="icon-trash" data-toggle="tooltip" title="Supprimer le groupe"></i></a>
                     </td>
                 </tr>
                 {% endfor %}
@@ -130,7 +130,7 @@
           <div class="modal-body">Etes vous sur de vouloir supprimer le groupe : </div>
           <div class="modal-footer">
             <button class="btn btn-secondary" type="button" data-dismiss="modal">Annuler</button>
-            <a class="btn btn-primary" href="{{ path('groupe_etudiant_delete', {id : 101})}}">Supprimer le groupe</a>
+            <a class="btn btn-primary" href="{{ path('groupe_etudiant_delete', {id : 1})}}">Supprimer le groupe</a>
           </div>
         </div>
       </div>
