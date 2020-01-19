@@ -101,7 +101,7 @@ class GroupeEtudiantController extends AbstractController
     }
 
     /**
-     * @Route("/{id}", name="groupe_etudiant_show", methods={"GET"})
+     * @Route("/{id}/show", name="groupe_etudiant_show", methods={"GET"})
      */
     public function show(GroupeEtudiant $groupeEtudiant): Response
     {
@@ -132,16 +132,22 @@ class GroupeEtudiantController extends AbstractController
     }
 
     /**
-     * @Route("/{id}", name="groupe_etudiant_delete", methods={"DELETE"})
+     * @Route("/{id}/delete", name="groupe_etudiant_delete", methods={"GET"})
      */
     public function delete(Request $request, GroupeEtudiant $groupeEtudiant): Response
     {
-        if ($this->isCsrfTokenValid('delete'.$groupeEtudiant->getId(), $request->request->get('_token'))) {
-            $entityManager = $this->getDoctrine()->getManager();
-            $entityManager->remove($groupeEtudiant);
-            $entityManager->flush();
-        }
 
-        return $this->redirectToRoute('groupe_etudiant_index');
+      $em = $this->getDoctrine()->getManager();
+
+      if (!$groupeEtudiant) {
+          throw $this->createNotFoundException('Impossible de trouver un groupe correspondant');
+      }
+
+      //Suppresion : A MODIFIER
+      $em->remove($groupeEtudiant);
+      $em->flush();
+
+
+      return $this->redirectToRoute('groupe_etudiant_index');
     }
 }
