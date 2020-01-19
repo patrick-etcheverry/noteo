@@ -29,11 +29,9 @@
               <a href="#"><i class="icon-circle-empty"></i></a>
               <a href="#"><i class="icon-circle-empty"></i></a>
               <a href="{{ path('groupe_etudiant_edit', {'id': arbre[0].id}) }}"><i class="icon-pencil-1"></i></a>
-<<<<<<< HEAD
               <a href="#"><i class="icon-trash"></i></a>
-=======
               <a href="{{ path('groupe_etudiant_delete', {'id': arbre[0].id}) }}" data-toggle="modal" data-target="#delGroupe"><i class="icon-trash"></i></a>
->>>>>>> suppression-groupe
+
           </td>
         </tr>
         {% for semestre in arbre[0].__children %}
