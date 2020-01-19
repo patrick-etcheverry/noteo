@@ -3,26 +3,26 @@
 <table align="center" class="table">
   <tbody>
     <tr>
-      <td class="intitule">{{ form_label(form.nom) }}</td>
+      <td class="intitule"><label for="groupe_etudiant_nom" class="required">Nom</label></td>
       <td>{{ form_widget(form.nom) }}</td>
     </tr>
     <tr>
-      <td class="intitule">{{ form_label(form.description) }}</td>
+      <td class="intitule"><label for="groupe_etudiant_description" class="required">Description</label></td>
       <td>{{ form_widget(form.description) }}</td>
     </tr>
     <tr>
-      <td class="intitule">{{ form_label(form.estEvaluable) }}<a href="#"><i class="icon-help-circled"></i></a></td>
+      <td class="intitule"><label for="groupe_etudiant_estEvaluable" class="required">Évaluable</label> <a href="#"><i class="icon-help-circled"></i></a></td>
       <td>{{form_widget(form.estEvaluable)}}</td>
     </tr>
     <tr>
-      <td class="intitule">{{ form_label(form.fichier) }} (<a href="{{asset('template.csv')}}">Télécharger un modèle</a>)</td>
+      <td class="intitule"><label for="groupe_etudiant_fichier" class="required">Fichier CSV</label> (<a href="/template.csv">Télécharger un modèle</a>)</td>
       <td>
         {{form_widget(form.fichier)}}
       </td>
     </tr>
     <tr>
-      <td class="intitule">{{ form_label(form.enseignant) }}</td>
-      <td>{{ form_widget(form.enseignant) }}</td>
+      <td class="intitule"><label class="required" for="groupe_etudiant_enseignant">Enseignant (temporaire)</label></td>
+      <td>{{form_widget(form.enseignant)}}</td>
     </tr>
   </tbody>
 </table>

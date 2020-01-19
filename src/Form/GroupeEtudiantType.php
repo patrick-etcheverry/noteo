@@ -19,14 +19,12 @@ class GroupeEtudiantType extends AbstractType
     {
         $builder
             ->add('nom', TextType::class, [
-              'label' => 'Nom',
               'attr' => [
                 'placeholder' => 'DUT Info'
               ]
             ])
 
             ->add('description', TextareaType::class, [
-              'label' => 'Description',
               'attr' => [
                 'placeholder' => 'Une belle description',
                 'rows' => 6
@@ -34,12 +32,10 @@ class GroupeEtudiantType extends AbstractType
             ])
 
             ->add('enseignant', EntityType::class, [
-              'label' => 'Enseignant (temporaire)',
               'class' => Enseignant::class, 'choice_label' => 'nom'
             ])
 
             ->add('estEvaluable', ChoiceType::class, [
-              'label' => 'Évaluable',
               'choices' => ['Oui' => true, 'Non' => false],
               'data' => true,
               'expanded' => true,
@@ -49,7 +45,6 @@ class GroupeEtudiantType extends AbstractType
             ])
 
             ->add('fichier', FileType::class, [
-              'label' => 'Fichier CSV',
               'mapped' => false,
               'attr' => [
                 'placeholder' => 'Aucun fichier choisi',
