@@ -6,6 +6,10 @@
 
 {% block contenu %}
 
+<div class="bouton">
+  <a href="{{ path('groupe_etudiant_new') }}" class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm">Créer un groupe</a>
+</div>
+
     <table class="table" id="table">
         <thead>
             <tr>
@@ -102,8 +106,6 @@
         </tbody>
         {% endif %}
     </table>
-
-    <a href="{{ path('groupe_etudiant_new') }}" class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm">Créer un groupe</a>
 
 {% endblock %}
 
