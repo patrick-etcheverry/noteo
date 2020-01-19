@@ -13,3 +13,8 @@ textarea {
 .custom-file-input ~ .custom-file-label::after {
     content: "Parcourir";
 }
+
+.info {
+  text-align: center;
+  margin-bottom: 20px;
+}

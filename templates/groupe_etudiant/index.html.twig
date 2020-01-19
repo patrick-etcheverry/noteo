@@ -6,11 +6,7 @@
 
 {% block contenu %}
 
-{% if arbre is empty %}
-<div class="bouton">
-  <a href="{{ path('groupe_etudiant_new') }}" class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm">Créer un groupe</a>
-</div>
-{% endif %}
+{% if arbre is not empty %}
 
     <table class="table" id="table">
         <thead>
@@ -22,7 +18,7 @@
                 <th></th>
             </tr>
         </thead>
-        {% if arbre is not empty %}
+
         <tbody>
         <tr>
           <td>{{ arbre[0].nom }}</td>
@@ -108,6 +104,15 @@
         </tbody>
         {% endif %}
     </table>
+
+    {% if arbre is empty %}
+    <div class="info">
+      <h2 class="h4 mb-0 text-gray-800">Vous n'avez aucun groupe</h1>
+    </div>
+    <div class="bouton">
+      <a href="{{ path('groupe_etudiant_new') }}" class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm">Créer un groupe</a>
+    </div>
+    {% endif %}
 
 {% endblock %}
 
