@@ -6,9 +6,11 @@
 
 {% block contenu %}
 
+{% if arbre is empty %}
 <div class="bouton">
   <a href="{{ path('groupe_etudiant_new') }}" class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm">Créer un groupe</a>
 </div>
+{% endif %}
 
     <table class="table" id="table">
         <thead>
