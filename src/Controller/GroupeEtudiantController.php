@@ -21,23 +21,90 @@ class GroupeEtudiantController extends AbstractController
      */
     public function index(): Response
     {
-        $repo = $this->getDoctrine()->getRepository(GroupeEtudiant::class);
 
-        /* Preparation d'un tableau vide qui donnera le nom et prénom de l'enseignant correspondant a l'id du groupe situé en index du tableau.
-        Il donne également l'effectif de ce groupe. Ce tableau est nécessaire car la méthode childrenHierarchy utilisée plus bas ne renvoie pas
-        d'objet enseignant correspondant au groupe, et car l'effectif n'est pas un attribtut, il faut donc le calculer. */
-        $infos = array();
 
-        //Remplissage du tableau
-        $groupes = $repo->findAll();
-        foreach ($groupes as $key => $groupe) {
-          $infos[$groupe->getId()] = array("Nom" => $groupe->getEnseignant()->getNom(), "Prenom" => $groupe->getEnseignant()->getPrenom(), "Effectif" => count($groupe->getEtudiants()));
-        }
 
+
+        $options = array(
+            'decorate' => true,
+
+            'childOpen' => '<tr>',
+            'childClose' => '</tr>',
+            'representationField' => 'nom',
+            'nodeDecorator' => function($node) {
+
+                /* Preparation d'un tableau vide qui donnera le nom et prénom de l'enseignant correspondant a l'id du groupe situé en index du tableau.
+                Il donne également l'effectif de ce groupe. Ce tableau est nécessaire car la méthode childrenHierarchy utilisée plus bas ne renvoie pas
+                d'objet enseignant correspondant au groupe, et car l'effectif n'est pas un attribtut, il faut donc le calculer. */
+                $infos = array();
+
+                $groupes = $this->getDoctrine()->getRepository(GroupeEtudiant::class)->findAll();
+
+                foreach ($groupes as $key => $groupe) {
+                  $infos[$groupe->getId()] = array("Nom" => $groupe->getEnseignant()->getNom(), "Prenom" => $groupe->getEnseignant()->getPrenom(), "Effectif" => count($groupe->getEtudiants()));
+                }
+
+                  /////NOM DU GROUPE/////
+                  $indentation = "";
+
+                  for ($i=0; $i < $node['lvl'] ; $i++) {
+                    $indentation .= "&emsp;";
+                  }
+
+                  $nom = "<td>" . $indentation . $node['nom'] . "</td>";
+
+                  /////EFFECTIF/////
+                  $effectif = "<td>" . $infos[$node['id']]["Effectif"] . "</td>";
+
+                  /////DESCRIPTION/////
+                  $description =  "<td>" . $node['description'] . "</td>";
+
+                  /////ENSEIGNANT/////
+                  $enseignant = "<td>" . $infos[$node['id']]["Prenom"] . " " . $infos[$node['id']]["Nom"] . "</td>";
+
+                  /////ACTIONS/////
+
+                    //Show
+                    $url = $this->generateUrl('groupe_etudiant_show', [ 'id' => $node['id'] ]);
+                    $show = " <a href='$url'><i class='icon-eye'></i></a> ";
+
+                    //Sous-groupe
+                    $sousGroupe = "<a href='#'><i class='icon-plus'></i></a>";
+
+                    //Est Evaluable
+                    if ($node['estEvaluable']) {
+                      $evalSimple = "<a href='#'><i class='icon-eval-simple'></i></a>";
+                      $evalParParties = "<a href='#'><i class='icon-eval-composee'></i></a>";
+                    }
+                    else {
+                      $evalSimple = "";
+                      $evalParParties = "";
+                    }
+
+                    //edit
+                    $url = $this->generateUrl('groupe_etudiant_edit', [ 'id' => $node['id'] ]);
+                    $edit = "<a href=" . $url .  "><i class='icon-pencil-1'></i></a>";
+
+                    //delete
+                    $url = $this->generateUrl('groupe_etudiant_delete', [ 'id' => $node['id'] ]);
+                    $delete = "<a href=" . $url . " data-toggle='modal' data-target='#delGroupe'> <i class='icon-trash' data-toggle='tooltip' title='Supprimer le groupe'></i></a>";
+
+                    //Mise à la suite des actions
+                    $actions = "<td>" . $show  . $sousGroupe . $evalSimple . $evalParParties . $edit . $delete . "</td>";
+
+                  //Mise à la suite de toutes les colonnes du tableau
+                  return $nom . $effectif . $description . $enseignant . $actions;
+            }
+        );
+
+        $htmlTree = $this->getDoctrine()->getRepository(GroupeEtudiant::class)->childrenHierarchy(
+            null, /* starting from root nodes */
+            false, /* true: load all children, false: only direct */
+            $options
+        );
 
         return $this->render('groupe_etudiant/index.html.twig', [
-            'infos' => $infos,
-            'arbre' => $repo->childrenHierarchy(),
+            'tree' => $htmlTree
         ]);
     }
 
