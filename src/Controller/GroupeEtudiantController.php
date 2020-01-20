@@ -27,7 +27,6 @@ class GroupeEtudiantController extends AbstractController
 
         $options = array(
             'decorate' => true,
-
             'childOpen' => '<tr>',
             'childClose' => '</tr>',
             'representationField' => 'nom',

@@ -6,9 +6,7 @@
 
 {% block contenu %}
 
-
-
-{% if tree is not empty %}
+{% if tree is not empty %} {# On teste si la chaine représentant l'arbre n'est pas vide : si oui cela veut dire qu'il n'y a aucun groupe #}
 
     <table class="table" id="table">
         <thead>
@@ -20,15 +18,15 @@
                 <th></th>
             </tr>
         </thead>
-
         <tbody>
 
+          {# Affichage de la chaine en utilisant la fonction 'raw' qui va afficher la chaine telle que fournise, sans transformer le contenu#}
           {{ tree | raw }}
         </tbody>
     </table>
 {% endif %}
 
-{% if tree is empty %}
+{% if tree is empty %} {##}
     <div class="info">
       <h2 class="h4 mb-0 text-gray-800">Vous n'avez aucun groupe</h1>
     </div>
