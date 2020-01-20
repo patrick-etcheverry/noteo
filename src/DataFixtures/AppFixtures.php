@@ -34,6 +34,13 @@ class AppFixtures extends Fixture
 
         ////////////GROUPES//////////////
 
+        ////////////ESPACE//////////////
+        $espace = new GroupeEtudiant();
+        $espace->setNom('Etudiants non affectés');
+        $espace->setDescription('Tout les étudiants ayant été retirés d\'un groupe de haut niveau et ne faisant partie d\'aucun groupe');
+        $espace->setEnseignant($enseignant);
+        $espace->setEstEvaluable(false);
+
         ////////////RACINE//////////////
         $DUT = new GroupeEtudiant();
         $DUT->setNom('DUT Info');
