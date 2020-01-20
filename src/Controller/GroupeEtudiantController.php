@@ -21,56 +21,51 @@ class GroupeEtudiantController extends AbstractController
      */
     public function index(): Response
     {
-
-
-
-
+        // On prépare un tableau d'options qui servera à paramètrer l'affichage de notre arbre
         $options = array(
             'decorate' => true,
             'childOpen' => '<tr>',
             'childClose' => '</tr>',
-            'representationField' => 'nom',
             'nodeDecorator' => function($node) {
 
-                /* Preparation d'un tableau vide qui donnera le nom et prénom de l'enseignant correspondant a l'id du groupe situé en index du tableau.
-                Il donne également l'effectif de ce groupe. Ce tableau est nécessaire car la méthode childrenHierarchy utilisée plus bas ne renvoie pas
-                d'objet enseignant correspondant au groupe, et car l'effectif n'est pas un attribtut, il faut donc le calculer. */
-                $infos = array();
+                  /* Le but de cette fonction est de déterminer comment sera affiché chaque élément (node) de l'arborescence
+                  sachant que $node est un groupe, la fonction est appliquée à chaque élément qui sera passé en paramètre, et
+                  elle est appliquée à tous les groupes de l'arborescence */
 
-                $groupes = $this->getDoctrine()->getRepository(GroupeEtudiant::class)->findAll();
+                  /* On prépare un répository pour effectuer quelques requetes pour des éléments qui ne sont pas contenus dans l'élement
+                  $node passé en paramètre (nottament les attributs enseignant et étudiants) */
+                  $repo = $this->getDoctrine()->getRepository(GroupeEtudiant::class);
 
-                foreach ($groupes as $key => $groupe) {
-                  $infos[$groupe->getId()] = array("Nom" => $groupe->getEnseignant()->getNom(), "Prenom" => $groupe->getEnseignant()->getPrenom(), "Effectif" => count($groupe->getEtudiants()));
-                }
-
-                  /////NOM DU GROUPE/////
+                  /////NOM/////
                   $indentation = "";
 
+                  //Cette boucle détermine l'indentation du groupe en fonction de son niveau de profondeur
                   for ($i=0; $i < $node['lvl'] ; $i++) {
-                    $indentation .= "&emsp;";
+                    $indentation .= "&emsp;"; // $emsp désigne un ajout de 4 caractères espace
                   }
 
                   $nom = "<td>" . $indentation . $node['nom'] . "</td>";
 
                   /////EFFECTIF/////
-                  $effectif = "<td>" . $infos[$node['id']]["Effectif"] . "</td>";
+                  $effectif = "<td>" . count($repo->find($node['id'])->getEtudiants()) . "</td>";
 
                   /////DESCRIPTION/////
                   $description =  "<td>" . $node['description'] . "</td>";
 
                   /////ENSEIGNANT/////
-                  $enseignant = "<td>" . $infos[$node['id']]["Prenom"] . " " . $infos[$node['id']]["Nom"] . "</td>";
+                  $enseignant = "<td>" . $repo->find($node['id'])->getEnseignant()->getPrenom() . " " . $repo->find($node['id'])->getEnseignant()->getNom() . "</td>";
 
                   /////ACTIONS/////
+                  /////Cette section affiche les boutons d'actions liés à chaque groupes
 
-                    //Show
+                    //Consulter
                     $url = $this->generateUrl('groupe_etudiant_show', [ 'id' => $node['id'] ]);
                     $show = " <a href='$url'><i class='icon-eye'></i></a> ";
 
-                    //Sous-groupe
+                    //Créer un sous-groupe
                     $sousGroupe = "<a href='#'><i class='icon-plus'></i></a>";
 
-                    //Est Evaluable
+                    //Créer une évaluation (seulement disponible si le groupe est évaluable)
                     if ($node['estEvaluable']) {
                       $evalSimple = "<a href='#'><i class='icon-eval-simple'></i></a>";
                       $evalParParties = "<a href='#'><i class='icon-eval-composee'></i></a>";
@@ -80,22 +75,22 @@ class GroupeEtudiantController extends AbstractController
                       $evalParParties = "";
                     }
 
-                    //edit
+                    //Modifier
                     $url = $this->generateUrl('groupe_etudiant_edit', [ 'id' => $node['id'] ]);
                     $edit = "<a href=" . $url .  "><i class='icon-pencil-1'></i></a>";
 
-                    //delete
-                    $url = $this->generateUrl('groupe_etudiant_delete', [ 'id' => $node['id'] ]);
-                    $delete = "<a href=" . $url . " data-toggle='modal' data-target='#delGroupe'> <i class='icon-trash' data-toggle='tooltip' title='Supprimer le groupe'></i></a>";
+                    //Supprimer (cette fonction est liée à une fenêtre modale d'id #delGroupe)
+                    $delete = "<a href='#delGroupe' data-toggle='modal' data-target='#delGroupe'> <i class='icon-trash' data-toggle='tooltip' title='Supprimer le groupe'></i></a>";
 
-                    //Mise à la suite des actions
+                    //Mise à la suite des actions en une seule chaîne
                     $actions = "<td>" . $show  . $sousGroupe . $evalSimple . $evalParParties . $edit . $delete . "</td>";
 
-                  //Mise à la suite de toutes les colonnes du tableau
+                  //Mise à la suite du contenu de toutes les colonnes du tableau en une seule chaîne
                   return $nom . $effectif . $description . $enseignant . $actions;
             }
         );
 
+        //On utilise la fonction childrenHierarchy qui va créer l'arbre avec les options que l'on a choisies précédemment
         $htmlTree = $this->getDoctrine()->getRepository(GroupeEtudiant::class)->childrenHierarchy(
             null, /* starting from root nodes */
             false, /* true: load all children, false: only direct */
