@@ -25,15 +25,22 @@
 
 <table class="table">
   <thead>
-    <tr>Nom</tr>
-    <tr>Prenom</tr>
-    <tr>Mail</tr>
+    <th>Nom</th>
+    <th>Prenom</th>
+    <th>Mail</th>
+    <th>Membre</th>
   </thead>
-  
+
   <tbody>
+  {% for etudiant in groupe_etudiant.etudiants %} 
+  {# "groupe_etudiant.parent.etudiants" pour afficher les etudiants du groupe parent #}
       <tr>    
-          <td>{{form_row(form.etudiants)}}</td>
+          <td>{{etudiant.nom}}</td>
+          <td>{{etudiant.prenom}}</td>
+          <td>{{etudiant.mail}}</td>
+          <td>{{form_widget(form.etudiants)}}</td>
       </tr>
+  {% endfor %}
   </tbody>
 </table>
 
