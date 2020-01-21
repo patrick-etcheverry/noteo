@@ -4,6 +4,7 @@ namespace App\Form;
 
 use App\Entity\GroupeEtudiant;
 use App\Entity\Enseignant;
+use App\Entity\Etudiant;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
@@ -41,6 +42,13 @@ class GroupeEtudiantEditType extends AbstractType
             'label_attr' =>  [
             'class'=>'radio-inline'
             ]
+          ])
+
+          ->add('etudiants', EntityType::class, [
+            'class' => Etudiant::Class, 
+            'choice_label' => 'nom',
+            'expanded' => true, 
+            'multiple' => true
           ])
       ;
     }

@@ -21,6 +21,24 @@
   </tbody>
 </table>
 
+<h1 class="h4 mb-0 text-gray-800">Liste des étudiants du groupe</h1> <br>
+
+<table class="table">
+  <thead>
+    <tr>Nom</tr>
+    <tr>Prenom</tr>
+    <tr>Mail</tr>
+  </thead>
+  
+  <tbody>
+      <tr>    
+          <td>{{form_row(form.etudiants)}}</td>
+      </tr>
+  </tbody>
+</table>
+
+    
+
 <div class='bouton'>
   <button class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm">{{ button_label|default('Créer le groupe') }}</button>
 </div>
