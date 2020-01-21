@@ -5,6 +5,7 @@ namespace App\Controller;
 use App\Entity\GroupeEtudiant;
 use App\Entity\Etudiant;
 use App\Form\GroupeEtudiantType;
+use App\Form\GroupeEtudiantEditType;
 use Gedmo\Tree\Entity\Repository\NestedTreeRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -177,7 +178,7 @@ class GroupeEtudiantController extends AbstractController
      */
     public function edit(Request $request, GroupeEtudiant $groupeEtudiant): Response
     {
-        $form = $this->createForm(GroupeEtudiantType::class, $groupeEtudiant);
+        $form = $this->createForm(GroupeEtudiantEditType::class, $groupeEtudiant);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
