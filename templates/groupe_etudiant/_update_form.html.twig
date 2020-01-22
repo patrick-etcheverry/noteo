@@ -1,5 +1,7 @@
 {{ form_start(form) }}
 
+
+
 <table align="center" class="table">
   <tbody>
     <tr>
@@ -23,28 +25,33 @@
 
 <h1 class="h4 mb-0 text-gray-800">Liste des étudiants du groupe</h1> <br>
 
-<table class="table">
+<table class="table" id="table">
   <thead>
     <th>Nom</th>
     <th>Prenom</th>
     <th>Mail</th>
-    <th>Membre</th>
+    <th></th>
   </thead>
 
   <tbody>
-  {% for etudiant in groupe_etudiant.etudiants %} 
-  {# "groupe_etudiant.parent.etudiants" pour afficher les etudiants du groupe parent #}
-      <tr>    
-          <td>{{etudiant.nom}}</td>
-          <td>{{etudiant.prenom}}</td>
-          <td>{{etudiant.mail}}</td>
-          <td>{{form_widget(form.etudiants)}}</td>
+  {% for etudiant in form.etudiants %}
+
+    {# store index of the category in a variable #}
+    {% set index = etudiant.vars.value %}
+
+    {# get entity object from its index in the Categories Field #}
+    {% set entity = form.etudiants.vars.choices[index].data %}
+      <tr>
+          <td>{{entity.nom}}</td>
+          <td>{{entity.prenom}}</td>
+          <td>{{entity.mail}}</td>
+          <td>{{form_widget(form.etudiants[index])}}</td>
       </tr>
   {% endfor %}
   </tbody>
 </table>
 
-    
+
 
 <div class='bouton'>
   <button class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm">{{ button_label|default('Créer le groupe') }}</button>

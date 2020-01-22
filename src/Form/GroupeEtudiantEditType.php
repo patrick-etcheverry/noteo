@@ -45,9 +45,9 @@ class GroupeEtudiantEditType extends AbstractType
           ])
 
           ->add('etudiants', EntityType::class, [
-            'class' => Etudiant::Class, 
-            'choice_label' => 'nom',
-            'expanded' => true, 
+            'class' => Etudiant::Class,
+            'choice_label' => false,
+            'expanded' => true,
             'multiple' => true
           ])
       ;
