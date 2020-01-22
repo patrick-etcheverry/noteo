@@ -5,6 +5,7 @@ namespace App\Form;
 use App\Entity\GroupeEtudiant;
 use App\Entity\Enseignant;
 use App\Entity\Etudiant;
+use Doctrine\ORM\EntityRepository;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
@@ -48,7 +49,7 @@ class GroupeEtudiantEditType extends AbstractType
             'class' => Etudiant::Class,
             'choice_label' => false,
             'expanded' => true,
-            'multiple' => true
+            'multiple' => true,
           ])
       ;
     }

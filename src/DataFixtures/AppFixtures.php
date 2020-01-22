@@ -380,7 +380,7 @@ class AppFixtures extends Fixture
           $etudiant1->setMail($faker->email);
           $etudiant1->setEstDemissionaire($faker->boolean);
           $etudiant1->addStatut($statut1);
-          $etudiant1->addGroupe($S3TD3TP5);
+          $etudiant1->addGroupe($DUT);
 
           $etudiant2 = new Etudiant();
           $etudiant2->setPrenom($faker->firstNameMale);
@@ -388,7 +388,7 @@ class AppFixtures extends Fixture
           $etudiant2->setMail($faker->email);
           $etudiant2->setEstDemissionaire($faker->boolean);
           $etudiant2->addStatut($statut2);
-          $etudiant2->addGroupe($S4PELTP3);
+          $etudiant2->addGroupe($DUT);
 
           ////////////EVALUATION//////////////
           $evaluation = new Evaluation();

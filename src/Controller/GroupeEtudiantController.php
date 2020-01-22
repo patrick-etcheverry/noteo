@@ -178,17 +178,28 @@ class GroupeEtudiantController extends AbstractController
      */
     public function edit(Request $request, GroupeEtudiant $groupeEtudiant): Response
     {
+
         $form = $this->createForm(GroupeEtudiantEditType::class, $groupeEtudiant);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
+
+            $donnees = $form->getData();
+
+            //var_dump($donnees->getEtudiants());
+
+            foreach($donnees->getEtudiants() as $key => $etudiant) {
+              $groupeEtudiant->addEtudiant($etudiant);
+            }
+
+            $this->getDoctrine()->getManager()->persist($groupeEtudiant);
+
             $this->getDoctrine()->getManager()->flush();
 
-            return $this->redirectToRoute('groupe_etudiant_index');
+            return $this->redirectToRoute('groupe_etudiant_index', [ 'groupe' => $donnees->getEtudiants()]);
         }
 
         return $this->render('groupe_etudiant/edit.html.twig', [
-            'groupe_etudiant' => $groupeEtudiant,
             'form' => $form->createView(),
         ]);
     }
@@ -205,7 +216,7 @@ class GroupeEtudiantController extends AbstractController
           throw $this->createNotFoundException('Impossible de trouver un groupe correspondant');
       }
 
-      //Suppresion : A MODIFIER
+      //Suppresion : A MODIFIER pour inclure sous groupes
       $em->remove($groupeEtudiant);
       $em->flush();
 
