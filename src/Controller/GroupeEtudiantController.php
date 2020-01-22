@@ -184,19 +184,15 @@ class GroupeEtudiantController extends AbstractController
 
         if ($form->isSubmitted() && $form->isValid()) {
 
-            $donnees = $form->getData();
-
-            //var_dump($donnees->getEtudiants());
-
-            foreach($donnees->getEtudiants() as $key => $etudiant) {
-              $groupeEtudiant->addEtudiant($etudiant);
-            }
+          foreach ($form->get('etudiants')->getData() as $key => $etudiant) {
+           $groupeEtudiant->addEtudiant($etudiant);
+          }
 
             $this->getDoctrine()->getManager()->persist($groupeEtudiant);
 
             $this->getDoctrine()->getManager()->flush();
 
-            return $this->redirectToRoute('groupe_etudiant_index', [ 'groupe' => $donnees->getEtudiants()]);
+            return $this->redirectToRoute('groupe_etudiant_index');
         }
 
         return $this->render('groupe_etudiant/edit.html.twig', [
