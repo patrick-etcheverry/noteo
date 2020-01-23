@@ -98,6 +98,7 @@ class GroupeEtudiantController extends AbstractController
             $options
         );
 
+
         return $this->render('groupe_etudiant/index.html.twig', [
             'tree' => $htmlTree
         ]);
@@ -201,27 +202,38 @@ class GroupeEtudiantController extends AbstractController
 
       $em = $this->getDoctrine()->getManager();
 
-      //Suppresion
-      foreach ($groupeEtudiant->getEvaluations() as $evaluation) {
+      $repo = $this->getDoctrine()->getRepository(GroupeEtudiant::class);
 
-        foreach ($evaluation->getParties() as $partie) {
+      //Cas d'un groupe de haut niveau
+      if ($groupeEtudiant->getParent() == null) {
+        $groupes = $repo->findAll();
 
-          foreach ($partie->getNotes() as $note) {
+        foreach ($groupes as $groupeAModifier) {
+          if ($groupeAModifier->getRoot()->getId() == $groupeEtudiant->getId()) {
+            foreach ($groupeAModifier->getEvaluations() as $evaluation) {
 
-            $em->remove($note);
+              foreach ($evaluation->getParties() as $partie) {
+
+                foreach ($partie->getNotes() as $note) {
+
+                  $em->remove($note);
+                }
+
+                $em->remove($partie);
+              }
+
+              $em->remove($evaluation);
+            }
+
+            $em->remove($groupeEtudiant);
+            $em->flush();
+
+            return $this->redirectToRoute('groupe_etudiant_index');
+
+            return $response;
           }
-
-          $em->remove($partie);
+          }
         }
-
-        $em->remove($evaluation);
       }
 
-      $em->remove($groupeEtudiant);
-      $em->flush();
-
-      return $this->redirectToRoute('groupe_etudiant_index');
-
-      return $response;
-    }
 }
