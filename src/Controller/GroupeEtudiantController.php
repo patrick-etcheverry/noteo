@@ -79,9 +79,9 @@ class GroupeEtudiantController extends AbstractController
                     $url = $this->generateUrl('groupe_etudiant_edit', [ 'id' => $node['id'] ]);
                     $edit = "<a href=" . $url .  "><i class='icon-pencil-1'></i></a>";
 
-                    //Supprimer (cette fonction est liée à une fenêtre modale d'id #delGroupe)
+                    //Supprimer
                     $url = $this->generateUrl('groupe_etudiant_delete', [ 'id' => $node['id'] ]);
-                    $delete = "<a href='$url' id ='DeleteButton' onclick='maFonction(\"$url\")' data-toggle='modal'> <i class='icon-trash' data-toggle='tooltip' title='Supprimer le groupe'></i></a>";
+                    $delete = "<a href='$url' onclick='EcritureModale(\"$url\")' data-toggle='modal'> <i class='icon-trash' data-toggle='tooltip' title='Supprimer le groupe'></i></a>";
 
                     //Mise à la suite des actions en une seule chaîne
                     $actions = "<td>" . $show  . $sousGroupe . $evalSimple . $evalParParties . $edit . $delete . "</td>";
