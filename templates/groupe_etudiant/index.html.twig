@@ -45,10 +45,10 @@
               <span aria-hidden="true">x</span>
             </button>
           </div>
-          <div class="modal-body">Etes vous sur de vouloir supprimer le groupe : </div>
+          <div class="modal-body">Etes vous sur de vouloir supprimer le groupe ? </div>
           <div class="modal-footer">
             <button class="btn btn-secondary" type="button" data-dismiss="modal">Annuler</button>
-            <a class="btn btn-primary" href="{{ path('groupe_etudiant_delete', {id : 1})}}">Supprimer le groupe</a>
+            <a class="btn btn-primary" id = "BoutonSupprimerModale" href="#">Supprimer le groupe</a>
           </div>
         </div>
       </div>
@@ -59,6 +59,24 @@
 {% block datatables %}
 
 <script type="text/javascript">
+
+/* Cette fonction est utilisée pour adapter le href du bouton de confirmation de la suppression
+d'un groupe dans la fenetre modale, afin de contenir l'id du groupe cliqué
+$('#BoutonCorbeille').click( function(e) {
+
+  document.getElementById("machinbidule").innerHTML= this.href;
+  //$("#delGroupe").modal(); return false; //On ouvre la fenêtre modale
+  //document.getElementById("BoutonSupprimerModale").href = document.getElementById("BoutonCorbeille").href
+
+
+
+
+});
+*/
+function maFonction(url) {
+  $("#delGroupe").modal();
+  document.getElementById("BoutonSupprimerModale").href = url;
+}
 
 $(document).ready(function() {
   $('#table').dataTable({
