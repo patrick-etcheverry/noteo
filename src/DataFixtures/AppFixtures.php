@@ -380,15 +380,7 @@ class AppFixtures extends Fixture
           $etudiant1->setMail($faker->email);
           $etudiant1->setEstDemissionaire($faker->boolean);
           $etudiant1->addStatut($statut1);
-          $etudiant1->addGroupe($S3TD3TP5);
-
-          $etudiant2 = new Etudiant();
-          $etudiant2->setPrenom($faker->firstNameMale);
-          $etudiant2->setNom($faker->lastName);
-          $etudiant2->setMail($faker->email);
-          $etudiant2->setEstDemissionaire($faker->boolean);
-          $etudiant2->addStatut($statut2);
-          $etudiant2->addGroupe($S4PELTP3);
+          $etudiant1->addGroupe($DUT);
 
           ////////////EVALUATION//////////////
           $evaluation = new Evaluation();
@@ -416,13 +408,12 @@ class AppFixtures extends Fixture
 
           $pointsEtud = new Points();
           $pointsEtud->setValeur($faker->randomDigit);
-          $pointsEtud->setEtudiant($etudiant2);
+          $pointsEtud->setEtudiant($etudiant1);
           $pointsEtud->setPartie($partie2);
 
           ////////////ENREGISTREMENT DES DONNEES//////////////
           $manager->persist($enseignant);
           $manager->persist($etudiant1);
-          $manager->persist($etudiant2);
           $manager->persist($evaluation);
           $manager->persist($partie1);
           $manager->persist($partie2);

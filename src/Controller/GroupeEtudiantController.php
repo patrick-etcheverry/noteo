@@ -79,8 +79,9 @@ class GroupeEtudiantController extends AbstractController
                     $url = $this->generateUrl('groupe_etudiant_edit', [ 'id' => $node['id'] ]);
                     $edit = "<a href=" . $url .  "><i class='icon-pencil-1'></i></a>";
 
-                    //Supprimer (cette fonction est liée à une fenêtre modale d'id #delGroupe)
-                    $delete = "<a href='#delGroupe' data-toggle='modal' data-target='#delGroupe'> <i class='icon-trash' data-toggle='tooltip' title='Supprimer le groupe'></i></a>";
+                    //Supprimer
+                    $url = $this->generateUrl('groupe_etudiant_delete', [ 'id' => $node['id'] ]);
+                    $delete = "<a href='$url' onclick='EcritureModale(\"$url\")' data-toggle='modal'> <i class='icon-trash' data-toggle='tooltip' title='Supprimer le groupe'></i></a>";
 
                     //Mise à la suite des actions en une seule chaîne
                     $actions = "<td>" . $show  . $sousGroupe . $evalSimple . $evalParParties . $edit . $delete . "</td>";
@@ -199,16 +200,45 @@ class GroupeEtudiantController extends AbstractController
     {
 
       $em = $this->getDoctrine()->getManager();
+      $repo = $this->getDoctrine()->getRepository(GroupeEtudiant::class);
 
-      if (!$groupeEtudiant) {
-          throw $this->createNotFoundException('Impossible de trouver un groupe correspondant');
+      $groupes = $repo->children($groupeEtudiant); /* On récupère tous les enfants du groupe courant. En effet, on a besoin
+                                                      de les traiter un à un pour supprimer les évaluations liées a ceux-ci */
+
+        foreach ($groupes as $groupeAModifier) {
+
+            foreach ($groupeAModifier->getEvaluations() as $evaluation) { //On récupère toutes les évaluations du groupe courant
+
+              foreach ($evaluation->getParties() as $partie) { //On récupère toutes les parties de l'évaluation courante
+
+                foreach ($partie->getNotes() as $note) { //On récupère toutes les notes associées aux parties de l'évaluation courante
+
+                  $em->remove($note);
+
+                }
+
+                $em->remove($partie);
+              }
+
+              $em->remove($evaluation);
+
+            }
+
+          }
+
+          //Si il s'agit d'un groupe de haut niveau, on supprime également les étudiants contenus dans le groupe
+          if ($groupeEtudiant->getParent() == null) {
+
+            foreach ($groupeEtudiant->getEtudiants() as $etudiant) {
+              $em->remove($etudiant);
+            }
+
+          }
+
+        $em->remove($groupeEtudiant); // On supprime le groupeEtudiant, ce qui grâce à Tree a pour effet de supprimer les enfants en cascade
+        $em->flush();
+
+        return $this->redirectToRoute('groupe_etudiant_index');
       }
 
-      //Suppresion : A MODIFIER
-      $em->remove($groupeEtudiant);
-      $em->flush();
-
-
-      return $this->redirectToRoute('groupe_etudiant_index');
-    }
 }

@@ -35,7 +35,6 @@
     </div>
 {% endif %}
 
-
     <div class="modal fade" id="delGroupe" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
       <div class="modal-dialog" role="document">
         <div class="modal-content">
@@ -45,10 +44,10 @@
               <span aria-hidden="true">x</span>
             </button>
           </div>
-          <div class="modal-body">Etes vous sur de vouloir supprimer le groupe : </div>
+          <div class="modal-body">Etes vous sur de vouloir supprimer le groupe ? </div>
           <div class="modal-footer">
             <button class="btn btn-secondary" type="button" data-dismiss="modal">Annuler</button>
-            <a class="btn btn-primary" href="{{ path('groupe_etudiant_delete', {id : 1})}}">Supprimer le groupe</a>
+            <a class="btn btn-primary" id = "BoutonSupprimerModale" href="#">Supprimer le groupe</a>
           </div>
         </div>
       </div>
@@ -56,10 +55,22 @@
 
 {% endblock %}
 
+{% block javascripts %}
+
+<script type="text/javascript">
+/* Cette fonction est utilisée pour adapter le href du bouton de confirmation de la suppression
+d'un groupe dans la fenetre modale, afin de s'adapter au groupe que l'on veut supprimer */
+function EcritureModale(url) {
+  $("#delGroupe").modal(); //On fait apparaitre la fenêtre modale
+  document.getElementById("BoutonSupprimerModale").href = url; //On réécrit le href du bouton de suppression avec l'url correspondante au groupe dont on a cliqué sur la corbeille
+}
+</script>
+
+{% endblock %}
+
 {% block datatables %}
 
 <script type="text/javascript">
-
 $(document).ready(function() {
   $('#table').dataTable({
     aaSorting: [], // Pour désactiver le tri automatique
