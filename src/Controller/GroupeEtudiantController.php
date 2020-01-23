@@ -201,15 +201,27 @@ class GroupeEtudiantController extends AbstractController
 
       $em = $this->getDoctrine()->getManager();
 
-      if (!$groupeEtudiant) {
-          throw $this->createNotFoundException('Impossible de trouver un groupe correspondant');
+      //Suppresion
+      foreach ($groupeEtudiant->getEvaluations() as $evaluation) {
+
+        foreach ($evaluation->getParties() as $partie) {
+
+          foreach ($partie->getNotes() as $note) {
+
+            $em->remove($note);
+          }
+
+          $em->remove($partie);
+        }
+
+        $em->remove($evaluation);
       }
 
-      //Suppresion : A MODIFIER
       $em->remove($groupeEtudiant);
       $em->flush();
 
-
       return $this->redirectToRoute('groupe_etudiant_index');
+
+      return $response;
     }
 }
