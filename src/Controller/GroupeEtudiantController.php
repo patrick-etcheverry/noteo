@@ -92,9 +92,15 @@ class GroupeEtudiantController extends AbstractController
                       $edit = "";
                     }
 
-                    //Supprimer
-                    $url = $this->generateUrl('groupe_etudiant_delete', [ 'id' => $node['id'] ]);
-                    $delete = "<a href='$url' onclick='EcritureModale(\"$url\")' data-toggle='modal'> <i class='icon-trash' data-toggle='tooltip' title='Supprimer le groupe'></i></a>";
+                    //Supprimer (pas disponible pour groupe des étudiants non affectés)
+                    if ($node['nom'] != $GroupeDesNonAffectés) {
+                      $url = $this->generateUrl('groupe_etudiant_delete', [ 'id' => $node['id'] ]);
+                      $delete = "<a href='$url' onclick='EcritureModale(\"$url\")' data-toggle='modal'> <i class='icon-trash' data-toggle='tooltip' title='Supprimer le groupe'></i></a>";
+                    }
+                    else {
+                      $delete = "";
+                    }
+
 
                     //Mise à la suite des actions en une seule chaîne
                     $actions = "<td>" . $show  . $sousGroupe . $evalSimple . $evalParParties . $edit . $delete . "</td>";
