@@ -6,6 +6,7 @@ use App\Entity\GroupeEtudiant;
 use App\Entity\Enseignant;
 use App\Entity\Etudiant;
 use Doctrine\ORM\EntityRepository;
+use App\Repository\GroupeEtudiantRepository;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
@@ -59,6 +60,7 @@ class GroupeEtudiantEditType extends AbstractType
             'mapped' => false,
             'expanded' => true,
             'multiple' => true,
+            'choices' => $builder->getData()->getEtudiants()
           ])
       ;
     }

@@ -197,14 +197,14 @@ class GroupeEtudiantController extends AbstractController
     public function edit(Request $request, GroupeEtudiant $groupeEtudiant): Response
     {
 
-        $form = $this->createForm(GroupeEtudiantEditType::class, $groupeEtudiant);
-        $form->handleRequest($request);
+      //Utilisé pour également supprimer un étudiant dans les sous groupe de celui-ci
+      $enfants = $this->getDoctrine()->getRepository(GroupeEtudiant::class)->children($groupeEtudiant);
 
-        //Utilisé pour également supprimer un étudiant dans les sous groupe de celui-ci
-        $enfants = $this->getDoctrine()->getRepository(GroupeEtudiant::class)->children($groupeEtudiant);
+      //Récupération du groupe des étudiants non affecté"s pour y ajouter les étudiants supprimés si besoin
+      $GroupeDesNonAffectés = $this->getDoctrine()->getRepository(GroupeEtudiant::class)->findOneByNom("Etudiants non affectés");
 
-        //Récupération du groupe des étudiants non affecté"s pour y ajouter les étudiants supprimés si besoin
-        $GroupeDesNonAffectés = $this->getDoctrine()->getRepository(GroupeEtudiant::class)->findOneByNom("Etudiants non affectés");
+      $form = $this->createForm(GroupeEtudiantEditType::class, $groupeEtudiant);
+      $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
 
