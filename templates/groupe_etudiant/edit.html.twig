@@ -6,7 +6,7 @@
 
 {% block contenu %}
 
-    {{ include('groupe_etudiant/_update_form.html.twig', {'button_label': 'Update'}) }}
+    {{ include('groupe_etudiant/_update_form.html.twig', {'button_label': 'Valider la modification'}) }}
 
     <a href="{{ path('groupe_etudiant_index') }}">back to list</a>
 
@@ -16,7 +16,25 @@
 
 <script type="text/javascript">
 $(document).ready(function() {
-  $('#table').dataTable({
+
+  //Activation de Datatables sur le tableau d'ajout des étudiants
+  $('#tableAjouter').dataTable({
+    language: {
+      "url": "{{asset('tradfr.json')}}"
+    },
+    order: [
+      [0, "asc"]
+    ],
+    columns: [null, null,{"orderable": false},{"orderable": false}],
+    lengthMenu: [
+      [10, 25, 50, -1],
+      [10, 25, 50, "Tout"]
+    ],
+    info: false,
+  });
+
+  //Activation de Datatables sur le tableau de suppression des étudiants
+  $('#tableSupprimer').dataTable({
     language: {
       "url": "{{asset('tradfr.json')}}"
     },
@@ -31,6 +49,7 @@ $(document).ready(function() {
     info: false,
   });
 });
+
 </script>
 
 {% endblock %}

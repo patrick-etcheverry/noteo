@@ -311,6 +311,7 @@ class AppFixtures extends Fixture
                 $S4PELTP5->setEstEvaluable(true);
 
         //Enregistrement des groupes
+        $manager->persist($espace);
         $manager->persist($S1);
         $manager->persist($S1TD1);
         $manager->persist($S1TD1TP1);

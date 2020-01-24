@@ -45,7 +45,15 @@ class GroupeEtudiantEditType extends AbstractType
             ]
           ])
 
-          ->add('etudiants', EntityType::class, [
+          ->add('etudiantsAModifier', EntityType::class, [
+            'class' => Etudiant::Class,
+            'choice_label' => false,
+            'mapped' => false,
+            'expanded' => true,
+            'multiple' => true,
+          ])
+
+          ->add('etudiantsASupprimer', EntityType::class, [
             'class' => Etudiant::Class,
             'choice_label' => false,
             'mapped' => false,

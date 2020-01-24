@@ -37,6 +37,8 @@ class GroupeEtudiantController extends AbstractController
                   $node passé en paramètre (nottament les attributs enseignant et étudiants) */
                   $repo = $this->getDoctrine()->getRepository(GroupeEtudiant::class);
 
+                  $GroupeDesNonAffectés = "Etudiants non affectés";
+
                   /////NOM/////
                   $indentation = "";
 
@@ -63,8 +65,13 @@ class GroupeEtudiantController extends AbstractController
                     $url = $this->generateUrl('groupe_etudiant_show', [ 'id' => $node['id'] ]);
                     $show = " <a href='$url'><i class='icon-eye'></i></a> ";
 
-                    //Créer un sous-groupe
-                    $sousGroupe = "<a href='#'><i class='icon-plus'></i></a>";
+                    //Créer un sous-groupe (pas disponible pour groupe des étudiants non affectés)
+                    if ($node['nom'] != $GroupeDesNonAffectés) {
+                      $sousGroupe = "<a href='#'><i class='icon-plus'></i></a>";
+                    }
+                    else {
+                      $sousGroupe = "";
+                    }
 
                     //Créer une évaluation (seulement disponible si le groupe est évaluable)
                     if ($node['estEvaluable']) {
@@ -76,12 +83,23 @@ class GroupeEtudiantController extends AbstractController
                       $evalParParties = "";
                     }
 
-                    //Modifier
-                    $url = $this->generateUrl('groupe_etudiant_edit', [ 'id' => $node['id'] ]);
-                    $edit = "<a href=" . $url .  "><i class='icon-pencil-1'></i></a>";
+                    //Modifier (pas disponible pour groupe des étudiants non affectés)
+                    if ($node['nom'] != $GroupeDesNonAffectés) {
+                      $url = $this->generateUrl('groupe_etudiant_edit', [ 'id' => $node['id'] ]);
+                      $edit = "<a href=" . $url .  "><i class='icon-pencil-1'></i></a>";
+                    }
+                    else {
+                      $edit = "";
+                    }
+
 
                     //Supprimer (cette fonction est liée à une fenêtre modale d'id #delGroupe)
-                    $delete = "<a href='#delGroupe' data-toggle='modal' data-target='#delGroupe'> <i class='icon-trash' data-toggle='tooltip' title='Supprimer le groupe'></i></a>";
+                    if ($node['nom'] != $GroupeDesNonAffectés) {
+                      $delete = "<a href='#delGroupe' data-toggle='modal' data-target='#delGroupe'><i class='icon-trash' data-toggle='tooltip' title='Supprimer le groupe'></i></a>";
+                    }
+                    else {
+                      $delete = "";
+                    }
 
                     //Mise à la suite des actions en une seule chaîne
                     $actions = "<td>" . $show  . $sousGroupe . $evalSimple . $evalParParties . $edit . $delete . "</td>";

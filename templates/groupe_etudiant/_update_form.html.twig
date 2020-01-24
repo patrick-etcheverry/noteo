@@ -23,9 +23,9 @@
   </tbody>
 </table>
 
-<h1 class="h4 mb-0 text-gray-800">Liste des étudiants du groupe</h1> <br>
+<h1 class="h4 mb-0 text-gray-800">Ajouter des étudiants au groupe</h1> <br>
 
-<table class="table" id="table">
+<table class="table" id="tableAjouter">
   <thead>
     <th>Nom</th>
     <th>Prenom</th>
@@ -34,18 +34,46 @@
   </thead>
 
   <tbody>
-  {% for etudiant in form.etudiants %}
+  {% for etudiant in form.etudiantsAModifier %}
 
     {# store index of the category in a variable #}
     {% set index = etudiant.vars.value %}
 
     {# get entity object from its index in the Categories Field #}
-    {% set entity = form.etudiants.vars.choices[index].data %}
+    {% set entity = form.etudiantsAModifier.vars.choices[index].data %}
       <tr>
           <td>{{entity.nom}}</td>
           <td>{{entity.prenom}}</td>
           <td>{{entity.mail}}</td>
-          <td>{{form_widget(form.etudiants[index])}}</td>
+          <td>{{form_widget(form.etudiantsAModifier[index])}}</td>
+      </tr>
+  {% endfor %}
+  </tbody>
+</table>
+
+<h1 class="h4 mb-0 text-gray-800">Supprimer des étudiants du groupe</h1> <br>
+
+<table class="table" id="tableSupprimer">
+  <thead>
+    <th>Nom</th>
+    <th>Prenom</th>
+    <th>Mail</th>
+    <th></th>
+  </thead>
+
+  <tbody>
+  {% for etudiant in form.etudiantsASupprimer %}
+
+    {# store index of the category in a variable #}
+    {% set index = etudiant.vars.value %}
+
+    {# get entity object from its index in the Categories Field #}
+    {% set entity = form.etudiantsASupprimer.vars.choices[index].data %}
+      <tr>
+          <td>{{entity.nom}}</td>
+          <td>{{entity.prenom}}</td>
+          <td>{{entity.mail}}</td>
+          <td>{{form_widget(form.etudiantsASupprimer[index])}}</td>
       </tr>
   {% endfor %}
   </tbody>
