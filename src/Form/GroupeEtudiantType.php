@@ -40,7 +40,7 @@ class GroupeEtudiantType extends AbstractType
               'data' => true,
               'expanded' => true,
               'label_attr' =>  [
-                'class'=>'radio-inline'
+              'class'=>'radio-inline'
               ]
             ])
 

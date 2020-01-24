@@ -5,6 +5,7 @@ namespace App\Controller;
 use App\Entity\GroupeEtudiant;
 use App\Entity\Etudiant;
 use App\Form\GroupeEtudiantType;
+use App\Form\GroupeEtudiantEditType;
 use Gedmo\Tree\Entity\Repository\NestedTreeRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -36,6 +37,8 @@ class GroupeEtudiantController extends AbstractController
                   $node passé en paramètre (nottament les attributs enseignant et étudiants) */
                   $repo = $this->getDoctrine()->getRepository(GroupeEtudiant::class);
 
+                  $GroupeDesNonAffectés = "Etudiants non affectés";
+
                   /////NOM/////
                   $indentation = "";
 
@@ -62,8 +65,13 @@ class GroupeEtudiantController extends AbstractController
                     $url = $this->generateUrl('groupe_etudiant_show', [ 'id' => $node['id'] ]);
                     $show = " <a href='$url'><i class='icon-eye'></i></a> ";
 
-                    //Créer un sous-groupe
-                    $sousGroupe = "<a href='#'><i class='icon-plus'></i></a>";
+                    //Créer un sous-groupe (pas disponible pour groupe des étudiants non affectés)
+                    if ($node['nom'] != $GroupeDesNonAffectés) {
+                      $sousGroupe = "<a href='#'><i class='icon-plus'></i></a>";
+                    }
+                    else {
+                      $sousGroupe = "";
+                    }
 
                     //Créer une évaluation (seulement disponible si le groupe est évaluable)
                     if ($node['estEvaluable']) {
@@ -75,9 +83,14 @@ class GroupeEtudiantController extends AbstractController
                       $evalParParties = "";
                     }
 
-                    //Modifier
-                    $url = $this->generateUrl('groupe_etudiant_edit', [ 'id' => $node['id'] ]);
-                    $edit = "<a href=" . $url .  "><i class='icon-pencil-1'></i></a>";
+                    //Modifier (pas disponible pour groupe des étudiants non affectés)
+                    if ($node['nom'] != $GroupeDesNonAffectés) {
+                      $url = $this->generateUrl('groupe_etudiant_edit', [ 'id' => $node['id'] ]);
+                      $edit = "<a href=" . $url .  "><i class='icon-pencil-1'></i></a>";
+                    }
+                    else {
+                      $edit = "";
+                    }
 
                     //Supprimer
                     $url = $this->generateUrl('groupe_etudiant_delete', [ 'id' => $node['id'] ]);
@@ -178,17 +191,64 @@ class GroupeEtudiantController extends AbstractController
      */
     public function edit(Request $request, GroupeEtudiant $groupeEtudiant): Response
     {
-        $form = $this->createForm(GroupeEtudiantType::class, $groupeEtudiant);
-        $form->handleRequest($request);
+
+      //Utilisé pour également supprimer un étudiant dans les sous groupe de celui-ci
+      $enfants = $this->getDoctrine()->getRepository(GroupeEtudiant::class)->children($groupeEtudiant);
+
+      //Récupération du groupe des étudiants non affecté"s pour y ajouter les étudiants supprimés si besoin
+      $GroupeDesNonAffectés = $this->getDoctrine()->getRepository(GroupeEtudiant::class)->findOneByNom("Etudiants non affectés");
+
+      $form = $this->createForm(GroupeEtudiantEditType::class, $groupeEtudiant);
+      $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $this->getDoctrine()->getManager()->flush();
 
-            return $this->redirectToRoute('groupe_etudiant_index');
+          if ($groupeEtudiant->getParent() == null) {
+
+            //Le groupe est de haut niveau alors on ajoute dans le groupe et on supprime du groupe des non affectés
+            foreach ($form->get('etudiantsAAjouter')->getData() as $key => $etudiant) {
+             $groupeEtudiant->addEtudiant($etudiant);
+             $GroupeDesNonAffectés->removeEtudiant($etudiant);
+            }
+
+            //Le groupe est de haut niveau alors on supprime l'étudiant dans les sous-groupes et dans le groupe puis on l'ajoute dans le groupe des non affectés
+            foreach ($form->get('etudiantsASupprimer')->getData() as $key => $etudiant) {
+
+              foreach ($enfants as $enfant) {
+                $enfant->removeEtudiant($etudiant);
+              }
+              $groupeEtudiant->removeEtudiant($etudiant);
+              $GroupeDesNonAffectés->addEtudiant($etudiant);
+            }
+
+          }
+          else {
+
+            //Le sous-groupe n'est pas de haut niveau alors on ajoute juste l'étudiant dans le sous-groupe
+            foreach ($form->get('etudiantsAAjouter')->getData() as $key => $etudiant) {
+             $groupeEtudiant->addEtudiant($etudiant);
+            }
+
+            //Le sous-groupe n'est pas de haut niveau alors on supprime juste l'étudiant dans le sous-groupe et ses sous-groupes
+            foreach ($form->get('etudiantsASupprimer')->getData() as $key => $etudiant) {
+              //On supprime l'étudiant des sous groupes
+              foreach ($enfants as $enfant) {
+                $enfant->removeEtudiant($etudiant);
+              }
+              $groupeEtudiant->removeEtudiant($etudiant);
+            }
+
+          }
+
+          $this->getDoctrine()->getManager()->persist($groupeEtudiant);
+
+          $this->getDoctrine()->getManager()->flush();
+
+
+          return $this->redirectToRoute('groupe_etudiant_index');
         }
 
         return $this->render('groupe_etudiant/edit.html.twig', [
-            'groupe_etudiant' => $groupeEtudiant,
             'form' => $form->createView(),
         ]);
     }
