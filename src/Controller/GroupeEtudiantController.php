@@ -200,17 +200,29 @@ class GroupeEtudiantController extends AbstractController
         $form = $this->createForm(GroupeEtudiantEditType::class, $groupeEtudiant);
         $form->handleRequest($request);
 
+        //Utilisé pour supprimer un étudiant dans les sous groupe également
+        $enfants = $this->getDoctrine()->getRepository(GroupeEtudiant::class)->children($groupeEtudiant);
+
         if ($form->isSubmitted() && $form->isValid()) {
 
-          foreach ($form->get('etudiants')->getData() as $key => $etudiant) {
-           $groupeEtudiant->addEtudiant($etudiant);
+          foreach ($form->get('etudiantsAAjouter')->getData() as $key => $etudiant) {
+           //$groupeEtudiant->addEtudiant($etudiant);
+           echo $etudiant->getNom();
           }
 
-            $this->getDoctrine()->getManager()->persist($groupeEtudiant);
+          foreach ($form->get('etudiantsASupprimer')->getData() as $key => $etudiant) {
+            echo $etudiant->getNom();
+          }
 
-            $this->getDoctrine()->getManager()->flush();
+            //$this->getDoctrine()->getManager()->persist($groupeEtudiant);
 
-            return $this->redirectToRoute('groupe_etudiant_index');
+            //$this->getDoctrine()->getManager()->flush();
+
+            $resp = new Response();
+
+            //$this->redirectToRoute('groupe_etudiant_index')
+
+            return $resp;
         }
 
         return $this->render('groupe_etudiant/edit.html.twig', [

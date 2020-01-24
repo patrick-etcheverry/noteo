@@ -13,7 +13,7 @@
       <td>{{ form_widget(form.description) }}</td>
     </tr>
     <tr>
-      <td class="intitule"><label for="groupe_etudiant_estEvaluable" class="required">Évaluable</label> <a href="#"><i class="icon-help-circled"></i></a></td>
+      <td class="intitule"><label for="groupe_etudiant_estEvaluable" class="required">Évaluable</label> <a href="#HelpEvaluable" data-toggle='modal' data-target='#HelpEvaluable'><i class="icon-help-circled"></i></a></td>
       <td>{{form_widget(form.estEvaluable, {'data' : true})}}</td>
     </tr>
     <tr>
@@ -34,24 +34,25 @@
   </thead>
 
   <tbody>
-  {% for etudiant in form.etudiantsAModifier %}
+  {% for etudiant in form.etudiantsAAjouter %}
 
     {# store index of the category in a variable #}
     {% set index = etudiant.vars.value %}
 
     {# get entity object from its index in the Categories Field #}
-    {% set entity = form.etudiantsAModifier.vars.choices[index].data %}
+    {% set entity = form.etudiantsAAjouter.vars.choices[index].data %}
       <tr>
           <td>{{entity.nom}}</td>
           <td>{{entity.prenom}}</td>
           <td>{{entity.mail}}</td>
-          <td>{{form_widget(form.etudiantsAModifier[index])}}</td>
+          <td>{{form_widget(form.etudiantsAAjouter[index])}}</td>
       </tr>
   {% endfor %}
   </tbody>
 </table>
 
-<h1 class="h4 mb-0 text-gray-800">Supprimer des étudiants du groupe</h1> <br>
+
+<br> <h1 class="h4 mb-0 text-gray-800">Supprimer des étudiants du groupe</h1> <br>
 
 <table class="table" id="tableSupprimer">
   <thead>
