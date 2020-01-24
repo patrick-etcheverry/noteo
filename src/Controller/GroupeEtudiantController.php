@@ -203,26 +203,41 @@ class GroupeEtudiantController extends AbstractController
         //Utilisé pour supprimer un étudiant dans les sous groupe également
         $enfants = $this->getDoctrine()->getRepository(GroupeEtudiant::class)->children($groupeEtudiant);
 
+        //Récupération du groupe des étudiants non affecté"s pour y ajouter les étudiants supprimés si besoin
+        $GroupeDesNonAffectés = $this->getDoctrine()->getRepository(GroupeEtudiant::class)->findOneByNom("Etudiants non affectés");
+
         if ($form->isSubmitted() && $form->isValid()) {
 
           foreach ($form->get('etudiantsAAjouter')->getData() as $key => $etudiant) {
-           //$groupeEtudiant->addEtudiant($etudiant);
-           echo $etudiant->getNom();
+           $groupeEtudiant->addEtudiant($etudiant);
+           $GroupeDesNonAffectés->removeEtudiant($etudiant);
           }
+
+
 
           foreach ($form->get('etudiantsASupprimer')->getData() as $key => $etudiant) {
-            echo $etudiant->getNom();
+
+            //On supprime l'étudiant des sous groupes
+            foreach ($enfants as $enfant) {
+              $enfant->removeEtudiant($etudiant);
+            }
+
+            //On supprime l'étudiant du groupe/sous-groupe duquel on l'a déselectionné
+            $groupeEtudiant->removeEtudiant($etudiant);
+
+            //Si il s'agit d'un group de haut niveau, on le met dans le groupe des étudiants non affectés
+            if ($groupeEtudiant->getParent() == null) {
+              $GroupeDesNonAffectés->addEtudiant($etudiant);
+            }
+
           }
 
-            //$this->getDoctrine()->getManager()->persist($groupeEtudiant);
+          $this->getDoctrine()->getManager()->persist($groupeEtudiant);
 
-            //$this->getDoctrine()->getManager()->flush();
+          $this->getDoctrine()->getManager()->flush();
 
-            $resp = new Response();
 
-            //$this->redirectToRoute('groupe_etudiant_index')
-
-            return $resp;
+          return $this->redirectToRoute('groupe_etudiant_index');
         }
 
         return $this->render('groupe_etudiant/edit.html.twig', [

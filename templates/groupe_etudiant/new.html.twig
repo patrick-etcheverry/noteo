@@ -1,5 +1,6 @@
 
 {% extends 'base.html.twig' %}
+
 {% block tirePage %}Créer un groupe{% endblock %}
 
 {% block groupes %}active{% endblock %}
@@ -9,8 +10,27 @@
 
 {{ include('groupe_etudiant/_add_form.html.twig') }}
 
+<!-- Modale du ? de évaluable -->
+<div class="modal fade" id="HelpEvaluable" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Aide</h5>
+        <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">x</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <center>Cet attribut d'un groupe détermine si vous pourrez, ou non, créer des évaluations pour celui-ci.</center>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-primary" type="button" data-dismiss="modal">Ok</button>
+      </div>
+    </div>
+  </div>
+</div>
 
-  <a href="{{ path('groupe_etudiant_index') }}" class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm bouton">Annuler</a>
+<a href="{{ path('groupe_etudiant_index') }}" class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm bouton">Annuler</a>
 </div>
 
 {% endblock %}
