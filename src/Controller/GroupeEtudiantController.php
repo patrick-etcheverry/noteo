@@ -200,7 +200,7 @@ class GroupeEtudiantController extends AbstractController
         $form = $this->createForm(GroupeEtudiantEditType::class, $groupeEtudiant);
         $form->handleRequest($request);
 
-        //Utilisé pour supprimer un étudiant dans les sous groupe également
+        //Utilisé pour également supprimer un étudiant dans les sous groupe de celui-ci
         $enfants = $this->getDoctrine()->getRepository(GroupeEtudiant::class)->children($groupeEtudiant);
 
         //Récupération du groupe des étudiants non affecté"s pour y ajouter les étudiants supprimés si besoin
@@ -208,26 +208,39 @@ class GroupeEtudiantController extends AbstractController
 
         if ($form->isSubmitted() && $form->isValid()) {
 
-          foreach ($form->get('etudiantsAAjouter')->getData() as $key => $etudiant) {
-           $groupeEtudiant->addEtudiant($etudiant);
-           $GroupeDesNonAffectés->removeEtudiant($etudiant);
-          }
+          if ($groupeEtudiant->getParent() == null) {
 
-
-
-          foreach ($form->get('etudiantsASupprimer')->getData() as $key => $etudiant) {
-
-            //On supprime l'étudiant des sous groupes
-            foreach ($enfants as $enfant) {
-              $enfant->removeEtudiant($etudiant);
+            //Le groupe est de haut niveau alors on ajoute dans le groupe et on supprime du groupe des non affectés
+            foreach ($form->get('etudiantsAAjouter')->getData() as $key => $etudiant) {
+             $groupeEtudiant->addEtudiant($etudiant);
+             $GroupeDesNonAffectés->removeEtudiant($etudiant);
             }
 
-            //On supprime l'étudiant du groupe/sous-groupe duquel on l'a déselectionné
-            $groupeEtudiant->removeEtudiant($etudiant);
+            //Le groupe est de haut niveau alors on supprime l'étudiant dans les sous-groupes et dans le groupe puis on l'ajoute dans le groupe des non affectés
+            foreach ($form->get('etudiantsASupprimer')->getData() as $key => $etudiant) {
 
-            //Si il s'agit d'un group de haut niveau, on le met dans le groupe des étudiants non affectés
-            if ($groupeEtudiant->getParent() == null) {
+              foreach ($enfants as $enfant) {
+                $enfant->removeEtudiant($etudiant);
+              }
+              $groupeEtudiant->removeEtudiant($etudiant);
               $GroupeDesNonAffectés->addEtudiant($etudiant);
+            }
+
+          }
+          else {
+
+            //Le sous-groupe n'est pas de haut niveau alors on ajoute juste l'étudiant dans le sous-groupe
+            foreach ($form->get('etudiantsAAjouter')->getData() as $key => $etudiant) {
+             $groupeEtudiant->addEtudiant($etudiant);
+            }
+
+            //Le sous-groupe n'est pas de haut niveau alors on supprime juste l'étudiant dans le sous-groupe et ses sous-groupes
+            foreach ($form->get('etudiantsASupprimer')->getData() as $key => $etudiant) {
+              //On supprime l'étudiant des sous groupes
+              foreach ($enfants as $enfant) {
+                $enfant->removeEtudiant($etudiant);
+              }
+              $groupeEtudiant->removeEtudiant($etudiant);
             }
 
           }
