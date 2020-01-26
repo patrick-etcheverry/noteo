@@ -6,7 +6,7 @@
 
 {% block contenu %}
 
-    {{ include('groupe_etudiant/_update_form.html.twig', {'button_label': 'Valider la modification'}) }}
+    {{ include('groupe_etudiant/_update_form.html.twig') }}
 
     <!-- Modale du ? de évaluable -->
     <div class="modal fade" id="HelpEvaluable" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
@@ -27,8 +27,6 @@
         </div>
       </div>
     </div>
-
-    <a href="{{ path('groupe_etudiant_index') }}">back to list</a>
 
 {% endblock %}
 
