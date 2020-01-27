@@ -193,13 +193,23 @@ class GroupeEtudiantController extends AbstractController
     public function edit(Request $request, GroupeEtudiant $groupeEtudiant): Response
     {
 
-      //Utilisé pour également supprimer un étudiant dans les sous groupe de celui-ci
+      //Utilisé pour pouvoir supprimer un étudiant dans les sous groupe du groupe selectionné
       $enfants = $this->getDoctrine()->getRepository(GroupeEtudiant::class)->children($groupeEtudiant);
 
       //Récupération du groupe des étudiants non affecté"s pour y ajouter les étudiants supprimés si besoin
       $GroupeDesNonAffectés = $this->getDoctrine()->getRepository(GroupeEtudiant::class)->findOneByNom("Etudiants non affectés");
 
-      $form = $this->createForm(GroupeEtudiantEditType::class, $groupeEtudiant);
+      /* On prépare une variable qui contiendra le groupe à partir duquel ajouter les étudiants. En effet, si le groupe
+      est de haut niveau, on ajoute des étudiants depuis le groupe des étudiants non affectés, sinon on ajout des étudiants
+      depuis son parent (car dans ce cas, le groupe est un sous groupe) */
+      if ($groupeEtudiant->getParent() == null) {
+        $groupeAPartirDuquelAjouterEtudiants = $GroupeDesNonAffectés;
+      }
+      else {
+        $groupeAPartirDuquelAjouterEtudiants = $groupeEtudiant->getParent();
+      }
+
+      $form = $this->createForm(GroupeEtudiantEditType::class, $groupeEtudiant, ['GroupeAjout' => $groupeAPartirDuquelAjouterEtudiants]);
       $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
@@ -214,7 +224,6 @@ class GroupeEtudiantController extends AbstractController
 
             //Le groupe est de haut niveau alors on supprime l'étudiant dans les sous-groupes et dans le groupe puis on l'ajoute dans le groupe des non affectés
             foreach ($form->get('etudiantsASupprimer')->getData() as $key => $etudiant) {
-
               foreach ($enfants as $enfant) {
                 $enfant->removeEtudiant($etudiant);
               }
@@ -225,12 +234,12 @@ class GroupeEtudiantController extends AbstractController
           }
           else {
 
-            //Le sous-groupe n'est pas de haut niveau alors on ajoute juste l'étudiant dans le sous-groupe
+            //Le groupe n'est pas de haut niveau alors on ajoute juste l'étudiant dans le sous-groupe
             foreach ($form->get('etudiantsAAjouter')->getData() as $key => $etudiant) {
              $groupeEtudiant->addEtudiant($etudiant);
             }
 
-            //Le sous-groupe n'est pas de haut niveau alors on supprime juste l'étudiant dans le sous-groupe et ses sous-groupes
+            //Le groupe n'est pas de haut niveau alors on supprime juste l'étudiant dans le sous-groupe et ses sous-groupes
             foreach ($form->get('etudiantsASupprimer')->getData() as $key => $etudiant) {
               //On supprime l'étudiant des sous groupes
               foreach ($enfants as $enfant) {
@@ -266,26 +275,17 @@ class GroupeEtudiantController extends AbstractController
       $groupes = $repo->children($groupeEtudiant); /* On récupère tous les enfants du groupe courant. En effet, on a besoin
                                                       de les traiter un à un pour supprimer les évaluations liées a ceux-ci */
 
-        foreach ($groupes as $groupeAModifier) {
-
-            foreach ($groupeAModifier->getEvaluations() as $evaluation) { //On récupère toutes les évaluations du groupe courant
-
-              foreach ($evaluation->getParties() as $partie) { //On récupère toutes les parties de l'évaluation courante
-
-                foreach ($partie->getNotes() as $note) { //On récupère toutes les notes associées aux parties de l'évaluation courante
-
-                  $em->remove($note);
-
-                }
-
-                $em->remove($partie);
+        foreach ($groupes as $groupeAModifier) { // Pour tous les enfants du groupe choisi
+          foreach ($groupeAModifier->getEvaluations() as $evaluation) { //On récupère toutes les évaluations du groupe courant
+            foreach ($evaluation->getParties() as $partie) { //On récupère toutes les parties de l'évaluation courante
+              foreach ($partie->getNotes() as $note) { //On récupère toutes les notes associées aux parties de l'évaluation courante
+                $em->remove($note);
               }
-
-              $em->remove($evaluation);
-
+              $em->remove($partie);
             }
-
+            $em->remove($evaluation);
           }
+        }
 
           //Si il s'agit d'un groupe de haut niveau, on supprime également les étudiants contenus dans le groupe
           if ($groupeEtudiant->getParent() == null) {
