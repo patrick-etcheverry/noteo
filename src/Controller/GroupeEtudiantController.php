@@ -22,6 +22,8 @@ class GroupeEtudiantController extends AbstractController
      */
     public function index(): Response
     {
+
+
         // On prépare un tableau d'options qui servera à paramètrer l'affichage de notre arbre
         $options = array(
             'decorate' => true,
@@ -36,8 +38,6 @@ class GroupeEtudiantController extends AbstractController
                   /* On prépare un répository pour effectuer quelques requetes pour des éléments qui ne sont pas contenus dans l'élement
                   $node passé en paramètre (nottament les attributs enseignant et étudiants) */
                   $repo = $this->getDoctrine()->getRepository(GroupeEtudiant::class);
-
-                  $GroupeDesNonAffectés = "Etudiants non affectés";
 
                   /////NOM/////
                   $indentation = "";
@@ -65,13 +65,9 @@ class GroupeEtudiantController extends AbstractController
                     $url = $this->generateUrl('groupe_etudiant_show', [ 'id' => $node['id'] ]);
                     $show = " <a href='$url'><i class='icon-eye'></i></a> ";
 
-                    //Créer un sous-groupe (pas disponible pour groupe des étudiants non affectés)
-                    if ($node['nom'] != $GroupeDesNonAffectés) {
-                      $sousGroupe = "<a href='#'><i class='icon-plus'></i></a>";
-                    }
-                    else {
-                      $sousGroupe = "";
-                    }
+                    //Créer un sous-groupe
+                    $sousGroupe = "<a href='#'><i class='icon-plus'></i></a>";
+
 
                     //Créer une évaluation (seulement disponible si le groupe est évaluable)
                     if ($node['estEvaluable']) {
@@ -83,24 +79,13 @@ class GroupeEtudiantController extends AbstractController
                       $evalParParties = "";
                     }
 
-                    //Modifier (pas disponible pour groupe des étudiants non affectés)
-                    if ($node['nom'] != $GroupeDesNonAffectés) {
-                      $url = $this->generateUrl('groupe_etudiant_edit', [ 'id' => $node['id'] ]);
-                      $edit = "<a href=" . $url .  "><i class='icon-pencil-1'></i></a>";
-                    }
-                    else {
-                      $edit = "";
-                    }
+                    //Modifier
+                    $url = $this->generateUrl('groupe_etudiant_edit', [ 'id' => $node['id'] ]);
+                    $edit = "<a href=" . $url .  "><i class='icon-pencil-1'></i></a>";
 
-                    //Supprimer (pas disponible pour groupe des étudiants non affectés)
-                    if ($node['nom'] != $GroupeDesNonAffectés) {
-                      $url = $this->generateUrl('groupe_etudiant_delete', [ 'id' => $node['id'] ]);
-                      $delete = "<a href='$url' onclick='EcritureModale(\"$url\")' data-toggle='modal'><i class='icon-trash' data-toggle='tooltip' title='Supprimer le groupe'></i></a>";
-                    }
-                    else {
-                      $delete = "";
-                    }
-
+                    //Supprimer
+                    $url = $this->generateUrl('groupe_etudiant_delete', [ 'id' => $node['id'] ]);
+                    $delete = "<a href='$url' onclick='EcritureModale(\"$url\")' data-toggle='modal'><i class='icon-trash' data-toggle='tooltip' title='Supprimer le groupe'></i></a>";
 
                     //Mise à la suite des actions en une seule chaîne
                     $actions = "<td>" . $show  . $sousGroupe . $evalSimple . $evalParParties . $edit . $delete . "</td>";
@@ -110,15 +95,25 @@ class GroupeEtudiantController extends AbstractController
             }
         );
 
-        //On utilise la fonction childrenHierarchy qui va créer l'arbre avec les options que l'on a choisies précédemment
-        $htmlTree = $this->getDoctrine()->getRepository(GroupeEtudiant::class)->childrenHierarchy(
-            null, /* starting from root nodes */
-            false, /* true: load all children, false: only direct */
-            $options
-        );
+        //Cette variable représente le groupe des étudiants non affectés à un groupe de haut niveau
+        $GroupeEtudiantsNonAffectés = "Etudiants non affectés";
+
+        /* Cette requette personnalisée nous permet de récupérer tous les groupes, dans l'ordre de la hierarchie,
+        sans le groupe de étudiants non affectés */
+        $query = $this->getDoctrine()->getManager()
+          ->createQueryBuilder()
+          ->select('node')
+          ->from('App\Entity\GroupeEtudiant', 'node')
+          ->orderBy('node.root, node.lft', 'ASC')
+          ->where("node.nom != '$GroupeEtudiantsNonAffectés'")
+          ->getQuery()
+          ;
+
+        //On utilise la fonction buildtree qui va créer l'arbre à afficher avec la requete personnalisée et les options que l'on a choisies précédemment
+        $htmlTree = $this->getDoctrine()->getRepository(GroupeEtudiant::class)->buildTree($query->getArrayResult(), $options);
 
         return $this->render('groupe_etudiant/index.html.twig', [
-            'tree' => $htmlTree
+            'tree' => $htmlTree,
         ]);
     }
 
