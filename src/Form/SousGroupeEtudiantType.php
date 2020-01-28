@@ -3,10 +3,8 @@
 namespace App\Form;
 
 use App\Entity\GroupeEtudiant;
-use App\Entity\Enseignant;
 use App\Entity\Etudiant;
-use Doctrine\ORM\EntityRepository;
-use App\Repository\GroupeEtudiantRepository;
+use App\Entity\Enseignant;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
@@ -16,7 +14,7 @@ use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 
-class GroupeEtudiantEditType extends AbstractType
+class SousGroupeEtudiantType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
@@ -25,7 +23,7 @@ class GroupeEtudiantEditType extends AbstractType
 
           ->add('description', TextareaType::class, [
             'attr' => [
-              'rows' => 6 //Pour limiter la hauteur initiale du champ de saisie à 6 lignes
+              'rows' => 6
             ]
           ])
 
@@ -35,37 +33,28 @@ class GroupeEtudiantEditType extends AbstractType
 
           ->add('estEvaluable', ChoiceType::class, [
             'choices' => ['Oui' => true, 'Non' => false],
-            'expanded' => true, // Pour avoir des boutons radio
+            'data' => true,
+            'expanded' => true,
             'label_attr' =>  [
-            'class'=>'radio-inline' //Pour que les boutons radio soient alignés
+            'class'=>'radio-inline'
             ]
           ])
 
-          ->add('etudiantsAAjouter', EntityType::class, [
+          ->add('etudiants', EntityType::class, [
             'class' => Etudiant::Class, //On veut choisir des étudiants
             'choice_label' => false, // On n'affichera pas d'attribut de l'entité à côté du bouton pour aider au choix car on liste les entités nous même
             'mapped' => false, // Pour que l'attribut ne soit pas immédiatement mis en BD mais soit récupérable après validation
             'expanded' => true, // Pour avoir des cases
             'multiple' => true, // à cocher
-            'choices' => $options['GroupeAjout']->getEtudiants() // On restreint le choix à la liste des étudiants du groupe passé en parametre
+            'choices' => $options['parent']->getEtudiants() // On restreint le choix à la liste des étudiants du groupe passé en parametre
           ])
-
-          ->add('etudiantsASupprimer', EntityType::class, [
-            'class' => Etudiant::Class,
-            'choice_label' => false,
-            'mapped' => false,
-            'expanded' => true,
-            'multiple' => true,
-            'choices' => $builder->getData()->getEtudiants() //Onr restreint le choix à la liste du groupe pour lequel le formulaire est créé
-          ])
-      ;
+        ;
     }
 
-    //Cette fonction sert à donner des valeurs par défaut aux options passées lors de la création du formulaire
     public function configureOptions(OptionsResolver $resolver)
     {
         $resolver->setDefaults([
-            'GroupeAjout' => null, //Si pas de groupe renseigné, affichera tous les étudiants de la base
+            'parent' => null,
         ]);
     }
 }
