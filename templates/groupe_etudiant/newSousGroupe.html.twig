@@ -34,14 +34,14 @@
 
 <script>
 $(document).ready(function() {
-  $('#etud').dataTable({
+  $('#tableAjouter').dataTable({
     language: {
       "url": "{{asset('tradfr.json')}}"
     },
     order: [
       [0, "asc"]
     ],
-    columns: [null, null, {"orderable": false}],
+    columns: [null, null, {"orderable": false},{"orderable": false}],
     lengthMenu: [
       [10, 25, 50, -1],
       [10, 25, 50, "Tout"]
