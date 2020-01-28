@@ -74,11 +74,11 @@ class GroupeEtudiantController extends AbstractController
                     //Créer une évaluation (seulement disponible si le groupe est évaluable)
                     if ($node['estEvaluable']) {
                       $evalSimple = "<a href='#'><i class='icon-eval-simple'></i></a>";
-                      $evalParParties = "<a href='#'><i class='icon-eval-composee'></i></a>";
+                      // $evalParParties = "<a href='#'><i class='icon-eval-composee'></i></a>";
                     }
                     else {
                       $evalSimple = "";
-                      $evalParParties = "";
+                    //  $evalParParties = "";
                     }
 
                     //Modifier
@@ -90,7 +90,7 @@ class GroupeEtudiantController extends AbstractController
                     $delete = "<a href='$url' onclick='EcritureModale(\"$url\")' data-toggle='modal'><i class='icon-trash' data-toggle='tooltip' title='Supprimer le groupe'></i></a>";
 
                     //Mise à la suite des actions en une seule chaîne
-                    $actions = "<td>" . $show  . $sousGroupe . $evalSimple . $evalParParties . $edit . $delete . "</td>";
+                    $actions = "<td>" . $show  . $sousGroupe . $evalSimple /*. $evalParParties */. $edit . $delete . "</td>";
 
                   //Mise à la suite du contenu de toutes les colonnes du tableau en une seule chaîne
                   return $nom . $effectif . $description . $enseignant . $actions;
