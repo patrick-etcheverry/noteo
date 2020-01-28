@@ -5,6 +5,7 @@ namespace App\Controller;
 use App\Entity\GroupeEtudiant;
 use App\Entity\Etudiant;
 use App\Form\GroupeEtudiantType;
+use App\Form\SousGroupeEtudiantType;
 use App\Form\GroupeEtudiantEditType;
 use Gedmo\Tree\Entity\Repository\NestedTreeRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -66,7 +67,8 @@ class GroupeEtudiantController extends AbstractController
                     $show = " <a href='$url'><i class='icon-eye'></i></a> ";
 
                     //Créer un sous-groupe
-                    $sousGroupe = "<a href='#'><i class='icon-plus'></i></a>";
+                    $url = $this->generateUrl('groupe_etudiant_new_sousGroupe', [ 'id' => $node['id'] ]);
+                    $sousGroupe = "<a href='$url'><i class='icon-plus'></i></a>";
 
 
                     //Créer une évaluation (seulement disponible si le groupe est évaluable)
@@ -300,6 +302,39 @@ class GroupeEtudiantController extends AbstractController
         $em->flush();
 
         return $this->redirectToRoute('groupe_etudiant_index');
+      }
+
+      /**
+       * @Route("/{id}/new/SousGroupe", name="groupe_etudiant_new_sousGroupe", methods={"GET","POST"})
+       */
+      public function NewSousFroupe(GroupeEtudiant $groupeEtudiantParent, Request $request): Response
+      {
+
+        $groupeEtudiant = new GroupeEtudiant();
+        $groupeEtudiant->setParent($groupeEtudiantParent);
+
+        $form = $this->createForm(SousGroupeEtudiantType::class, $groupeEtudiant, ['parent' => $groupeEtudiantParent]);
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+
+          foreach ($form->get('etudiants')->getData() as $key => $etudiant) {
+           $groupeEtudiant->addEtudiant($etudiant);
+          }
+
+          $this->getDoctrine()->getManager()->persist($groupeEtudiant);
+          $this->getDoctrine()->getManager()->flush();
+
+          return $this->redirectToRoute('groupe_etudiant_index');
+        }
+
+
+        return $this->render('groupe_etudiant/newSousGroupe.html.twig', [
+            'form' => $form->createView(),
+            'nomParent' => $groupeEtudiantParent->getNom()
+        ]);
+
+
       }
 
 }
