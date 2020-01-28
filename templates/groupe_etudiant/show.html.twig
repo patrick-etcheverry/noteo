@@ -51,6 +51,9 @@
 $(document).ready(function() {
   $('#etud').dataTable({
     language: {
+      // Suppression du label Rechercher et ajout du placeholder
+      search: "_INPUT_",
+      searchPlaceholder: "Rechercher...",
       "url": "{{asset('tradfr.json')}}"
     },
     order: [

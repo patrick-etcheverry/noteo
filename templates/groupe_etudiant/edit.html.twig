@@ -38,6 +38,9 @@ $(document).ready(function() {
   //Activation de Datatables sur le tableau d'ajout des étudiants
   $('#tableAjouter').dataTable({
     language: {
+      // Suppression du label Rechercher et ajout du placeholder
+      search: "_INPUT_",
+      searchPlaceholder: "Rechercher...",
       "url": "{{asset('tradfr.json')}}"
     },
     order: [
@@ -54,6 +57,9 @@ $(document).ready(function() {
   //Activation de Datatables sur le tableau de suppression des étudiants
   $('#tableSupprimer').dataTable({
     language: {
+      // Suppression du label Rechercher et ajout du placeholder
+      search: "_INPUT_",
+      searchPlaceholder: "Rechercher...",
       "url": "{{asset('tradfr.json')}}"
     },
     order: [
