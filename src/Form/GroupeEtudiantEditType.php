@@ -44,6 +44,7 @@ class GroupeEtudiantEditType extends AbstractType
           ->add('etudiantsAAjouter', EntityType::class, [
             'class' => Etudiant::Class, //On veut choisir des étudiants
             'choice_label' => false, // On n'affichera pas d'attribut de l'entité à côté du bouton pour aider au choix car on liste les entités nous même
+            'label' => false,
             'mapped' => false, // Pour que l'attribut ne soit pas immédiatement mis en BD mais soit récupérable après validation
             'expanded' => true, // Pour avoir des cases
             'multiple' => true, // à cocher
@@ -53,6 +54,7 @@ class GroupeEtudiantEditType extends AbstractType
           ->add('etudiantsASupprimer', EntityType::class, [
             'class' => Etudiant::Class,
             'choice_label' => false,
+            'label' => false,
             'mapped' => false,
             'expanded' => true,
             'multiple' => true,
