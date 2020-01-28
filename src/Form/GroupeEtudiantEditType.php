@@ -29,10 +29,6 @@ class GroupeEtudiantEditType extends AbstractType
             ]
           ])
 
-          ->add('enseignant', EntityType::class, [
-            'class' => Enseignant::class, 'choice_label' => 'nom'
-          ])
-
           ->add('estEvaluable', ChoiceType::class, [
             'choices' => ['Oui' => true, 'Non' => false],
             'expanded' => true, // Pour avoir des boutons radio

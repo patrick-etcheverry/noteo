@@ -8,50 +8,50 @@
 
 {% if tree is not empty %} {# On teste si la chaine représentant l'arbre n'est pas vide : si oui cela veut dire qu'il n'y a aucun groupe #}
 
-    <table class="table" id="table">
-        <thead>
-            <tr>
-                <th>Nom</th>
-                <th>Effectif</th>
-                <th>Description</th>
-                <th>Créateur</th>
-                <th></th>
-            </tr>
-        </thead>
-        <tbody>
+<table class="table" id="table">
+  <thead>
+    <tr>
+      <th>Nom</th>
+      <th>Effectif</th>
+      <th>Description</th>
+      <th>Créateur</th>
+      <th></th>
+    </tr>
+  </thead>
+  <tbody>
 
-          {# Affichage de la chaine en utilisant la fonction 'raw' qui va afficher la chaine telle que fournise, sans transformer le contenu#}
-          {{ tree | raw }}
-        </tbody>
-    </table>
+    {# Affichage de la chaine en utilisant la fonction 'raw' qui va afficher la chaine telle que fournise, sans transformer le contenu#}
+    {{ tree | raw }}
+  </tbody>
+</table>
 {% endif %}
 
 {% if tree is empty %}
-    <div class="info">
-      <h2 class="h4 mb-0 text-gray-800">Vous n'avez aucun groupe</h1>
-    </div>
-    <div class="bouton">
-      <a href="{{ path('groupe_etudiant_new') }}" class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm">Créer un groupe</a>
-    </div>
+<div class="info">
+  <h2 class="h4 mb-0 text-gray-800">Vous n'avez aucun groupe</h1>
+  </div>
+  <div class="bouton">
+    <a href="{{ path('groupe_etudiant_new') }}" class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm">Créer un groupe</a>
+  </div>
 {% endif %}
 
-    <div class="modal fade" id="delGroupe" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-      <div class="modal-dialog" role="document">
-        <div class="modal-content">
-          <div class="modal-header">
-            <h5 class="modal-title" id="exampleModalLabel">Avertissement</h5>
-            <button class="close" type="button" data-dismiss="modal" aria-label="Close">
-              <span aria-hidden="true">x</span>
-            </button>
-          </div>
-          <div class="modal-body">Etes vous sur de vouloir supprimer le groupe ? </div>
-          <div class="modal-footer">
-            <button class="d-none d-sm-inline-block btn btn-sm btn-secondary shadow-sm bouton" type="button" data-dismiss="modal">Annuler</button>
-            <a class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm bouton" id = "BoutonSupprimerModale" href="#">Supprimer le groupe</a>
-          </div>
-        </div>
+<div class="modal fade" id="delGroupe" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Avertissement</h5>
+        <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">x</span>
+        </button>
+      </div>
+      <div class="modal-body">Etes vous sur de vouloir supprimer le groupe ? </div>
+      <div class="modal-footer">
+        <button class="d-none d-sm-inline-block btn btn-sm btn-secondary shadow-sm bouton" type="button" data-dismiss="modal">Annuler</button>
+        <a class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm bouton" id = "BoutonSupprimerModale" href="#">Supprimer le groupe</a>
       </div>
     </div>
+  </div>
+</div>
 
 {% endblock %}
 
@@ -75,6 +75,9 @@ $(document).ready(function() {
   $('#table').dataTable({
     aaSorting: [], // Pour désactiver le tri automatique
     language: {
+      // Suppression du label Rechercher et ajout du placeholder
+      search: "_INPUT_",
+      searchPlaceholder: "Rechercher...",
       "url": "{{asset('tradfr.json')}}"
     },
     columns: [null, null, {"orderable": false}, null, {"orderable": false}],
