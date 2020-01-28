@@ -1,6 +1,6 @@
 {% extends 'base.html.twig' %}
 
-{% block tirePage %}Consulter un groupe{% endblock %}
+{% block tirePage %}{{ groupe_etudiant.nom }}{% endblock %}
 
 {% block groupes %}active{% endblock %}
 
@@ -8,10 +8,6 @@
 
     <table class="table">
         <tbody>
-            <tr>
-                <th>Nom</th>
-                <td>{{ groupe_etudiant.nom }}</td>
-            </tr>
             <tr>
                 <th>Description</th>
                 <td>{{ groupe_etudiant.description }}</td>

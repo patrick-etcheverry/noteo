@@ -262,6 +262,7 @@ class GroupeEtudiantController extends AbstractController
 
         return $this->render('groupe_etudiant/edit.html.twig', [
             'form' => $form->createView(),
+            'groupe_etudiant' => $groupeEtudiant
         ]);
     }
 
