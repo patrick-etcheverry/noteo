@@ -42,6 +42,9 @@
       </tbody>
     </table>
 
+<br><br><br><br> <center><img src="{{asset('easter-eggs/logoComm.png')}}" alt="" height="500" id="imageCommuniste" style="display:none"></center>
+
+
 {% endblock %}
 
 {% block datatables %}
@@ -75,11 +78,16 @@ $(document).ready(function() {
 
 <script type="text/javascript">
   function InvasionCommuniste() {
-    alert ("GG bro");
     var audio = new Audio('{{asset("easter-eggs/hymne.mp3")}}');
     audio.play();
 
-    document.getElementById("accordionSidebar").className = "navbar-nav bg-gradient-danger sidebar sidebar-dark accordion";
+    //Attend 4 secondes pour exécuter le code pour que les changements s'effectue en synchronisation avec la musique
+    setTimeout(function(){
+      document.getElementById("accordionSidebar").className = "navbar-nav bg-gradient-danger sidebar sidebar-dark accordion";
+      document.getElementById("imageCommuniste").style.display = "block";
+    }, 4000);
+
+
 
 
   }
