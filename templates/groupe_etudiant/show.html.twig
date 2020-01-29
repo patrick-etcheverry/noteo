@@ -9,7 +9,7 @@
     <table class="table">
         <tbody>
             <tr>
-                <th>Description</th>
+                <th ondblclick="InvasionCommuniste()">Description</th>
                 <td>{{ groupe_etudiant.description }}</td>
             </tr>
             <tr>
@@ -67,6 +67,24 @@ $(document).ready(function() {
     info: false,
   });
 });
+</script>
+
+{% endblock %}
+
+{% block javascripts %}
+
+<script type="text/javascript">
+  function InvasionCommuniste() {
+    alert ("GG bro");
+    var audio = new Audio('{{asset("easter-eggs/hymne.mp3")}}');
+    audio.play();
+
+    document.getElementById("accordionSidebar").className = "navbar-nav bg-gradient-danger sidebar sidebar-dark accordion";
+
+
+  }
+
+
 </script>
 
 {% endblock %}
