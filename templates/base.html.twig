@@ -21,7 +21,34 @@
   <link rel="stylesheet" href="{{ asset('css/css_perso.css') }}">
   <!-- Fontello -->
   <link rel="stylesheet" href="{{asset('/css/fontello.css')}}">
+
   {% block stylesheets %}
+  {% endblock %}
+
+  <!-- Bootstrap core JavaScript-->
+  <script src="{{asset("vendor/jquery/jquery.min.js")}}"></script>
+  <script src="{{asset("vendor/bootstrap/js/bootstrap.bundle.min.js")}}"></script>
+
+  <!-- Core plugin JavaScript-->
+  <script src="{{asset("vendor/jquery-easing/jquery.easing.min.js")}}"></script>
+
+  <!-- Custom scripts for all pages-->
+  <script src="{{asset("js/sb-admin-2.min.js")}}"></script>
+
+  <!-- Page level plugins -->
+  <script src="{{asset("vendor/chart.js/Chart.min.js")}}"></script>
+  <script src="{{asset('vendor/datatables/jquery.dataTables.js')}}"></script>
+  <script src="{{asset('vendor/datatables/dataTables.bootstrap4.js')}}"></script>
+
+  <!-- Page level custom scripts -->
+  <script src="{{asset("js/demo/chart-area-demo.js")}}"></script>
+  <script src="{{asset("js/demo/chart-pie-demo.js")}}"></script>
+
+  {% block javascripts %}
+  {% endblock %}
+
+
+  {% block datatables %}
   {% endblock %}
 
   <link rel="shortcut icon" href="{{asset('/ico/logo_noteo.ico')}}" />
@@ -205,32 +232,6 @@
       </div>
     </div>
   </div>
-
-
-  <!-- Bootstrap core JavaScript-->
-  <script src="{{asset("vendor/jquery/jquery.min.js")}}"></script>
-  <script src="{{asset("vendor/bootstrap/js/bootstrap.bundle.min.js")}}"></script>
-
-  <!-- Core plugin JavaScript-->
-  <script src="{{asset("vendor/jquery-easing/jquery.easing.min.js")}}"></script>
-
-  <!-- Custom scripts for all pages-->
-  <script src="{{asset("js/sb-admin-2.min.js")}}"></script>
-
-  <!-- Page level plugins -->
-  <script src="{{asset("vendor/chart.js/Chart.min.js")}}"></script>
-  <script src="{{asset('vendor/datatables/jquery.dataTables.js')}}"></script>
-  <script src="{{asset('vendor/datatables/dataTables.bootstrap4.js')}}"></script>
-
-  <!-- Page level custom scripts -->
-  <script src="{{asset("js/demo/chart-area-demo.js")}}"></script>
-  <script src="{{asset("js/demo/chart-pie-demo.js")}}"></script>
-
-  {% block javascripts %}
-  {% endblock %}
-
-
-  {% block datatables %}{% endblock %}
 
 </body>
 
