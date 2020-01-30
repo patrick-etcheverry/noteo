@@ -51,13 +51,13 @@ class GroupeEtudiantController extends AbstractController
                   $nom = "<td>" . $indentation . $node['nom'] . "</td>";
 
                   /////EFFECTIF/////
-                  $effectif = "<td>" . count($repo->find($node['id'])->getEtudiants()) . "</td>";
+                  $effectif = "<td>" . count($node['etudiants']) . "</td>";
 
                   /////DESCRIPTION/////
                   $description =  "<td>" . $node['description'] . "</td>";
 
                   /////ENSEIGNANT/////
-                  $enseignant = "<td>" . $repo->find($node['id'])->getEnseignant()->getPrenom() . " " . $repo->find($node['id'])->getEnseignant()->getNom() . "</td>";
+                  $enseignant = "<td>" . $node['enseignant']['prenom'] . " " . $node['enseignant']['nom'] . "</td>";
 
                   /////ACTIONS/////
                   /////Cette section affiche les boutons d'actions liés à chaque groupes
@@ -104,10 +104,12 @@ class GroupeEtudiantController extends AbstractController
         sans le groupe de étudiants non affectés */
         $query = $this->getDoctrine()->getManager()
           ->createQueryBuilder()
-          ->select('node')
-          ->from('App\Entity\GroupeEtudiant', 'node')
-          ->orderBy('node.root, node.lft', 'ASC')
-          ->where("node.nom != '$GroupeEtudiantsNonAffectés'")
+          ->select('ge, en, et')
+          ->from('App\Entity\GroupeEtudiant', 'ge')
+          ->join('ge.enseignant', 'en')
+          ->leftjoin('ge.etudiants', 'et')
+          ->orderBy('ge.root, ge.lft', 'ASC')
+          ->where("ge.nom != '$GroupeEtudiantsNonAffectés'")
           ->getQuery()
           ;
 
@@ -115,7 +117,7 @@ class GroupeEtudiantController extends AbstractController
         $htmlTree = $this->getDoctrine()->getRepository(GroupeEtudiant::class)->buildTree($query->getArrayResult(), $options);
 
         return $this->render('groupe_etudiant/index.html.twig', [
-            'tree' => $htmlTree,
+            'tree' => $htmlTree
         ]);
     }
 

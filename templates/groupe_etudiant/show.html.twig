@@ -9,7 +9,7 @@
     <table class="table">
         <tbody>
             <tr>
-                <th>Description</th>
+                <th ondblclick="InvasionCommuniste()">Description</th>
                 <td>{{ groupe_etudiant.description }}</td>
             </tr>
             <tr>
@@ -42,6 +42,9 @@
       </tbody>
     </table>
 
+<br><br><br><br> <center><img src="{{asset('easter-eggs/logoComm.png')}}" alt="" height="500" id="imageCommuniste" style="display:none"></center>
+
+
 {% endblock %}
 
 {% block datatables %}
@@ -67,6 +70,30 @@ $(document).ready(function() {
     info: false,
   });
 });
+</script>
+
+{% endblock %}
+
+{% block javascripts %}
+
+<script type="text/javascript">
+  function InvasionCommuniste() {
+    var audio = new Audio('{{asset("easter-eggs/hymne.mp3")}}');
+    audio.play();
+
+    //Attend 4 secondes pour exécuter le code pour que les changements s'effectue en synchronisation avec la musique
+    setTimeout(function(){
+      document.getElementById("accordionSidebar").className = "navbar-nav bg-gradient-danger sidebar sidebar-dark accordion";
+      document.getElementById("imageCommuniste").style.display = "block";
+      document.getElementById("nomAppli").innerHTML = "Gouleo";
+    }, 4000);
+
+
+
+
+  }
+
+
 </script>
 
 {% endblock %}
