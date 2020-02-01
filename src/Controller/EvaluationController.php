@@ -39,7 +39,7 @@ class EvaluationController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-
+/*
             $partie = new Partie();
             $partie->setIntitule()= "";
             $partie->setBareme()= 20;
