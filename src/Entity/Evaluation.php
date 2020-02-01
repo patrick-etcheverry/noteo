@@ -85,23 +85,23 @@ class Evaluation
         return $this->parties;
     }
 
-    public function addParty(Partie $party): self
+    public function addPartie(Partie $partie): self
     {
-        if (!$this->parties->contains($party)) {
-            $this->parties[] = $party;
-            $party->setEvaluation($this);
+        if (!$this->parties->contains($partie)) {
+            $this->parties[] = $partie;
+            $party->setEvaluation($partie);
         }
 
         return $this;
     }
 
-    public function removeParty(Partie $party): self
+    public function removePartie(Partie $partie): self
     {
-        if ($this->parties->contains($party)) {
-            $this->parties->removeElement($party);
+        if ($this->parties->contains($partie)) {
+            $this->parties->removeElement($partie);
             // set the owning side to null (unless already changed)
-            if ($party->getEvaluation() === $this) {
-                $party->setEvaluation(null);
+            if ($partie->getEvaluation() === $this) {
+                $partie->setEvaluation(null);
             }
         }
 

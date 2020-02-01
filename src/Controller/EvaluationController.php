@@ -3,7 +3,10 @@
 namespace App\Controller;
 
 use App\Entity\Evaluation;
+use App\Entity\Partie;
+use App\Entity\Points;
 use App\Form\EvaluationType;
+use App\Entity\GroupeEtudiant;
 use App\Repository\EvaluationRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -28,16 +31,33 @@ class EvaluationController extends AbstractController
     /**
      * @Route("/new/{id}", name="evaluation_new", methods={"GET","POST"})
      */
-    public function new(Request $request): Response
+    public function new(Request $request, GroupeEtudiant $groupeConcerne): Response
     {
         $evaluation = new Evaluation();
 
-        $groupe = $this->findGroupe($id)
-
-        $form = $this->createForm(EvaluationType::class, $evaluation);
+        $form = $this->createForm(EvaluationType::class, $evaluation, ['groupe' => $groupeConcerne]);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
+
+            //$partie = new Partie()
+            $partie->setIntitule()= "";
+            $partie->setBareme()= 20;
+
+            /*
+            foreach ($TABLEAUDENOTES as $note) {
+
+              Dans cette boucle, a chaque itération créer une instance de points, lier l'étudiant et les points,
+              $note = new Points();
+              $note->setEtudiant($etudiant);
+              $note->setValeur($note);
+              $note->setPartie($partie);
+
+            }
+            */
+
+            $evaluation->addPartie($partie)
+
             $entityManager = $this->getDoctrine()->getManager();
             $entityManager->persist($evaluation);
             $entityManager->flush();
@@ -47,7 +67,6 @@ class EvaluationController extends AbstractController
 
         return $this->render('evaluation/new.html.twig', [
             'evaluation' => $evaluation,
-            'groupe' => $groupe,
             'form' => $form->createView(),
         ]);
     }

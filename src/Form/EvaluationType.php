@@ -3,9 +3,12 @@
 namespace App\Form;
 
 use App\Entity\Evaluation;
+use App\Entity\Etudiant;
+use Symfony\Component\Form\Extension\Core\Type\DateType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 
 class EvaluationType extends AbstractType
 {
@@ -13,8 +16,18 @@ class EvaluationType extends AbstractType
     {
         $builder
             ->add('nom')
-            ->add('date')
-
+            ->add('date', DateType::class, [
+              'html5' => true
+            ])
+            ->add('etudiants', EntityType::class, [
+              'class' => Etudiant::Class, //On veut choisir des étudiants
+              'choice_label' => false, // On n'affichera pas d'attribut de l'entité à côté du bouton pour aider au choix car on liste les entités nous même
+              'label' => false,
+              'mapped' => false, // Pour que l'attribut ne soit pas immédiatement mis en BD mais soit récupérable après validation
+              'expanded' => true, // Pour avoir des cases
+              'multiple' => true, // à cocher
+              'choices' => $options['groupe']->getEtudiants() // On restreint le choix à la liste des étudiants du groupe passé en parametre
+            ])
         ;
     }
 
@@ -22,6 +35,10 @@ class EvaluationType extends AbstractType
     {
         $resolver->setDefaults([
             'data_class' => Evaluation::class,
+            'groupe' => null,
+            'placeholder' => [
+              'year' => 'Annee', 'month' => 'Mois', 'day' => 'Jour',
+            ]
         ]);
     }
 }
