@@ -102,7 +102,7 @@ class EvaluationController extends AbstractController
     }
 
     /**
-     * @Route("/{id}", name="evaluation_delete", methods={"DELETE"})
+     * @Route("/{id}/delete", name="evaluation_delete", methods={"DELETE"})
      */
     public function delete(Request $request, Evaluation $evaluation): Response
     {

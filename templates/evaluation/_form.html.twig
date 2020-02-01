@@ -21,7 +21,7 @@
     <th>Nom</th>
     <th>Prenom</th>
     <th>Mail</th>
-    <th></th>
+    <th>Note</th>
   </thead>
 
   <tbody>
@@ -36,7 +36,8 @@
           <td>{{entity.nom}}</td>
           <td>{{entity.prenom}}</td>
           <td>{{entity.mail}}</td>
-          <td>{{form_widget(form.etudiants[index])}}</td>
+          <td><input type="number" name="note" ></input></td>
+          <!--{{form_widget(form.etudiants[index])}} -->
       </tr>
   {% endfor %}
   </tbody>
