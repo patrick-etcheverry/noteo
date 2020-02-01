@@ -26,11 +26,14 @@ class EvaluationController extends AbstractController
     }
 
     /**
-     * @Route("/new", name="evaluation_new", methods={"GET","POST"})
+     * @Route("/new/{id}", name="evaluation_new", methods={"GET","POST"})
      */
     public function new(Request $request): Response
     {
         $evaluation = new Evaluation();
+
+        $groupe = $this->findGroupe($id)
+
         $form = $this->createForm(EvaluationType::class, $evaluation);
         $form->handleRequest($request);
 
@@ -44,6 +47,7 @@ class EvaluationController extends AbstractController
 
         return $this->render('evaluation/new.html.twig', [
             'evaluation' => $evaluation,
+            'groupe' => $groupe,
             'form' => $form->createView(),
         ]);
     }

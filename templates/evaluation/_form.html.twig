@@ -1,4 +1,22 @@
+
 {{ form_start(form) }}
-    {{ form_widget(form) }}
-    <button class="btn">{{ button_label|default('Save') }}</button>
+
+<table align="center" class="table">
+  <tbody>
+    <tr>
+      <td class="intitule"><label for="evaluation_nom" class="required">Nom</label></td>
+      <td>{{ form_widget(form.nom) }}</td>
+    </tr>
+    <tr>
+      <td class="intitule"><label for="evaluation_date" class="required">Date</label></td>
+      <td>{{ form_widget(form.date) }}</td>
+    </tr>
+  </tbody>
+</table>
+
+<div class='bouton'>
+  <a href="{{ path('evaluation_index') }}" class="d-none d-sm-inline-block btn btn-sm btn-secondary shadow-sm bouton">Annuler</a>
+  <button class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm">{{ button_label|default('Saisir les notes') }}</button>
+</div>
+
 {{ form_end(form) }}
