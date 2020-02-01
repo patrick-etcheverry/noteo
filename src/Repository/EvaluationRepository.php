@@ -49,15 +49,5 @@ class EvaluationRepository extends ServiceEntityRepository
     */
 
 
-    public function findGroupe($value): ?Evaluation
-    {
-        return $this->createQueryBuilder('e')
-            ->join('e.groupe','g')
-            ->andWhere('g.id = :idGroupe')
-            ->setParameter('idGroupe', $value)
-            ->getQuery()
-            ->getResult()
-        ;
-    }
 
 }

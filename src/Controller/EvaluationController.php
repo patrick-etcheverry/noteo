@@ -40,7 +40,7 @@ class EvaluationController extends AbstractController
 
         if ($form->isSubmitted() && $form->isValid()) {
 
-            //$partie = new Partie()
+            $partie = new Partie();
             $partie->setIntitule()= "";
             $partie->setBareme()= 20;
 
@@ -56,7 +56,7 @@ class EvaluationController extends AbstractController
             }
             */
 
-            $evaluation->addPartie($partie)
+            $evaluation->addPartie($partie);
 
             $entityManager = $this->getDoctrine()->getManager();
             $entityManager->persist($evaluation);
