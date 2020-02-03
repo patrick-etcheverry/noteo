@@ -8,10 +8,6 @@
     <table class="table">
         <tbody>
             <tr>
-                <th>Id</th>
-                <td>{{ etudiant.id }}</td>
-            </tr>
-            <tr>
                 <th>Nom</th>
                 <td>{{ etudiant.nom }}</td>
             </tr>
@@ -25,14 +21,43 @@
             </tr>
             <tr>
                 <th>EstDemissionaire</th>
-                <td>{{ etudiant.estDemissionaire ? 'Yes' : 'No' }}</td>
+                <td>{{ etudiant.estDemissionaire ? 'Oui' : 'Non' }}</td>
             </tr>
         </tbody>
     </table>
 
-    <a href="{{ path('etudiant_index') }}">back to list</a>
+    <h4 align='center'> Groupes auxquelles appartient l'étudiant</h4>
 
-    <a href="{{ path('etudiant_edit', {'id': etudiant.id}) }}">edit</a>
+    
 
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Nom</th>
+                <th>Description</th>
+                <th>Créateur</th>
+            </tr>
+        </thead>
+        
+        <tbody>
+        {% for groupe in etudiant.groupes%}
+            <tr>
+                <td>{{ groupe.nom }}</td>
+                <td>{{ groupe.description }}</td>
+                <td>{{ groupe.enseignant.nom }} {{groupe.enseignant.prenom}}</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+    
+
+
+    <div align='center'>
+    <a href="{{ path('etudiant_index') }}">Retour</a>
+    &nbsp &nbsp &nbsp
+    <a href="{{ path('etudiant_edit', {'id': etudiant.id}) }}">Modifier l'étudiant</a>
+    </div>
+   
     {{ include('etudiant/_delete_form.html.twig') }}
 {% endblock %}
