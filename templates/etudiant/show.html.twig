@@ -26,8 +26,8 @@
         </tbody>
     </table>
 
-    <h1 class="h4 mb-0 text-gray-800">Groupes auxquelles appartient l'étudiant</h1> <br>
-    
+    <h1 class="h4 mb-0 text-gray-800">Groupes auxquels appartient l'étudiant</h1> <br>
+
     <table class="table" id="groupes">
         <thead>
             <tr>
@@ -36,7 +36,7 @@
                 <th>Créateur</th>
             </tr>
         </thead>
-        
+
         <tbody>
         {% for groupe in etudiant.groupes%}
             <tr>
@@ -48,8 +48,6 @@
         </tbody>
     </table>
     
-   
-    {{ include('etudiant/_delete_form.html.twig') }}
 {% endblock %}
 
 {% block datatables %}
