@@ -102,15 +102,29 @@ class EvaluationController extends AbstractController
     }
 
     /**
-     * @Route("/{id}/delete", name="evaluation_delete", methods={"DELETE"})
+     * @Route("/{id}/delete", name="evaluation_delete", methods={"GET"})
      */
     public function delete(Request $request, Evaluation $evaluation): Response
     {
-        if ($this->isCsrfTokenValid('delete'.$evaluation->getId(), $request->request->get('_token'))) {
-            $entityManager = $this->getDoctrine()->getManager();
-            $entityManager->remove($evaluation);
-            $entityManager->flush();
+
+        $entityManager = $this->getDoctrine()->getManager();
+
+        //Suppression des parties associées à l'évaluation
+        foreach ($evaluation->getParties() as $partie) {
+
+          //Suppression des notes associées à la partie
+          foreach ($partie->getNotes() as $note) {
+
+            $entityManager->remove($note);
+
+          }
+
+          $entityManager->remove($partie);
+
         }
+
+        $entityManager->remove($evaluation);
+        $entityManager->flush();
 
         return $this->redirectToRoute('evaluation_index');
     }
