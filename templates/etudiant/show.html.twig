@@ -20,17 +20,15 @@
                 <td>{{ etudiant.mail }}</td>
             </tr>
             <tr>
-                <th>EstDemissionaire</th>
+                <th>Démissionaire</th>
                 <td>{{ etudiant.estDemissionaire ? 'Oui' : 'Non' }}</td>
             </tr>
         </tbody>
     </table>
 
-    <h4 align='center'> Groupes auxquelles appartient l'étudiant</h4>
-
+    <h1 class="h4 mb-0 text-gray-800">Groupes auxquelles appartient l'étudiant</h1> <br>
     
-
-    <table class="table">
+    <table class="table" id="groupes">
         <thead>
             <tr>
                 <th>Nom</th>
@@ -49,15 +47,34 @@
         {% endfor %}
         </tbody>
     </table>
-
     
-
-
-    <div align='center'>
-    <a href="{{ path('etudiant_index') }}">Retour</a>
-    &nbsp &nbsp &nbsp
-    <a href="{{ path('etudiant_edit', {'id': etudiant.id}) }}">Modifier l'étudiant</a>
-    </div>
    
     {{ include('etudiant/_delete_form.html.twig') }}
+{% endblock %}
+
+{% block datatables %}
+
+<script type="text/javascript">
+
+$(document).ready(function() {
+  $('#groupes').dataTable({
+    language: {
+      // Suppression du label Rechercher et ajout du placeholder
+      search: "_INPUT_",
+      searchPlaceholder: "Rechercher...",
+      "url": "{{asset('tradfr.json')}}"
+    },
+    order: [
+      [0, "asc"]
+    ],
+    columns: [null, null, {"orderable": false}],
+    lengthMenu: [
+      [10, 25, 50, -1],
+      [10, 25, 50, "Tout"]
+    ],
+    info: false,
+  });
+});
+</script>
+
 {% endblock %}

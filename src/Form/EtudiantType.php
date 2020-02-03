@@ -6,6 +6,7 @@ use App\Entity\Etudiant;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 
 class EtudiantType extends AbstractType
 {
@@ -15,7 +16,13 @@ class EtudiantType extends AbstractType
             ->add('nom')
             ->add('prenom')
             ->add('mail')
-            ->add('estDemissionaire')
+            ->add('estDemissionaire', ChoiceType::class, [
+            'choices' => ['Oui' => true, 'Non' => false],
+            'expanded' => true, // Pour avoir des boutons radio
+            'label_attr' =>  [
+            'class'=>'radio-inline' //Pour que les boutons radio soient alignés
+            ]
+            ])
         ;
     }
 
