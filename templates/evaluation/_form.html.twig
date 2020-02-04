@@ -36,17 +36,34 @@
           <td>{{entity.nom}}</td>
           <td>{{entity.prenom}}</td>
           <td>{{entity.mail}}</td>
-          <td><input type="number" name="note" ></input></td>
+          <td><input STYLE="color: #000000; background-color: #FFFFFF;" type="number" name="note" id="laNote"></input></td>
           <!--{{form_widget(form.etudiants[index])}} -->
       </tr>
   {% endfor %}
   </tbody>
 </table>
 
+<script type="text/javascript">
+
+  function validate(){
+    var text = document.getElementById("laNote").value;
+    <!--var regx = /[0-1][0-9]|20/ -->
+
+    if(text > 20 || text < 0){
+        document.getElementById("laNote").style.background = "#FF0016"
+        document.getElementById("laNote").style.color = "#FFFFFF"
+      }
+    else{
+      document.getElementById("laNote").style.background = "#FFFFFF"
+      document.getElementById("laNote").style.color = "#000000"
+    }
+  }
+</script>
+
 
 <div class='bouton'>
   <a href="{{ path('evaluation_index') }}" class="d-none d-sm-inline-block btn btn-sm btn-secondary shadow-sm bouton">Annuler</a>
-  <button class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm">{{ button_label|default("Créer l'évaluation") }}</button>
+  <button onclick="validate()" class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm">{{ button_label|default("Créer l'évaluation") }}</button>
 </div>
 
 {{ form_end(form) }}
