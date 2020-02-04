@@ -73,7 +73,7 @@ class GroupeEtudiantController extends AbstractController
 
                     //Créer une évaluation (seulement disponible si le groupe est évaluable)
                     if ($node['estEvaluable']) {
-                      $url = $this->generateUrl('evaluation_new', [ 'id' => $node['id'] , 'nom' => $node['nom'] ]);
+                      $url = $this->generateUrl('evaluation_new', [ 'id' => $node['id'] ]);
                       $evalSimple = "<a href='$url'><i class='icon-eval-simple'></i></a>";
                       // $evalParParties = "<a href='#'><i class='icon-eval-composee'></i></a>";
                     }
