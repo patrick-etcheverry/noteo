@@ -79,15 +79,26 @@ class EtudiantController extends AbstractController
     }
 
     /**
-     * @Route("/{id}", name="etudiant_delete", methods={"DELETE"})
+     * @Route("/{id}/delete", name="etudiant_delete", methods={"GET"})
      */
-    public function delete(Request $request, Etudiant $etudiant): Response
+    public function delete(Etudiant $etudiant): Response
     {
-        if ($this->isCsrfTokenValid('delete'.$etudiant->getId(), $request->request->get('_token'))) {
-            $entityManager = $this->getDoctrine()->getManager();
-            $entityManager->remove($etudiant);
-            $entityManager->flush();
+        $manager = $this->getDoctrine()->getManager();
+
+        //On supprime toutes les notes associées à l'étudiant
+        foreach ($etudiant->getPoints() as $point) {
+          $manager->remove($point);
         }
+
+        //On retire l'étudiant des status auxquels il était associé
+        foreach ($etudiant->getStatuts() as $statut) {
+          $statut->removeEtudiant($etudiant);
+        }
+
+        //Puis on supprime l'étudiant
+        $manager->remove($etudiant);
+
+        $manager->flush();
 
         return $this->redirectToRoute('etudiant_index');
     }

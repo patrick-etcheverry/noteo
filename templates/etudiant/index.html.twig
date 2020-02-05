@@ -5,6 +5,7 @@
 {% block etudiants %}active{% endblock %}
 
 {% block contenu %}
+
     <table class="table" id ="table">
         <thead>
             <tr>
@@ -24,6 +25,7 @@
                 <td>
                     <a href="{{ path('etudiant_show', {'id': etudiant.id}) }}"><i class="icon-eye"></i></a>
                     <a href="{{ path('etudiant_edit', {'id': etudiant.id}) }}"><i class="icon-pencil-1"></i></a>
+                    <a href="#" onclick="supprimerEtudiant('{{ path('etudiant_delete', {'id': etudiant.id}) }}')"><i class="icon-trash"></i></a>
                 </td>
             </tr>
         {% else %}
@@ -35,7 +37,30 @@
         </tbody>
     </table>
 
-    <a href="{{ path('etudiant_new') }}">Create new</a>
+
+    <div class="modal fade" id="delEtud" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="exampleModalLabel">Avertissement</h5>
+            <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">x</span>
+            </button>
+          </div>
+          <div class="modal-body">Etes vous sur de vouloir supprimer l'étudiant ? </div>
+          <div class="modal-footer">
+            <button class="d-none d-sm-inline-block btn btn-sm btn-secondary shadow-sm bouton" type="button" data-dismiss="modal">Annuler</button>
+            <a class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm bouton" id = "BoutonSupprimerModale" href="#">Supprimer l'étudiant</a>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class='bouton'>
+        <button class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm" onclick="location.href='{{ path('etudiant_new') }}'">Créer un étudiant</button>
+    </div>
+
+
 {% endblock %}
 
 {% block datatables %}
@@ -57,6 +82,19 @@ $(document).ready(function() {
     info: false,
   });
 });
+</script>
+
+{% endblock %}
+
+{% block javascripts %}
+
+<script type="text/javascript">
+
+function supprimerEtudiant(url) {
+  $("#delEtud").modal();
+  document.getElementById("BoutonSupprimerModale").href = url;
+}
+
 </script>
 
 {% endblock %}
