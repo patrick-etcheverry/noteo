@@ -53,8 +53,10 @@ class StatutController extends AbstractController
      */
     public function show(Statut $statut): Response
     {
+
         return $this->render('statut/show.html.twig', [
             'statut' => $statut,
+            'etudiants' => $statut->getEtudiants(),
         ]);
     }
 
