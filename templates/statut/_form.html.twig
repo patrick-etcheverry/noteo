@@ -1,4 +1,22 @@
 {{ form_start(form) }}
-    {{ form_widget(form) }}
-    <button class="btn">{{ button_label|default('Save') }}</button>
+<table align="center" class="table">
+  <tbody>
+    <tr>
+      <td class="intitule"><label for="statut_etudiant_nom" class="required">Nom</label></td>
+      <td>{{ form_widget(form.nom) }}</td>
+    </tr>
+    <tr>
+      <td class="intitule"><label for="groupe_etudiant_description" class="required">Description</label></td>
+      <td>{{ form_widget(form.description) }}</td>
+    </tr>
+    <tr>
+      <td class="intitule"><label class="required" for="groupe_etudiant_enseignant">Enseignant (temporaire)</label></td>
+      <td>{{form_widget(form.enseignant)}}</td>
+    </tr>
+  </tbody>
+</table>
+<div class='bouton'>
+  <a href="{{ path('statut_index') }}" class="d-none d-sm-inline-block btn btn-sm btn-secondary shadow-sm bouton">Annuler</a>
+  <button class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm">{{ button_label|default('Créer le staut étudiant') }}</button>
+</div>
 {{ form_end(form) }}

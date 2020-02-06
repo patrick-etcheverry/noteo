@@ -8,5 +8,48 @@
 
     {{ include('statut/_form.html.twig') }}
 
-    <a href="{{ path('statut_index') }}">back to list</a>
+    <h1 class="h4 mb-0 text-gray-800">Liste des étudiants a ajouter au statut</h1> <br>
+
+    <table class="table" id="etud">
+      <thead>
+        <tr>
+          <th>Nom</th>
+          <th>Prénom</th>
+          <th>Mail</th>
+        </tr>
+      </thead>
+      <tbody>
+
+      </tbody>
+    </table>
+
+{% endblock %}
+
+
+
+{% block datatables %}
+
+<script type="text/javascript">
+
+$(document).ready(function() {
+  $('#etud').dataTable({
+    language: {
+      // Suppression du label Rechercher et ajout du placeholder
+      search: "_INPUT_",
+      searchPlaceholder: "Rechercher...",
+      "url": "{{asset('tradfr.json')}}"
+    },
+    order: [
+      [0, "asc"]
+    ],
+    columns: [null, null, {"orderable": false}],
+    lengthMenu: [
+      [10, 25, 50, -1],
+      [10, 25, 50, "Tout"]
+    ],
+    info: false,
+  });
+});
+</script>
+
 {% endblock %}

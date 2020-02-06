@@ -5,6 +5,7 @@ namespace App\Controller;
 use App\Entity\Statut;
 use App\Form\StatutType;
 use App\Repository\StatutRepository;
+use App\Controller\EtudiantRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -44,6 +45,7 @@ class StatutController extends AbstractController
 
         return $this->render('statut/new.html.twig', [
             'statut' => $statut,
+            //'etudiants' => $etudiantRepository->findAll(),
             'form' => $form->createView(),
         ]);
     }
