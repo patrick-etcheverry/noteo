@@ -79,16 +79,19 @@ class StatutController extends AbstractController
     }
 
     /**
-     * @Route("/{id}", name="statut_delete", methods={"DELETE"})
+     * @Route("/{id}/delete", name="statut_delete", methods={"GET"})
      */
     public function delete(Request $request, Statut $statut): Response
     {
-        if ($this->isCsrfTokenValid('delete'.$statut->getId(), $request->request->get('_token'))) {
-            $entityManager = $this->getDoctrine()->getManager();
-            $entityManager->remove($statut);
-            $entityManager->flush();
+        $manager = $this->getDoctrine()->getManager();
+
+        foreach ($statut->getEtudiants() as $etudiant) {
+          $manager->remove($etudiant);
         }
+        $manager->remove($statut);
+        $manager->flush();
 
         return $this->redirectToRoute('statut_index');
     }
+
 }
