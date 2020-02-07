@@ -5,12 +5,15 @@
 {% block etudiants %}active{% endblock %}
 
 {% block contenu %}
-
+<div class='bouton'>
+    <button class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm" onclick="location.href='{{ path('etudiant_new') }}'">Créer un étudiant</button>
+</div>
     <table class="table" id ="table">
         <thead>
             <tr>
                 <th>Nom</th>
                 <th>Prénom</th>
+                <th>Satut</th>
                 <th>Mail</th>
                 <th></th>
             </tr>
@@ -21,6 +24,7 @@
             <tr>
                 <td>{{ etudiant.nom }}</td>
                 <td>{{ etudiant.prenom }}</td>
+                <td></td>
                 <td>{{ etudiant.mail }}</td>
                 <td>
                     <a href="{{ path('etudiant_show', {'id': etudiant.id}) }}"><i class="icon-eye"></i></a>
@@ -56,9 +60,7 @@
       </div>
     </div>
 
-    <div class='bouton'>
-        <button class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm" onclick="location.href='{{ path('etudiant_new') }}'">Créer un étudiant</button>
-    </div>
+
 
 
 {% endblock %}
@@ -69,12 +71,15 @@
 $(document).ready(function() {
   $('#table').dataTable({
     language: {
+      // Suppression du label Rechercher et ajout du placeholder
+      search: "_INPUT_",
+      searchPlaceholder: "Rechercher...",
       "url": "{{asset('tradfr.json')}}"
     },
     order: [
       [0, "asc"]
     ],
-    columns: [null, null,{"orderable": false},{"orderable": false}],
+    columns: [null, null,null,{"orderable": false},{"orderable": false}],
     lengthMenu: [
       [10, 25, 50, -1],
       [10, 25, 50, "Tout"]
