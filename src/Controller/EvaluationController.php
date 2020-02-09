@@ -39,10 +39,12 @@ class EvaluationController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-/*
+
+            $evaluation->setGroupe($groupeConcerne);
+
             $partie = new Partie();
-            $partie->setIntitule()= "";
-            $partie->setBareme()= 20;
+            $partie->setIntitule("");
+            $partie->setBareme(20);
 
             /*
             foreach ($TABLEAUDENOTES as $note) {
@@ -56,9 +58,11 @@ class EvaluationController extends AbstractController
             }
             */
 
-            $evaluation->addPartie($partie);
-
             $entityManager = $this->getDoctrine()->getManager();
+
+            $evaluation->addPartie($partie);
+            $entityManager->persist($partie);
+
             $entityManager->persist($evaluation);
             $entityManager->flush();
 

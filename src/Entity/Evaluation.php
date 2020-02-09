@@ -24,7 +24,7 @@ class Evaluation
     private $nom;
 
     /**
-     * @ORM\Column(type="string", length=10)
+     * @ORM\Column(type="date")
      */
     private $date;
 
@@ -65,12 +65,12 @@ class Evaluation
         return $this;
     }
 
-    public function getDate(): ?string
+    public function getDate()
     {
-        return $this->date;
+        return $this->date->format('d/m/Y');
     }
 
-    public function setDate(string $date): self
+    public function setDate($date): self
     {
         $this->date = $date;
 
@@ -89,7 +89,7 @@ class Evaluation
     {
         if (!$this->parties->contains($partie)) {
             $this->parties[] = $partie;
-            $party->setEvaluation($partie);
+            $partie->setEvaluation($this);
         }
 
         return $this;
