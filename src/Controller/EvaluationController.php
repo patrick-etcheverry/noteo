@@ -33,34 +33,28 @@ class EvaluationController extends AbstractController
      */
     public function new(Request $request, GroupeEtudiant $groupeConcerne): Response
     {
+
+        //Création d'une évaluation vide avec tous ses composants (partie, notes)
         $evaluation = new Evaluation();
+        $evaluation->setGroupe($groupeConcerne);
+        $partie = new Partie();
+        $partie->setIntitule("");
+        $partie->setBareme(20);
+        $evaluation->addPartie($partie);
+        foreach ($groupeConcerne->getEtudiants() as $etudiant) {
+          $note = new Points();
+          $note->setValeur(0);
+          $note->seEtudiant($etudiant);
+          $note->setPartie($partie);
+        }
 
         $form = $this->createForm(EvaluationType::class, $evaluation, ['groupe' => $groupeConcerne]);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
 
-            $evaluation->setGroupe($groupeConcerne);
-
-            $partie = new Partie();
-            $partie->setIntitule("");
-            $partie->setBareme(20);
-
-            /*
-            foreach ($TABLEAUDENOTES as $note) {
-
-              Dans cette boucle, a chaque itération créer une instance de points, lier l'étudiant et les points,
-              $note = new Points();
-              $note->setEtudiant($etudiant);
-              $note->setValeur($note);
-              $note->setPartie($partie);
-
-            }
-            */
-
             $entityManager = $this->getDoctrine()->getManager();
 
-            $evaluation->addPartie($partie);
             $entityManager->persist($partie);
 
             $entityManager->persist($evaluation);

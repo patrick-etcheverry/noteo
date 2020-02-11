@@ -5,6 +5,7 @@ namespace App\Entity;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * @ORM\Entity(repositoryClass="App\Repository\EvaluationRepository")
@@ -20,11 +21,15 @@ class Evaluation
 
     /**
      * @ORM\Column(type="string", length=50)
+     * @Assert\Length(max=50)
+     * @Assert\NotBlank
      */
     private $nom;
 
     /**
      * @ORM\Column(type="date")
+     * @Assert\NotBlank
+     * @Assert\Date
      */
     private $date;
 

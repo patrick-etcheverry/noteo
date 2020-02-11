@@ -17,7 +17,8 @@ class EvaluationType extends AbstractType
         $builder
             ->add('nom')
             ->add('date', DateType::class, [
-              'html5' => true
+              'html5' => true,
+              'widget' => 'single_text'
             ])
             ->add('etudiants', EntityType::class, [
               'class' => Etudiant::Class, //On veut choisir des étudiants
@@ -35,10 +36,7 @@ class EvaluationType extends AbstractType
     {
         $resolver->setDefaults([
             'data_class' => Evaluation::class,
-            'groupe' => null,
-            'placeholder' => [
-              'year' => 'Annee', 'month' => 'Mois', 'day' => 'Jour',
-            ]
+            'groupe' => null
         ]);
     }
 }

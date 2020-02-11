@@ -5,6 +5,7 @@ namespace App\Entity;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * @ORM\Entity(repositoryClass="App\Repository\EtudiantRepository")
@@ -20,21 +21,25 @@ class Etudiant
 
     /**
      * @ORM\Column(type="string", length=25)
+     * @Assert\NotBlanck
      */
     private $nom;
 
     /**
      * @ORM\Column(type="string", length=25)
+     * @Assert\NotBlanck
      */
     private $prenom;
 
     /**
      * @ORM\Column(type="string", length=50)
+     * @Assert\NotBlanck
      */
     private $mail;
 
     /**
      * @ORM\Column(type="boolean")
+     * @Assert\NotBlanck
      */
     private $estDemissionaire;
 
