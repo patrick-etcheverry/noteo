@@ -21,25 +21,25 @@ class Etudiant
 
     /**
      * @ORM\Column(type="string", length=25)
-     * @Assert\NotBlanck
+     * @Assert\NotBlank
      */
     private $nom;
 
     /**
      * @ORM\Column(type="string", length=25)
-     * @Assert\NotBlanck
+     * @Assert\NotBlank
      */
     private $prenom;
 
     /**
      * @ORM\Column(type="string", length=50)
-     * @Assert\NotBlanck
+     * @Assert\NotBlank
      */
     private $mail;
 
     /**
      * @ORM\Column(type="boolean")
-     * @Assert\NotBlanck
+     * @Assert\NotBlank
      */
     private $estDemissionaire;
 

@@ -5,10 +5,7 @@
 {% block evaluations %}active{% endblock %}
 
 {% block contenu %}
-
     {{ include('evaluation/_form.html.twig') }}
-
-    <a href="{{ path('evaluation_index') }}">back to list</a>
 {% endblock %}
 
 {% block datatables %}
@@ -27,7 +24,7 @@ $(document).ready(function() {
     order: [
       [0, "asc"]
     ],
-    columns: [null, null,{"orderable": false},{"orderable": false}],
+    columns: [null, null,{"orderable": false}],
     lengthMenu: [
       [10, 25, 50, -1],
       [10, 25, 50, "Tout"]

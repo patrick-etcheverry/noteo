@@ -23,14 +23,14 @@ class GroupeEtudiant
 
     /**
      * @ORM\Column(type="string", length=50)
-     * @Assert\NotBlanck
+     * @Assert\NotBlank
      * @Assert\Length(max=50)
      */
     private $nom;
 
     /**
      * @ORM\Column(type="text")
-     * @Assert\NotBlanck
+     * @Assert\NotBlank
      */
     private $description;
 

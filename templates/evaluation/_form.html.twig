@@ -4,50 +4,39 @@
 <table align="center" class="table">
   <tbody>
     <tr>
-      <td class="intitule"><label for="evaluation_nom" class="required">Nom</label></td>
+      <td class="intitule"><label for="evaluation_nom" >Nom</label></td>
       <td>{{ form_widget(form.nom) }}</td>
     </tr>
     <tr>
-      <td class="intitule"><label for="evaluation_date" class="required">Date</label></td>
+      <td class="intitule"><label for="evaluation_date" >Date</label></td>
       <td>{{ form_widget(form.date) }}</td>
     </tr>
   </tbody>
 </table>
 
-<br> <h1 class="h4 mb-0 text-gray-800">Notes des étudiants</h1> <br>
+<br> <h1 class="h4 mb-0 text-gray-800">Saisir les notes des étudiants</h1> <br>
 
 <table class="table" id="etudiants">
-  <thead>
-    <th>Nom</th>
-    <th>Prenom</th>
-    <th>Mail</th>
-    <th>Note</th>
-  </thead>
+<thead>
+  <th>Nom</th>
+  <th>Prenom</th>
+  <th>Note</th>
+</thead>
+<tbody>
 
-  <tbody>
-  {% for etudiant in form.etudiants %}
+<tr>
+  <td></td>
+  <td></td>
+  <td>{{form_widget(form.notes[i].valeur)}}</td>
+</tr>
 
-    {# store index of the category in a variable #}
-    {% set index = etudiant.vars.value %}
 
-    {# get entity object from its index in the Categories Field #}
-    {% set entity = form.etudiants.vars.choices[index].data %}
-      <tr>
-          <td>{{entity.nom}}</td>
-          <td>{{entity.prenom}}</td>
-          <td>{{entity.mail}}</td>
-          <td><input STYLE="color: #000000; background-color: #FFFFFF;" type="number" name="note" id="laNote"></input></td>
-          <!--{{form_widget(form.etudiants[index])}} -->
-      </tr>
-  {% endfor %}
-  </tbody>
+</tbody>
 </table>
 
-
-
 <div class='bouton'>
-  <a href="{{ path('evaluation_index') }}" class="d-none d-sm-inline-block btn btn-sm btn-secondary shadow-sm bouton">Annuler</a>
-  <button class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm">{{ button_label|default("Créer l'évaluation") }}</button>
+  <a href="{{ path('groupe_etudiant_index') }}" class="d-none d-sm-inline-block btn btn-sm btn-secondary shadow-sm bouton">Annuler</a>
+  <!--<button class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm">{{ button_label|default('Enregistrer') }}</button>-->
 </div>
 
 {{ form_end(form) }}

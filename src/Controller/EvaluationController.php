@@ -3,11 +3,16 @@
 namespace App\Controller;
 
 use App\Entity\Evaluation;
+use App\Entity\Etudiant;
 use App\Entity\Partie;
+use App\Form\PointsType;
 use App\Entity\Points;
 use App\Form\EvaluationType;
 use App\Entity\GroupeEtudiant;
 use App\Repository\EvaluationRepository;
+use Symfony\Component\Form\Extension\Core\Type\TextType;
+use Symfony\Component\Form\Extension\Core\Type\DateType;
+use Symfony\Component\Form\Extension\Core\Type\CollectionType;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -44,11 +49,21 @@ class EvaluationController extends AbstractController
         foreach ($groupeConcerne->getEtudiants() as $etudiant) {
           $note = new Points();
           $note->setValeur(0);
-          $note->seEtudiant($etudiant);
-          $note->setPartie($partie);
+          $etudiant->addPoint($note);
+          $partie->addNote($note);
         }
 
-        $form = $this->createForm(EvaluationType::class, $evaluation, ['groupe' => $groupeConcerne]);
+
+        $form = $this->createFormBuilder(['notes' => $partie->getNotes()])
+            ->add('nom', TextType::class)
+            ->add('date', DateType::class, [
+              'widget' => 'single_text'
+            ])
+            ->add('notes', CollectionType::class , [
+              'entry_type' => PointsType::class
+            ])
+            ->getForm();
+
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
@@ -65,6 +80,7 @@ class EvaluationController extends AbstractController
 
         return $this->render('evaluation/new.html.twig', [
             'evaluation' => $evaluation,
+            'notes' => $partie->getNotes(),
             'form' => $form->createView(),
         ]);
     }
