@@ -9,10 +9,6 @@
     <table class="table">
         <tbody>
             <tr>
-                <th>Id</th>
-                <td>{{ evaluation.id }}</td>
-            </tr>
-            <tr>
                 <th>Nom</th>
                 <td>{{ evaluation.nom }}</td>
             </tr>
@@ -23,9 +19,53 @@
         </tbody>
     </table>
 
-    <a href="{{ path('evaluation_index') }}">back to list</a>
+<h1 class="h4 mb-0 text-gray-800">Notes des étudiants</h1> <br>
 
-    <a href="{{ path('evaluation_edit', {'id': evaluation.id}) }}">edit</a>
+  {% for partie in evaluation.parties %}
 
-    {{ include('evaluation/_delete_form.html.twig') }}
+    {% for note in partie.notes %}
+
+      <table class="table" id="etud">
+        <thead>
+          <th>Nom</th>
+          <th>Prénom</th>
+          <th>Note</th>
+        </thead>
+        <tbody>
+          <td>{{note.etudiant.nom}}</td>
+          <td>{{note.etudiant.prenom}}</td>
+          <td>{{note.valeur}}</td>
+        </tbody>
+      </table>
+
+    {% endfor %}
+
+  {% endfor %}
+
+{% endblock %}
+
+{% block datatables %}
+
+<script type="text/javascript">
+
+$(document).ready(function() {
+  $('#etud').dataTable({
+    language: {
+      // Suppression du label Rechercher et ajout du placeholder
+      search: "_INPUT_",
+      searchPlaceholder: "Rechercher...",
+      "url": "{{asset('tradfr.json')}}"
+    },
+    order: [
+      [0, "asc"]
+    ],
+    lengthMenu: [
+      [10, 25, 50, -1],
+      [10, 25, 50, "Tout"]
+    ],
+    info: false,
+  });
+});
+</script>
+
 {% endblock %}
