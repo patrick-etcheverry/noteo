@@ -53,7 +53,6 @@ class EvaluationController extends AbstractController
           $partie->addNote($note);
         }
 
-
         $form = $this->createFormBuilder(['notes' => $partie->getNotes()])
             ->add('nom', TextType::class)
             ->add('date', DateType::class, [
@@ -66,15 +65,26 @@ class EvaluationController extends AbstractController
 
         $form->handleRequest($request);
 
-        if ($form->isSubmitted() && $form->isValid()) {
+        if ($form->isSubmitted()) {
 
             $entityManager = $this->getDoctrine()->getManager();
 
-            $entityManager->persist($partie);
+            $data = $form->getData();
+
+            $evaluation->setNom($data["nom"]);
+            $evaluation->setDate($data["date"]);
 
             $entityManager->persist($evaluation);
-            $entityManager->flush();
+            $entityManager->persist($partie);
 
+            foreach ($partie->getNotes() as $note) {
+              if (!($note->getValeur() <= $partie->getBareme())) {
+                $note->setValeur($partie->getBareme());
+              }
+              $entityManager->persist($note);
+            }
+
+            $entityManager->flush();
             return $this->redirectToRoute('evaluation_index');
         }
 
