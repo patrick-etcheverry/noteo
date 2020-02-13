@@ -80,7 +80,6 @@ class EvaluationController extends AbstractController
 
         return $this->render('evaluation/new.html.twig', [
             'evaluation' => $evaluation,
-            'notes' => $partie->getNotes(),
             'form' => $form->createView(),
         ]);
     }

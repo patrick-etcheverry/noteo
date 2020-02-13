@@ -24,11 +24,11 @@
 </thead>
 <tbody>
 
-{% for note in notes %}
+{% for i in 0..(form.vars.value.notes|length-1) %}
 <tr>
-  <td></td>
-  <td></td>
-  <td>{{form_widget(note.valeur)}}</td>
+  <td>{{form.vars.value.notes[i].etudiant.nom}}</td>
+  <td>{{form.vars.value.notes[i].etudiant.prenom}}</td>
+  <td>{{form_widget(form.notes[i].valeur)}}</td>
 </tr>
 {% endfor %}
 
