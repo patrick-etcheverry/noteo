@@ -20,15 +20,15 @@ class EvaluationRepository extends ServiceEntityRepository
     }
 
     // /**
-    //  * @return Evaluation[] Returns an array of Evaluation objects
+    //  * @return Stage[] Returns an array of Stage objects
     //  */
     /*
     public function findByExampleField($value)
     {
-        return $this->createQueryBuilder('e')
-            ->andWhere('e.exampleField = :val')
+        return $this->createQueryBuilder('s')
+            ->andWhere('s.exampleField = :val')
             ->setParameter('val', $value)
-            ->orderBy('e.id', 'ASC')
+            ->orderBy('s.id', 'ASC')
             ->setMaxResults(10)
             ->getQuery()
             ->getResult()
@@ -37,10 +37,10 @@ class EvaluationRepository extends ServiceEntityRepository
     */
 
     /*
-    public function findOneBySomeField($value): ?Evaluation
+    public function findOneBySomeField($value): ?Stage
     {
-        return $this->createQueryBuilder('e')
-            ->andWhere('e.exampleField = :val')
+        return $this->createQueryBuilder('s')
+            ->andWhere('s.exampleField = :val')
             ->setParameter('val', $value)
             ->getQuery()
             ->getOneOrNullResult()
