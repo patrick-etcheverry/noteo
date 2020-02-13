@@ -6,6 +6,10 @@
 
 {% block contenu %}
 
+<div class='bouton'>
+    <button class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm" onclick="location.href='{{ path('statut_new') }}'">Créer un statut étudiant</button>
+</div>
+
     <table class="table" id="table">
         <thead>
             <tr>
@@ -25,6 +29,7 @@
                 <td>
                     <a href="{{ path('statut_show', {'id': statut.id}) }}"><i class="icon-eye"></i></a>
                     <a href="{{ path('statut_edit', {'id': statut.id}) }}"><i class="icon-pencil-1"></i></a>
+                    <a href="#" onclick="supprimerStatutEtudiant('{{ path('statut_delete', {'id': statut.id}) }}')"><i class="icon-trash"></i></a>
                 </td>
             </tr>
         {% else %}
@@ -36,8 +41,35 @@
         </tbody>
     </table>
 
-    <a href="{{ path('statut_new') }}">Create new</a>
+    <div class="modal fade" id="delStatutEtudiant" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="exampleModalLabel">Avertissement</h5>
+            <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">x</span>
+            </button>
+          </div>
+          <div class="modal-body">Etes vous sur de vouloir supprimer le staut d'étudiant ? </div>
+          <div class="modal-footer">
+            <button class="d-none d-sm-inline-block btn btn-sm btn-secondary shadow-sm bouton" type="button" data-dismiss="modal">Annuler</button>
+            <a class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm bouton" id = "BoutonSupprimerModale" href="#">Supprimer le statut d'étudiant</a>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script type="text/javascript">
+
+    function supprimerStatutEtudiant(url) {
+      $("#delStatutEtudiant").modal();
+      document.getElementById("BoutonSupprimerModale").href = url;
+    }
+
+    </script>
+
 {% endblock %}
+
 
 {% block datatables %}
 

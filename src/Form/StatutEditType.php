@@ -14,7 +14,7 @@ use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 
-class StatutType extends AbstractType
+class StatutEditType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
@@ -24,7 +24,7 @@ class StatutType extends AbstractType
             ->add('enseignant', EntityType::class, [
               'class' => Enseignant::class, 'choice_label' => 'nom'
             ])
-            ->add('lesEtudiants', EntityType::class, [
+            ->add('lesEtudiantsAAjouter', EntityType::class, [
                 'class' => Etudiant::Class, //On veut choisir des étudiants
                 'choice_label' => false, // On n'affichera pas d'attribut de l'entité à côté du bouton pour aider au choix car on liste les entités nous même
                 'label' => false,
@@ -33,6 +33,15 @@ class StatutType extends AbstractType
                 'multiple' => true, // à cocher
                 'choices' => $options['etudiants'] // On restreint le choix à la liste des étudiants du groupe passé en parametre
               ])
+              ->add('lesEtudiantsASupprimer', EntityType::class, [
+                  'class' => Etudiant::Class, //On veut choisir des étudiants
+                  'choice_label' => false, // On n'affichera pas d'attribut de l'entité à côté du bouton pour aider au choix car on liste les entités nous même
+                  'label' => false,
+                  'mapped' => false, // Pour que l'attribut ne soit pas immédiatement mis en BD mais soit récupérable après validation
+                  'expanded' => true, // Pour avoir des cases
+                  'multiple' => true, // à cocher
+                  'choices' => $builder->getData()->getEtudiants() // On restreint le choix à la liste des étudiants du groupe passé en parametre
+                ])
 
         ;
     }

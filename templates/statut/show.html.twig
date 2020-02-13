@@ -9,10 +9,6 @@
     <table class="table">
         <tbody>
             <tr>
-                <th>Id</th>
-                <td>{{ statut.id }}</td>
-            </tr>
-            <tr>
                 <th>Nom</th>
                 <td>{{ statut.nom }}</td>
             </tr>
@@ -23,9 +19,57 @@
         </tbody>
     </table>
 
-    <a href="{{ path('statut_index') }}">back to list</a>
+    <h1 class="h4 mb-0 text-gray-800">Liste des étudiants possédant ce statut</h1> <br>
 
-    <a href="{{ path('statut_edit', {'id': statut.id}) }}">edit</a>
+    <table class="table" id="etud">
+      <thead>
+        <tr>
+          <th>Nom</th>
+          <th>Prénom</th>
+          <th>Mail</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% if etudiants is not empty %}
+        {% for etudiant in etudiants %}
+        <tr>
+          <td>{{etudiant.nom}}</td>
+          <td>{{etudiant.prenom}}</td>
+          <td>{{etudiant.mail}}</td>
+        </tr>
+        {% endfor %}
+        {% endif %}
+      </tbody>
+    </table>
 
-    {{ include('statut/_delete_form.html.twig') }}
+
+{% endblock %}
+
+
+
+{% block datatables %}
+
+<script type="text/javascript">
+
+$(document).ready(function() {
+  $('#etud').dataTable({
+    language: {
+      // Suppression du label Rechercher et ajout du placeholder
+      search: "_INPUT_",
+      searchPlaceholder: "Rechercher...",
+      "url": "{{asset('tradfr.json')}}"
+    },
+    order: [
+      [0, "asc"]
+    ],
+    columns: [null, null, {"orderable": false}],
+    lengthMenu: [
+      [10, 25, 50, -1],
+      [10, 25, 50, "Tout"]
+    ],
+    info: false,
+  });
+});
+</script>
+
 {% endblock %}
