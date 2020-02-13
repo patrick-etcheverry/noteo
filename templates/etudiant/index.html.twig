@@ -13,7 +13,7 @@
             <tr>
                 <th>Nom</th>
                 <th>Prénom</th>
-                <th>Satut</th>
+                <th>Statut(s)</th>
                 <th>Mail</th>
                 <th></th>
             </tr>
@@ -24,7 +24,11 @@
             <tr>
                 <td>{{ etudiant.nom }}</td>
                 <td>{{ etudiant.prenom }}</td>
-                <td></td>
+                <td>
+                  {% for statut in etudiant.statuts %}
+                    <span class="badge badge-primary">{{statut.nom}}</span>
+                  {% endfor %}
+                </td>
                 <td>{{ etudiant.mail }}</td>
                 <td>
                     <a href="{{ path('etudiant_show', {'id': etudiant.id}) }}"><i class="icon-eye" data-toggle='tooltip' title='Consulter un étudiant'></i></a>

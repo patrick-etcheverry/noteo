@@ -23,6 +23,14 @@
                 <th>Démissionaire</th>
                 <td>{{ etudiant.estDemissionaire ? 'Oui' : 'Non' }}</td>
             </tr>
+            <tr>
+              <th>Statut(s)</th>
+              <td>
+                {% for statut in etudiant.statuts %}
+                  <font size=4><span class="badge badge-primary">{{statut.nom}}</span></font>
+                {% endfor %}
+              </td>
+            </tr>
         </tbody>
     </table>
 
@@ -47,7 +55,7 @@
         {% endfor %}
         </tbody>
     </table>
-    
+
 {% endblock %}
 
 {% block datatables %}
