@@ -4,6 +4,7 @@ namespace App\Controller;
 
 use App\Entity\Statut;
 use App\Form\StatutType;
+use App\Form\StatutEditType;
 use App\Repository\StatutRepository;
 use App\Repository\EtudiantRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -75,10 +76,19 @@ class StatutController extends AbstractController
      */
     public function edit(Request $request, Statut $statut): Response
     {
-        $form = $this->createForm(StatutType::class, $statut);
+        $form = $this->createForm(StatutEditType::class, $statut);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
+
+            foreach ($form->get('lesEtudiantsAAjouter')->getData() as $key => $etudiant) {
+             $etudiant->addStatut($statut);
+            }
+
+            foreach ($form->get('lesEtudiantsASupprimer')->getData() as $key => $etudiant) {
+              $etudiant->removeStatut($statut);
+            }
+
             $this->getDoctrine()->getManager()->flush();
 
             return $this->redirectToRoute('statut_index');
@@ -102,9 +112,6 @@ class StatutController extends AbstractController
 
         $manager = $this->getDoctrine()->getManager();
 
-        foreach ($statut->getEtudiants() as $etudiant) {
-          $manager->remove($etudiant);
-        }
         $manager->remove($statut);
         $manager->flush();
 

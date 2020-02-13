@@ -5,9 +5,6 @@
 {% block statutsEtudiants %}active{% endblock %}
 
 {% block contenu %}
-<div class='bouton'>
-    <button class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm" style="margin-bottom:5px;"  onclick="location.href='{{ path('statut_edit', {'id': statut.id}) }}'">Editer le statut étudiant</button>
-</div>
 
     <table class="table">
         <tbody>
@@ -22,7 +19,7 @@
         </tbody>
     </table>
 
-    <h1 class="h4 mb-0 text-gray-800">Liste des étudiants du statut</h1> <br>
+    <h1 class="h4 mb-0 text-gray-800">Liste des étudiants possédant ce statut</h1> <br>
 
     <table class="table" id="etud">
       <thead>
