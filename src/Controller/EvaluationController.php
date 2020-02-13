@@ -17,6 +17,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Validator\Validator\ValidatorInterface;
 
 /**
  * @Route("/evaluation")
@@ -36,7 +37,7 @@ class EvaluationController extends AbstractController
     /**
      * @Route("/new/{id}", name="evaluation_new", methods={"GET","POST"})
      */
-    public function new(Request $request, GroupeEtudiant $groupeConcerne): Response
+    public function new(Request $request, GroupeEtudiant $groupeConcerne, ValidatorInterface $validator): Response
     {
 
         //Création d'une évaluation vide avec tous ses composants (partie, notes)
@@ -74,6 +75,9 @@ class EvaluationController extends AbstractController
             $evaluation->setNom($data["nom"]);
             $evaluation->setDate($data["date"]);
 
+            $this->validerEntite($evaluation, $validator);
+            $this->validerEntite($partie, $validator);
+
             $entityManager->persist($evaluation);
             $entityManager->persist($partie);
 
@@ -81,6 +85,7 @@ class EvaluationController extends AbstractController
               if (!($note->getValeur() <= $partie->getBareme())) {
                 $note->setValeur($partie->getBareme());
               }
+              $this->validerEntite($note, $validator);
               $entityManager->persist($note);
             }
 
@@ -92,6 +97,15 @@ class EvaluationController extends AbstractController
             'evaluation' => $evaluation,
             'form' => $form->createView(),
         ]);
+    }
+
+    public function validerEntite ($entite, $validator) {
+      $errors = $validator->validate($entite);
+
+      if (count($errors) > 0) {
+          $errorsString = (string) $errors;
+          return new Response($errorsString);
+      }
     }
 
     /**
