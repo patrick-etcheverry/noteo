@@ -3,12 +3,21 @@
 namespace App\Controller;
 
 use App\Entity\Evaluation;
+use App\Entity\Etudiant;
+use App\Entity\Partie;
+use App\Form\PointsType;
+use App\Entity\Points;
 use App\Form\EvaluationType;
+use App\Entity\GroupeEtudiant;
 use App\Repository\EvaluationRepository;
+use Symfony\Component\Form\Extension\Core\Type\TextType;
+use Symfony\Component\Form\Extension\Core\Type\DateType;
+use Symfony\Component\Form\Extension\Core\Type\CollectionType;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Validator\Validator\ValidatorInterface;
 
 /**
  * @Route("/evaluation")
@@ -26,19 +35,61 @@ class EvaluationController extends AbstractController
     }
 
     /**
-     * @Route("/new", name="evaluation_new", methods={"GET","POST"})
+     * @Route("/new/{id}", name="evaluation_new", methods={"GET","POST"})
      */
-    public function new(Request $request): Response
+    public function new(Request $request, GroupeEtudiant $groupeConcerne, ValidatorInterface $validator): Response
     {
+
+        //Création d'une évaluation vide avec tous ses composants (partie, notes)
         $evaluation = new Evaluation();
-        $form = $this->createForm(EvaluationType::class, $evaluation);
+        $evaluation->setGroupe($groupeConcerne);
+        $partie = new Partie();
+        $partie->setIntitule("");
+        $partie->setBareme(20);
+        $evaluation->addPartie($partie);
+        foreach ($groupeConcerne->getEtudiants() as $etudiant) {
+          $note = new Points();
+          $note->setValeur(0);
+          $etudiant->addPoint($note);
+          $partie->addNote($note);
+        }
+
+        $form = $this->createFormBuilder(['notes' => $partie->getNotes()])
+            ->add('nom', TextType::class)
+            ->add('date', DateType::class, [
+              'widget' => 'single_text'
+            ])
+            ->add('notes', CollectionType::class , [
+              'entry_type' => PointsType::class
+            ])
+            ->getForm();
+
         $form->handleRequest($request);
 
-        if ($form->isSubmitted() && $form->isValid()) {
-            $entityManager = $this->getDoctrine()->getManager();
-            $entityManager->persist($evaluation);
-            $entityManager->flush();
+        if ($form->isSubmitted()) {
 
+            $entityManager = $this->getDoctrine()->getManager();
+
+            $data = $form->getData();
+
+            $evaluation->setNom($data["nom"]);
+            $evaluation->setDate($data["date"]);
+
+            $this->validerEntite($evaluation, $validator);
+            $this->validerEntite($partie, $validator);
+
+            $entityManager->persist($evaluation);
+            $entityManager->persist($partie);
+
+            foreach ($partie->getNotes() as $note) {
+              if (!($note->getValeur() <= $partie->getBareme())) {
+                $note->setValeur($partie->getBareme());
+              }
+              $this->validerEntite($note, $validator);
+              $entityManager->persist($note);
+            }
+
+            $entityManager->flush();
             return $this->redirectToRoute('evaluation_index');
         }
 
@@ -46,6 +97,15 @@ class EvaluationController extends AbstractController
             'evaluation' => $evaluation,
             'form' => $form->createView(),
         ]);
+    }
+
+    public function validerEntite ($entite, $validator) {
+      $errors = $validator->validate($entite);
+
+      if (count($errors) > 0) {
+          $errorsString = (string) $errors;
+          return new Response($errorsString);
+      }
     }
 
     /**
@@ -79,15 +139,29 @@ class EvaluationController extends AbstractController
     }
 
     /**
-     * @Route("/{id}", name="evaluation_delete", methods={"DELETE"})
+     * @Route("/{id}/delete", name="evaluation_delete", methods={"GET"})
      */
     public function delete(Request $request, Evaluation $evaluation): Response
     {
-        if ($this->isCsrfTokenValid('delete'.$evaluation->getId(), $request->request->get('_token'))) {
-            $entityManager = $this->getDoctrine()->getManager();
-            $entityManager->remove($evaluation);
-            $entityManager->flush();
+
+        $entityManager = $this->getDoctrine()->getManager();
+
+        //Suppression des parties associées à l'évaluation
+        foreach ($evaluation->getParties() as $partie) {
+
+          //Suppression des notes associées à la partie
+          foreach ($partie->getNotes() as $note) {
+
+            $entityManager->remove($note);
+
+          }
+
+          $entityManager->remove($partie);
+
         }
+
+        $entityManager->remove($evaluation);
+        $entityManager->flush();
 
         return $this->redirectToRoute('evaluation_index');
     }

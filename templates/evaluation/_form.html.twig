@@ -1,4 +1,43 @@
+
 {{ form_start(form) }}
-    {{ form_widget(form) }}
-    <button class="btn">{{ button_label|default('Save') }}</button>
+
+<table align="center" class="table">
+  <tbody>
+    <tr>
+      <td class="intitule"><label for="evaluation_nom" >Nom</label></td>
+      <td>{{ form_widget(form.nom) }}</td>
+    </tr>
+    <tr>
+      <td class="intitule"><label for="evaluation_date" >Date</label></td>
+      <td>{{ form_widget(form.date) }}</td>
+    </tr>
+  </tbody>
+</table>
+
+<br> <h1 class="h4 mb-0 text-gray-800">Saisir les notes des étudiants</h1> <br>
+
+<table class="table" id="etudiants">
+<thead>
+  <th>Nom</th>
+  <th>Prenom</th>
+  <th>Note</th>
+</thead>
+<tbody>
+
+{% for i in 0..(form.vars.value.notes|length-1) %}
+<tr>
+  <td>{{form.vars.value.notes[i].etudiant.nom}}</td>
+  <td>{{form.vars.value.notes[i].etudiant.prenom}}</td>
+  <td>{{form_widget(form.notes[i].valeur)}}</td>
+</tr>
+{% endfor %}
+
+</tbody>
+</table>
+
+<div class='bouton'>
+  <a href="{{ path('groupe_etudiant_index') }}" class="d-none d-sm-inline-block btn btn-sm btn-secondary shadow-sm bouton">Annuler</a>
+  <button class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm">{{ button_label|default('Enregistrer') }}</button>
+</div>
+
 {{ form_end(form) }}

@@ -5,6 +5,7 @@ namespace App\Entity;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * @ORM\Entity(repositoryClass="App\Repository\EvaluationRepository")
@@ -20,11 +21,15 @@ class Evaluation
 
     /**
      * @ORM\Column(type="string", length=50)
+     * @Assert\Length(max=50)
+     * @Assert\NotBlank
      */
     private $nom;
 
     /**
-     * @ORM\Column(type="string", length=10)
+     * @ORM\Column(type="date")
+     * @Assert\NotBlank
+     * @Assert\Date
      */
     private $date;
 
@@ -65,12 +70,15 @@ class Evaluation
         return $this;
     }
 
-    public function getDate(): ?string
+    public function getDate()
     {
-        return $this->date;
+      if ($this->date != null) {
+          return $this->date->format('d/m/Y');
+      }
+
     }
 
-    public function setDate(string $date): self
+    public function setDate($date): self
     {
         $this->date = $date;
 
@@ -85,23 +93,23 @@ class Evaluation
         return $this->parties;
     }
 
-    public function addParty(Partie $party): self
+    public function addPartie(Partie $partie): self
     {
-        if (!$this->parties->contains($party)) {
-            $this->parties[] = $party;
-            $party->setEvaluation($this);
+        if (!$this->parties->contains($partie)) {
+            $this->parties[] = $partie;
+            $partie->setEvaluation($this);
         }
 
         return $this;
     }
 
-    public function removeParty(Partie $party): self
+    public function removePartie(Partie $partie): self
     {
-        if ($this->parties->contains($party)) {
-            $this->parties->removeElement($party);
+        if ($this->parties->contains($partie)) {
+            $this->parties->removeElement($partie);
             // set the owning side to null (unless already changed)
-            if ($party->getEvaluation() === $this) {
-                $party->setEvaluation(null);
+            if ($partie->getEvaluation() === $this) {
+                $partie->setEvaluation(null);
             }
         }
 
