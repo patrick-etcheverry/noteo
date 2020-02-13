@@ -5,6 +5,7 @@ namespace App\Form;
 use App\Repository\EtudiantRepository;
 use App\Entity\Statut;
 use App\Entity\Enseignant;
+use App\Entity\Etudiant;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
@@ -23,6 +24,15 @@ class StatutType extends AbstractType
             ->add('enseignant', EntityType::class, [
               'class' => Enseignant::class, 'choice_label' => 'nom'
             ])
+            ->add('lesEtudiants', EntityType::class, [
+                'class' => Etudiant::Class, //On veut choisir des étudiants
+                'choice_label' => false, // On n'affichera pas d'attribut de l'entité à côté du bouton pour aider au choix car on liste les entités nous même
+                'label' => false,
+                'mapped' => false, // Pour que l'attribut ne soit pas immédiatement mis en BD mais soit récupérable après validation
+                'expanded' => true, // Pour avoir des cases
+                'multiple' => true, // à cocher
+                'choices' => $options['etudiants'] // On restreint le choix à la liste des étudiants du groupe passé en parametre
+              ])
 
         ;
     }
@@ -31,6 +41,7 @@ class StatutType extends AbstractType
     {
         $resolver->setDefaults([
             'data_class' => Statut::class,
+            'etudiants' => null
         ]);
     }
 }

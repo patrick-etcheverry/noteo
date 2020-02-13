@@ -5,7 +5,7 @@ namespace App\Controller;
 use App\Entity\Statut;
 use App\Form\StatutType;
 use App\Repository\StatutRepository;
-use App\Controller\EtudiantRepository;
+use App\Repository\EtudiantRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -29,13 +29,21 @@ class StatutController extends AbstractController
     /**
      * @Route("/new", name="statut_new", methods={"GET","POST"})
      */
-    public function new(Request $request): Response
+    public function new(Request $request, EtudiantRepository $etudiantRepository): Response
     {
         $statut = new Statut();
-        $form = $this->createForm(StatutType::class, $statut);
+        $form = $this->createForm(StatutType::class, $statut, ['etudiants' => $etudiantRepository->findAll()]);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
+
+            if ($statut->getEtudiants() != null)
+            {
+                foreach($form->get('lesEtudiants')->getData() as $key => $etudiant)
+                {
+                    $statut->addEtudiant($etudiant);
+                }
+            }
             $entityManager = $this->getDoctrine()->getManager();
             $entityManager->persist($statut);
             $entityManager->flush();
@@ -45,7 +53,7 @@ class StatutController extends AbstractController
 
         return $this->render('statut/new.html.twig', [
             'statut' => $statut,
-            //'etudiants' => $etudiantRepository->findAll(),
+            'etudiants' => $etudiantRepository->findAll(),
             'form' => $form->createView(),
         ]);
     }
@@ -87,6 +95,11 @@ class StatutController extends AbstractController
      */
     public function delete(Request $request, Statut $statut): Response
     {
+        foreach($statut->getEtudiants() as $key => $etudiant)
+        {
+            $statut->removeEtudiant($etudiant);
+        }
+
         $manager = $this->getDoctrine()->getManager();
 
         foreach ($statut->getEtudiants() as $etudiant) {
