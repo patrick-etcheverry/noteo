@@ -49,6 +49,8 @@
 $(document).ready(function() {
   $('#table').dataTable({
     language: {
+      search: "_INPUT_",
+      searchPlaceholder: "Rechercher...",
       "url": "{{asset('tradfr.json')}}"
     },
     order: [

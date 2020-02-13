@@ -59,16 +59,24 @@ class GroupeEtudiantController extends AbstractController
                   /////ENSEIGNANT/////
                   $enseignant = "<td>" . $node['enseignant']['prenom'] . " " . $node['enseignant']['nom'] . "</td>";
 
+                  /////estEvaluable/////
+                  if ($node['estEvaluable']) {
+                    $evaluable = "<td> Oui </td>";
+                  }
+                  else {
+                    $evaluable = "<td> Non </td>";
+                  }
+
                   /////ACTIONS/////
                   /////Cette section affiche les boutons d'actions liés à chaque groupes
 
                     //Consulter
                     $url = $this->generateUrl('groupe_etudiant_show', [ 'id' => $node['id'] ]);
-                    $show = " <a href='$url'><i class='icon-eye'></i></a> ";
+                    $show = " <a href='$url'><i class='icon-eye' data-toggle='tooltip' title='Consulter le groupe'></i></a> ";
 
                     //Créer un sous-groupe
                     $url = $this->generateUrl('groupe_etudiant_new_sousGroupe', [ 'id' => $node['id'] ]);
-                    $sousGroupe = "<a href='$url'><i class='icon-plus'></i></a>";
+                    $sousGroupe = "<a href='$url'><i class='icon-plus' data-toggle='tooltip' title='Créer un sous groupe'></i></a>";
 
 
                     //Créer une évaluation (seulement disponible si le groupe est évaluable)
@@ -84,17 +92,17 @@ class GroupeEtudiantController extends AbstractController
 
                     //Modifier
                     $url = $this->generateUrl('groupe_etudiant_edit', [ 'id' => $node['id'] ]);
-                    $edit = "<a href=" . $url .  "><i class='icon-pencil-1'></i></a>";
+                    $edit = "<a href=" . $url .  "><i class='icon-pencil-1' data-toggle='tooltip' title='Modifier le groupe'></i></a>";
 
                     //Supprimer
                     $url = $this->generateUrl('groupe_etudiant_delete', [ 'id' => $node['id'] ]);
                     $delete = "<a href='$url' onclick='EcritureModale(\"$url\")' data-toggle='modal'><i class='icon-trash' data-toggle='tooltip' title='Supprimer le groupe'></i></a>";
 
                     //Mise à la suite des actions en une seule chaîne
-                    $actions = "<td>" . $show  . $sousGroupe . $evalSimple /*. $evalParParties */. $edit . $delete . "</td>";
+                    $actions = "<td>" . $show  . $sousGroupe . $edit /*. $evalParParties */. $delete . $evalSimple . "</td>";
 
                   //Mise à la suite du contenu de toutes les colonnes du tableau en une seule chaîne
-                  return $nom . $effectif . $description . $enseignant . $actions;
+                  return $nom . $effectif . $description . $enseignant . $evaluable . $actions;
             }
         );
 

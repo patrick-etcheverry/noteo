@@ -37,7 +37,7 @@ class GroupeEtudiantType extends AbstractType
 
             ->add('estEvaluable', ChoiceType::class, [
               'choices' => ['Oui' => true, 'Non' => false],
-              'data' => true,
+              'data' => false,
               'expanded' => true,
               'label_attr' =>  [
               'class'=>'radio-inline'

@@ -15,6 +15,7 @@
       <th>Effectif</th>
       <th>Description</th>
       <th>Créateur</th>
+      <th>Groupe évaluable</th>
       <th></th>
     </tr>
   </thead>
@@ -80,7 +81,7 @@ $(document).ready(function() {
       searchPlaceholder: "Rechercher...",
       "url": "{{asset('tradfr.json')}}"
     },
-    columns: [null, null, {"orderable": false}, null, {"orderable": false}],
+    columns: [null, null, {"orderable": false}, null, null, {"orderable": false}],
     lengthMenu: [
       [10, 25, 50, -1],
       [10, 25, 50, "Tout"]
