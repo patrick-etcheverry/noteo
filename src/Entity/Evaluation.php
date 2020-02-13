@@ -77,6 +77,10 @@ class Evaluation
       }
 
     }
+    public function getDateUnformatted()
+    {
+      return $this->date;
+    }
 
     public function setDate($date): self
     {

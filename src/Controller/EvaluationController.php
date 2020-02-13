@@ -39,7 +39,6 @@ class EvaluationController extends AbstractController
      */
     public function new(Request $request, GroupeEtudiant $groupeConcerne, ValidatorInterface $validator): Response
     {
-
         //Création d'une évaluation vide avec tous ses composants (partie, notes)
         $evaluation = new Evaluation();
         $evaluation->setGroupe($groupeConcerne);
@@ -121,21 +120,57 @@ class EvaluationController extends AbstractController
     /**
      * @Route("/{id}/edit", name="evaluation_edit", methods={"GET","POST"})
      */
-    public function edit(Request $request, Evaluation $evaluation): Response
+    public function edit(Request $request, Evaluation $evaluation, ValidatorInterface $validator): Response
     {
-        $form = $this->createForm(EvaluationType::class, $evaluation);
-        $form->handleRequest($request);
+      foreach ($evaluation->getParties() as $partie) {
+        $tab = $partie->getNotes();
+      }
 
-        if ($form->isSubmitted() && $form->isValid()) {
-            $this->getDoctrine()->getManager()->flush();
+      $form = $this->createFormBuilder(['notes' => $tab])
+          ->add('nom', TextType::class, [
+            'data' => $evaluation->getNom()
+          ])
+          ->add('date', DateType::class, [
+            'widget' => 'single_text',
+            'data' => $evaluation->getDateUnformatted(),
+          ])
+          ->add('notes', CollectionType::class , [
+            'entry_type' => PointsType::class
+          ])
+          ->getForm();
 
-            return $this->redirectToRoute('evaluation_index');
-        }
+      $form->handleRequest($request);
 
-        return $this->render('evaluation/edit.html.twig', [
-            'evaluation' => $evaluation,
-            'form' => $form->createView(),
-        ]);
+      if ($form->isSubmitted()) {
+
+          $entityManager = $this->getDoctrine()->getManager();
+
+          $data = $form->getData();
+
+          $evaluation->setNom($data["nom"]);
+          $evaluation->setDate($data["date"]);
+
+          $this->validerEntite($evaluation, $validator);
+
+          $entityManager->persist($evaluation);
+          $entityManager->persist($partie);
+
+          foreach ($partie->getNotes() as $note) {
+            if (!($note->getValeur() <= $partie->getBareme())) {
+              $note->setValeur($partie->getBareme());
+            }
+            $this->validerEntite($note, $validator);
+            $entityManager->persist($note);
+          }
+
+          $entityManager->flush();
+          return $this->redirectToRoute('evaluation_index');
+      }
+
+      return $this->render('evaluation/new.html.twig', [
+          'evaluation' => $evaluation,
+          'form' => $form->createView(),
+      ]);
     }
 
     /**
