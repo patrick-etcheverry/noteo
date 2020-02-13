@@ -27,8 +27,8 @@
                 <td>{{ enseignant.mail }}</td>
                 <td>{{ enseignant.estAdmin ? 'Oui' : 'Non' }}</td>
                 <td>
-                    <a href="{{ path('enseignant_show', {'id': enseignant.id}) }}"><i class="icon-eye"></i></a>
-                    <a href="{{ path('enseignant_edit', {'id': enseignant.id}) }}"><i class="icon-pencil-1"></i></a>
+                    <a href="{{ path('enseignant_show', {'id': enseignant.id}) }}"><i class="icon-eye" data-toggle='tooltip' title='Consulter un enseignant'></i></a>
+                    <a href="{{ path('enseignant_edit', {'id': enseignant.id}) }}"><i class="icon-pencil-1" data-toggle='tooltip' title='Editer un enseignant'></i></a>
                 </td>
             </tr>
         {% else %}

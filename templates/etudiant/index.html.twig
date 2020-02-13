@@ -27,9 +27,9 @@
                 <td></td>
                 <td>{{ etudiant.mail }}</td>
                 <td>
-                    <a href="{{ path('etudiant_show', {'id': etudiant.id}) }}"><i class="icon-eye"></i></a>
-                    <a href="{{ path('etudiant_edit', {'id': etudiant.id}) }}"><i class="icon-pencil-1"></i></a>
-                    <a href="#" onclick="supprimerEtudiant('{{ path('etudiant_delete', {'id': etudiant.id}) }}')"><i class="icon-trash"></i></a>
+                    <a href="{{ path('etudiant_show', {'id': etudiant.id}) }}"><i class="icon-eye" data-toggle='tooltip' title='Consulter un étudiant'></i></a>
+                    <a href="{{ path('etudiant_edit', {'id': etudiant.id}) }}"><i class="icon-pencil-1" data-toggle='tooltip' title='Editer un étudiant'></i></a>
+                    <a href="#" onclick="supprimerEtudiant('{{ path('etudiant_delete', {'id': etudiant.id}) }}')"><i class="icon-trash" data-toggle='tooltip' title='Supprimer un étudiant'></i></a>
                 </td>
             </tr>
         {% else %}
