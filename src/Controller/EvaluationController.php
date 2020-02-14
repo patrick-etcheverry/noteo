@@ -5,11 +5,13 @@ namespace App\Controller;
 use App\Entity\Evaluation;
 use App\Entity\Etudiant;
 use App\Entity\Partie;
+use App\Entity\Statut;
 use App\Form\PointsType;
 use App\Entity\Points;
 use App\Form\EvaluationType;
 use App\Entity\GroupeEtudiant;
 use App\Repository\EvaluationRepository;
+use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\Extension\Core\Type\DateType;
 use Symfony\Component\Form\Extension\Core\Type\CollectionType;
@@ -18,6 +20,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
+use App\Repository\StatutRepository;
 
 /**
  * @Route("/evaluation")
@@ -186,9 +189,7 @@ class EvaluationController extends AbstractController
 
           //Suppression des notes associées à la partie
           foreach ($partie->getNotes() as $note) {
-
             $entityManager->remove($note);
-
           }
 
           $entityManager->remove($partie);
@@ -200,4 +201,49 @@ class EvaluationController extends AbstractController
 
         return $this->redirectToRoute('evaluation_index');
     }
+
+    /**
+     * @Route("/choose/{id}", name="evaluation_choose_groups", methods={"GET","POST"})
+     */
+    public function chooseGroups(Request $request, GroupeEtudiant $groupeConcerne, StatutRepository $repo): Response
+    {
+        $choixGroupe[] = $groupeConcerne;
+        foreach ($groupeConcerne->getChildren() as $enfant) {
+          $choixGroupe[] = $enfant;
+        }
+
+        $form = $this->createFormBuilder()
+            ->add('groupes', EntityType::class, [
+              'class' => GroupeEtudiant::Class, //On veut choisir des étudiants
+              'choice_label' => false, // On n'affichera pas d'attribut de l'entité à côté du bouton pour aider au choix car on liste les entités nous même
+              'label' => false,
+              'mapped' => false, // Pour que l'attribut ne soit pas immédiatement mis en BD mais soit récupérable après validation
+              'expanded' => true, // Pour avoir des cases
+              'multiple' => true, // à cocher
+              'choices' => $choixGroupe // On restreint le choix à la liste des étudiants du groupe passé en parametre
+            ])
+            ->add('statuts', EntityType::class, [
+              'class' => Statut::Class, //On veut choisir des étudiants
+              'choice_label' => false, // On n'affichera pas d'attribut de l'entité à côté du bouton pour aider au choix car on liste les entités nous même
+              'label' => false,
+              'mapped' => false, // Pour que l'attribut ne soit pas immédiatement mis en BD mais soit récupérable après validation
+              'expanded' => true, // Pour avoir des cases
+              'multiple' => true, // à cocher
+              'choices' => $repo->findAll() // On restreint le choix à la liste des étudiants du groupe passé en parametre
+            ])
+            ->getForm();
+
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted()) {
+
+            return $this->redirectToRoute('evaluation_index');
+        }
+
+        return $this->render('evaluation/choix_groupes.html.twig', [
+            'form' => $form->createView(),
+        ]);
+    }
+
+
 }

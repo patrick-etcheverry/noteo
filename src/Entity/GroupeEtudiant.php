@@ -214,6 +214,10 @@ class GroupeEtudiant
         return $this;
     }
 
+    public function getChildren() {
+      return $this->children;
+    }
+
     public function getEstEvaluable(): ?bool
     {
         return $this->estEvaluable;

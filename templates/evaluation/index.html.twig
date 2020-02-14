@@ -27,7 +27,7 @@
                 <td>
                     <a href="{{ path('evaluation_show', {'id': evaluation.id}) }}"><i class="icon-eye" data-toggle='tooltip' title="Consulter l'évaluation"></i></a>
                     <a href="{{ path('evaluation_edit', {'id': evaluation.id}) }}"><i class="icon-pencil-1" data-toggle='tooltip' title="Editer l'évaluation"></i></a>
-                    <a href="#"><i class="icon-logo-noteo" data-toggle='tooltip' title='Visualiser les statistiques'></i></a>
+                    <a href="{{path('evaluation_choose_groups', {'id' : evaluation.groupe.id})}}"><i class="icon-logo-noteo" data-toggle='tooltip' title='Visualiser les statistiques'></i></a>
                     <a href="{{ path('evaluation_delete', {'id': evaluation.id}) }}" onclick="EcritureModale('{{ path('evaluation_delete', {'id': evaluation.id}) }}')" data-toggle='modal'>
                       <i class="icon-trash" data-toggle='tooltip' title="Supprimer l'évaluation"></i>
                     </a>
