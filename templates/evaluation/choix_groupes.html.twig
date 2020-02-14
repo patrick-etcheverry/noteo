@@ -1,0 +1,54 @@
+{% extends 'base.html.twig' %}
+
+{% block tirePage %}Modifier une évaluation{% endblock %}
+
+{% block evaluations %}active{% endblock %}
+
+{% block contenu %}
+{{ include('evaluation/_choose_groups_form.html.twig') }}
+{% endblock %}
+
+{% block datatables %}
+<script type="text/javascript">
+$(document).ready(function() {
+
+  //Activation de Datatables sur le tableau d'ajout des étudiants
+  $('#groupes').dataTable({
+    language: {
+      // Suppression du label Rechercher et ajout du placeholder
+      search: "_INPUT_",
+      searchPlaceholder: "Rechercher...",
+      "url": "{{asset('tradfr.json')}}"
+    },
+    order: [
+      [0, "asc"]
+    ],
+    columns: [null, null,null,null, {"orderable": false} ],
+    lengthMenu: [
+      [10, 25, 50, -1],
+      [10, 25, 50, "Tout"]
+    ],
+    info: false,
+  });
+
+  //Activation de Datatables sur le tableau de suppression des étudiants
+  $('#statuts').dataTable({
+    language: {
+      // Suppression du label Rechercher et ajout du placeholder
+      search: "_INPUT_",
+      searchPlaceholder: "Rechercher...",
+      "url": "{{asset('tradfr.json')}}"
+    },
+    order: [
+      [0, "asc"]
+    ],
+    columns: [null, null,null,{"orderable": false}],
+    lengthMenu: [
+      [10, 25, 50, -1],
+      [10, 25, 50, "Tout"]
+    ],
+    info: false,
+  });
+});
+</script>
+{% endblock %}
