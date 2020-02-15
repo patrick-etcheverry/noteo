@@ -6,10 +6,11 @@
 
 {% block contenu %}
 
+{% if statuts is not empty %}
+
 <div class='bouton'>
     <button class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm" onclick="location.href='{{ path('statut_new') }}'">Créer un statut étudiant</button>
 </div>
-
     <table class="table" id="table">
         <thead>
             <tr>
@@ -20,7 +21,7 @@
             </tr>
         </thead>
         <tbody>
-        {% if statuts is not empty %}
+
         {% for statut in statuts %}
             <tr>
                 <td>{{ statut.nom }}</td>
@@ -32,15 +33,22 @@
                     <a href="#" onclick="supprimerStatutEtudiant('{{ path('statut_delete', {'id': statut.id}) }}')"><i class="icon-trash"></i></a>
                 </td>
             </tr>
-        {% else %}
-            <tr>
-                <td colspan="4">no records found</td>
-            </tr>
         {% endfor %}
-        {% endif %}
+
         </tbody>
     </table>
 
+{% else %}
+
+<div class="info">
+  <h2 class="h4 mb-0 text-gray-800">Vous n'avez aucun statut</h1>
+</div>
+
+<div class='bouton'>
+  <button class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm" onclick="location.href='{{ path('statut_new') }}'">Créer un statut étudiant</button>
+</div>
+
+{% endif %}
     <div class="modal fade" id="delStatutEtudiant" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
       <div class="modal-dialog" role="document">
         <div class="modal-content">
