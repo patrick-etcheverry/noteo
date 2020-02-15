@@ -23,7 +23,7 @@
   <th>Note</th>
 </thead>
 <tbody>
-
+{% if form.vars.value.notes is not empty %}
 {% for i in 0..(form.vars.value.notes|length-1) %}
 <tr>
   <td>{{form.vars.value.notes[i].etudiant.nom}}</td>
@@ -31,6 +31,8 @@
   <td>{{form_widget(form.notes[i].valeur)}}</td>
 </tr>
 {% endfor %}
+{% endif %}
+
 
 </tbody>
 </table>
