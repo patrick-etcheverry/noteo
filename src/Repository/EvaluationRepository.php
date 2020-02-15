@@ -3,6 +3,7 @@
 namespace App\Repository;
 
 use App\Entity\Evaluation;
+use App\Entity\Points;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Common\Persistence\ManagerRegistry;
 

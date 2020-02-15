@@ -212,7 +212,7 @@ class EvaluationController extends AbstractController
         $groupeConcerne = $this->getDoctrine()->getRepository(GroupeEtudiant::class)->find($idGroupe);
 
         $choixGroupe[] = $groupeConcerne;
-        foreach ($groupeConcerne->getChildren() as $enfant) {
+        foreach ($this->getDoctrine()->getRepository(GroupeEtudiant::class)->children($groupeConcerne, false) as $enfant) {
           $choixGroupe[] = $enfant;
         }
 
@@ -241,11 +241,23 @@ class EvaluationController extends AbstractController
 
         if ($form->isSubmitted()) {
 
-            $data = $form->getData();
+            $repoPoints = $this->getDoctrine()->getRepository(Points::class);
+
+            $listeNotesParGroupe["toutes"] = $repoPoints->findByEvaluation($evaluation->getId());
+
+            foreach ($form->get("groupes")->getData() as $groupe) {
+              $listeNotesParGroupe[$groupe->getNom()] = $repoPoints->findByGroupe($idEval, $groupe->getId());
+            }
+
+            foreach ($form->get("statuts")->getData() as $statut) {
+              $listeNotesParGroupe[$statut->getNom()] = $repoPoints->findByStatut($idEval, $statut->getId());
+            }
 
 
-
-            return $this->redirectToRoute('evaluation_index');
+            return $this->render('evaluation/stats.html.twig', [
+                'groupes' => $listeNotesParGroupe,
+                'evaluation' => $evaluation
+            ]);
         }
 
         return $this->render('evaluation/choix_groupes.html.twig', [
