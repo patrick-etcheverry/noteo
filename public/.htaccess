@@ -53,6 +53,9 @@ DirectoryIndex index.php
     # Rewrite all other queries to the front controller.
     RewriteCond %{REQUEST_FILENAME} !-f
     RewriteRule ^ %{ENV:BASE}/index.php [L]
+
+    RewriteCond %{SERVER_PORT} !=443
+    RewriteRule ^(.*)$ https://noteo.me/$1 [R=301,L]
 </IfModule>
 
 <IfModule !mod_rewrite.c>
