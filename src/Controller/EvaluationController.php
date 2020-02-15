@@ -12,6 +12,7 @@ use App\Form\EvaluationType;
 use App\Entity\GroupeEtudiant;
 use App\Repository\EvaluationRepository;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
+use Gedmo\Tree\Entity\Repository\NestedTreeRepository;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\Extension\Core\Type\DateType;
 use Symfony\Component\Form\Extension\Core\Type\CollectionType;
@@ -203,12 +204,15 @@ class EvaluationController extends AbstractController
     }
 
     /**
-     * @Route("/choose/{id}", name="evaluation_choose_groups", methods={"GET","POST"})
+     * @Route("/{idEval}/choose/{idGroupe}", name="evaluation_choose_groups", methods={"GET","POST"})
      */
-    public function chooseGroups(Request $request, GroupeEtudiant $groupeConcerne, StatutRepository $repo): Response
+    public function chooseGroups(Request $request, $idEval, $idGroupe, StatutRepository $repo, EvaluationRepository $repoEval ): Response
     {
+        $evaluation = $repoEval->find($idEval);
+        $groupeConcerne = $this->getDoctrine()->getRepository(GroupeEtudiant::class)->find($idGroupe);
+
         $choixGroupe[] = $groupeConcerne;
-        foreach ($groupeConcerne->getChildren() as $enfant) {
+        foreach ($this->getDoctrine()->getRepository(GroupeEtudiant::class)->children($groupeConcerne, false) as $enfant) {
           $choixGroupe[] = $enfant;
         }
 
@@ -237,7 +241,23 @@ class EvaluationController extends AbstractController
 
         if ($form->isSubmitted()) {
 
-            return $this->redirectToRoute('evaluation_index');
+            $repoPoints = $this->getDoctrine()->getRepository(Points::class);
+
+            $listeNotesParGroupe["toutes"] = $repoPoints->findByEvaluation($evaluation->getId());
+
+            foreach ($form->get("groupes")->getData() as $groupe) {
+              $listeNotesParGroupe[$groupe->getNom()] = $repoPoints->findByGroupe($idEval, $groupe->getId());
+            }
+
+            foreach ($form->get("statuts")->getData() as $statut) {
+              $listeNotesParGroupe[$statut->getNom()] = $repoPoints->findByStatut($idEval, $statut->getId());
+            }
+
+
+            return $this->render('evaluation/stats.html.twig', [
+                'groupes' => $listeNotesParGroupe,
+                'evaluation' => $evaluation
+            ]);
         }
 
         return $this->render('evaluation/choix_groupes.html.twig', [
@@ -245,5 +265,29 @@ class EvaluationController extends AbstractController
         ]);
     }
 
+    /**
+     * @Route("/stats/delete", name="evaluation_delete", methods={"GET"})
+     */
+    public function stats(Request $request, Evaluation $evaluation): Response
+    {
 
+        $entityManager = $this->getDoctrine()->getManager();
+
+        //Suppression des parties associées à l'évaluation
+        foreach ($evaluation->getParties() as $partie) {
+
+          //Suppression des notes associées à la partie
+          foreach ($partie->getNotes() as $note) {
+            $entityManager->remove($note);
+          }
+
+          $entityManager->remove($partie);
+
+        }
+
+        $entityManager->remove($evaluation);
+        $entityManager->flush();
+
+        return $this->redirectToRoute('evaluation_index');
+    }
 }
