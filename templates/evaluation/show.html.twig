@@ -25,7 +25,7 @@
 
 <h1 class="h4 mb-0 text-gray-800">Notes des étudiants</h1> <br>
 
-  {% for partie in evaluation.parties %}
+
       <table class="table" id="etud">
         <thead>
           <th>Nom</th>
@@ -33,6 +33,7 @@
           <th>Note</th>
         </thead>
         <tbody>
+          {% for partie in evaluation.parties %}
           {% for note in partie.notes %}
           <tr>
             <td>{{note.etudiant.nom}}</td>
@@ -40,9 +41,10 @@
             <td>{{note.valeur}}</td>
           </tr>
           {% endfor %}
+          {% endfor %}
         </tbody>
       </table>
-  {% endfor %}
+
 
 {% endblock %}
 
