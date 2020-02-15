@@ -12,6 +12,7 @@ use App\Form\EvaluationType;
 use App\Entity\GroupeEtudiant;
 use App\Repository\EvaluationRepository;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
+use Gedmo\Tree\Entity\Repository\NestedTreeRepository;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\Extension\Core\Type\DateType;
 use Symfony\Component\Form\Extension\Core\Type\CollectionType;
@@ -203,10 +204,13 @@ class EvaluationController extends AbstractController
     }
 
     /**
-     * @Route("/choose/{id}", name="evaluation_choose_groups", methods={"GET","POST"})
+     * @Route("/{idEval}/choose/{idGroupe}", name="evaluation_choose_groups", methods={"GET","POST"})
      */
-    public function chooseGroups(Request $request, GroupeEtudiant $groupeConcerne, StatutRepository $repo): Response
+    public function chooseGroups(Request $request, $idEval, $idGroupe, StatutRepository $repo, EvaluationRepository $repoEval ): Response
     {
+        $evaluation = $repoEval->find($idEval);
+        $groupeConcerne = $this->getDoctrine()->getRepository(GroupeEtudiant::class)->find($idGroupe);
+
         $choixGroupe[] = $groupeConcerne;
         foreach ($groupeConcerne->getChildren() as $enfant) {
           $choixGroupe[] = $enfant;
@@ -237,6 +241,10 @@ class EvaluationController extends AbstractController
 
         if ($form->isSubmitted()) {
 
+            $data = $form->getData();
+
+
+
             return $this->redirectToRoute('evaluation_index');
         }
 
@@ -245,5 +253,29 @@ class EvaluationController extends AbstractController
         ]);
     }
 
+    /**
+     * @Route("/stats/delete", name="evaluation_delete", methods={"GET"})
+     */
+    public function stats(Request $request, Evaluation $evaluation): Response
+    {
 
+        $entityManager = $this->getDoctrine()->getManager();
+
+        //Suppression des parties associées à l'évaluation
+        foreach ($evaluation->getParties() as $partie) {
+
+          //Suppression des notes associées à la partie
+          foreach ($partie->getNotes() as $note) {
+            $entityManager->remove($note);
+          }
+
+          $entityManager->remove($partie);
+
+        }
+
+        $entityManager->remove($evaluation);
+        $entityManager->flush();
+
+        return $this->redirectToRoute('evaluation_index');
+    }
 }
