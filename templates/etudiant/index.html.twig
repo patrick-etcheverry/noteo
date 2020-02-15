@@ -5,6 +5,8 @@
 {% block etudiants %}active{% endblock %}
 
 {% block contenu %}
+
+{% if etudiants is not empty %}
 <div class='bouton'>
     <button class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm" onclick="location.href='{{ path('etudiant_new') }}'">Créer un étudiant</button>
 </div>
@@ -19,7 +21,7 @@
             </tr>
         </thead>
         <tbody>
-        {% if etudiants is not empty %}
+
         {% for etudiant in etudiants %}
             <tr>
                 <td>{{ etudiant.nom }}</td>
@@ -36,16 +38,19 @@
                     <a href="#" onclick="supprimerEtudiant('{{ path('etudiant_delete', {'id': etudiant.id}) }}')"><i class="icon-trash" data-toggle='tooltip' title='Supprimer un étudiant'></i></a>
                 </td>
             </tr>
-        {% else %}
-            <tr>
-                <td colspan="5">no records found</td>
-            </tr>
         {% endfor %}
-        {% endif %}
+
         </tbody>
     </table>
+{% else %}
+<div class="info">
+  <h2 class="h4 mb-0 text-gray-800">Vous n'avez aucun étudiant</h1>
+</div>
 
-
+<div class='bouton'>
+    <button class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm" onclick="location.href='{{ path('etudiant_new') }}'">Créer un étudiant</button>
+</div>
+{% endif %}
     <div class="modal fade" id="delEtud" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
       <div class="modal-dialog" role="document">
         <div class="modal-content">
