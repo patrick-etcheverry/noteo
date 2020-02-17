@@ -17,7 +17,6 @@ class PointsType extends AbstractType
             ->add('valeur', NumberType::class, [
               'required'  => false
             ])
-            //->add('etudiant', HiddenType::class)
         ;
     }
 
