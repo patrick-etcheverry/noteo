@@ -3,6 +3,7 @@
 namespace App\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * @ORM\Entity(repositoryClass="App\Repository\PointsRepository")
@@ -17,7 +18,8 @@ class Points
     private $id;
 
     /**
-     * @ORM\Column(type="integer")
+     * @ORM\Column(type="float")
+     * @Assert\Type(type="float", message = "La note doit être un nombre, eventuellement à virgule")
      */
     private $valeur;
 
@@ -36,12 +38,12 @@ class Points
         return $this->id;
     }
 
-    public function getValeur(): ?int
+    public function getValeur(): ?float
     {
         return $this->valeur;
     }
 
-    public function setValeur(int $valeur): self
+    public function setValeur(float $valeur): self
     {
         $this->valeur = $valeur;
 
