@@ -3,6 +3,7 @@
 namespace App\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * @ORM\Entity(repositoryClass="App\Repository\PointsRepository")
@@ -18,6 +19,7 @@ class Points
 
     /**
      * @ORM\Column(type="float")
+     * @Assert\Type(type="float", message = "La note doit être un nombre, eventuellement à virgule")
      */
     private $valeur;
 
