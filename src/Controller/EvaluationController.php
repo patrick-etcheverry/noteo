@@ -243,6 +243,8 @@ class EvaluationController extends AbstractController
 
             $repoPoints = $this->getDoctrine()->getRepository(Points::class);
 
+            $listeNotesParGroupe = array();
+
             foreach ($form->get("groupes")->getData() as $groupe) {
               $listeNotesParGroupe[$groupe->getNom()] = array("notes" => $repoPoints->findByGroupe($idEval, $groupe->getId()),
                                                               "moyenne" => "", //Ici mettre la fonction pour la moyenne

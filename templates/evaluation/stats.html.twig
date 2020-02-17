@@ -33,26 +33,87 @@
   <span style="font-size:15px"class="badge badge-pill badge-danger">Les statistiques ne comportent pas les étudiants démissionaire</span>
 </div>
 
-<br>
+{% if groupes is not empty %}
 
+{% for groupe in groupes %}
+
+
+<br>
 <div class="card" style="width: 18rem; margin: 0 auto; float: none; margin-bottom: 10px;">
 <div class="card-body">
-  <h5 class="card-title">Card title</h5>
-  <h6 class="card-subtitle mb-2 text-muted">Card subtitle</h6>
-  <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
-  <a href="#" class="card-link">Card link</a>
-  <a href="#" class="card-link">Another link</a>
+  <h5 class="card-title">Réparition des notes</h5>
+  <canvas id="barre" width="500" height="500"></canvas>
 </div>
 </div>
-
-<p>Vous avez choisi de voir les stats de :</p>
-<ul>
-{% for item in groupes|keys %}
-  <li>{{item}}</li>
 {% endfor %}
 
-</ul>
+{% else %}
 
+<div class="info">
+  <h2 class="h4 mb-0 text-gray-800">Veuillez sélectionner des groupes sur lesquels voir des statistiques</h1>
+</div>
+
+{% endif %}
+
+{% endblock %}
+
+{% block javascripts %}
+
+<script type="text/javascript">
+
+var titouan = document.getElementById('barre').getContext('2d');
+
+var leBarre = new Chart(titouan, {
+    type: 'bar',
+    data: {
+        labels: ['[0;4[', '[4;8[', '[8;12[', '[12;16[', '[16;20]'],
+        datasets: [{
+            label: 'Quantité de notes',
+            data: [3, 2, 5, 1, 2],
+            backgroundColor: [
+                'rgba(255, 99, 132, 0.5)',
+                'rgba(54, 162, 235, 0.5)',
+                'rgba(255, 206, 86, 0.5)',
+                'rgba(75, 192, 192, 0.5)',
+				        'rgba(238, 130, 238, 0.5)',
+            ],
+            borderColor: [
+                'rgba(255, 99, 132, 1)',
+                'rgba(54, 162, 235, 1)',
+                'rgba(255, 206, 86, 1)',
+                'rgba(75, 192, 192, 1)',
+				        'rgba(238, 130, 238, 1)',
+            ],
+            borderWidth: 1
+        }]
+    },
+    options: {
+        scales: {
+            yAxes: [{
+                ticks: {
+                    beginAtZero: true,
+					max: 6
+                }
+            }]
+        },
+		responsive: false,
+		title: {
+            display: true,
+            text: 'Répartition des notes'
+
+        },
+		legend: {
+            display: false
+        },
+		plugins : {
+			labels: {
+        render: 'value'
+			}
+		}
+    }
+});
+
+</script>
 
 
 {% endblock %}
