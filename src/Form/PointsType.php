@@ -14,7 +14,9 @@ class PointsType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
-            ->add('valeur', NumberType::class)
+            ->add('valeur', NumberType::class, [
+              'required'  => false
+            ])
             //->add('etudiant', HiddenType::class)
         ;
     }

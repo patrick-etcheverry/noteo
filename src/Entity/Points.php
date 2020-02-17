@@ -17,7 +17,7 @@ class Points
     private $id;
 
     /**
-     * @ORM\Column(type="integer")
+     * @ORM\Column(type="float")
      */
     private $valeur;
 
@@ -36,12 +36,12 @@ class Points
         return $this->id;
     }
 
-    public function getValeur(): ?int
+    public function getValeur(): ?float
     {
         return $this->valeur;
     }
 
-    public function setValeur(int $valeur): self
+    public function setValeur(float $valeur): self
     {
         $this->valeur = $valeur;
 
