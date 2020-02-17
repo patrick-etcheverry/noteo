@@ -248,12 +248,19 @@ class EvaluationController extends AbstractController
                                                               "moyenne" => "", //Ici mettre la fonction pour la moyenne
                                                               "ecart-type" => "", //Ici mettre la fonction pour l'écart type'
                                                               "minimum" => "", // Ici mettre fonction pour min
-                                                              "maximum" => "" // Ici mettre fonction pour max
+                                                              "maximum" => "", // Ici mettre fonction pour max
+                                                              "mediane" => "" //Ici mettre fonction pour médiane
                                                              );
                     }
 
             foreach ($form->get("statuts")->getData() as $statut) {
-              $listeNotesParGroupe[$statut->getNom()] = $repoPoints->findByStatut($idEval, $statut->getId());
+              $listeNotesParGroupe[$statut->getNom()] = array("notes" =>  $repoPoints->findByStatut($idEval, $statut->getId()),
+                                                              "moyenne" => "", //Ici mettre la fonction pour la moyenne
+                                                              "ecart-type" => "", //Ici mettre la fonction pour l'écart type'
+                                                              "minimum" => "", // Ici mettre fonction pour min
+                                                              "maximum" => "", // Ici mettre fonction pour max
+                                                              "mediane" => "" //Ici mettre fonction pour médiane
+                                                             );
             }
 
 
