@@ -1,6 +1,10 @@
 {% extends 'base.html.twig' %}
 
+<<<<<<< HEAD
 {% block tirePage %}Choisir sur quoi voir des statistiques{% endblock %}
+=======
+{% block tirePage %}Visualiser les statistiques{% endblock %}
+>>>>>>> master
 
 {% block evaluations %}active{% endblock %}
 
@@ -20,10 +24,10 @@ $(document).ready(function() {
       searchPlaceholder: "Rechercher...",
       "url": "{{asset('tradfr.json')}}"
     },
+    columns: [null, null,{"orderable": false},null,{"orderable": false}],
     order: [
       [0, "asc"]
     ],
-    columns: [null, null,null,null, {"orderable": false} ],
     lengthMenu: [
       [10, 25, 50, -1],
       [10, 25, 50, "Tout"]
@@ -42,7 +46,7 @@ $(document).ready(function() {
     order: [
       [0, "asc"]
     ],
-    columns: [null, null,null,{"orderable": false}],
+    columns: [null,{"orderable": false},null,{"orderable": false}],
     lengthMenu: [
       [10, 25, 50, -1],
       [10, 25, 50, "Tout"]

@@ -1,13 +1,17 @@
 {{form_start(form)}}
 
+<<<<<<< HEAD
 <h1 class="h4 mb-0 text-gray-800">Visualiser des statistiques sur les groupes</h1> <br>
+=======
+<h1 class="h4 mb-0 text-gray-800">Choisir les groupes</h1> <br>
+>>>>>>> master
 
 <table class="table" id= "groupes">
 <thead>
   <th>Nom</th>
   <th>Effectif</th>
   <th>Description</th>
-  <th>Createur</th>
+  <th>Créateur</th>
   <th></th>
 </thead>
 <tbody>
@@ -22,20 +26,24 @@
           <td>{{entity.nom}}</td>
           <td></td>
           <td>{{entity.description}}</td>
-          <td>{{entity.enseignant.prenom}}{{entity.enseignant.nom}}</td>
+          <td>{{entity.enseignant.prenom}} {{entity.enseignant.nom}}</td>
           <td>{{form_widget(form.groupes[index])}}</td>
       </tr>
   {% endfor %}
 </tbody>
 </table>
 
+<<<<<<< HEAD
 <h1 class="h4 mb-0 text-gray-800">Visualiser des statistiques sur les statuts</h1> <br>
+=======
+<h1 class="h4 mb-0 text-gray-800">Choisir les statuts</h1> <br>
+>>>>>>> master
 
 <table class="table" id= "statuts">
 <thead>
   <th>Nom</th>
   <th>Description</th>
-  <th>Createur</th>
+  <th>Créateur</th>
   <th></th>
 </thead>
 <tbody>
@@ -49,7 +57,7 @@
       <tr>
           <td>{{entity.nom}}</td>
           <td>{{entity.description}}</td>
-          <td>{{entity.enseignant.prenom}}{{entity.enseignant.nom}}</td>
+          <td>{{entity.enseignant.prenom}} {{entity.enseignant.nom}}</td>
           <td>{{form_widget(form.statuts[index])}}</td>
       </tr>
   {% endfor %}

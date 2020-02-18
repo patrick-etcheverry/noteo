@@ -243,14 +243,24 @@ class EvaluationController extends AbstractController
 
             $repoPoints = $this->getDoctrine()->getRepository(Points::class);
 
-            $listeNotesParGroupe["toutes"] = $repoPoints->findByEvaluation($evaluation->getId());
-
             foreach ($form->get("groupes")->getData() as $groupe) {
-              $listeNotesParGroupe[$groupe->getNom()] = $repoPoints->findByGroupe($idEval, $groupe->getId());
-            }
+              $listeNotesParGroupe[$groupe->getNom()] = array("notes" => $repoPoints->findByGroupe($idEval, $groupe->getId()),
+                                                              "moyenne" => "", //Ici mettre la fonction pour la moyenne
+                                                              "ecart-type" => "", //Ici mettre la fonction pour l'écart type'
+                                                              "minimum" => "", // Ici mettre fonction pour min
+                                                              "maximum" => "", // Ici mettre fonction pour max
+                                                              "mediane" => "" //Ici mettre fonction pour médiane
+                                                             );
+                    }
 
             foreach ($form->get("statuts")->getData() as $statut) {
-              $listeNotesParGroupe[$statut->getNom()] = $repoPoints->findByStatut($idEval, $statut->getId());
+              $listeNotesParGroupe[$statut->getNom()] = array("notes" =>  $repoPoints->findByStatut($idEval, $statut->getId()),
+                                                              "moyenne" => "", //Ici mettre la fonction pour la moyenne
+                                                              "ecart-type" => "", //Ici mettre la fonction pour l'écart type'
+                                                              "minimum" => "", // Ici mettre fonction pour min
+                                                              "maximum" => "", // Ici mettre fonction pour max
+                                                              "mediane" => "" //Ici mettre fonction pour médiane
+                                                             );
             }
 
 
