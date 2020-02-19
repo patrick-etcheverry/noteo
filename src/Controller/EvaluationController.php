@@ -249,14 +249,25 @@ class EvaluationController extends AbstractController
 
             foreach ($form->get("groupes")->getData() as $groupe) {
               $tabPoints = $repoPoints->findByGroupe($idEval, $groupe->getId());
-              $listeNotesParGroupe[$groupe->getNom()] = array("notes" => $tabPoints,
-                                                              "moyenne" => $this->moyenne($tabPoints), //Ici mettre la fonction pour la moyenne
-                                                              "ecartType" => $this->ecartType($tabPoints), //Ici mettre la fonction pour l'écart type'
-                                                              "minimum" => $this->minimum($tabPoints), // Ici mettre fonction pour min
-                                                              "maximum" => $this->maximum($tabPoints), // Ici mettre fonction pour max
-                                                              "mediane" => $this->mediane($tabPoints) //Ici mettre fonction pour médiane
+              $copieTabPoints = array();
+
+              foreach ($tabPoints as $note) {
+                $copieTabPoints[] = $note->getValeur();
+              }
+
+              sort($copieTabPoints); // On trie le tableau dans l'ordre croissant
+
+              $nomGroupe = $groupe->getNom();
+
+              $listeNotesParGroupe[$nomGroupe] = array("notes" => $copieTabPoints,
+                                                              "nom" => $nomGroupe,
+                                                              "moyenne" => $this->moyenne($copieTabPoints),
+                                                              "ecartType" => $this->ecartType($copieTabPoints),
+                                                              "minimum" => $this->minimum($copieTabPoints),
+                                                              "maximum" => $this->maximum($copieTabPoints),
+                                                              "mediane" => $this->mediane($copieTabPoints)
                                                              );
-                    }
+              }
 
             foreach ($form->get("statuts")->getData() as $statut) {
               $tabPoints = $repoPoints->findByGroupe($idEval, $statut->getId());
@@ -289,7 +300,7 @@ class EvaluationController extends AbstractController
       foreach($tabPoints as $note)
       {
         $nbNotes++;
-        $moyenne += $note->getValeur();
+        $moyenne += $note;
       }
 
       if($nbNotes != 0){
@@ -309,7 +320,7 @@ class EvaluationController extends AbstractController
       $ecartType = 0;
       foreach($tabPoints as $note)
       {
-        $ecartType = $ecartType + pow((($note->getValeur()) - $moyenne), 2);
+        $ecartType = $ecartType + pow(($note - $moyenne), 2);
         $nbNotes++;
       }
 
@@ -328,9 +339,9 @@ class EvaluationController extends AbstractController
       $min = 20;
       foreach($tabPoints as $note)
       {
-        if ($note->getValeur() < $min)
+        if ($note < $min)
         {
-          $min = $note->getValeur();
+          $min = $note;
         }
       }
       return $min;
@@ -341,9 +352,9 @@ class EvaluationController extends AbstractController
       $max = 0;
       foreach($tabPoints as $note)
       {
-        if ($note->getValeur() > $max)
+        if ($note > $max)
         {
-          $max = $note->getValeur();
+          $max = $note;
         }
       }
       return $max;
@@ -352,19 +363,17 @@ class EvaluationController extends AbstractController
     public function mediane($tabPoints)
     {
       $mediane = 0;
-      sort($tabPoints); // On trie le tableau dans l'ordre croissant
+
       $nbValeurs = count($tabPoints);
-      $val1 = $nbValeurs/2;
-      $val2 = ($nbValeurs-1)/2;
 
       if(!empty($tabPoints)) {
         if ($nbValeurs % 2 == 1) //Si il y a un nombre impair de valeurs, la médiane vaut la valeur au milieu du tableau
         {
-          $mediane = $tabPoints[intval($nbValeurs/2)]->getValeur();
+          $mediane = $tabPoints[intval($nbValeurs/2)];
         }
         else //Si c'est pair, la mediane vaut la demi-somme des 2 valeurs centrales
         {
-          $mediane = ($tabPoints[$val1]->getValeur() + $tabPoints[$val2]->getValeur())/2;
+          $mediane = ($tabPoints[($nbValeurs-1)/2] + $tabPoints[($nbValeurs)/2])/2;
         }
       }
       else {
