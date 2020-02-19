@@ -245,31 +245,34 @@ class EvaluationController extends AbstractController
 
             $listeNotesParGroupe = array();
 
+            $listeNotesParStatut = array();
+
             foreach ($form->get("groupes")->getData() as $groupe) {
               $tabPoints = $repoPoints->findByGroupe($idEval, $groupe->getId());
               $listeNotesParGroupe[$groupe->getNom()] = array("notes" => $tabPoints,
-                                                              "moyenne" => moyenne($tabPoints), //Ici mettre la fonction pour la moyenne
-                                                              "ecart-type" => ecartType($tabPoints), //Ici mettre la fonction pour l'écart type'
-                                                              "minimum" => minimum($tabPoints), // Ici mettre fonction pour min
-                                                              "maximum" => maximum($tabPoints), // Ici mettre fonction pour max
-                                                              "mediane" => mediane($tabPoints) //Ici mettre fonction pour médiane
+                                                              "moyenne" => $this->moyenne($tabPoints), //Ici mettre la fonction pour la moyenne
+                                                              "ecart-type" => $this->ecartType($tabPoints), //Ici mettre la fonction pour l'écart type'
+                                                              "minimum" => $this->minimum($tabPoints), // Ici mettre fonction pour min
+                                                              "maximum" => $this->maximum($tabPoints), // Ici mettre fonction pour max
+                                                              "mediane" => $this->mediane($tabPoints) //Ici mettre fonction pour médiane
                                                              );
                     }
 
             foreach ($form->get("statuts")->getData() as $statut) {
-              $tabPoints = $repoPoints->findByGroupe($idEval, $groupe->getId());
-              $listeNotesParGroupe[$statut->getNom()] = array("notes" =>  $repoPoints->findByStatut($idEval, $statut->getId()),
-                                                              "moyenne" => moyenne($tabPoints), //Ici mettre la fonction pour la moyenne
-                                                              "ecart-type" => ecartType($tabPoints), //Ici mettre la fonction pour l'écart type'
-                                                              "minimum" => minimum($tabPoints), // Ici mettre fonction pour min
-                                                              "maximum" => maximum($tabPoints), // Ici mettre fonction pour max
-                                                              "mediane" => mediane($tabPoints) //Ici mettre fonction pour médiane
+              $tabPoints = $repoPoints->findByGroupe($idEval, $statut->getId());
+              $listeNotesParStatut[$statut->getNom()] = array("notes" =>  $tabPoints,
+                                                              "moyenne" => $this->moyenne($tabPoints), //Ici mettre la fonction pour la moyenne
+                                                              "ecart-type" => $this->ecartType($tabPoints), //Ici mettre la fonction pour l'écart type'
+                                                              "minimum" => $this->minimum($tabPoints), // Ici mettre fonction pour min
+                                                              "maximum" => $this->maximum($tabPoints), // Ici mettre fonction pour max
+                                                              "mediane" => $this->mediane($tabPoints) //Ici mettre fonction pour médiane
                                                              );
             }
 
 
             return $this->render('evaluation/stats.html.twig', [
                 'groupes' => $listeNotesParGroupe,
+                'statuts' => $listeNotesParStatut,
                 'evaluation' => $evaluation
             ]);
         }
