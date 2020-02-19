@@ -282,7 +282,7 @@ class EvaluationController extends AbstractController
         ]);
     }
 
-    public function moyenne($tabPoints) : Response
+    public function moyenne($tabPoints)
     {
       $moyenne = 0;
       $nbNotes = 0;
@@ -302,9 +302,9 @@ class EvaluationController extends AbstractController
       return $moyenne;
     }
 
-    public function ecartType($tabPoints) : Response
+    public function ecartType($tabPoints)
     {
-      $moyenne = moyenne($tabPoints);
+      $moyenne = $this->moyenne($tabPoints);
       $nbNotes = 0;
       $ecartType = 0;
       foreach($tabPoints as $note)
@@ -313,11 +313,17 @@ class EvaluationController extends AbstractController
         $nbNotes++;
       }
 
-      $ecartType = sqrt($ecartType/$nbNotes);
+      if ($nbNotes != 0) {
+        $ecartType = sqrt($ecartType/$nbNotes);
+      }
+      else {
+        $ecartType = 0;
+      }
+
       return $ecartType;
     }
 
-    public function minimum($tabPoints) : Response
+    public function minimum($tabPoints)
     {
       $min = 20;
       foreach($tabPoints as $note)
@@ -330,7 +336,7 @@ class EvaluationController extends AbstractController
       return $min;
     }
 
-    public function maximum($tabPoints) : Response
+    public function maximum($tabPoints)
     {
       $max = 0;
       foreach($tabPoints as $note)
@@ -343,7 +349,7 @@ class EvaluationController extends AbstractController
       return $max;
     }
 
-    public function mediane($tabPoints) : Response
+    public function mediane($tabPoints)
     {
       $mediane = 0;
       $valeurs = sort($tabPoints); // On trie le tableau dans l'ordre croissant
@@ -355,7 +361,7 @@ class EvaluationController extends AbstractController
       }
       else //Si c'est pair, la mediane vaut la demi-somme des 2 valeurs centrales
       {
-        $mediane = (($valeurs[$nbValeurs - 1]->getValeur()) + ($valeurs[$nbValeurs]->getValeur()))/2;
+        $mediane = 0;
       }
 
       return $mediane;
