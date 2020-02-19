@@ -246,22 +246,24 @@ class EvaluationController extends AbstractController
             $listeNotesParGroupe = array();
 
             foreach ($form->get("groupes")->getData() as $groupe) {
-              $listeNotesParGroupe[$groupe->getNom()] = array("notes" => $repoPoints->findByGroupe($idEval, $groupe->getId()),
-                                                              "moyenne" => "", //Ici mettre la fonction pour la moyenne
-                                                              "ecart-type" => "", //Ici mettre la fonction pour l'écart type'
-                                                              "minimum" => "", // Ici mettre fonction pour min
-                                                              "maximum" => "", // Ici mettre fonction pour max
-                                                              "mediane" => "" //Ici mettre fonction pour médiane
+              $tabPoints = $repoPoints->findByGroupe($idEval, $groupe->getId());
+              $listeNotesParGroupe[$groupe->getNom()] = array("notes" => $tabPoints,
+                                                              "moyenne" => moyenne($tabPoints), //Ici mettre la fonction pour la moyenne
+                                                              "ecart-type" => ecartType($tabPoints), //Ici mettre la fonction pour l'écart type'
+                                                              "minimum" => minimum($tabPoints), // Ici mettre fonction pour min
+                                                              "maximum" => maximum($tabPoints), // Ici mettre fonction pour max
+                                                              "mediane" => mediane($tabPoints) //Ici mettre fonction pour médiane
                                                              );
                     }
 
             foreach ($form->get("statuts")->getData() as $statut) {
+              $tabPoints = $repoPoints->findByGroupe($idEval, $groupe->getId());
               $listeNotesParGroupe[$statut->getNom()] = array("notes" =>  $repoPoints->findByStatut($idEval, $statut->getId()),
-                                                              "moyenne" => "", //Ici mettre la fonction pour la moyenne
-                                                              "ecart-type" => "", //Ici mettre la fonction pour l'écart type'
-                                                              "minimum" => "", // Ici mettre fonction pour min
-                                                              "maximum" => "", // Ici mettre fonction pour max
-                                                              "mediane" => "" //Ici mettre fonction pour médiane
+                                                              "moyenne" => moyenne($tabPoints), //Ici mettre la fonction pour la moyenne
+                                                              "ecart-type" => ecartType($tabPoints), //Ici mettre la fonction pour l'écart type'
+                                                              "minimum" => minimum($tabPoints), // Ici mettre fonction pour min
+                                                              "maximum" => maximum($tabPoints), // Ici mettre fonction pour max
+                                                              "mediane" => mediane($tabPoints) //Ici mettre fonction pour médiane
                                                              );
             }
 
@@ -275,6 +277,79 @@ class EvaluationController extends AbstractController
         return $this->render('evaluation/choix_groupes.html.twig', [
             'form' => $form->createView(),
         ]);
+    }
+
+    public function moyenne($tabPoints) : Response
+    {
+      $moyenne = 0;
+      $nbNotes = 0;
+      foreach($tabPoints as $note)
+      {
+        $moyenne += $note->getValeur();
+        $nbNotes++;
+      }
+      
+      $moyenne = $moyenne/$nbNotes;
+      return $moyenne; 
+    }
+
+    public function ecartType($tabPoints) : Response
+    {
+      $moyenne = moyenne($tabPoints);
+      $nbNotes = 0;
+      $ecartType = 0;
+      foreach($tabPoints as $note)
+      {
+        $ecartType = $ecartType + pow((($note->getValeur()) - $moyenne), 2);
+        $nbNotes++;
+      }
+      
+      $ecartType = sqrt($ecartType/$nbNotes);
+      return $ecartType; 
+    }
+
+    public function minimum($tabPoints) : Response
+    {
+      $min = 20;
+      foreach($tabPoints as $note)
+      {
+        if ($note->getValeur() < $min)
+        {
+          $min = $note->getValeur();
+        }
+      }
+      return $min;
+    }
+
+    public function maximum($tabPoints) : Response
+    {
+      $max = 0;
+      foreach($tabPoints as $note)
+      {
+        if ($note->getValeur() > $max)
+        {
+          $max = $note->getValeur();
+        }
+      }
+      return $max;
+    }
+
+    public function mediane($tabPoints) : Response
+    {
+      $mediane = 0;
+      $valeurs = sort($tabPoints); // On trie le tableau dans l'ordre croissant
+      $nbValeurs = count($tabPoints);
+      
+      if ($nbValeurs % 2 == 1) //Si il y a un nombre impair de valeurs, la médiane vaut la valeur au milieu du tableau
+      {
+        $mediane = $valeurs[intval($nbValeurs/2)]->getValeur();
+      }
+      else //Si c'est pair, la mediane vaut la demi-somme des 2 valeurs centrales
+      {
+        $mediane = (($valeurs[$nbValeurs - 1]->getValeur()) + ($valeurs[$nbValeurs]->getValeur()))/2;
+      }
+
+      return $mediane;
     }
 
     /**
