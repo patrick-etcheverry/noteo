@@ -43,7 +43,7 @@
     <li class="list-group-item">{{groupe.nom}}</li>
     <li class="list-group-item">
       <h5 class="card-title">Réparition des notes</h5>
-      <center><canvas id="barre" width="500" height="500"></canvas></center>
+      <center><canvas id="{{groupe.nom}}" width="500" height="500"></canvas></center>
     </li>
     <li class="list-group-item">
       <center>
@@ -82,7 +82,9 @@
 
 <script type="text/javascript">
 
-var graph = document.getElementById('barre').getContext('2d');
+{% for groupe in groupes%}
+
+var graph = document.getElementById('{{groupe.nom}}').getContext('2d');
 
 var leBarre = new Chart(graph, {
     type: 'bar',
@@ -90,7 +92,7 @@ var leBarre = new Chart(graph, {
         labels: ['[0;4[', '[4;8[', '[8;12[', '[12;16[', '[16;20]'],
         datasets: [{
             label: 'Quantité de notes',
-            data: {{groupeVal.notes|json_encode()}},
+            data: {{groupe.notes|json_encode()}},
             backgroundColor: [
                 'rgba(255, 99, 132, 0.5)',
                 'rgba(54, 162, 235, 0.5)',
@@ -133,6 +135,10 @@ var leBarre = new Chart(graph, {
 		}
     }
 });
+
+{% endfor %}
+
+
 
 </script>
 
