@@ -71,50 +71,7 @@
 {% else %}
 
 <div class="info">
-  <h2 class="h4 mb-0 text-gray-800">Veuillez sélectionner des groupes sur lesquels voir des statistiques
-</div>
-
-{% endif %}
-
-{% if statuts is not empty %}
-
-{% for statut in statuts %}
-
-<br>
-<div class="card">
-  <ul class="list-group list-group-flush">
-    <li class="list-group-item">{{statut.nom}}</li>
-    <li class="list-group-item">
-      <h5 class="card-title">Réparition des notes</h5>
-      <center><canvas id="barre" width="500" height="500"></canvas></center>
-    </li>
-    <li class="list-group-item">
-      <center>
-        <div class="card" style="width: 20em;">
-          <ul class="list-group list-group-flush" style="text-align:left;">
-            <li class="list-group-item">Évaluation</li>
-            <li class="list-group-item">
-              <ul>
-                <li>Moyenne : {{ statut.moyenne }}</li>
-                <li>Écart-type : {{ statut.ecartType }}</li>
-                <li>Minimum : {{ statut.minimum }}</li>
-                <li>Maximum : {{ statut.maximum }}</li>
-                <li>Médiane : {{ statut.mediane }}</li>
-            </ul>
-          </li>
-        </ul>
-      </div>
-    </center>
-    </li>
-  </ul>
-</div>
-
-{% endfor %}
-
-{% else %}
-
-<div class="info">
-  <h2 class="h4 mb-0 text-gray-800">Veuillez sélectionner des statuts sur lesquels voir des statistiques
+  <h2 class="h4 mb-0 text-gray-800">Veuillez sélectionner des groupes ou des statuts sur lesquels voir des statistiques
 </div>
 
 {% endif %}
@@ -125,9 +82,9 @@
 
 <script type="text/javascript">
 
-var titouan = document.getElementById('barre').getContext('2d');
+var graph = document.getElementById('barre').getContext('2d');
 
-var leBarre = new Chart(titouan, {
+var leBarre = new Chart(graph, {
     type: 'bar',
     data: {
         labels: ['[0;4[', '[4;8[', '[8;12[', '[12;16[', '[16;20]'],

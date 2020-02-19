@@ -288,14 +288,15 @@ class EvaluationController extends AbstractController
                                                        "ecartType" => $this->ecartType($copieTabPoints),
                                                        "minimum" => $this->minimum($copieTabPoints),
                                                        "maximum" => $this->maximum($copieTabPoints),
-                                                       "mediane" => $this->mediane($copieTabPoints) 
+                                                       "mediane" => $this->mediane($copieTabPoints)
                                                        );
             }
 
+            $groupes = array_merge($listeNotesParGroupe, $listeNotesParStatut); // On fusionne les deux tableaux pour éviter le dédoublement des traitements dans la vue
+
 
             return $this->render('evaluation/stats.html.twig', [
-                'groupes' => $listeNotesParGroupe,
-                'statuts' => $listeNotesParStatut,
+                'groupes' => $groupes,
                 'evaluation' => $evaluation
             ]);
         }
