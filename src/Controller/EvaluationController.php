@@ -251,7 +251,7 @@ class EvaluationController extends AbstractController
               $tabPoints = $repoPoints->findByGroupe($idEval, $groupe->getId());
               $listeNotesParGroupe[$groupe->getNom()] = array("notes" => $tabPoints,
                                                               "moyenne" => $this->moyenne($tabPoints), //Ici mettre la fonction pour la moyenne
-                                                              "ecart-type" => $this->ecartType($tabPoints), //Ici mettre la fonction pour l'écart type'
+                                                              "ecartType" => $this->ecartType($tabPoints), //Ici mettre la fonction pour l'écart type'
                                                               "minimum" => $this->minimum($tabPoints), // Ici mettre fonction pour min
                                                               "maximum" => $this->maximum($tabPoints), // Ici mettre fonction pour max
                                                               "mediane" => $this->mediane($tabPoints) //Ici mettre fonction pour médiane
@@ -299,7 +299,7 @@ class EvaluationController extends AbstractController
         $moyenne = 0;
       }
 
-      return $moyenne;
+      return round($moyenne,2);
     }
 
     public function ecartType($tabPoints)
@@ -320,7 +320,7 @@ class EvaluationController extends AbstractController
         $ecartType = 0;
       }
 
-      return $ecartType;
+      return round($ecartType,2);
     }
 
     public function minimum($tabPoints)
@@ -354,6 +354,8 @@ class EvaluationController extends AbstractController
       $mediane = 0;
       $valeurs = sort($tabPoints); // On trie le tableau dans l'ordre croissant
       $nbValeurs = count($tabPoints);
+      $val1 = $nbValeurs/2;
+      $val2 = ($nbValeurs-1)/2;
 
       if ($nbValeurs % 2 == 1) //Si il y a un nombre impair de valeurs, la médiane vaut la valeur au milieu du tableau
       {
@@ -361,7 +363,7 @@ class EvaluationController extends AbstractController
       }
       else //Si c'est pair, la mediane vaut la demi-somme des 2 valeurs centrales
       {
-        $mediane = 0;
+        $mediane = ($valeurs[$val1]->getValeur() + $valeurs[$val2]->getValeur())/2;
       }
 
       return $mediane;

@@ -6,7 +6,7 @@
 
 {% block contenu %}
 
-{{dump(groupes)}}
+{{ dump() }}
 
 <table align="center" class="table">
   <tbody>
@@ -30,27 +30,47 @@
 </table>
 
 <div class="bouton">
-  <span style="font-size:15px"class="badge badge-pill badge-danger">Les statistiques ne comportent pas les étudiants démissionaire</span>
+  <span style="font-size:15px"class="badge badge-pill badge-danger">Les statistiques ne comportent pas les étudiants démissionaires</span>
 </div>
 
 {% if groupes is not empty %}
 
 {% for groupe in groupes %}
-
-
 <br>
-<div class="card" style="width: 18rem; margin: 0 auto; float: none; margin-bottom: 10px;">
-<div class="card-body">
-  <h5 class="card-title">Réparition des notes</h5>
-  <canvas id="barre" width="500" height="500"></canvas>
+<div class="card">
+  <ul class="list-group list-group-flush">
+    <li class="list-group-item">{{evaluation.groupe.nom}}</li>
+    <li class="list-group-item">
+      <h5 class="card-title">Réparition des notes</h5>
+      <center><canvas id="barre" width="500" height="500"></canvas></center>
+    </li>
+    <li class="list-group-item">
+      <center>
+        <div class="card" style="width: 20em;">
+          <ul class="list-group list-group-flush" style="text-align:left;">
+            <li class="list-group-item">Évaluation</li>
+            <li class="list-group-item">
+              <ul>
+                <li>Moyenne : {{ groupe.moyenne }}</li>
+                <li>Écart-type : {{ groupe.ecartType }}</li>
+                <li>Minimum : {{ groupe.minimum }}</li>
+                <li>Maximum : {{ groupe.maximum }}</li>
+                <li>Médiane : {{ groupe.mediane }}</li>
+            </ul>
+          </li>
+        </ul>
+      </div>
+    </center>
+    </li>
+  </ul>
 </div>
-</div>
+
 {% endfor %}
 
 {% else %}
 
 <div class="info">
-  <h2 class="h4 mb-0 text-gray-800">Veuillez sélectionner des groupes sur lesquels voir des statistiques</h1>
+  <h2 class="h4 mb-0 text-gray-800">Veuillez sélectionner des groupes sur lesquels voir des statistiques
 </div>
 
 {% endif %}
@@ -98,7 +118,7 @@ var leBarre = new Chart(titouan, {
         },
 		responsive: false,
 		title: {
-            display: true,
+            display: false,
             text: 'Répartition des notes'
 
         },
