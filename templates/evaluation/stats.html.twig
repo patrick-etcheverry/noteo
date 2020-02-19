@@ -3,7 +3,7 @@
 {% block tirePage %}Visualiser les statistiques{% endblock %}
 
 {% block evaluations %}active{% endblock %}
-
+{% set groupeVal = groupes["S1"] %}
 {% block contenu %}
 
 {{ dump() }}
@@ -36,6 +36,7 @@
 {% if groupes is not empty %}
 
 {% for groupe in groupes %}
+{% set groupeVal = groupe %}
 <br>
 <div class="card">
   <ul class="list-group list-group-flush">
@@ -95,7 +96,7 @@ var leBarre = new Chart(titouan, {
         labels: ['[0;4[', '[4;8[', '[8;12[', '[12;16[', '[16;20]'],
         datasets: [{
             label: 'Quantité de notes',
-            data: [3, 2, 5, 1, 2],
+            data: {{groupeVal.notes|json_encode()}},
             backgroundColor: [
                 'rgba(255, 99, 132, 0.5)',
                 'rgba(54, 162, 235, 0.5)',
