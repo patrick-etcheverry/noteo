@@ -249,8 +249,9 @@ class EvaluationController extends AbstractController
 
             foreach ($form->get("groupes")->getData() as $groupe) {
               $tabPoints = $repoPoints->findByGroupe($idEval, $groupe->getId());
-              $copieTabPoints = array();
 
+              //On crée une copie de tabPoints qui contiendra seulement les valeurs des notes
+              $copieTabPoints = array();
               foreach ($tabPoints as $note) {
                 $copieTabPoints[] = $note->getValeur();
               }
@@ -258,26 +259,37 @@ class EvaluationController extends AbstractController
               sort($copieTabPoints); // On trie le tableau dans l'ordre croissant
 
               $nomGroupe = $groupe->getNom();
-
-              $listeNotesParGroupe[$nomGroupe] = array("notes" => $copieTabPoints,
-                                                              "nom" => $nomGroupe,
-                                                              "moyenne" => $this->moyenne($copieTabPoints),
-                                                              "ecartType" => $this->ecartType($copieTabPoints),
-                                                              "minimum" => $this->minimum($copieTabPoints),
-                                                              "maximum" => $this->maximum($copieTabPoints),
-                                                              "mediane" => $this->mediane($copieTabPoints)
-                                                             );
+              $listeNotesParGroupe[$nomGroupe] = array("nom" => $nomGroupe,
+                                                      "notes" => $this->repartition($copieTabPoints),
+                                                      "moyenne" => $this->moyenne($copieTabPoints),
+                                                      "ecartType" => $this->ecartType($copieTabPoints),
+                                                      "minimum" => $this->minimum($copieTabPoints),
+                                                      "maximum" => $this->maximum($copieTabPoints),
+                                                      "mediane" => $this->mediane($copieTabPoints)
+                                                      );
               }
 
             foreach ($form->get("statuts")->getData() as $statut) {
               $tabPoints = $repoPoints->findByGroupe($idEval, $statut->getId());
-              $listeNotesParStatut[$statut->getNom()] = array("notes" =>  $tabPoints,
-                                                              "moyenne" => $this->moyenne($tabPoints), //Ici mettre la fonction pour la moyenne
-                                                              "ecart-type" => $this->ecartType($tabPoints), //Ici mettre la fonction pour l'écart type'
-                                                              "minimum" => $this->minimum($tabPoints), // Ici mettre fonction pour min
-                                                              "maximum" => $this->maximum($tabPoints), // Ici mettre fonction pour max
-                                                              "mediane" => $this->mediane($tabPoints) //Ici mettre fonction pour médiane
-                                                             );
+
+              //On crée une copie de tabPoints qui contiendra seulement les valeurs des notes
+              $copieTabPoints = array();
+              foreach ($tabPoints as $note) {
+                $copieTabPoints[] = $note->getValeur();
+              }
+
+              sort($copieTabPoints); // On trie le tableau dans l'ordre croissant
+
+              $nomStatut = $statut->getNom();
+
+              $listeNotesParStatut[$nomStatut] = array("nom" => $nomStatut,
+                                                       "notes" => $this->repartition($copieTabPoints),
+                                                       "moyenne" => $this->moyenne($copieTabPoints),
+                                                       "ecartType" => $this->ecartType($copieTabPoints),
+                                                       "minimum" => $this->minimum($copieTabPoints),
+                                                       "maximum" => $this->maximum($copieTabPoints),
+                                                       "mediane" => $this->mediane($copieTabPoints) 
+                                                       );
             }
 
 
@@ -291,6 +303,29 @@ class EvaluationController extends AbstractController
         return $this->render('evaluation/choix_groupes.html.twig', [
             'form' => $form->createView(),
         ]);
+    }
+
+    public function repartition($tabPoints) {
+      $repartition = array(0,0,0,0,0);
+      foreach ($tabPoints as $note) {
+        if ($note >= 0 && $note < 4) {
+          $repartition[0]++;
+        }
+        if ($note >= 4 && $note < 8) {
+          $repartition[1]++;
+        }
+        if ($note >= 8 && $note < 12) {
+          $repartition[2]++;
+        }
+        if ($note >= 12 && $note < 16) {
+          $repartition[3]++;
+        }
+        if ($note >= 16 && $note <= 20) {
+          $repartition[4]++;
+        }
+      }
+
+      return $repartition;
     }
 
     public function moyenne($tabPoints)
