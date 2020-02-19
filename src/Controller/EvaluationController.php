@@ -352,20 +352,24 @@ class EvaluationController extends AbstractController
     public function mediane($tabPoints)
     {
       $mediane = 0;
-      $valeurs = sort($tabPoints); // On trie le tableau dans l'ordre croissant
+      sort($tabPoints); // On trie le tableau dans l'ordre croissant
       $nbValeurs = count($tabPoints);
       $val1 = $nbValeurs/2;
       $val2 = ($nbValeurs-1)/2;
 
-      if ($nbValeurs % 2 == 1) //Si il y a un nombre impair de valeurs, la médiane vaut la valeur au milieu du tableau
-      {
-        $mediane = $valeurs[intval($nbValeurs/2)]->getValeur();
+      if(!empty($tabPoints)) {
+        if ($nbValeurs % 2 == 1) //Si il y a un nombre impair de valeurs, la médiane vaut la valeur au milieu du tableau
+        {
+          $mediane = $tabPoints[intval($nbValeurs/2)]->getValeur();
+        }
+        else //Si c'est pair, la mediane vaut la demi-somme des 2 valeurs centrales
+        {
+          $mediane = ($tabPoints[$val1]->getValeur() + $tabPoints[$val2]->getValeur())/2;
+        }
       }
-      else //Si c'est pair, la mediane vaut la demi-somme des 2 valeurs centrales
-      {
-        $mediane = ($valeurs[$val1]->getValeur() + $valeurs[$val2]->getValeur())/2;
+      else {
+        $mediane = 0;
       }
-
       return $mediane;
     }
 
