@@ -288,12 +288,18 @@ class EvaluationController extends AbstractController
       $nbNotes = 0;
       foreach($tabPoints as $note)
       {
-        $moyenne += $note->getValeur();
         $nbNotes++;
+        $moyenne += $note->getValeur();
       }
-      
-      $moyenne = $moyenne/$nbNotes;
-      return $moyenne; 
+
+      if($nbNotes != 0){
+        $moyenne = $moyenne/$nbNotes;
+      }
+      else {
+        $moyenne = 0;
+      }
+
+      return $moyenne;
     }
 
     public function ecartType($tabPoints) : Response
@@ -306,9 +312,9 @@ class EvaluationController extends AbstractController
         $ecartType = $ecartType + pow((($note->getValeur()) - $moyenne), 2);
         $nbNotes++;
       }
-      
+
       $ecartType = sqrt($ecartType/$nbNotes);
-      return $ecartType; 
+      return $ecartType;
     }
 
     public function minimum($tabPoints) : Response
@@ -342,7 +348,7 @@ class EvaluationController extends AbstractController
       $mediane = 0;
       $valeurs = sort($tabPoints); // On trie le tableau dans l'ordre croissant
       $nbValeurs = count($tabPoints);
-      
+
       if ($nbValeurs % 2 == 1) //Si il y a un nombre impair de valeurs, la médiane vaut la valeur au milieu du tableau
       {
         $mediane = $valeurs[intval($nbValeurs/2)]->getValeur();
