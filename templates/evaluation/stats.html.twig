@@ -21,13 +21,13 @@
     </tr>
     <tr>
       <th class="intitule"><label >Actions</label></th>
-      <td><a href="#"><i style="font-size: 25px;" class="icon-file-pdf"></i><a href="#"><i style="font-size: 25px;" class="icon-file-excel"></i><a href="#"><i style="font-size: 25px;" class="icon-mail"></i></a> </td>
+        <td><a href="#"><i style="font-size: 25px;" class="icon-file-pdf"></i></a> <a href="#"><i style="font-size: 25px;" class="icon-file-excel"></i></a> <a href="#"><i style="font-size: 25px;" class="icon-mail"></i></a></td>
     </tr>
   </tbody>
 </table>
 
 <div class="bouton">
-  <span style="font-size:15px"class="badge badge-pill badge-danger">Les statistiques ne comportent pas les étudiants démissionaires</span>
+  <span style="font-size:15px" class="badge badge-pill badge-danger">Les statistiques ne comportent pas les étudiants démissionaires</span>
 </div>
 
 {% if groupes is not empty %}
@@ -68,7 +68,7 @@
 {% else %}
 
 <div class="info">
-  <h2 class="h4 mb-0 text-gray-800">Veuillez sélectionner des groupes ou des statuts sur lesquels voir des statistiques
+    <h2 class="h4 mb-0 text-gray-800">Veuillez sélectionner des groupes ou des statuts sur lesquels voir des statistiques </h2>
 </div>
 
 {% endif %}
@@ -84,7 +84,7 @@
 
 {% set maximumRepartition = max(groupe.notes)|json_encode() %}
 
-{# if maximum is equal to zero, set an arbitrary max y value #}
+{# si le maximum est égal à zéro (pas de notes pour le groupe) on définit une valeur maximale arbitraire de 5 pour y, sinon ce sera égal a la plus grande valeur du tableau de repartition #}
 {% if maximumRepartition == 0 %}
   {% set maximumRepartition = 5 %}
 {% endif %}
@@ -97,7 +97,7 @@ var leBarre = new Chart(graph, {
         labels: ['[0;4[', '[4;8[', '[8;12[', '[12;16[', '[16;20]'],
         datasets: [{
             label: 'Effectif',
-            data: {{groupe.notes|json_encode()}},
+            data: {{groupe.notes|json_encode()}}, {# json_encode sert à rendre le tableau lisible en JavaScript #}
             backgroundColor: "#4e73df",
             hoverBackgroundColor: "#2e59d9",
             borderColor: "#4e73df"
