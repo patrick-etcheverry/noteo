@@ -372,14 +372,20 @@ class EvaluationController extends AbstractController
 
     public function minimum($tabPoints)
     {
-      $min = 20;
-      foreach($tabPoints as $note)
-      {
-        if ($note < $min)
+      if (!empty($tabPoints)) {
+        $min = 20;
+        foreach($tabPoints as $note)
         {
-          $min = $note;
+          if ($note < $min)
+          {
+            $min = $note;
+          }
         }
       }
+      else {
+        $min = 0;
+      }
+
       return $min;
     }
 
