@@ -3,7 +3,7 @@
 {% block tirePage %}Visualiser les statistiques{% endblock %}
 
 {% block evaluations %}active{% endblock %}
-{% set groupeVal = groupes["S1"] %}
+{% set groupeVal = groupes["S2"] %}
 {% block contenu %}
 
 {{ dump() }}
@@ -43,7 +43,7 @@
     <li class="list-group-item">{{groupe.nom}}</li>
     <li class="list-group-item">
       <h5 class="card-title">Réparition des notes</h5>
-      <center><canvas id="{{groupe.nom}}" width="500" height="500"></canvas></center>
+      <center><canvas id="{{groupe.nom}}"></canvas></center>
     </li>
     <li class="list-group-item">
       <center>
@@ -91,48 +91,55 @@ var leBarre = new Chart(graph, {
     data: {
         labels: ['[0;4[', '[4;8[', '[8;12[', '[12;16[', '[16;20]'],
         datasets: [{
-            label: 'Quantité de notes',
+            label: 'Effectif',
             data: {{groupe.notes|json_encode()}},
-            backgroundColor: [
-                'rgba(255, 99, 132, 0.5)',
-                'rgba(54, 162, 235, 0.5)',
-                'rgba(255, 206, 86, 0.5)',
-                'rgba(75, 192, 192, 0.5)',
-				        'rgba(238, 130, 238, 0.5)',
-            ],
-            borderColor: [
-                'rgba(255, 99, 132, 1)',
-                'rgba(54, 162, 235, 1)',
-                'rgba(255, 206, 86, 1)',
-                'rgba(75, 192, 192, 1)',
-				        'rgba(238, 130, 238, 1)',
-            ],
-            borderWidth: 1
+            backgroundColor: "#4e73df",
+            hoverBackgroundColor: "#2e59d9",
+            borderColor: "#4e73df"
         }]
     },
     options: {
         scales: {
-            yAxes: [{
-                ticks: {
-                    beginAtZero: true,
-					max: 6
-                }
-            }]
+          xAxes: [{
+            gridLines: {
+              display: false
+            },
+            ticks: {
+              maxTicksLimit: 6
+            },
+            maxBarThickness: 100,
+          }],
+          yAxes: [{
+            ticks: {
+              beginAtZero: true,
+              max: 6
+            }
+          }]
         },
-		responsive: false,
-		title: {
-            display: false,
-            text: 'Répartition des notes'
-
-        },
+    aspectRatio: 3,
+    maintainAspectRatio: true,
+		responsive: true,
 		legend: {
-            display: false
-        },
+      display: false
+    },
+    tooltips: {
+      titleMarginBottom: 10,
+      titleFontColor: '#6e707e',
+      titleFontSize: 14,
+      backgroundColor: "rgb(255,255,255)",
+      bodyFontColor: "#858796",
+      borderColor: '#dddfeb',
+      borderWidth: 1,
+      xPadding: 15,
+      yPadding: 15,
+      displayColors: false,
+      caretPadding: 10
+    },
 		plugins : {
-			labels: {
-        render: 'value'
-			}
-		}
+		    labels: {
+          render: 'value'
+        }
+      }
     }
 });
 
