@@ -3,10 +3,7 @@
 {% block titrePage %}Visualiser les statistiques{% endblock %}
 
 {% block evaluations %}active{% endblock %}
-
 {% block contenu %}
-
-{{dump(groupes)}}
 
 <table align="center" class="table">
   <tbody>
@@ -30,29 +27,132 @@
 </table>
 
 <div class="bouton">
-  <span style="font-size:15px"class="badge badge-pill badge-danger">Les statistiques ne comportent pas les étudiants démissionaire</span>
+  <span style="font-size:15px"class="badge badge-pill badge-danger">Les statistiques ne comportent pas les étudiants démissionaires</span>
 </div>
+
+{% if groupes is not empty %}
+
+{% for groupe in groupes %}
 
 <br>
-
-<div class="card" style="width: 18rem; margin: 0 auto; float: none; margin-bottom: 10px;">
-<div class="card-body">
-  <h5 class="card-title">Card title</h5>
-  <h6 class="card-subtitle mb-2 text-muted">Card subtitle</h6>
-  <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
-  <a href="#" class="card-link">Card link</a>
-  <a href="#" class="card-link">Another link</a>
+<div class="card">
+  <ul class="list-group list-group-flush">
+    <li class="list-group-item">{{groupe.nom}}</li>
+    <li class="list-group-item">
+      <h5 class="card-title">Réparition des notes</h5>
+      <center><canvas id="{{groupe.nom}}"></canvas></center>
+    </li>
+    <li class="list-group-item">
+      <center>
+        <div class="card" style="width: 20em;">
+          <ul class="list-group list-group-flush" style="text-align:left;">
+            <li class="list-group-item">Statistiques</li>
+            <li class="list-group-item">
+              <ul>
+                <li>Moyenne : {{ groupe.moyenne }}</li>
+                <li>Écart-type : {{ groupe.ecartType }}</li>
+                <li>Minimum : {{ groupe.minimum }}</li>
+                <li>Maximum : {{ groupe.maximum }}</li>
+                <li>Médiane : {{ groupe.mediane }}</li>
+            </ul>
+          </li>
+        </ul>
+      </div>
+    </center>
+    </li>
+  </ul>
 </div>
-</div>
 
-<p>Vous avez choisi de voir les stats de :</p>
-<ul>
-{% for item in groupes|keys %}
-  <li>{{item}}</li>
 {% endfor %}
 
-</ul>
+{% else %}
 
+<div class="info">
+  <h2 class="h4 mb-0 text-gray-800">Veuillez sélectionner des groupes ou des statuts sur lesquels voir des statistiques
+</div>
+
+{% endif %}
+
+{% endblock %}
+
+{% block javascripts %}
+
+<script type="text/javascript">
+
+{% for groupe in groupes%}
+
+
+{% set maximumRepartition = max(groupe.notes)|json_encode() %}
+
+{# if maximum is equal to zero, set an arbitrary max y value #}
+{% if maximumRepartition == 0 %}
+  {% set maximumRepartition = 5 %}
+{% endif %}
+
+var graph = document.getElementById('{{groupe.nom}}').getContext('2d');
+
+var leBarre = new Chart(graph, {
+    type: 'bar',
+    data: {
+        labels: ['[0;4[', '[4;8[', '[8;12[', '[12;16[', '[16;20]'],
+        datasets: [{
+            label: 'Effectif',
+            data: {{groupe.notes|json_encode()}},
+            backgroundColor: "#4e73df",
+            hoverBackgroundColor: "#2e59d9",
+            borderColor: "#4e73df"
+        }]
+    },
+    options: {
+        scales: {
+          xAxes: [{
+            gridLines: {
+              display: false
+            },
+            ticks: {
+              maxTicksLimit: 6
+            },
+            maxBarThickness: 100,
+          }],
+          yAxes: [{
+            ticks: {
+              beginAtZero: true,
+              max: {{maximumRepartition}}
+            }
+          }]
+        },
+    aspectRatio: 3,
+    maintainAspectRatio: true,
+		responsive: true,
+		legend: {
+      display: false
+    },
+    tooltips: {
+      titleMarginBottom: 10,
+      titleFontColor: '#6e707e',
+      titleFontSize: 14,
+      backgroundColor: "rgb(255,255,255)",
+      bodyFontColor: "#858796",
+      borderColor: '#dddfeb',
+      borderWidth: 1,
+      xPadding: 15,
+      yPadding: 15,
+      displayColors: false,
+      caretPadding: 10
+    },
+		plugins : {
+		    labels: {
+          render: 'value'
+        }
+      }
+    }
+});
+
+{% endfor %}
+
+
+
+</script>
 
 
 {% endblock %}

@@ -25,15 +25,18 @@ class PointsRepository extends ServiceEntityRepository
 
     public function findByEvaluation($id)
     {
-        return $this->createQueryBuilder('po')
-            ->join('po.partie', 'pa')
-            ->join('pa.evaluation', 'e')
-            ->andWhere('e.id = :id')
+        return $this->getEntityManager()->createQuery('
+            SELECT p.valeur
+            FROM App\Entity\Points p
+            JOIN p.etudiant et
+            JOIN p.partie pa
+            JOIN pa.evaluation ev
+            WHERE ev.id = :id
+            AND et.estDemissionaire = 0
+            ORDER BY p.valeur ASC
+        ')
             ->setParameter('id', $id)
-            ->setMaxResults(10)
-            ->getQuery()
-            ->getResult()
-        ;
+            ->execute();
     }
 
     /**
@@ -42,33 +45,36 @@ class PointsRepository extends ServiceEntityRepository
 
     public function findByPartie($id)
     {
-        return $this->createQueryBuilder('po')
-            ->join('po.partie', 'pa')
-            ->andWhere('pa.id = :id')
+        return $this->getEntityManager()->createQuery('
+            SELECT p.valeur
+            FROM App\Entity\Points p
+            JOIN p.partie pa
+            JOIN p.etudiant et
+            WHERE pa.id = :id
+            AND et.estDemissionnaire = 0
+            ORDER BY p.valeur ASC
+            ')
             ->setParameter('id', $id)
-            ->getQuery()
-            ->getResult()
-        ;
+            ->execute();
     }
-
-    /**
-    * @return Points[] Returns an array of Points objects
-    */
 
     public function findByGroupe($idEval, $idGroupe)
     {
-        return $this->createQueryBuilder('po')
-            ->join('po.etudiant', 'et')
-            ->join('et.groupes', 'g')
-            ->join('po.partie', 'pa')
-            ->join('pa.evaluation', 'ev')
-            ->andWhere('ev.id = :idE')
-            ->andWhere('g.id = :idG')
+        return $this->getEntityManager()->createQuery('
+            SELECT p.valeur
+            FROM App\Entity\Points p
+            JOIN p.etudiant et
+            JOIN et.groupes g
+            JOIN p.partie pa
+            JOIN pa.evaluation ev
+            WHERE ev.id = :idE
+            AND g.id = :idG
+            AND et.estDemissionaire = 0
+            ORDER BY p.valeur ASC
+        ')
             ->setParameter('idG', $idGroupe)
             ->setParameter('idE', $idEval)
-            ->getQuery()
-            ->getResult()
-        ;
+            ->execute();
     }
 
     /**
@@ -77,18 +83,22 @@ class PointsRepository extends ServiceEntityRepository
 
     public function findByStatut($idEval, $idStatut)
     {
-        return $this->createQueryBuilder('po')
-            ->join('po.etudiant', 'et')
-            ->join('et.statuts', 's')
-            ->join('po.partie', 'pa')
-            ->join('pa.evaluation', 'ev')
-            ->andWhere('ev.id = :idE')
-            ->andWhere('s.id = :idS')
+        return $this->getEntityManager()->createQuery('
+            SELECT p.valeur
+            FROM App\Entity\Points p
+            JOIN p.etudiant et
+            JOIN et.statuts s
+            JOIN p.partie pa
+            JOIN pa.evaluation ev
+            WHERE ev.id = :idE
+            AND s.id = :idS
+            AND et.estDemissionaire = 0
+            ORDER BY p.valeur ASC
+        ')
             ->setParameter('idS', $idStatut)
             ->setParameter('idE', $idEval)
-            ->getQuery()
-            ->getResult()
-        ;
+            ->execute();
+
     }
 
 

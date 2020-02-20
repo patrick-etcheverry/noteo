@@ -379,7 +379,7 @@ class AppFixtures extends Fixture
           $etudiant1->setPrenom($faker->firstNameMale);
           $etudiant1->setNom($faker->lastName);
           $etudiant1->setMail($faker->email);
-          $etudiant1->setEstDemissionaire($faker->boolean);
+          $etudiant1->setEstDemissionaire(false);
           $etudiant1->addStatut($statut1);
           $etudiant1->addGroupe($DUT);
 

@@ -5,6 +5,7 @@ namespace App\Repository;
 use App\Entity\GroupeEtudiant;
 use Gedmo\Tree\Entity\Repository\NestedTreeRepository;
 use Doctrine\Common\Persistence\ManagerRegistry;
+use Doctrine\ORM\EntityManagerInterface;
 
 /**
  * @method GroupeEtudiant|null find($id, $lockMode = null, $lockVersion = null)
@@ -14,9 +15,9 @@ use Doctrine\Common\Persistence\ManagerRegistry;
  */
 class GroupeEtudiantRepository extends NestedTreeRepository
 {
-    public function __construct(ManagerRegistry $registry)
+    public function __construct(EntityManagerInterface $em)
     {
-        parent::__construct($registry, GroupeEtudiant::class);
+        parent::__construct($em,$em->getClassMetaData(GroupeEtudiant::class));
     }
 
     // /**
