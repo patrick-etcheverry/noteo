@@ -43,7 +43,7 @@ class EvaluationController extends AbstractController
      */
     public function new(Request $request, GroupeEtudiant $groupeConcerne, ValidatorInterface $validator): Response
     {
-        //Création d'une évaluation vide avec tous ses composants (partie, notes)
+        //Création d'une évaluation vide avec tous ses composants (partie, notes(définies à 0 par défaut))
         $evaluation = new Evaluation();
         $evaluation->setGroupe($groupeConcerne);
         $partie = new Partie();
@@ -57,13 +57,15 @@ class EvaluationController extends AbstractController
           $partie->addNote($note);
         }
 
+        //Création du formulaire pour saisir les informations de l'évaluation (le formulaire n'est pas lié à une entité)
         $form = $this->createFormBuilder(['notes' => $partie->getNotes()])
             ->add('nom', TextType::class)
             ->add('date', DateType::class, [
               'widget' => 'single_text'
             ])
             ->add('notes', CollectionType::class , [
-              'entry_type' => PointsType::class
+              'entry_type' => PointsType::class //Utilisation d'une collection de formulaire pour saisir les valeurs des notes (les formulaires portent sur les entités points
+                                                //passées en paramètre du formulaire)
             ])
             ->getForm();
 
@@ -73,11 +75,12 @@ class EvaluationController extends AbstractController
 
             $entityManager = $this->getDoctrine()->getManager();
 
-            $data = $form->getData();
+            $data = $form->getData(); //Récupération des données du formulaire
 
-            $evaluation->setNom($data["nom"]);
-            $evaluation->setDate($data["date"]);
+            $evaluation->setNom($data["nom"]); // Définition du nom de l'évaluation
+            $evaluation->setDate($data["date"]); // -------- de la date -----------
 
+            //Validation de l'entité hydratée à partir des données du formulaire
             $this->validerEntite($evaluation, $validator);
             $this->validerEntite($partie, $validator);
 
@@ -85,9 +88,12 @@ class EvaluationController extends AbstractController
             $entityManager->persist($partie);
 
             foreach ($partie->getNotes() as $note) {
+
+              //Si la note dépasse le barême de la partie, on réduit la note à la valeur du barême
               if (!($note->getValeur() <= $partie->getBareme())) {
                 $note->setValeur($partie->getBareme());
               }
+              //On valide l'entité note hydratée avec la collection de formulaires
               $this->validerEntite($note, $validator);
               $entityManager->persist($note);
             }
@@ -103,8 +109,11 @@ class EvaluationController extends AbstractController
     }
 
     public function validerEntite ($entite, $validator) {
+
+      //Utilisation de la méthode validate du validator pour valider l'entité selon les regles définies dans celle ci
       $errors = $validator->validate($entite);
 
+      //Si erreur, retour d'un objet Response qui affichera les erreurs
       if (count($errors) > 0) {
           $errorsString = (string) $errors;
           return new Response($errorsString);
@@ -126,6 +135,7 @@ class EvaluationController extends AbstractController
      */
     public function edit(Request $request, Evaluation $evaluation, ValidatorInterface $validator): Response
     {
+      ////////////POUR COMMENTAIRES VOIR METHODE NEW////////////
       foreach ($evaluation->getParties() as $partie) {
         $tab = $partie->getNotes();
       }
