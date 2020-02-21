@@ -172,7 +172,7 @@ class EvaluationController extends AbstractController
           $entityManager->persist($partie);
 
           foreach ($partie->getNotes() as $note) {
-            if (!($note->getValeur() <= $partie->getBareme())) {
+            if ($note->getValeur() > $partie->getBareme()) {
               $note->setValeur($partie->getBareme());
             }
             $this->validerEntite($note, $validator);
