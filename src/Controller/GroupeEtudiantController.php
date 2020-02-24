@@ -159,7 +159,7 @@ class GroupeEtudiantController extends AbstractController
             $ligne = chop(fgets($fichier));
 
             // Vérification première ligne du fichier
-            if($ligne == "PRENOM;NOM;MAIL") {
+            if($ligne == "NOM;PRENOM;MAIL") {
               for ($i=0; $i < $nbLignes - 1; $i++) {
                 $ligne = fgets($fichier);
                 $ligneDecoupee = explode(";",$ligne);
