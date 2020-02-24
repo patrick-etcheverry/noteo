@@ -6,9 +6,6 @@
 
 {% block contenu %}
 
-    <div class='bouton'>
-        <button class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm" onclick="location.href='{{ path('enseignant_new') }}'">Créer un enseignant</button>
-    </div>
     {% if enseignants is not empty %}
     <table class="table" id="table">
         <thead>
@@ -67,7 +64,6 @@
         </div>
     </div>
 
-    <a href="{{ path('enseignant_new') }}">Create new</a>
 {% endblock %}
 
 {% block datatables %}
