@@ -79,16 +79,16 @@
       <!-- Divider -->
       <hr class="sidebar-divider my-0">
 
-      <!-- Nav Item - Évaluations -->
+      <!-- Nav Item - Pages Collapse Menu -->
       <li class="nav-item {% block evaluations %}{% endblock %}">
-        <a class="nav-link" href="#" data-toggle="collapse" data-target="#collapsePages" aria-expanded="true" aria-controls="collapsePages">
+        <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseTwo" aria-expanded="true" aria-controls="collapseTwo">
           <i class="icon-evaluation"></i>
           <span>Évaluations</span>
         </a>
-        <div id="collapsePages" class="collapse show" aria-labelledby="headingPages" data-parent="#accordionSidebar">
+        <div id="collapseTwo" class="collapse {% block show %}{% endblock %}" aria-labelledby="headingTwo" data-parent="#accordionSidebar">
           <div class="bg-white py-2 collapse-inner rounded">
-            <a class="collapse-item active" href="{{path('evaluation_index')}}">Mes évaluations</a>
-            <a class="collapse-item" href="{{path('evaluation_index')}}">Autres évaluations</a>
+            <a class="collapse-item {% block mesEvaluations %}{% endblock %}" href="{{path('evaluation_index')}}">Mes évaluations</a>
+            <a class="collapse-item {% block autresEvaluations %}{% endblock %}" href="{{path('evaluation_index')}}">Autres évaluations</a>
           </div>
         </div>
       </li>
