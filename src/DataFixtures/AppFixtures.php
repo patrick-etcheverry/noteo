@@ -29,6 +29,7 @@ class AppFixtures extends Fixture
         $enseignant->setNom('Etcheverry');
         $enseignant->setMail('patoche@iut.fr');
         $enseignant->setEstAdmin(true);
+        $enseignant->setMotDePasse("coucou");
 
         $manager->persist($enseignant);
 
@@ -373,6 +374,7 @@ class AppFixtures extends Fixture
           $enseignant->setNom($faker->lastName);
           $enseignant->setMail($faker->email);
           $enseignant->setEstAdmin($faker->boolean);
+          $enseignant->setMotDePasse("coucou");
 
           ////////////ETUDIANTS//////////////
           $etudiant1 = new Etudiant();
