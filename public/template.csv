@@ -1,5 +1,5 @@
-PRENOM;NOM;MAIL
-Dylan;Mendiboure;dmendiboure@noteo.me
-Arthur;Murillo;amurillo@noteo.me
-Sofian;Eon;seon@noteo.me
-Xabi;Avellan;xavellan@noteo.me
+NOM;PRENOM;MAIL
+Mendiboure;Dylan;dmendiboure@noteo.me
+Murillo;Arthur;amurillo@noteo.me
+Eon;Sofian;seon@noteo.me
+Avellan;Xabi;xavellan@noteo.me

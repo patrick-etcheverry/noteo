@@ -20,7 +20,12 @@ class StatutType extends AbstractType
     {
         $builder
             ->add('nom')
-            ->add('description')
+            ->add('description', TextareaType::class, [
+              'attr' => [
+                'placeholder' => 'Une belle description',
+                'rows' => 6
+              ]
+            ])
             ->add('enseignant', EntityType::class, [
               'class' => Enseignant::class, 'choice_label' => 'nom'
             ])

@@ -3,25 +3,32 @@
 {% block titrePage %}Visualiser les statistiques{% endblock %}
 
 {% block evaluations %}active{% endblock %}
+
+{% block show %}show{% endblock %}
+
+{% block mesEvaluations %}active{% endblock %}
+
+{% block collapsed %}{% endblock %}
+
 {% block contenu %}
 
 <table align="center" class="table">
   <tbody>
     <tr>
       <th class="intitule"><label for="evaluation_nom" >Nom de l'évaluation</label></th>
-      <td>{{evaluation.nom}}</td>
+      <td class="champ">{{evaluation.nom}}</td>
     </tr>
     <tr>
       <td class="intitule"><label for="evaluation_groupe" >Groupe</label></td>
-      <td>{{evaluation.groupe.nom}}</td>
+      <td class="champ">{{evaluation.groupe.nom}}</td>
     </tr>
     <tr>
       <td class="intitule"><label for="evaluation_date" >Date</label></td>
-      <td>{{evaluation.date}}</td>
+      <td class="champ">{{evaluation.date}}</td>
     </tr>
     <tr>
       <th class="intitule"><label >Actions</label></th>
-        <td><a href="#"><i style="font-size: 25px;" class="icon-file-pdf"></i></a> <a href="#"><i style="font-size: 25px;" class="icon-file-excel"></i></a> <a href="#"><i style="font-size: 25px;" class="icon-mail"></i></a></td>
+      <td class="champ"><a href="#"><i style="font-size: 25px;" class="icon-file-pdf"></i></a> <a href="#"><i style="font-size: 25px;" class="icon-file-excel"></i></a> <a href="#"><i style="font-size: 25px;" class="icon-mail"></i></a></td>
     </tr>
   </tbody>
 </table>
@@ -39,7 +46,7 @@
   <ul class="list-group list-group-flush">
     <li class="list-group-item">{{groupe.nom}}</li>
     <li class="list-group-item">
-      <h5 class="card-title">Réparition des notes</h5>
+      <h5 class="card-title">Réparition des notes</h5><br>
       <center><canvas id="{{groupe.nom}}"></canvas></center>
     </li>
     <li class="list-group-item">
@@ -54,11 +61,11 @@
                 <li>Minimum : {{ groupe.minimum }}</li>
                 <li>Maximum : {{ groupe.maximum }}</li>
                 <li>Médiane : {{ groupe.mediane }}</li>
-            </ul>
-          </li>
-        </ul>
-      </div>
-    </center>
+              </ul>
+            </li>
+          </ul>
+        </div>
+      </center>
     </li>
   </ul>
 </div>
@@ -68,7 +75,7 @@
 {% else %}
 
 <div class="info">
-    <h2 class="h4 mb-0 text-gray-800">Veuillez sélectionner des groupes ou des statuts sur lesquels voir des statistiques </h2>
+  <h2 class="h4 mb-0 text-gray-800">Veuillez sélectionner des groupes ou des statuts sur lesquels voir des statistiques </h2>
 </div>
 
 {% endif %}
@@ -86,45 +93,45 @@
 
 {# si le maximum est égal à zéro (pas de notes pour le groupe) on définit une valeur maximale arbitraire de 5 pour y, sinon ce sera égal a la plus grande valeur du tableau de repartition #}
 {% if maximumRepartition == 0 %}
-  {% set maximumRepartition = 5 %}
+{% set maximumRepartition = 5 %}
 {% endif %}
 
 var graph = document.getElementById('{{groupe.nom}}').getContext('2d');
 
 var leBarre = new Chart(graph, {
-    type: 'bar',
-    data: {
-        labels: ['[0;4[', '[4;8[', '[8;12[', '[12;16[', '[16;20]'],
-        datasets: [{
-            label: 'Effectif',
-            data: {{groupe.notes|json_encode()}}, {# json_encode sert à rendre le tableau lisible en JavaScript #}
-            backgroundColor: "#4e73df",
-            hoverBackgroundColor: "#2e59d9",
-            borderColor: "#4e73df"
-        }]
-    },
-    options: {
-        scales: {
-          xAxes: [{
-            gridLines: {
-              display: false
-            },
-            ticks: {
-              maxTicksLimit: 6
-            },
-            maxBarThickness: 100,
-          }],
-          yAxes: [{
-            ticks: {
-              beginAtZero: true,
-              max: {{maximumRepartition}}
-            }
-          }]
+  type: 'bar',
+  data: {
+    labels: ['[0;4[', '[4;8[', '[8;12[', '[12;16[', '[16;20]'],
+    datasets: [{
+      label: 'Effectif',
+      data: {{groupe.notes|json_encode()}}, {# json_encode sert à rendre le tableau lisible en JavaScript #}
+      backgroundColor: "#4e73df",
+      hoverBackgroundColor: "#2e59d9",
+      borderColor: "#4e73df"
+    }]
+  },
+  options: {
+    scales: {
+      xAxes: [{
+        gridLines: {
+          display: false
         },
+        ticks: {
+          maxTicksLimit: 6
+        },
+        maxBarThickness: 100,
+      }],
+      yAxes: [{
+        ticks: {
+          beginAtZero: true,
+          max: {{maximumRepartition}}
+        }
+      }]
+    },
     aspectRatio: 3,
     maintainAspectRatio: true,
-		responsive: true,
-		legend: {
+    responsive: true,
+    legend: {
       display: false
     },
     tooltips: {
@@ -140,12 +147,12 @@ var leBarre = new Chart(graph, {
       displayColors: false,
       caretPadding: 10
     },
-		plugins : {
-		    labels: {
-          render: 'value'
-        }
+    plugins : {
+      labels: {
+        render: 'value'
       }
     }
+  }
 });
 
 {% endfor %}

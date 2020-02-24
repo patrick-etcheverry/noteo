@@ -4,6 +4,11 @@ textarea {
 
 .intitule {
   font-weight: bold;
+  width: 40%;
+}
+
+.champ {
+  width: 60%;
 }
 
 .bouton {
