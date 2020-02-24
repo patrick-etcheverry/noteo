@@ -18,6 +18,7 @@ class EtudiantType extends AbstractType
             ->add('mail')
             ->add('estDemissionaire', ChoiceType::class, [
             'choices' => ['Oui' => true, 'Non' => false],
+            'data' => false,
             'expanded' => true, // Pour avoir des boutons radio
             'label_attr' =>  [
             'class'=>'radio-inline' //Pour que les boutons radio soient alignés
