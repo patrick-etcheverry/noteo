@@ -22,7 +22,10 @@
   <th>Note</th>
 </thead>
 <tbody>
+
 {% if form.vars.value.notes is not empty %}
+{# Le tableau form.vars.value.notes contient la liste des entités notes passées en paramètre du formulaire dans le
+   controlleur. On boucle dans ces valeurs pour afficher un étudiant et le formulaire de saisie de note qui lui correspond #}
 {% for i in 0..(form.vars.value.notes|length-1) %}
 <tr>
   <td>{{form.vars.value.notes[i].etudiant.nom}}</td>
@@ -31,8 +34,6 @@
 </tr>
 {% endfor %}
 {% endif %}
-
-
 </tbody>
 </table>
 
