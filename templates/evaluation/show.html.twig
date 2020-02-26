@@ -26,6 +26,10 @@
                 <th>Groupe</th>
                 <td>{{ evaluation.groupe.nom }}</td>
             </tr>
+        <tr>
+            <th>Télécharger les notes</th>
+            <td><a href="javascript:tableVersExcel()"><i style="font-size: 20px;" class="icon-file-excel"></i> </a></td>
+        </tr>
         </tbody>
     </table>
 
@@ -50,6 +54,8 @@
           {% endfor %}
         </tbody>
       </table>
+
+
 
 
 {% endblock %}
@@ -78,4 +84,19 @@ $(document).ready(function() {
 });
 </script>
 
+{% endblock %}
+
+{% block javascripts %}
+    <script>
+        /*Cette fonction récupère le contenu du tableau des notes et avec l'extension Table-to-excel
+          crée l'excel correspondant */
+        function tableVersExcel() {
+            TableToExcel.convert(document.getElementById("etud"), {
+                name: "{{evaluation.nom}}.xlsx",
+                sheet: {
+                    name: "Notes"
+                }
+            });
+        }
+    </script>
 {% endblock %}
