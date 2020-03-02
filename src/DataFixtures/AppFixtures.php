@@ -27,9 +27,9 @@ class AppFixtures extends Fixture
         $enseignant = new Enseignant();
         $enseignant->setPrenom('Patrick');
         $enseignant->setNom('Etcheverry');
-        $enseignant->setMail('patoche@iut.fr');
-        $enseignant->setEstAdmin(true);
-        $enseignant->setMotDePasse("coucou");
+        $enseignant->setEmail('patoche@iut.fr');
+        $enseignant->setRoles(['ROLE_USER','ROLE_ADMIN']);
+        $enseignant->setPassword('$2y$10$hq3YT8ne121.2/zAbw18OOtxM/Nh4ulNUvU.asGtTipYUSXimGow6');
 
         $manager->persist($enseignant);
 
@@ -372,9 +372,9 @@ class AppFixtures extends Fixture
           $enseignant = new Enseignant();
           $enseignant->setPrenom($faker->firstNameMale);
           $enseignant->setNom($faker->lastName);
-          $enseignant->setMail($faker->email);
-          $enseignant->setEstAdmin($faker->boolean);
-          $enseignant->setMotDePasse("coucou");
+          $enseignant->setEmail($faker->email);
+          $enseignant->setRoles(['ROLE_USER']);
+          $enseignant->setPassword('$2y$10$hq3YT8ne121.2/zAbw18OOtxM/Nh4ulNUvU.asGtTipYUSXimGow6');
 
           ////////////ETUDIANTS//////////////
           $etudiant1 = new Etudiant();
