@@ -12,7 +12,7 @@ class NoteoController extends AbstractController
      */
     public function index()
     {
-        return $this->render('noteo/login.html.twig');
+        return $this->redirectToRoute('app_login');
     }
 
     /**

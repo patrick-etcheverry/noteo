@@ -79,26 +79,16 @@ class EnseignantController extends AbstractController
     }
 
     /**
-     * @Route("/{id}/delete", name="enseignant_delete", methods={"GET"})
+     * @Route("/{id}", name="enseignant_delete", methods={"DELETE"})
      */
     public function delete(Request $request, Enseignant $enseignant): Response
     {
-        $entityManager = $this->getDoctrine()->getManager();
-
-        foreach ($enseignant->getEvaluations() as $evaluation) {
-            //Suppression des parties associées à l'évaluation
-            foreach ($evaluation->getParties() as $partie) {
-
-                //Suppression des notes associées à la partie
-                foreach ($partie->getNotes() as $note) {
-                    $entityManager->remove($note);
-                }
-                $entityManager->remove($partie);
-            }
-            $entityManager->remove($evaluation);
+        if ($this->isCsrfTokenValid('delete'.$enseignant->getId(), $request->request->get('_token'))) {
+            $entityManager = $this->getDoctrine()->getManager();
+            $entityManager->remove($enseignant);
+            $entityManager->flush();
         }
-        $entityManager->remove($enseignant);
-        $entityManager->flush();
+
         return $this->redirectToRoute('enseignant_index');
     }
 }

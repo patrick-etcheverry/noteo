@@ -1,13 +1,28 @@
 security:
+    encoders:
+        App\Entity\Enseignant:
+            algorithm: bcrypt
+
     # https://symfony.com/doc/current/security.html#where-do-users-come-from-user-providers
     providers:
-        in_memory: { memory: null }
+        # used to reload user from session & other features (e.g. switch_user)
+        app_user_provider:
+            entity:
+                class: App\Entity\Enseignant
+                property: email
     firewalls:
         dev:
             pattern: ^/(_(profiler|wdt)|css|images|js)/
             security: false
         main:
             anonymous: true
+            guard:
+                authenticators:
+                    - App\Security\EnseignantAuthenticator
+            logout:
+                path: app_logout
+                # where to redirect after logout
+                # target: app_any_route
 
             # activate different ways to authenticate
             # https://symfony.com/doc/current/security.html#firewalls-authentication
@@ -18,5 +33,9 @@ security:
     # Easy way to control access for large sections of your site
     # Note: Only the *first* access control that matches will be used
     access_control:
-        # - { path: ^/admin, roles: ROLE_ADMIN }
-        # - { path: ^/profile, roles: ROLE_USER }
+         - { path: ^/enseignant, roles: ROLE_ADMIN }
+         - { path: ^/etudiant, roles: ROLE_ADMIN }
+         - { path: ^/evaluation, roles: ROLE_USER }
+         - { path: ^/groupes, roles: ROLE_USER }
+         - { path: ^/statut, roles: ROLE_USER }
+         - { path: ^/partie, roles: ROLE_USER }

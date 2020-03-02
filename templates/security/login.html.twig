@@ -40,38 +40,46 @@
                   <div class="text-center">
                     <h1 class="h4 text-gray-900 mb-4">Bienvenue sur Noteo !</h1>
                   </div>
-                  <form class="user">
+                  <form class="user" method="post">
+                    {% if error %}
+                    <div class="alert alert-danger">{{ error.messageKey|trans(error.messageData, 'security') }}</div>
+                    {% endif %}
+
+                    {% if app.user %}
+                    <div class="mb-3">
+                      You are logged in as {{ app.user.username }}, <a href="{{ path('app_logout') }}">Logout</a>
+                    </div>
+                    {% endif %}
+
                     <div class="form-group">
-                      <input type="email" class="form-control form-control-user" id="exampleInputEmail" aria-describedby="emailHelp" placeholder="Identifiant ou mail">
+                      <input type="email" value="{{ last_username }}" name="email" id="inputEmail" class="form-control form-control-user" placeholder="Mail" required autofocus>
                     </div>
                     <div class="form-group">
-                      <input type="password" class="form-control form-control-user" id="exampleInputPassword" placeholder="Mot de passe">
+                      <input type="password" name="password" id="inputPassword" class="form-control form-control-user" placeholder="Mot de passe" required>
                     </div>
+
+                    <input type="hidden" name="_csrf_token" value="{{ csrf_token('authenticate') }}">
+
                     <div class="form-group">
-                      <div class="custom-control custom-checkbox small">
-                        <input type="checkbox" class="custom-control-input" id="customCheck">
+
+                      <div class="checkbox mb-3 custom-control custom-checkbox small">
+                        <input type="checkbox" class="custom-control-input" id="customCheck" name="_remember_me">
                         <label class="custom-control-label" for="customCheck">Se souvenir de moi</label>
                       </div>
                     </div>
-                    <a href="{{path('etudiant_index')}}" class="btn btn-primary btn-user btn-block">
-                      Se connecter
-                    </a>
+                    <button class="btn btn-primary btn-user btn-block" type="submit">Se connecter</button>
                   </form>
                   <hr>
                   <div class="text-center">
                     <a class="small" href="forgot-password.html">Mot de passe oublié ?</a>
                   </div>
-
                 </div>
               </div>
             </div>
           </div>
         </div>
-
       </div>
-
     </div>
-
   </div>
 
   <!-- Bootstrap core JavaScript-->
