@@ -1,28 +1,34 @@
 {% extends 'base.html.twig' %}
 
-{% block titrePage %}Consulter un enseignant{% endblock %}
+{% block title %}Enseignant{% endblock %}
 
-{% block enseignants %}active{% endblock %}
+{% block body %}
+    <h1>Enseignant</h1>
 
-{% block contenu %}
     <table class="table">
         <tbody>
             <tr>
-                <th>Nom</th>
-                <td>{{ enseignant.nom }}</td>
+                <th>Id</th>
+                <td>{{ enseignant.id }}</td>
             </tr>
             <tr>
-                <th>Prénom</th>
-                <td>{{ enseignant.prenom }}</td>
+                <th>Email</th>
+                <td>{{ enseignant.email }}</td>
             </tr>
             <tr>
-                <th>Mail</th>
-                <td>{{ enseignant.mail }}</td>
+                <th>Roles</th>
+                <td>{{ enseignant.roles ? enseignant.roles|json_encode : '' }}</td>
             </tr>
             <tr>
-                <th>Administrateur</th>
-                <td>{{ enseignant.estAdmin ? 'Oui' : 'Non' }}</td>
+                <th>Password</th>
+                <td>{{ enseignant.password }}</td>
             </tr>
         </tbody>
     </table>
+
+    <a href="{{ path('enseignant_index') }}">back to list</a>
+
+    <a href="{{ path('enseignant_edit', {'id': enseignant.id}) }}">edit</a>
+
+    {{ include('enseignant/_delete_form.html.twig') }}
 {% endblock %}

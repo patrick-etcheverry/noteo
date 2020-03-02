@@ -1,33 +1,4 @@
 {{ form_start(form) }}
-
-<table align="center" class="table">
-  <tbody>
-    <tr>
-      <td class="intitule"><label for="enseignant_nom" class="required">Nom</label></td>
-      <td class="champ">{{ form_widget(form.nom) }}</td>
-    </tr>
-    <tr>
-      <td class="intitule"><label for="enseignant_prenom" class="required">Prénom</label></td>
-      <td class="champ">{{ form_widget(form.prenom) }}</td>
-    </tr>
-    <tr>
-      <td class="intitule"><label for="enseignant_mail" class="required">Mail</label></td>
-      <td class="champ">{{ form_widget(form.mail) }}</td>
-    </tr>
-    <tr>
-      <td class="intitule"><label for="enseignant_estAdmin" class="required">Administrateur</label></td>
-      <td class="champ">{{ form_widget(form.estAdmin) }}</td>
-    </tr>
-    <tr>
-      <td class="intitule"><label for="enseignant_motDePasse" class="required">Mot de passe</label></td>
-      <td class="champ">{{ form_widget(form.motDePasse) }}</td>
-    </tr>
-  </tbody>
-</table>
-
-<div class='bouton'>
-  <a href="{{ path('enseignant_index') }}" class="d-none d-sm-inline-block btn btn-sm btn-secondary shadow-sm bouton">Annuler</a>
-  <button class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm">{{ button_label|default("Créer l'enseignant") }}</button>
-</div>
-
+    {{ form_widget(form) }}
+    <button class="btn">{{ button_label|default('Save') }}</button>
 {{ form_end(form) }}
