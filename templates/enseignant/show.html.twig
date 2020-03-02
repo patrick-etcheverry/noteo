@@ -21,7 +21,13 @@
             </tr>
             <tr>
                 <th>Administrateur</th>
-                <td></td>
+                <td>
+                {% if enseignant.roles[1] is defined %}
+                    Oui
+                {% else %}
+                    Non
+                {% endif %}
+                </td>
             </tr>
         </tbody>
     </table>

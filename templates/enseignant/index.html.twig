@@ -29,7 +29,13 @@
       <td>{{ enseignant.nom }}</td>
       <td>{{ enseignant.prenom }}</td>
       <td>{{ enseignant.email }}</td>
-      <td></td>
+      <td>
+      {% if enseignant.roles[1] is defined %}
+          Oui
+      {% else %}
+          Non
+      {% endif %}
+      </td>
       <td>
         <a href="{{ path('enseignant_show', {'id': enseignant.id}) }}"><i class="icon-eye" data-toggle='tooltip' title='Consulter un enseignant'></i></a>
         <a href="{{ path('enseignant_edit', {'id': enseignant.id}) }}"><i class="icon-pencil-1" data-toggle='tooltip' title='Editer un enseignant'></i></a>
