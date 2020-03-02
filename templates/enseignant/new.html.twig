@@ -1,11 +1,9 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}New Enseignant{% endblock %}
+{% block titrePage %}Créer un enseignant{% endblock %}
 
-{% block body %}
-    <h1>Create new Enseignant</h1>
+{% block enseignants %}active{% endblock %}
 
+{% block contenu %}
     {{ include('enseignant/_form.html.twig') }}
-
-    <a href="{{ path('enseignant_index') }}">back to list</a>
 {% endblock %}

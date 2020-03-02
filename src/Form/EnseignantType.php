@@ -15,7 +15,6 @@ class EnseignantType extends AbstractType
             ->add('nom')
             ->add('prenom')
             ->add('email')
-            ->add('roles')
             ->add('password')
 
         ;
