@@ -8,66 +8,66 @@
 
 {% if etudiants is not empty %}
 <div class='bouton'>
-    <button class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm" onclick="location.href='{{ path('etudiant_new') }}'">Créer un étudiant</button>
+  <button class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm" onclick="location.href='{{ path('etudiant_new') }}'">Créer un étudiant</button>
 </div>
-    <table class="table" id ="table">
-        <thead>
-            <tr>
-                <th>Nom</th>
-                <th>Prénom</th>
-                <th>Statut(s)</th>
-                <th>Mail</th>
-                <th></th>
-            </tr>
-        </thead>
-        <tbody>
+<table class="table" id ="table">
+  <thead>
+    <tr>
+      <th>Nom</th>
+      <th>Prénom</th>
+      <th>Statut(s)</th>
+      <th>Mail</th>
+      <th></th>
+    </tr>
+  </thead>
+  <tbody>
 
-        {% for etudiant in etudiants %}
-            <tr>
-                <td>{{ etudiant.nom }}</td>
-                <td>{{ etudiant.prenom }}</td>
-                <td>
-                  {% for statut in etudiant.statuts %}
-                    <span class="badge badge-primary">{{statut.nom}}</span>
-                  {% endfor %}
-                </td>
-                <td>{{ etudiant.mail }}</td>
-                <td>
-                    <a href="{{ path('etudiant_show', {'id': etudiant.id}) }}"><i class="icon-eye" data-toggle='tooltip' title='Consulter un étudiant'></i></a>
-                    <a href="{{ path('etudiant_edit', {'id': etudiant.id}) }}"><i class="icon-pencil-1" data-toggle='tooltip' title='Editer un étudiant'></i></a>
-                    <a href="#" onclick="supprimerEtudiant('{{ path('etudiant_delete', {'id': etudiant.id}) }}')"><i class="icon-trash" data-toggle='tooltip' title='Supprimer un étudiant'></i></a>
-                </td>
-            </tr>
+    {% for etudiant in etudiants %}
+    <tr>
+      <td>{{ etudiant.nom }}</td>
+      <td>{{ etudiant.prenom }}</td>
+      <td>
+        {% for statut in etudiant.statuts %}
+        <span class="badge badge-primary">{{statut.nom}}</span>
         {% endfor %}
+      </td>
+      <td>{{ etudiant.mail }}</td>
+      <td>
+        <a href="{{ path('etudiant_show', {'id': etudiant.id}) }}"><i class="icon-eye" data-toggle='tooltip' title='Consulter un étudiant'></i></a>
+        <a href="{{ path('etudiant_edit', {'id': etudiant.id}) }}"><i class="icon-pencil-1" data-toggle='tooltip' title='Editer un étudiant'></i></a>
+        <a href="#" onclick="supprimerEtudiant('{{ path('etudiant_delete', {'id': etudiant.id}) }}')"><i class="icon-trash" data-toggle='tooltip' title='Supprimer un étudiant'></i></a>
+      </td>
+    </tr>
+    {% endfor %}
 
-        </tbody>
-    </table>
+  </tbody>
+</table>
 {% else %}
 <div class="info">
   <h2 class="h4 mb-0 text-gray-800">Vous n'avez aucun étudiant</h1>
-</div>
+  </div>
 
-<div class='bouton'>
+  <div class='bouton'>
     <button class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm" onclick="location.href='{{ path('etudiant_new') }}'">Créer un étudiant</button>
-</div>
+  </div>
 {% endif %}
-    <div class="modal fade" id="delEtud" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-      <div class="modal-dialog" role="document">
-        <div class="modal-content">
-          <div class="modal-header">
-            <h5 class="modal-title" id="exampleModalLabel">Avertissement</h5>
-            <button class="close" type="button" data-dismiss="modal" aria-label="Close">
-              <span aria-hidden="true">x</span>
-            </button>
-          </div>
-          <div class="modal-body">Etes vous sur de vouloir supprimer l'étudiant ? </div>
-          <div class="modal-footer">
-            <button class="d-none d-sm-inline-block btn btn-sm btn-secondary shadow-sm bouton" type="button" data-dismiss="modal">Annuler</button>
-            <a class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm bouton" id = "BoutonSupprimerModale" href="#">Supprimer l'étudiant</a>
-          </div>
-        </div>
+<div class="modal fade" id="delEtud" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Avertissement</h5>
+        <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">x</span>
+        </button>
+      </div>
+      <div class="modal-body">Etes vous sur de vouloir supprimer l'étudiant ? </div>
+      <div class="modal-footer">
+        <button class="d-none d-sm-inline-block btn btn-sm btn-secondary shadow-sm bouton" type="button" data-dismiss="modal">Annuler</button>
+        <a class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm bouton" id = "BoutonSupprimerModale" href="#">Supprimer l'étudiant</a>
       </div>
     </div>
+  </div>
+</div>
 
 
 
