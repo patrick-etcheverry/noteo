@@ -18,7 +18,7 @@ security:
             anonymous: true
             guard:
                 authenticators:
-                    - App\Security\EnseignantAuthentictcatorAuthenticator
+                    - App\Security\EnseignantAuthenticator
             logout:
                 path: app_logout
                 # where to redirect after logout
