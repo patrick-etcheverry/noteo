@@ -38,6 +38,14 @@ class EnseignantController extends AbstractController
 
         if ($form->isSubmitted() && $form->isValid()) {
 
+            // Si Oui au bouton radio
+            if ($form['estAdmin']->getData()) {
+              $enseignant->setRoles(['ROLE_USER','ROLE_ADMIN']);
+            }
+            else {
+              $enseignant->setRoles(['ROLE_USER']);
+            }
+
             $mdpEncode = $encoder->encodePassword($enseignant, $enseignant->getPassword());
             $enseignant->setPassword($mdpEncode);
 
