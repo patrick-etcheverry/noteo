@@ -9,6 +9,8 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Doctrine\Common\Persistence\ObjectManager;
+use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
 
 /**
  * @Route("/enseignant")
@@ -28,16 +30,27 @@ class EnseignantController extends AbstractController
     /**
      * @Route("/new", name="enseignant_new", methods={"GET","POST"})
      */
-    public function new(Request $request): Response
+    public function new(Request $request, ObjectManager $manager, UserPasswordEncoderInterface $encoder): Response
     {
         $enseignant = new Enseignant();
         $form = $this->createForm(EnseignantType::class, $enseignant);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $entityManager = $this->getDoctrine()->getManager();
-            $entityManager->persist($enseignant);
-            $entityManager->flush();
+
+            // Si Oui au bouton radio
+            if ($form['estAdmin']->getData()) {
+              $enseignant->setRoles(['ROLE_USER','ROLE_ADMIN']);
+            }
+            else {
+              $enseignant->setRoles(['ROLE_USER']);
+            }
+
+            $mdpEncode = $encoder->encodePassword($enseignant, $enseignant->getPassword());
+            $enseignant->setPassword($mdpEncode);
+
+            $manager->persist($enseignant);
+            $manager->flush();
 
             return $this->redirectToRoute('enseignant_index');
         }
