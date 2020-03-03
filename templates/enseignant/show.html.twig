@@ -5,6 +5,9 @@
 {% block enseignants %}active{% endblock %}
 
 {% block contenu %}
+<div class='bouton'>
+  <button class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm" onclick="location.href='{{ path('enseignant_edit', {'id': enseignant.id}) }}'">Test</button>
+</div>
     <table class="table">
         <tbody>
             <tr>
