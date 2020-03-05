@@ -228,12 +228,20 @@ class EvaluationController extends AbstractController
             'choice_label' => false, // On n'affichera pas d'attribut de l'entité à côté du bouton pour aider au choix car on liste les entités en utilisant les variables du champ
             'label' => false, // On n'affiche pas le label du champ
             'mapped' => false, // Pour que l'attribut ne soit pas immédiatement mis en BD mais soit récupérable après soumission du formulaire
-            'expanded' => true, // Pour avoir des cases
-            'multiple' => false, // à cocher
+            'expanded' => true, // Pour avoir des boutons
+            'multiple' => false, // radios
           ])
           ->getForm();
 
       $form->handleRequest($request);
+
+      if ($form->isSubmitted()) {
+
+        $idGroupeChoisi = $form->get("groupes")->getData()->getId();
+
+        return $this->redirectToRoute('evaluation_new',['id' => $idGroupeChoisi]);
+
+      }
 
       return $this->render('evaluation/choix_groupe.html.twig', ['groupes' => $groupes,'form' => $form->createView()]);
     }
