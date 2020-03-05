@@ -12,6 +12,9 @@
 
 {% block contenu %}
 {% if evaluations is not empty %}
+<div class='bouton'>
+  <button class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm" onclick="location.href='{{ path('evaluation_new', {'id': 2}) }}'">Créer une évaluation</button>
+</div>
 <table class="table" id="table">
   <thead>
     <tr>
