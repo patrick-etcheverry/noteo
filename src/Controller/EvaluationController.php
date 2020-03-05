@@ -220,7 +220,7 @@ class EvaluationController extends AbstractController
      */
     public function chooseGroup(Request $request, GroupeEtudiantRepository $repoGroupe): Response
     {
-      $groupes = $repoGroupe->findAll();
+      $groupes = $repoGroupe->findAllWithoutSpaceAndNonEvaluableGroups();
 
       $form = $this->createFormBuilder()
           ->add('groupes', EntityType::class, [
