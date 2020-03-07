@@ -230,6 +230,7 @@ class EvaluationController extends AbstractController
             'mapped' => false, // Pour que l'attribut ne soit pas immédiatement mis en BD mais soit récupérable après soumission du formulaire
             'expanded' => true, // Pour avoir des boutons
             'multiple' => false, // radios
+            'choices' => $groupes
           ])
           ->getForm();
 

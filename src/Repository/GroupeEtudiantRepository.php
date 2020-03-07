@@ -27,7 +27,7 @@ class GroupeEtudiantRepository extends NestedTreeRepository
     public function findAllWithoutSpaceAndNonEvaluableGroups()
     {
         return $this->createQueryBuilder('g')
-            ->andWhere('g.estEvaluable = :param')
+            ->where('g.estEvaluable = :param')
             ->setParameter('param', true)
             ->getQuery()
             ->getResult()
