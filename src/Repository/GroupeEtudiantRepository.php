@@ -20,6 +20,20 @@ class GroupeEtudiantRepository extends NestedTreeRepository
         parent::__construct($em,$em->getClassMetaData(GroupeEtudiant::class));
     }
 
+    /**
+    * @return GroupeEtudiant[] Returns an array of GroupeEtudiant objects
+    */
+
+    public function findAllWithoutSpaceAndNonEvaluableGroups()
+    {
+        return $this->createQueryBuilder('g')
+            ->where('g.estEvaluable = :param')
+            ->setParameter('param', true)
+            ->getQuery()
+            ->getResult()
+        ;
+    }
+
     // /**
     //  * @return GroupeEtudiant[] Returns an array of GroupeEtudiant objects
     //  */
