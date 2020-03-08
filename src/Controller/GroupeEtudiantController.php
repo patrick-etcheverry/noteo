@@ -289,6 +289,8 @@ class GroupeEtudiantController extends AbstractController
       $groupes = $repo->children($groupeEtudiant); /* On récupère tous les enfants du groupe courant. En effet, on a besoin
                                                       de les traiter un à un pour supprimer les évaluations liées a ceux-ci */
 
+      $groupes[] = $groupeEtudiant; // On ajoute le groupe qu'on supprime à la liste des groupes dont on veut supprimer l'évaluation
+
         foreach ($groupes as $groupeAModifier) { // Pour tous les enfants du groupe choisi
           foreach ($groupeAModifier->getEvaluations() as $evaluation) { //On récupère toutes les évaluations du groupe courant
             foreach ($evaluation->getParties() as $partie) { //On récupère toutes les parties de l'évaluation courante
