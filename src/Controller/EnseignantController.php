@@ -11,6 +11,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Doctrine\Common\Persistence\ObjectManager;
 use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
+use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 
 /**
  * @Route("/enseignant")
@@ -66,6 +67,10 @@ class EnseignantController extends AbstractController
      */
     public function show(Enseignant $enseignant): Response
     {
+        if (!$this->getUser()->canLookProfile($enseignant)) {
+            throw new AccessDeniedException('Access denied.');
+        }
+
         return $this->render('enseignant/show.html.twig', [
             'enseignant' => $enseignant,
         ]);
