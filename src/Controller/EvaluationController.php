@@ -9,6 +9,7 @@ use App\Entity\Etudiant;
 use App\Entity\Partie;
 use App\Entity\Statut;
 use App\Entity\Points;
+use App\Entity\Enseignant;
 use App\Entity\GroupeEtudiant;
 use App\Repository\StatutRepository;
 use App\Repository\PointsRepository;
@@ -31,12 +32,22 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 class EvaluationController extends AbstractController
 {
     /**
-     * @Route("/", name="evaluation_index", methods={"GET"})
+     * @Route("/self/{id}", name="evaluation_enseignant", methods={"GET"})
      */
-    public function index(EvaluationRepository $evaluationRepository): Response
+    public function indexEnseignant(EvaluationRepository $evaluationRepository, Enseignant $enseignant): Response
     {
-        return $this->render('evaluation/index.html.twig', [
-            'evaluations' => $evaluationRepository->findAll(),
+        return $this->render('evaluation/indexSelf.html.twig', [
+            'evaluations' => $evaluationRepository->findByEnseignant($enseignant),
+        ]);
+    }
+
+    /**
+     * @Route("/others/{id}", name="evaluation_autres", methods={"GET"})
+     */
+    public function indexAutres(EvaluationRepository $evaluationRepository, Enseignant $enseignant): Response
+    {
+        return $this->render('evaluation/indexOther.html.twig', [
+            'evaluations' => $evaluationRepository->findOtherEvaluations($enseignant),
         ]);
     }
 
