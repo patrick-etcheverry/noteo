@@ -6,7 +6,7 @@
 
 {% block show %}show{% endblock %}
 
-{% block mesEvaluations %}active{% endblock %}
+{% block autresEvaluations %}active{% endblock %}
 
 {% block collapsed %}{% endblock %}
 
@@ -35,11 +35,7 @@
       <td>{{ evaluation.groupe.nom }}</td>
       <td>
         <a href="{{ path('evaluation_show', {'id': evaluation.id}) }}"><i class="icon-eye" data-toggle='tooltip' title="Consulter l'évaluation"></i></a>
-        <a href="{{ path('evaluation_edit', {'id': evaluation.id}) }}"><i class="icon-pencil-1" data-toggle='tooltip' title="Editer l'évaluation"></i></a>
         <a href="{{path('evaluation_choose_groups', {'idEval' : evaluation.id, 'idGroupe' : evaluation.groupe.id})}}"><i class="icon-logo-noteo" data-toggle='tooltip' title='Visualiser les statistiques'></i></a>
-        <a href="{{ path('evaluation_delete', {'id': evaluation.id}) }}" onclick="EcritureModale('{{ path('evaluation_delete', {'id': evaluation.id}) }}')" data-toggle='modal'>
-          <i class="icon-trash" data-toggle='tooltip' title="Supprimer l'évaluation"></i>
-        </a>
 
       </td>
     </tr>
@@ -50,7 +46,7 @@
 {% else %}
 
 <div class="info">
-  <h2 class="h4 mb-0 text-gray-800">Vous n'avez aucune évaluation</h1>
+  <h2 class="h4 mb-0 text-gray-800">Aucune autre évaluation n'existe</h1>
 </div>
 
 {% endif %}

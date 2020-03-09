@@ -121,6 +121,11 @@ class Enseignant implements UserInterface
         return (string) $this->password;
     }
 
+    public function isAdmin()
+    {
+        return in_array('ROLE_ADMIN', $this->getRoles(), true);
+    }
+
     public function setPassword(string $password): self
     {
         $this->password = $password;
@@ -260,5 +265,9 @@ class Enseignant implements UserInterface
         }
 
         return $this;
+    }
+
+    public function canLookProfile(Enseignant $enseignant) {
+        return ($this->id == $enseignant->getId() || $this->isAdmin() ? true : false);
     }
 }

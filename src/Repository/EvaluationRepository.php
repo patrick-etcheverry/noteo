@@ -20,6 +20,21 @@ class EvaluationRepository extends ServiceEntityRepository
         parent::__construct($registry, Evaluation::class);
     }
 
+    /**
+    * @return Evaluation[] Returns an array of Evaluation objects
+    */
+
+    public function findOtherEvaluations($enseignant)
+    {
+        return $this->createQueryBuilder('e')
+            ->andWhere('e.enseignant != :enseignant')
+            ->setParameter('enseignant', $enseignant)
+            ->getQuery()
+            ->getResult()
+        ;
+    }
+
+
     // /**
     //  * @return Stage[] Returns an array of Stage objects
     //  */
