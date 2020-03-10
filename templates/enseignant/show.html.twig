@@ -11,20 +11,20 @@
     <table class="table">
         <tbody>
             <tr>
-                <th>Nom</th>
-                <td>{{ enseignant.nom }}</td>
+                <th class="intitule">Nom</th>
+                <td >{{ enseignant.nom }}</td>
             </tr>
             <tr>
-                <th>Prénom</th>
-                <td>{{ enseignant.prenom }}</td>
+                <th class="intitule">Prénom</th>
+                <td >{{ enseignant.prenom }}</td>
             </tr>
             <tr>
-                <th>Mail</th>
-                <td>{{ enseignant.email }}</td>
+                <th class="intitule">Mail</th>
+                <td >{{ enseignant.email }}</td>
             </tr>
             <tr>
-                <th>Administrateur</th>
-                <td>
+                <th class="intitule">Administrateur</th>
+                <td >
                 {% if enseignant.roles[1] is defined %}
                     Oui
                 {% else %}

@@ -8,24 +8,24 @@
     <table class="table">
         <tbody>
             <tr>
-                <th>Nom</th>
-                <td>{{ etudiant.nom }}</td>
+                <th class="intitule">Nom</th>
+                <td >{{ etudiant.nom }}</td>
             </tr>
             <tr>
-                <th>Prenom</th>
-                <td>{{ etudiant.prenom }}</td>
+                <th class="intitule">Prenom</th>
+                <td >{{ etudiant.prenom }}</td>
             </tr>
             <tr>
-                <th>Mail</th>
-                <td>{{ etudiant.mail }}</td>
+                <th class="intitule">Mail</th>
+                <td >{{ etudiant.mail }}</td>
             </tr>
             <tr>
-                <th>Démissionaire</th>
-                <td>{{ etudiant.estDemissionaire ? 'Oui' : 'Non' }}</td>
+                <th class="intitule">Démissionaire</th>
+                <td >{{ etudiant.estDemissionaire ? 'Oui' : 'Non' }}</td>
             </tr>
             <tr>
-              <th>Statut(s)</th>
-              <td>
+              <th class="intitule">Statut(s)</th>
+              <td >
                 {% for statut in etudiant.statuts %}
                   <font size=4><span class="badge badge-primary">{{statut.nom}}</span></font>
                 {% endfor %}

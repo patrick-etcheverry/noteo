@@ -28,7 +28,7 @@
 </table>
 
 <div class='bouton'>
-  <a href="{{ path('evaluation_index') }}" class="d-none d-sm-inline-block btn btn-sm btn-secondary shadow-sm">Annuler</a>
+  <a href="{{path('evaluation_enseignant', {'id': app.user.id })}}" class="d-none d-sm-inline-block btn btn-sm btn-secondary shadow-sm">Annuler</a>
   <button class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm">Valider le choix</button>
 </div>
 

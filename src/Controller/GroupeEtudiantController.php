@@ -3,7 +3,6 @@
 namespace App\Controller;
 
 use App\Entity\GroupeEtudiant;
-use App\Entity\Etudiant;
 use App\Form\GroupeEtudiantType;
 use App\Form\SousGroupeEtudiantType;
 use App\Form\GroupeEtudiantEditType;
@@ -12,6 +11,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 
 /**
  * @Route("/groupes")
@@ -72,11 +72,16 @@ class GroupeEtudiantController extends AbstractController
 
                     //Consulter
                     $url = $this->generateUrl('groupe_etudiant_show', [ 'id' => $node['id'] ]);
-                    $show = " <a href='$url'><i class='icon-eye' data-toggle='tooltip' title='Consulter le groupe'></i></a> ";
+                    $show = " <a href='$url'><i class='icon-eye' data-toggle='tooltip' title='Consulter le groupe'></i></a>";
 
-                    //Créer un sous-groupe
-                    $url = $this->generateUrl('groupe_etudiant_new_sousGroupe', [ 'id' => $node['id'] ]);
-                    $sousGroupe = "<a href='$url'><i class='icon-plus' data-toggle='tooltip' title='Créer un sous groupe'></i></a>";
+                    if ($this->getUser()->isAdmin()) {
+                      //Créer un sous-groupe
+                      $url = $this->generateUrl('groupe_etudiant_new_sousGroupe', [ 'id' => $node['id'] ]);
+                      $sousGroupe = "<a href='$url'><i class='icon-plus' data-toggle='tooltip' title='Créer un sous groupe'></i></a>";
+                    }
+                    else {
+                      $sousGroupe = NULL;
+                    }
 
 
                     //Créer une évaluation (seulement disponible si le groupe est évaluable)
@@ -86,18 +91,27 @@ class GroupeEtudiantController extends AbstractController
                       // $evalParParties = "<a href='#'><i class='icon-eval-composee'></i></a>";
                     }
                     else {
-                      $evalSimple = "";
+                      $evalSimple = NULL;
                     //  $evalParParties = "";
                     }
 
                     //Modifier
+                    if ($this->getUser()->isAdmin()) {
                     $url = $this->generateUrl('groupe_etudiant_edit', [ 'id' => $node['id'] ]);
                     $edit = "<a href=" . $url .  "><i class='icon-pencil-1' data-toggle='tooltip' title='Modifier le groupe'></i></a>";
+                    }
+                    else {
+                      $edit = NULL;
+                    }
 
                     //Supprimer
+                    if ($this->getUser()->isAdmin()) {
                     $url = $this->generateUrl('groupe_etudiant_delete', [ 'id' => $node['id'] ]);
                     $delete = "<a href='$url' onclick='EcritureModale(\"$url\")' data-toggle='modal'><i class='icon-trash' data-toggle='tooltip' title='Supprimer le groupe'></i></a>";
-
+                    }
+                    else {
+                      $delete = NULL;
+                    }
                     //Mise à la suite des actions en une seule chaîne
                     $actions = "<td>" . $show  . $sousGroupe . $edit /*. $evalParParties */. $delete . $evalSimple . "</td>";
 
@@ -135,6 +149,9 @@ class GroupeEtudiantController extends AbstractController
      */
     public function new(Request $request): Response
     {
+
+        $this->getUser()->checkAdmin();
+
 
         $groupeEtudiant = new GroupeEtudiant();
         $form = $this->createForm(GroupeEtudiantType::class, $groupeEtudiant);
@@ -205,6 +222,7 @@ class GroupeEtudiantController extends AbstractController
      */
     public function edit(Request $request, GroupeEtudiant $groupeEtudiant): Response
     {
+      $this->getUser()->checkAdmin();
 
       //Utilisé pour pouvoir supprimer un étudiant dans les sous groupe du groupe selectionné
       $enfants = $this->getDoctrine()->getRepository(GroupeEtudiant::class)->children($groupeEtudiant);
@@ -323,6 +341,7 @@ class GroupeEtudiantController extends AbstractController
        */
       public function NewSousFroupe(GroupeEtudiant $groupeEtudiantParent, Request $request): Response
       {
+        $this->getUser()->checkAdmin();
 
         $groupeEtudiant = new GroupeEtudiant();
         $groupeEtudiant->setParent($groupeEtudiantParent);
