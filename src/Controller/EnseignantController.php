@@ -23,7 +23,7 @@ class EnseignantController extends AbstractController
   */
   public function index(EnseignantRepository $enseignantRepository): Response
   {
-    $this->checkAdmin();
+    $this->getUser()->checkAdmin();
 
     return $this->render('enseignant/index.html.twig', [
       'enseignants' => $enseignantRepository->findAll(),
@@ -35,7 +35,7 @@ class EnseignantController extends AbstractController
   */
   public function new(Request $request, ObjectManager $manager, UserPasswordEncoderInterface $encoder): Response
   {
-    $this->checkAdmin();
+    $this->getUser()->checkAdmin();
 
     $enseignant = new Enseignant();
     $form = $this->createForm(EnseignantType::class, $enseignant);
@@ -71,7 +71,7 @@ class EnseignantController extends AbstractController
   */
   public function show(Enseignant $enseignant): Response
   {
-    $this->checkAdminOrAuthorized($enseignant);
+    $this->getUser()->checkAdminOrAuthorized($enseignant);
 
     return $this->render('enseignant/show.html.twig', [
       'enseignant' => $enseignant,
@@ -83,7 +83,7 @@ class EnseignantController extends AbstractController
   */
   public function edit(Request $request, Enseignant $enseignant): Response
   {
-    $this->checkAdminOrAuthorized($enseignant);
+    $this->getUser()->checkAdminOrAuthorized($enseignant);
 
     $form = $this->createForm(EnseignantType::class, $enseignant);
     $form->handleRequest($request);
@@ -112,21 +112,5 @@ class EnseignantController extends AbstractController
     }
 
     return $this->redirectToRoute('enseignant_index');
-  }
-
-  public function checkAdmin()
-  {
-    if (!$this->getUser()->isAdmin())
-    {
-      throw new AccessDeniedException('Access denied.');
-    }
-  }
-
-  public function checkAdminOrAuthorized($enseignant)
-  {
-    if (!$this->getUser()->canLookProfile($enseignant))
-    {
-      throw new AccessDeniedException('Access denied.');
-    }
   }
 }

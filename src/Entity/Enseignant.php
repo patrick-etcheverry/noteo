@@ -6,6 +6,7 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Security\Core\User\UserInterface;
+use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 
 /**
  * @ORM\Entity(repositoryClass="App\Repository\EnseignantRepository")
@@ -269,5 +270,21 @@ class Enseignant implements UserInterface
 
     public function canLookProfile(Enseignant $enseignant) {
         return ($this->id == $enseignant->getId() || $this->isAdmin() ? true : false);
+    }
+
+    public function checkAdmin()
+    {
+      if (!$this->isAdmin())
+      {
+        throw new AccessDeniedException('Access denied.');
+      }
+    }
+
+    public function checkAdminOrAuthorized(Enseignant $enseignant)
+    {
+      if (!$this->canLookProfile($enseignant))
+      {
+        throw new AccessDeniedException('Access denied.');
+      }
     }
 }
