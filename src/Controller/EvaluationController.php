@@ -112,7 +112,7 @@ class EvaluationController extends AbstractController
             }
 
             $entityManager->flush();
-            return $this->redirectToRoute('evaluation_index');
+            return $this->redirectToRoute('evaluation_enseignant',['id' => $this->getUser()->getId()]);
         }
 
         return $this->render('evaluation/new.html.twig', [
@@ -194,7 +194,7 @@ class EvaluationController extends AbstractController
           return $this->redirectToRoute('evaluation_index');
       }
 
-      return $this->render('evaluation/new.html.twig', [
+      return $this->render('evaluation/edit.html.twig', [
           'evaluation' => $evaluation,
           'form' => $form->createView(),
       ]);
