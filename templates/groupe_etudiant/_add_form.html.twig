@@ -4,23 +4,23 @@
   <tbody>
     <tr>
       <th class="intitule"><label for="groupe_etudiant_nom" class="required">Nom</label></th>
-      <td class="champ">{{ form_widget(form.nom) }}</td>
+      <td >{{ form_widget(form.nom) }}</td>
     </tr>
     <tr>
       <th class="intitule"><label for="groupe_etudiant_description" class="required">Description</label></th>
-      <td class="champ">{{ form_widget(form.description) }}</td>
+      <td >{{ form_widget(form.description) }}</td>
     </tr>
     <tr>
       <th class="intitule"><label for="groupe_etudiant_estEvaluable" class="required">Évaluable</label> <a href="#HelpEvaluable" data-toggle='modal' data-target='#HelpEvaluable'><i class="icon-help-circled"></i></a></th>
-      <td class="champ">{{form_widget(form.estEvaluable, {'data' : true})}}</td>
+      <td >{{form_widget(form.estEvaluable, {'data' : true})}}</td>
     </tr>
     <tr>
       <th class="intitule"><label for="groupe_etudiant_fichier" class="required">Fichier CSV</label> (<a href="/template.csv">Télécharger un modèle</a>)</th>
-      <td class="champ">{{form_widget(form.fichier)}}</td>
+      <td >{{form_widget(form.fichier)}}</td>
     </tr>
     <tr>
       <th class="intitule"><label class="required" for="groupe_etudiant_enseignant">Enseignant (temporaire)</label></th>
-      <td class="champ">{{form_widget(form.enseignant)}}</td>
+      <td >{{form_widget(form.enseignant)}}</td>
     </tr>
   </tbody>
 </table>
