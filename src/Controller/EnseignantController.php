@@ -14,99 +14,119 @@ use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
 use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 
 /**
- * @Route("/enseignant")
- */
+* @Route("/enseignant")
+*/
 class EnseignantController extends AbstractController
 {
-    /**
-     * @Route("/", name="enseignant_index", methods={"GET"})
-     */
-    public function index(EnseignantRepository $enseignantRepository): Response
-    {
-        return $this->render('enseignant/index.html.twig', [
-            'enseignants' => $enseignantRepository->findAll(),
-        ]);
+  /**
+  * @Route("/", name="enseignant_index", methods={"GET"})
+  */
+  public function index(EnseignantRepository $enseignantRepository): Response
+  {
+    $this->checkAdmin();
+
+    return $this->render('enseignant/index.html.twig', [
+      'enseignants' => $enseignantRepository->findAll(),
+    ]);
+  }
+
+  /**
+  * @Route("/new", name="enseignant_new", methods={"GET","POST"})
+  */
+  public function new(Request $request, ObjectManager $manager, UserPasswordEncoderInterface $encoder): Response
+  {
+    $this->checkAdmin();
+
+    $enseignant = new Enseignant();
+    $form = $this->createForm(EnseignantType::class, $enseignant);
+    $form->handleRequest($request);
+
+    if ($form->isSubmitted() && $form->isValid()) {
+
+      // Si Oui au bouton radio
+      if ($form['estAdmin']->getData()) {
+        $enseignant->setRoles(['ROLE_USER','ROLE_ADMIN']);
+      }
+      else {
+        $enseignant->setRoles(['ROLE_USER']);
+      }
+
+      $mdpEncode = $encoder->encodePassword($enseignant, $enseignant->getPassword());
+      $enseignant->setPassword($mdpEncode);
+
+      $manager->persist($enseignant);
+      $manager->flush();
+
+      return $this->redirectToRoute('enseignant_index');
     }
 
-    /**
-     * @Route("/new", name="enseignant_new", methods={"GET","POST"})
-     */
-    public function new(Request $request, ObjectManager $manager, UserPasswordEncoderInterface $encoder): Response
-    {
-        $enseignant = new Enseignant();
-        $form = $this->createForm(EnseignantType::class, $enseignant);
-        $form->handleRequest($request);
+    return $this->render('enseignant/new.html.twig', [
+      'enseignant' => $enseignant,
+      'form' => $form->createView(),
+    ]);
+  }
 
-        if ($form->isSubmitted() && $form->isValid()) {
+  /**
+  * @Route("/{id}", name="enseignant_show", methods={"GET"})
+  */
+  public function show(Enseignant $enseignant): Response
+  {
+    $this->checkAdminOrAuthorized($enseignant);
 
-            // Si Oui au bouton radio
-            if ($form['estAdmin']->getData()) {
-              $enseignant->setRoles(['ROLE_USER','ROLE_ADMIN']);
-            }
-            else {
-              $enseignant->setRoles(['ROLE_USER']);
-            }
+    return $this->render('enseignant/show.html.twig', [
+      'enseignant' => $enseignant,
+    ]);
+  }
 
-            $mdpEncode = $encoder->encodePassword($enseignant, $enseignant->getPassword());
-            $enseignant->setPassword($mdpEncode);
+  /**
+  * @Route("/{id}/edit", name="enseignant_edit", methods={"GET","POST"})
+  */
+  public function edit(Request $request, Enseignant $enseignant): Response
+  {
+    $this->checkAdminOrAuthorized($enseignant);
 
-            $manager->persist($enseignant);
-            $manager->flush();
+    $form = $this->createForm(EnseignantType::class, $enseignant);
+    $form->handleRequest($request);
 
-            return $this->redirectToRoute('enseignant_index');
-        }
+    if ($form->isSubmitted() && $form->isValid()) {
+      $this->getDoctrine()->getManager()->flush();
 
-        return $this->render('enseignant/new.html.twig', [
-            'enseignant' => $enseignant,
-            'form' => $form->createView(),
-        ]);
+      return $this->redirectToRoute('enseignant_index');
     }
 
-    /**
-     * @Route("/{id}", name="enseignant_show", methods={"GET"})
-     */
-    public function show(Enseignant $enseignant): Response
-    {
-        if (!$this->getUser()->canLookProfile($enseignant)) {
-            throw new AccessDeniedException('Access denied.');
-        }
+    return $this->render('enseignant/edit.html.twig', [
+      'enseignant' => $enseignant,
+      'form' => $form->createView(),
+    ]);
+  }
 
-        return $this->render('enseignant/show.html.twig', [
-            'enseignant' => $enseignant,
-        ]);
+  /**
+  * @Route("/{id}", name="enseignant_delete", methods={"DELETE"})
+  */
+  public function delete(Request $request, Enseignant $enseignant): Response
+  {
+    if ($this->isCsrfTokenValid('delete'.$enseignant->getId(), $request->request->get('_token'))) {
+      $entityManager = $this->getDoctrine()->getManager();
+      $entityManager->remove($enseignant);
+      $entityManager->flush();
     }
 
-    /**
-     * @Route("/{id}/edit", name="enseignant_edit", methods={"GET","POST"})
-     */
-    public function edit(Request $request, Enseignant $enseignant): Response
+    return $this->redirectToRoute('enseignant_index');
+  }
+
+  public function checkAdmin()
+  {
+    if (!$this->getUser()->isAdmin())
     {
-        $form = $this->createForm(EnseignantType::class, $enseignant);
-        $form->handleRequest($request);
-
-        if ($form->isSubmitted() && $form->isValid()) {
-            $this->getDoctrine()->getManager()->flush();
-
-            return $this->redirectToRoute('enseignant_index');
-        }
-
-        return $this->render('enseignant/edit.html.twig', [
-            'enseignant' => $enseignant,
-            'form' => $form->createView(),
-        ]);
+      throw new AccessDeniedException('Access denied.');
     }
+  }
 
-    /**
-     * @Route("/{id}", name="enseignant_delete", methods={"DELETE"})
-     */
-    public function delete(Request $request, Enseignant $enseignant): Response
+  public function checkAdminOrAuthorized($enseignant)
+  {
+    if (!$this->getUser()->canLookProfile($enseignant))
     {
-        if ($this->isCsrfTokenValid('delete'.$enseignant->getId(), $request->request->get('_token'))) {
-            $entityManager = $this->getDoctrine()->getManager();
-            $entityManager->remove($enseignant);
-            $entityManager->flush();
-        }
-
-        return $this->redirectToRoute('enseignant_index');
+      throw new AccessDeniedException('Access denied.');
     }
+  }
 }
