@@ -46,6 +46,16 @@
         <div class="sidebar-brand-text mx-3" id="nomAppli">Noteo</div>
       </a>
 
+      <!-- Divider -->
+      <hr class="sidebar-divider my-0">
+
+      <!-- Nav Item - Groupes -->
+      <li class="nav-item {% block groupes %}{% endblock %}">
+        <a class="nav-link" href="{{path('groupe_etudiant_index')}}">
+          <i class="icon-users"></i>
+          <span>Groupes</span></a>
+      </li>
+
       {% if is_granted('ROLE_ADMIN') %}
       <!-- Divider -->
       <hr class="sidebar-divider my-0">
@@ -57,16 +67,6 @@
           <span>Étudiants</span></a>
       </li>
       {% endif %}
-
-      <!-- Divider -->
-      <hr class="sidebar-divider my-0">
-
-      <!-- Nav Item - Groupes -->
-      <li class="nav-item {% block groupes %}{% endblock %}">
-        <a class="nav-link" href="{{path('groupe_etudiant_index')}}">
-          <i class="icon-users"></i>
-          <span>Groupes</span></a>
-      </li>
 
       {% if is_granted('ROLE_ADMIN') %}
       <!-- Divider -->
