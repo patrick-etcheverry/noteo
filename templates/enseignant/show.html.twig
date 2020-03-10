@@ -12,19 +12,19 @@
         <tbody>
             <tr>
                 <th class="intitule">Nom</th>
-                <td class="champ">{{ enseignant.nom }}</td>
+                <td >{{ enseignant.nom }}</td>
             </tr>
             <tr>
                 <th class="intitule">Prénom</th>
-                <td class="champ">{{ enseignant.prenom }}</td>
+                <td >{{ enseignant.prenom }}</td>
             </tr>
             <tr>
                 <th class="intitule">Mail</th>
-                <td class="champ">{{ enseignant.email }}</td>
+                <td >{{ enseignant.email }}</td>
             </tr>
             <tr>
                 <th class="intitule">Administrateur</th>
-                <td class="champ">
+                <td >
                 {% if enseignant.roles[1] is defined %}
                     Oui
                 {% else %}

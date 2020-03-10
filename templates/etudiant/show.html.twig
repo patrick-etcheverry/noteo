@@ -9,23 +9,23 @@
         <tbody>
             <tr>
                 <th class="intitule">Nom</th>
-                <td class="champ">{{ etudiant.nom }}</td>
+                <td >{{ etudiant.nom }}</td>
             </tr>
             <tr>
                 <th class="intitule">Prenom</th>
-                <td class="champ">{{ etudiant.prenom }}</td>
+                <td >{{ etudiant.prenom }}</td>
             </tr>
             <tr>
                 <th class="intitule">Mail</th>
-                <td class="champ">{{ etudiant.mail }}</td>
+                <td >{{ etudiant.mail }}</td>
             </tr>
             <tr>
                 <th class="intitule">Démissionaire</th>
-                <td class="champ">{{ etudiant.estDemissionaire ? 'Oui' : 'Non' }}</td>
+                <td >{{ etudiant.estDemissionaire ? 'Oui' : 'Non' }}</td>
             </tr>
             <tr>
               <th class="intitule">Statut(s)</th>
-              <td class="champ">
+              <td >
                 {% for statut in etudiant.statuts %}
                   <font size=4><span class="badge badge-primary">{{statut.nom}}</span></font>
                 {% endfor %}

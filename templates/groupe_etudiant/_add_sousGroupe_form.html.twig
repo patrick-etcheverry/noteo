@@ -3,24 +3,24 @@
 <table align="center" class="table">
   <tbody>
     <tr>
-      <td class="intitule">Nom du groupe parent</td>
-      <td class="champ">{{ nomParent }}</td>
+      <th class="intitule">Nom du groupe parent</th>
+      <td >{{ nomParent }}</td>
     </tr>
     <tr>
-      <td class="intitule"><label for="groupe_etudiant_nom" class="required">Nom du sous groupe</label></td>
-      <td class="champ">{{ form_widget(form.nom) }}</td>
+      <th class="intitule"><label for="groupe_etudiant_nom" class="required">Nom du sous groupe</label></th>
+      <td >{{ form_widget(form.nom) }}</td>
     </tr>
     <tr>
-      <td class="intitule"><label for="groupe_etudiant_description" class="required">Description</label></td>
-      <td class="champ">{{ form_widget(form.description) }}</td>
+      <th class="intitule"><label for="groupe_etudiant_description" class="required">Description</label></th>
+      <td >{{ form_widget(form.description) }}</td>
     </tr>
     <tr>
-      <td class="intitule"><label for="groupe_etudiant_estEvaluable" class="required">Évaluable</label> <a href="#HelpEvaluable" data-toggle='modal' data-target='#HelpEvaluable'><i class="icon-help-circled"></i></a></td>
-      <td class="champ">{{form_widget(form.estEvaluable, {'data' : true})}}</td>
+      <th class="intitule"><label for="groupe_etudiant_estEvaluable" class="required">Évaluable</label> <a href="#HelpEvaluable" data-toggle='modal' data-target='#HelpEvaluable'><i class="icon-help-circled"></i></a></th>
+      <td >{{form_widget(form.estEvaluable, {'data' : true})}}</td>
     </tr>
     <tr>
-      <td class="intitule"><label class="required" for="groupe_etudiant_enseignant">Enseignant (temporaire)</label></td>
-      <td class="champ">{{form_widget(form.enseignant)}}</td>
+      <th class="intitule"><label class="required" for="groupe_etudiant_enseignant">Enseignant (temporaire)</label></th>
+      <td >{{form_widget(form.enseignant)}}</td>
     </tr>
   </tbody>
 </table>
