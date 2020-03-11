@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+use App\Entity\Etudiant;
 use App\Entity\GroupeEtudiant;
 use App\Form\GroupeEtudiantType;
 use App\Form\SousGroupeEtudiantType;
@@ -23,6 +24,8 @@ class GroupeEtudiantController extends AbstractController
      */
     public function index(): Response
     {
+
+      $this->getUser()->checkUser();
 
 
         // On prépare un tableau d'options qui servera à paramètrer l'affichage de notre arbre
@@ -161,6 +164,9 @@ class GroupeEtudiantController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
 
             $entityManager = $this->getDoctrine()->getManager();
+
+            $groupeEtudiant->setEnseignant($this->getUser());
+
             $entityManager->persist($groupeEtudiant);
 
             // Récupération du fichier CSV
@@ -211,6 +217,8 @@ class GroupeEtudiantController extends AbstractController
      */
     public function show(GroupeEtudiant $groupeEtudiant): Response
     {
+        $this->getUser()->checkUser();
+
         return $this->render('groupe_etudiant/show.html.twig', [
             'groupe_etudiant' => $groupeEtudiant,
             'etudiants' => $groupeEtudiant->getEtudiants()
@@ -300,6 +308,7 @@ class GroupeEtudiantController extends AbstractController
      */
     public function delete(Request $request, GroupeEtudiant $groupeEtudiant): Response
     {
+      $this->getUser()->checkAdmin();
 
       $em = $this->getDoctrine()->getManager();
       $repo = $this->getDoctrine()->getRepository(GroupeEtudiant::class);
@@ -350,6 +359,8 @@ class GroupeEtudiantController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
+
+          $groupeEtudiant->setEnseignant($this->getUser());
 
           foreach ($form->get('etudiants')->getData() as $key => $etudiant) {
            $groupeEtudiant->addEtudiant($etudiant);

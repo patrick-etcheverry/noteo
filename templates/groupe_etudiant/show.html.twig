@@ -16,6 +16,10 @@
               <th class="intitule">Évaluable</th>
               <td >{{ groupe_etudiant.estEvaluable ? 'Oui' : 'Non'}}</td>
             </tr>
+            <tr>
+              <th class="intitule">Créateur</th>
+              <td >{{ groupe_etudiant.enseignant.prenom }} {{ groupe_etudiant.enseignant.nom }}</td>
+            </tr>
         </tbody>
     </table>
 

@@ -26,10 +26,15 @@
                 <th class="intitule">Groupe</th>
                 <td >{{ evaluation.groupe.nom }}</td>
             </tr>
+            <tr>
+              <th class="intitule">Créateur</th>
+              <td>{{ evaluation.enseignant.prenom }} {{ evaluation.enseignant.nom }}</td>
+            </tr>
         <tr>
             <th class="intitule">Télécharger les notes</th>
             <td ><a href="javascript:tableVersExcel()"><i style="font-size: 20px;" class="icon-file-excel"></i> </a></td>
         </tr>
+
         </tbody>
     </table>
 

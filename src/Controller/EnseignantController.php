@@ -63,6 +63,7 @@ class EnseignantController extends AbstractController
     return $this->render('enseignant/new.html.twig', [
       'enseignant' => $enseignant,
       'form' => $form->createView(),
+      'label' => 'Créer l\'enseignant'
     ]);
   }
 
@@ -81,14 +82,31 @@ class EnseignantController extends AbstractController
   /**
   * @Route("/{id}/edit", name="enseignant_edit", methods={"GET","POST"})
   */
-  public function edit(Request $request, Enseignant $enseignant): Response
+  public function edit(Request $request, Enseignant $enseignant, UserPasswordEncoderInterface $encoder): Response
   {
     $this->getUser()->checkAdminOrAuthorized($enseignant);
 
-    $form = $this->createForm(EnseignantType::class, $enseignant);
+    // On verifie le rôle de l'utilisateur pour désactiver ou non les boutons radios permettant de définir le rôle
+    $champDesactive = false;
+    if (!$this->getUser()->isAdmin()) {
+      $champDesactive = true;
+    }
+
+    $form = $this->createForm(EnseignantType::class, $enseignant, ['champDesactive' => $champDesactive]);
     $form->handleRequest($request);
 
     if ($form->isSubmitted() && $form->isValid()) {
+
+      // Si Oui au bouton radio
+      if ($form['estAdmin']->getData()) {
+        $enseignant->setRoles(['ROLE_USER','ROLE_ADMIN']);
+      }
+      else {
+        $enseignant->setRoles(['ROLE_USER']);
+      }
+
+      $mdpEncode = $encoder->encodePassword($enseignant, $enseignant->getPassword());
+      $enseignant->setPassword($mdpEncode);
       $this->getDoctrine()->getManager()->flush();
 
       return $this->redirectToRoute('enseignant_index');
@@ -97,6 +115,7 @@ class EnseignantController extends AbstractController
     return $this->render('enseignant/edit.html.twig', [
       'enseignant' => $enseignant,
       'form' => $form->createView(),
+      'label' => 'Enregistrer'
     ]);
   }
 
@@ -106,6 +125,7 @@ class EnseignantController extends AbstractController
   public function delete(Request $request, Enseignant $enseignant): Response
   {
     if ($this->isCsrfTokenValid('delete'.$enseignant->getId(), $request->request->get('_token'))) {
+      $this->getUser()->checkAdmin();
       $entityManager = $this->getDoctrine()->getManager();
       $entityManager->remove($enseignant);
       $entityManager->flush();

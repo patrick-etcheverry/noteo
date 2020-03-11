@@ -268,10 +268,6 @@ class Enseignant implements UserInterface
         return $this;
     }
 
-    public function canLookProfile(Enseignant $enseignant) {
-        return ($this->id == $enseignant->getId() || $this->isAdmin() ? true : false);
-    }
-
     public function checkAdmin()
     {
       if (!$this->isAdmin())
@@ -282,9 +278,19 @@ class Enseignant implements UserInterface
 
     public function checkAdminOrAuthorized(Enseignant $enseignant)
     {
-      if (!$this->canLookProfile($enseignant))
+      if (!($this->id == $enseignant->getId() || $this->isAdmin() ? true : false))
       {
         throw new AccessDeniedException('Access denied.');
       }
     }
+
+    public function checkUser()
+    {
+      if ($this == NULL)
+      {
+        throw new AccessDeniedException('Access denied.');
+      }
+    }
+
+
 }

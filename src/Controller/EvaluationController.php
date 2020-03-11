@@ -36,8 +36,10 @@ class EvaluationController extends AbstractController
      */
     public function indexEnseignant(EvaluationRepository $evaluationRepository, Enseignant $enseignant): Response
     {
-        return $this->render('evaluation/indexSelf.html.twig', [
+        return $this->render('evaluation/index.html.twig', [
             'evaluations' => $evaluationRepository->findByEnseignant($enseignant),
+            'self' => 'active',
+            'other' => ''
         ]);
     }
 
@@ -46,8 +48,10 @@ class EvaluationController extends AbstractController
      */
     public function indexAutres(EvaluationRepository $evaluationRepository, Enseignant $enseignant): Response
     {
-        return $this->render('evaluation/indexOther.html.twig', [
+        return $this->render('evaluation/index.html.twig', [
             'evaluations' => $evaluationRepository->findOtherEvaluations($enseignant),
+            'self' => '',
+            'other' => 'active'
         ]);
     }
 
@@ -92,6 +96,7 @@ class EvaluationController extends AbstractController
 
             $evaluation->setNom($data["nom"]); // Définition du nom de l'évaluation
             $evaluation->setDate($data["date"]); // -------- de la date -----------
+            $evaluation->setEnseignant($this->getUser());
 
             //Validation de l'entité hydratée à partir des données du formulaire
             $this->validerEntite($evaluation, $validator);
@@ -148,6 +153,8 @@ class EvaluationController extends AbstractController
      */
     public function edit(Request $request, Evaluation $evaluation, ValidatorInterface $validator): Response
     {
+      $this->getUser()->checkAdminOrAuthorized($evaluation->getEnseignant());
+
       ////////////POUR COMMENTAIRES VOIR METHODE NEW////////////
       foreach ($evaluation->getParties() as $partie) {
         $tab = $partie->getNotes();
@@ -191,12 +198,12 @@ class EvaluationController extends AbstractController
           }
 
           $entityManager->flush();
-          return $this->redirectToRoute('evaluation_index');
+          return $this->redirectToRoute('evaluation_enseignant');
       }
 
       return $this->render('evaluation/edit.html.twig', [
           'evaluation' => $evaluation,
-          'form' => $form->createView(),
+          'form' => $form->createView()
       ]);
     }
 
@@ -205,6 +212,7 @@ class EvaluationController extends AbstractController
      */
     public function delete(Request $request, Evaluation $evaluation): Response
     {
+        $this->getUser()->checkAdminOrAuthorized($evaluation->getEnseignant());
 
         $entityManager = $this->getDoctrine()->getManager();
 
@@ -223,7 +231,7 @@ class EvaluationController extends AbstractController
         $entityManager->remove($evaluation);
         $entityManager->flush();
 
-        return $this->redirectToRoute('evaluation_index');
+        return $this->redirectToRoute('evaluation_enseignant');
     }
 
     /**
