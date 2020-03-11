@@ -76,6 +76,8 @@ class StatutController extends AbstractController
      */
     public function edit(Request $request, Statut $statut): Response
     {
+        $this->getUser()->checkAdminOrAuthorized($statut->getEnseignant());
+        
         $form = $this->createForm(StatutEditType::class, $statut);
         $form->handleRequest($request);
 
