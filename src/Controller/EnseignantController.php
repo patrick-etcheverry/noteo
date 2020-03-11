@@ -71,7 +71,6 @@ class EnseignantController extends AbstractController
   */
   public function show(Enseignant $enseignant): Response
   {
-    $this->getUser()->checkAdminOrAuthorized($enseignant);
 
     return $this->render('enseignant/show.html.twig', [
       'enseignant' => $enseignant,

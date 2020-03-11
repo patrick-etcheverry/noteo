@@ -6,7 +6,9 @@
 
 {% block show %}show{% endblock %}
 
-{% block autresEvaluations %}active{% endblock %}
+{% block mesEvaluations %}{{ self }}{% endblock %}
+
+{% block autresEvaluations %}{{ other }}{% endblock %}
 
 {% block collapsed %}{% endblock %}
 
@@ -35,7 +37,15 @@
       <td>{{ evaluation.groupe.nom }}</td>
       <td>
         <a href="{{ path('evaluation_show', {'id': evaluation.id}) }}"><i class="icon-eye" data-toggle='tooltip' title="Consulter l'évaluation"></i></a>
+        {% if evaluation.enseignant.id == app.user.id or is_granted('ROLE_ADMIN') %}
+        <a href="{{ path('evaluation_edit', {'id': evaluation.id}) }}"><i class="icon-pencil-1" data-toggle='tooltip' title="Editer l'évaluation"></i></a>
+        {% endif %}
         <a href="{{path('evaluation_choose_groups', {'idEval' : evaluation.id, 'idGroupe' : evaluation.groupe.id})}}"><i class="icon-logo-noteo" data-toggle='tooltip' title='Visualiser les statistiques'></i></a>
+        {% if evaluation.enseignant.id == app.user.id or is_granted('ROLE_ADMIN') %}
+        <a href="{{ path('evaluation_delete', {'id': evaluation.id}) }}" onclick="EcritureModale('{{ path('evaluation_delete', {'id': evaluation.id}) }}')" data-toggle='modal'>
+          <i class="icon-trash" data-toggle='tooltip' title="Supprimer l'évaluation"></i>
+        </a>
+        {% endif %}
 
       </td>
     </tr>
@@ -44,10 +54,12 @@
   </tbody>
 </table>
 {% else %}
-
-<div class="info">
-  <h2 class="h4 mb-0 text-gray-800">Aucune autre évaluation n'existe</h1>
-</div>
+  <div class="info">
+    <h2 class="h4 mb-0 text-gray-800">Vous n'avez aucune évaluation</h1>
+  </div>
+  <div class='bouton'>
+    <button class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm" onclick="location.href='{{ path('evaluation_choose_group') }}'">Créer une évaluation</button>
+  </div>
 
 {% endif %}
 

@@ -213,6 +213,8 @@ class GroupeEtudiantController extends AbstractController
      */
     public function show(GroupeEtudiant $groupeEtudiant): Response
     {
+        $this->getUser()->checkUser();
+
         return $this->render('groupe_etudiant/show.html.twig', [
             'groupe_etudiant' => $groupeEtudiant,
             'etudiants' => $groupeEtudiant->getEtudiants()
