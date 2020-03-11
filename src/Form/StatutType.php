@@ -26,9 +26,6 @@ class StatutType extends AbstractType
                 'rows' => 6
               ]
             ])
-            ->add('enseignant', EntityType::class, [
-              'class' => Enseignant::class, 'choice_label' => 'nom'
-            ])
             ->add('lesEtudiants', EntityType::class, [
                 'class' => Etudiant::Class, //On veut choisir des étudiants
                 'choice_label' => false, // On n'affichera pas d'attribut de l'entité à côté du bouton pour aider au choix car on liste les entités nous même

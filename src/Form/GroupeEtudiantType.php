@@ -30,11 +30,6 @@ class GroupeEtudiantType extends AbstractType
                 'rows' => 6
               ]
             ])
-
-            ->add('enseignant', EntityType::class, [
-              'class' => Enseignant::class, 'choice_label' => 'nom'
-            ])
-
             ->add('estEvaluable', ChoiceType::class, [
               'choices' => ['Oui' => true, 'Non' => false],
               'data' => false,

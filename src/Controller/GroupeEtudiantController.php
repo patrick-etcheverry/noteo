@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+use App\Entity\Etudiant;
 use App\Entity\GroupeEtudiant;
 use App\Form\GroupeEtudiantType;
 use App\Form\SousGroupeEtudiantType;
@@ -163,6 +164,9 @@ class GroupeEtudiantController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
 
             $entityManager = $this->getDoctrine()->getManager();
+
+            $groupeEtudiant->setEnseignant($this->getUser());
+
             $entityManager->persist($groupeEtudiant);
 
             // Récupération du fichier CSV
@@ -355,6 +359,8 @@ class GroupeEtudiantController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
+
+          $groupeEtudiant->setEnseignant($this->getUser());
 
           foreach ($form->get('etudiants')->getData() as $key => $etudiant) {
            $groupeEtudiant->addEtudiant($etudiant);

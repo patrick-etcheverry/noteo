@@ -38,6 +38,8 @@ class StatutController extends AbstractController
 
         if ($form->isSubmitted() && $form->isValid()) {
 
+            $statut->setEnseignant($this->getUser());
+
             if ($statut->getEtudiants() != null)
             {
                 foreach($form->get('lesEtudiants')->getData() as $key => $etudiant)
