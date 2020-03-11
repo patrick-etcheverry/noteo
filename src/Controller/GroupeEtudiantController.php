@@ -304,6 +304,7 @@ class GroupeEtudiantController extends AbstractController
      */
     public function delete(Request $request, GroupeEtudiant $groupeEtudiant): Response
     {
+      $this->getUser()->checkAdmin();
 
       $em = $this->getDoctrine()->getManager();
       $repo = $this->getDoctrine()->getRepository(GroupeEtudiant::class);

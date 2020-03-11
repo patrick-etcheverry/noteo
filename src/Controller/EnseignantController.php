@@ -71,6 +71,7 @@ class EnseignantController extends AbstractController
   */
   public function show(Enseignant $enseignant): Response
   {
+    $this->getUser()->checkAdminOrAuthorized($enseignant);
 
     return $this->render('enseignant/show.html.twig', [
       'enseignant' => $enseignant,
@@ -105,6 +106,7 @@ class EnseignantController extends AbstractController
   public function delete(Request $request, Enseignant $enseignant): Response
   {
     if ($this->isCsrfTokenValid('delete'.$enseignant->getId(), $request->request->get('_token'))) {
+      $this->getUser()->checkAdmin();
       $entityManager = $this->getDoctrine()->getManager();
       $entityManager->remove($enseignant);
       $entityManager->flush();

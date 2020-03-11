@@ -212,6 +212,7 @@ class EvaluationController extends AbstractController
      */
     public function delete(Request $request, Evaluation $evaluation): Response
     {
+        $this->getUser()->checkAdminOrAuthorized($evaluation->getEnseignant());
 
         $entityManager = $this->getDoctrine()->getManager();
 

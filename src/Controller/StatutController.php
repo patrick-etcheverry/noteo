@@ -64,7 +64,6 @@ class StatutController extends AbstractController
      */
     public function show(Statut $statut): Response
     {
-
         return $this->render('statut/show.html.twig', [
             'statut' => $statut,
             'etudiants' => $statut->getEtudiants(),
@@ -77,7 +76,7 @@ class StatutController extends AbstractController
     public function edit(Request $request, Statut $statut): Response
     {
         $this->getUser()->checkAdminOrAuthorized($statut->getEnseignant());
-        
+
         $form = $this->createForm(StatutEditType::class, $statut);
         $form->handleRequest($request);
 
@@ -107,6 +106,8 @@ class StatutController extends AbstractController
      */
     public function delete(Request $request, Statut $statut): Response
     {
+        $this->getUser()->checkAdminOrAuthorized($statut->getEnseignant());
+
         foreach($statut->getEtudiants() as $key => $etudiant)
         {
             $statut->removeEtudiant($etudiant);
