@@ -24,6 +24,10 @@ class GroupeEtudiantController extends AbstractController
     public function index(): Response
     {
 
+      if ($this->getUser() == NULL) {
+        throw new AccessDeniedException('Access denied.');
+      }
+
 
         // On prépare un tableau d'options qui servera à paramètrer l'affichage de notre arbre
         $options = array(
