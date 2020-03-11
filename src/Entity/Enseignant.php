@@ -287,4 +287,14 @@ class Enseignant implements UserInterface
         throw new AccessDeniedException('Access denied.');
       }
     }
+
+    public function checkUser()
+    {
+      if ($this == NULL)
+      {
+        throw new AccessDeniedException('Access denied.');
+      }
+    }
+
+
 }
