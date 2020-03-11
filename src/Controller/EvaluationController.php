@@ -198,7 +198,7 @@ class EvaluationController extends AbstractController
           }
 
           $entityManager->flush();
-          return $this->redirectToRoute('evaluation_index');
+          return $this->redirectToRoute('evaluation_enseignant');
       }
 
       return $this->render('evaluation/edit.html.twig', [
@@ -231,7 +231,7 @@ class EvaluationController extends AbstractController
         $entityManager->remove($evaluation);
         $entityManager->flush();
 
-        return $this->redirectToRoute('evaluation_index');
+        return $this->redirectToRoute('evaluation_enseignant');
     }
 
     /**
