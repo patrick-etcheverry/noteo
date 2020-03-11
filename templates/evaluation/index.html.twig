@@ -24,6 +24,7 @@
       <th>Date</th>
       <th>Moyenne</th>
       <th>Groupe</th>
+      <th>Créateur</th>
       <th></th>
     </tr>
   </thead>
@@ -35,6 +36,7 @@
       <td>{{ evaluation.date }}</td>
       <td> </td>
       <td>{{ evaluation.groupe.nom }}</td>
+      <td>{{ evaluation.enseignant.prenom }} {{ evaluation.enseignant.nom }}</td>
       <td>
         <a href="{{ path('evaluation_show', {'id': evaluation.id}) }}"><i class="icon-eye" data-toggle='tooltip' title="Consulter l'évaluation"></i></a>
         {% if evaluation.enseignant.id == app.user.id or is_granted('ROLE_ADMIN') %}
