@@ -43,17 +43,17 @@
 
       <table data-cols-width="25,25, 10" class="table" id="etud">
         <thead>
-          <th data-a-h="center" data-f-bold="true" data-f-italic="true" data-b-a-s="thin">Nom</th>
-          <th data-a-h="center" data-f-bold="true" data-f-italic="true" data-b-a-s="thin">Prénom</th>
-          <th data-a-h="center" data-f-bold="true" data-f-italic="true" data-b-a-s="thin">Note</th>
+          <th>Nom</th>
+          <th>Prénom</th>
+          <th>Note</th>
         </thead>
         <tbody>
           {% for partie in evaluation.parties %}
           {% for note in partie.notes %}
           <tr>
-            <td data-b-a-s="thin">{{note.etudiant.nom}}</td>
-            <td data-b-a-s="thin">{{note.etudiant.prenom}}</td>
-            <td data-b-a-s="thin" data-a-h="center">{{note.valeur}}</td>
+            <td>{{note.etudiant.nom}}</td>
+            <td>{{note.etudiant.prenom}}</td>
+            <td>{{note.valeur}}</td>
           </tr>
           {% endfor %}
           {% endfor %}
