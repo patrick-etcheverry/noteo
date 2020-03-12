@@ -120,16 +120,40 @@ class EnseignantController extends AbstractController
   }
 
   /**
-  * @Route("/{id}", name="enseignant_delete", methods={"DELETE"})
+  * @Route("/{id}/delete", name="enseignant_delete", methods={"GET","POST"})
   */
   public function delete(Request $request, Enseignant $enseignant): Response
   {
-    if ($this->isCsrfTokenValid('delete'.$enseignant->getId(), $request->request->get('_token'))) {
       $this->getUser()->checkAdmin();
+
+      //Pour qu'un administrateur ne supprime pas son propre profil
+      if($this->getUser()->getId() != $enseignant->getId()) {
+          foreach ($enseignant->getStatuts() as $statut) {
+              //La méthode forward permet d'éxécuter l'action métier d'un controlleur donné mais ne redirige pas l'utilisateur,
+              // ce qui permet de ne pas dupliquer le code de la suppression dans ce cas
+              $this->forward('App\Controller\StatutController::delete', [
+                  'id'  => $statut->getId(),
+              ]);
+          }
+
+          foreach ($enseignant->getGroupes() as $groupe) {
+              $this->forward('App\Controller\GroupeEtudiantController::delete', [
+                  'id'  => $groupe->getId(),
+              ]);
+          }
+
+          foreach ($enseignant->getEvaluations() as $evaluation) {
+              $this->forward('App\Controller\EvaluationController::delete', [
+                  'id'  => $evaluation->getId(),
+              ]);
+          }
+      }
+
       $entityManager = $this->getDoctrine()->getManager();
+
       $entityManager->remove($enseignant);
       $entityManager->flush();
-    }
+
 
     return $this->redirectToRoute('enseignant_index');
   }
