@@ -32,7 +32,7 @@
             </tr>
         <tr>
             <th class="intitule">Télécharger les notes</th>
-            <td ><a href="javascript:tableVersExcel()"><i style="font-size: 20px;" class="icon-file-excel"></i> </a></td>
+            <td ><a href="javascript:exportTableToCSV('{{evaluation.nom}}.csv')"><i style="font-size: 20px;" class="icon-file-excel"></i> </a></td>
         </tr>
 
         </tbody>
@@ -59,9 +59,6 @@
           {% endfor %}
         </tbody>
       </table>
-
-
-
 
 {% endblock %}
 
@@ -93,6 +90,7 @@ $(document).ready(function() {
 
 {% block javascripts %}
     <script>
+
         /*Cette fonction récupère le contenu du tableau des notes et avec l'extension Table-to-excel
           crée l'excel correspondant */
         function tableVersExcel() {
@@ -102,6 +100,52 @@ $(document).ready(function() {
                     name: "Notes"
                 }
             });
+        }
+
+        /*Les deux fonctions ci dessous permettent l'export de la page en csv. Elle inclue les notes mais aussi des infos
+        * sur l'évaluation (nom, créateur, groupe, date).*/
+        function downloadCSV(csv, filename) {
+            var csvFile;
+            var downloadLink;
+
+            // CSV file
+            csvFile = new Blob(["\uFEFF"+csv], {type: "text/csv; charset=utf-18"}); // Export en csv en utilisant UTF-8 pour les accents
+
+            // Download link
+            downloadLink = document.createElement("a");
+
+            // File name
+            downloadLink.download = filename;
+
+            // Create a link to the file
+            downloadLink.href = window.URL.createObjectURL(csvFile);
+
+            // Hide download link
+            downloadLink.style.display = "none";
+
+            // Add the link to DOM
+            document.body.appendChild(downloadLink);
+
+            // Click download link
+            downloadLink.click();
+        }
+
+        function exportTableToCSV(filename) {
+            var csv = [];
+            var rows = document.querySelectorAll("table tr");
+
+            for (var i = 0; i < rows.length; i++) {
+                var row = [], cols = rows[i].querySelectorAll("td, th");
+
+                for (var j = 0; j < cols.length; j++) {
+                        row.push(cols[j].innerText);
+                }
+                csv.push(row.join(";"));
+            }
+            csv.splice(4,1); // On enleve du csv la ligne "Télécharger les notes" qui est la 5e en partant du début dans tous les cas
+
+            // Download CSV file
+            downloadCSV(csv.join("\n"), filename);
         }
     </script>
 {% endblock %}
