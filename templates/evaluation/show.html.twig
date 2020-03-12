@@ -90,18 +90,6 @@ $(document).ready(function() {
 
 {% block javascripts %}
     <script>
-
-        /*Cette fonction récupère le contenu du tableau des notes et avec l'extension Table-to-excel
-          crée l'excel correspondant */
-        function tableVersExcel() {
-            TableToExcel.convert(document.getElementById("etud"), {
-                name: "{{evaluation.nom}}.xlsx",
-                sheet: {
-                    name: "Notes"
-                }
-            });
-        }
-
         /*Les deux fonctions ci dessous permettent l'export de la page en csv. Elle inclue les notes mais aussi des infos
         * sur l'évaluation (nom, créateur, groupe, date).*/
         function downloadCSV(csv, filename) {
