@@ -41,19 +41,19 @@
 <h1 class="h4 mb-0 text-gray-800">Notes des étudiants</h1> <br>
 
 
-      <table class="table" id="etud">
+      <table data-cols-width="25,25, 10" class="table" id="etud">
         <thead>
-          <th>Nom</th>
-          <th>Prénom</th>
-          <th>Note</th>
+          <th data-a-h="center" data-f-bold="true" data-f-italic="true" data-b-a-s="thin">Nom</th>
+          <th data-a-h="center" data-f-bold="true" data-f-italic="true" data-b-a-s="thin">Prénom</th>
+          <th data-a-h="center" data-f-bold="true" data-f-italic="true" data-b-a-s="thin">Note</th>
         </thead>
         <tbody>
           {% for partie in evaluation.parties %}
           {% for note in partie.notes %}
           <tr>
-            <td>{{note.etudiant.nom}}</td>
-            <td>{{note.etudiant.prenom}}</td>
-            <td>{{note.valeur}}</td>
+            <td data-b-a-s="thin">{{note.etudiant.nom}}</td>
+            <td data-b-a-s="thin">{{note.etudiant.prenom}}</td>
+            <td data-b-a-s="thin" data-a-h="center">{{note.valeur}}</td>
           </tr>
           {% endfor %}
           {% endfor %}
