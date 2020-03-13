@@ -130,7 +130,9 @@ $(document).ready(function() {
                 }
                 csv.push(row.join(";"));
             }
+            //Exemple syntaxe : csv.splice(2,1) <=> on enlève deux éléments du tableau en partant du deuxième élément du tableau
             csv.splice(4,1); // On enleve du csv la ligne "Télécharger les notes" qui est la 5e en partant du début dans tous les cas
+            csv.splice(csv.length-2,2); // On supprime les deux derniere lignes du tableau qui contiennent des informations incohérentes et inutiles dans ce cas
 
             // Download CSV file
             downloadCSV(csv.join("\n"), filename);
