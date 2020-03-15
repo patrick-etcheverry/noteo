@@ -72,6 +72,7 @@
     info: false,
   });
 
+  //La fonction sera enclenchée lors de la soumission du formulaire
 $("[name='groupe_etudiant_edit']").on('submit', function () {
   tableAjout.rows().nodes().page.len(-1).draw(); // Cette fonction permet, avant la soumission du formulaire, d'afficher dans le DOM toutes les lignes du tableau pour qu'aucune ne soit ignorée
   tableSuppr.rows().nodes().page.len(-1).draw();
