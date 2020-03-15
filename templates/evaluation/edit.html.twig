@@ -20,9 +20,8 @@
 
 <script type="text/javascript">
 
-$(document).ready(function() {
   //Activation de Datatables sur le tableau d'ajout des étudiants
-  $('#etudiants').dataTable({
+  var table = $('#etudiants').DataTable({
     language: {
       // Suppression du label Rechercher et ajout du placeholder
       search: "_INPUT_",
@@ -32,13 +31,18 @@ $(document).ready(function() {
     order: [
       [0, "asc"]
     ],
-    columns: [null, null,{"orderable": false},{"orderable": false}],
+    columns: [null, null,{"orderable": false}],
     lengthMenu: [
       [10, 25, 50, -1],
       [10, 25, 50, "Tout"]
     ],
     info: false,
   });
-});
+
+  //La fonction sera enclenchée lors de la soumission du formulaire
+  $("[name='form']").on('submit', function () {
+    table.rows().nodes().page.len(-1).draw(); // Cette fonction permet, avant la soumission du formulaire, d'afficher dans le DOM toutes les lignes du tableau pour qu'aucune ne soit ignorée
+  });
+
 </script>
 {% endblock %}
