@@ -44,6 +44,19 @@ class EvaluationController extends AbstractController
     }
 
     /**
+     * @Route("/mail/{id}", name="envoi_mail", methods={"GET"})
+     */
+    public function envoiMail(EvaluationRepository $evaluationRepository, Evaluation $evaluation, PointsRepository $repo): Response
+    {
+
+        $truc = $repo->findNotesAndEtudiantByEvaluation($evaluation);
+
+        return $this->render('evaluation/mailEnvoye.html.twig', [
+            'etudiantsEtNotes' => $truc
+        ]);
+    }
+
+    /**
      * @Route("/others/{id}", name="evaluation_autres", methods={"GET"})
      */
     public function indexAutres(EvaluationRepository $evaluationRepository, Enseignant $enseignant): Response
