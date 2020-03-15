@@ -46,13 +46,24 @@ class EvaluationController extends AbstractController
     /**
      * @Route("/mail/{id}", name="envoi_mail", methods={"GET"})
      */
-    public function envoiMail(EvaluationRepository $evaluationRepository, Evaluation $evaluation, PointsRepository $repo): Response
+    public function envoiMail(EvaluationRepository $evaluationRepository, Evaluation $evaluation, PointsRepository $pointsRepository, \Swift_Mailer $mailer): Response
     {
 
-        $truc = $repo->findNotesAndEtudiantByEvaluation($evaluation);
+        $notesEtudiants = $pointsRepository->findNotesAndEtudiantByEvaluation($evaluation);
+
+        for ($i=0; $i < 5; $i++) {
+          $message = (new \Swift_Message('Hello Email'))
+          ->setFrom('contact@noteo.me')
+          ->setTo('d.mendiboure64@gmail.com')
+          ->setBody(
+              $this->renderView('evaluation/mailEnvoye.html.twig',['etudiantsEtNotes' => $notesEtudiants, 'lol' => $i]
+          ),'text/html');
+
+          $mailer->send($message);
+        }
 
         return $this->render('evaluation/mailEnvoye.html.twig', [
-            'etudiantsEtNotes' => $truc
+            'etudiantsEtNotes' => $notesEtudiants
         ]);
     }
 

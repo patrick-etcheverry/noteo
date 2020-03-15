@@ -1,5 +1,2 @@
-{% extends 'base.html.twig' %}
-
-{% block contenu %}
-{{ (dump(etudiantsEtNotes)) }}
-{% endblock %}
+Bonjour {{etudiantsEtNotes[lol].etudiant.prenom}} {{etudiantsEtNotes[lol].etudiant.nom}}
+Ta note {{etudiantsEtNotes[lol].valeur}}
