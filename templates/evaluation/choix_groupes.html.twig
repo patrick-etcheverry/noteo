@@ -14,10 +14,9 @@
 
 {% block datatables %}
 <script type="text/javascript">
-$(document).ready(function() {
 
   //Activation de Datatables sur le tableau d'ajout des étudiants
-  $('#groupes').dataTable({
+  var tableGroupes = $('#groupes').DataTable({
     language: {
       // Suppression du label Rechercher et ajout du placeholder
       search: "_INPUT_",
@@ -36,7 +35,7 @@ $(document).ready(function() {
   });
 
   //Activation de Datatables sur le tableau de suppression des étudiants
-  $('#statuts').dataTable({
+  var tableStatuts = $('#statuts').DataTable({
     language: {
       // Suppression du label Rechercher et ajout du placeholder
       search: "_INPUT_",
@@ -53,6 +52,10 @@ $(document).ready(function() {
     ],
     info: false,
   });
-});
+
+  $("[name='form']").on('submit', function () {
+    tableGroupes.rows().nodes().page.len(-1).draw(); // Cette fonction permet, avant la soumission du formulaire, d'afficher dans le DOM toutes les lignes du tableau pour qu'aucune ne soit ignorée
+    tableStatuts.rows().nodes().page.len(-1).draw();
+  });
 </script>
 {% endblock %}
