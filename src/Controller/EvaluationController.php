@@ -48,22 +48,43 @@ class EvaluationController extends AbstractController
      */
     public function envoiMail(EvaluationRepository $evaluationRepository, Evaluation $evaluation, PointsRepository $pointsRepository, \Swift_Mailer $mailer): Response
     {
+      $tabPoints = $pointsRepository->findByEvaluation($evaluation->getId());
+
+      //On crée une copie de tabPoints qui contiendra les valeurs des notes pour simplifier le tableau renvoyé par la requete
+      $copieTabPoints = array();
+
+      foreach ($tabPoints as $element) {
+          $copieTabPoints[] = $element["valeur"];
+      }
+
+      //On remplit le tableau qui contiendra toutes les statistiques du groupe
+      $listeStatsParGroupe[] = array(
+                                   "notes" => $this->repartition($copieTabPoints),
+                                   "moyenne" => $this->moyenne($copieTabPoints),
+                                   "ecartType" => $this->ecartType($copieTabPoints),
+                                   "minimum" => $this->minimum($copieTabPoints),
+                                   "maximum" => $this->maximum($copieTabPoints),
+                                   "mediane" => $this->mediane($copieTabPoints)
+                                   );
 
         $notesEtudiants = $pointsRepository->findNotesAndEtudiantByEvaluation($evaluation);
 
-        for ($i=0; $i < 5; $i++) {
-          $message = (new \Swift_Message('Hello Email'))
+
+        for ($i=0; $i < count($notesEtudiants); $i++) {
+          $message = (new \Swift_Message('Noteo - ' . $evaluation->getNom()))
           ->setFrom('contact@noteo.me')
           ->setTo('d.mendiboure64@gmail.com')
           ->setBody(
-              $this->renderView('evaluation/mailEnvoye.html.twig',['etudiantsEtNotes' => $notesEtudiants, 'lol' => $i]
+              $this->renderView('evaluation/mailEnvoye.html.twig',['etudiantsEtNotes' => $notesEtudiants[$i],
+              'stats' => $listeStatsParGroupe[0]]
           ),'text/html');
 
           $mailer->send($message);
         }
 
         return $this->render('evaluation/mailEnvoye.html.twig', [
-            'etudiantsEtNotes' => $notesEtudiants
+            'etudiantsEtNotes' => $notesEtudiants[0],
+            'stats' => $listeStatsParGroupe[0]
         ]);
     }
 
