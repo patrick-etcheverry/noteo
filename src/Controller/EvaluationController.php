@@ -108,8 +108,11 @@ class EvaluationController extends AbstractController
             foreach ($partie->getNotes() as $note) {
 
               //Si la note dépasse le barême de la partie, on réduit la note à la valeur du barême
-              if (!($note->getValeur() <= $partie->getBareme())) {
+              if ($note->getValeur() > $partie->getBareme()) {
                 $note->setValeur($partie->getBareme());
+              }
+              if ($note->getValeur() < 0) {
+                  $note->setValeur(0);
               }
               //On valide l'entité note hydratée avec la collection de formulaires
               $this->validerEntite($note, $validator);
@@ -192,6 +195,9 @@ class EvaluationController extends AbstractController
           foreach ($partie->getNotes() as $note) {
             if ($note->getValeur() > $partie->getBareme()) {
               $note->setValeur($partie->getBareme());
+            }
+            if ($note->getValeur() < 0) {
+                $note->setValeur(0);
             }
             $this->validerEntite($note, $validator);
             $entityManager->persist($note);
