@@ -34,6 +34,7 @@ class Etudiant
     /**
      * @ORM\Column(type="string", length=50)
      * @Assert\NotBlank
+     * @Assert\Email
      */
     private $mail;
 
