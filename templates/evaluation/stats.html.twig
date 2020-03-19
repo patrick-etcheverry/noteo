@@ -28,7 +28,7 @@
     </tr>
     <tr>
       <th class="intitule"><label >Actions</label></th>
-      <td ><a href="#"><i style="font-size: 25px;" class="icon-file-pdf"></i></a> <a href="#"><i style="font-size: 25px;" class="icon-mail"></i></a></td>
+      <td ><a href="#" onclick="genPDF()"><i style="font-size: 25px;" class="icon-file-pdf" ></i></a> <a href="#"><i style="font-size: 25px;" class="icon-mail"></i></a></td>
     </tr>
   </tbody>
 </table>
@@ -85,7 +85,28 @@
 {% block javascripts %}
 
 <script type="text/javascript" src="{{asset("js/jspdf.min.js")}}"></script>
-<script type="text/javascript" src="{{asset("js/html2canvas.min.js")}}"></script>
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/0.4.1/html2canvas.min.js"></script>
+
+<!-- Patie dédié au la génération du pdf -->
+<script type="text/javascript">
+
+  var sectionCapturer = document.querySelector("#content");
+
+  function genPDF(){
+    var capture;
+    html2canvas($("#content"),{
+      useCORS:true,
+      onrendered:function(canvas){
+        capture = canvas.toDataURL('image/png');
+
+        var doc = new jsPDF('p','pt','a4');
+        doc.addImage(capture,'PNG',10,10);
+        doc.save('test.pdf');
+      }
+    })
+  }
+
+</script>
 
 <script type="text/javascript">
 
