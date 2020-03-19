@@ -156,6 +156,9 @@
     "psr/log": {
         "version": "1.1.2"
     },
+    "psr/simple-cache": {
+        "version": "1.0.1"
+    },
     "sensio/framework-extra-bundle": {
         "version": "5.2",
         "recipe": {
@@ -167,9 +170,6 @@
         "files": [
             "./config/packages/sensio_framework_extra.yaml"
         ]
-    },
-    "spipu/html2pdf": {
-        "version": "v5.2.1"
     },
     "stof/doctrine-extensions-bundle": {
         "version": "1.2",
@@ -206,9 +206,6 @@
     },
     "symfony/cache": {
         "version": "v4.1.12"
-    },
-    "symfony/cache-contracts": {
-        "version": "v1.1.7"
     },
     "symfony/config": {
         "version": "v4.1.12"
@@ -326,9 +323,6 @@
             "ref": "fadbfe33303a76e25cb63401050439aa9b1a9c7f"
         }
     },
-    "symfony/mime": {
-        "version": "v5.0.4"
-    },
     "symfony/monolog-bridge": {
         "version": "v4.1.12"
     },
@@ -426,9 +420,6 @@
     "symfony/serializer-pack": {
         "version": "v1.0.2"
     },
-    "symfony/service-contracts": {
-        "version": "v1.1.8"
-    },
     "symfony/stopwatch": {
         "version": "v4.1.12"
     },
@@ -496,9 +487,6 @@
     "symfony/var-dumper": {
         "version": "v4.1.12"
     },
-    "symfony/var-exporter": {
-        "version": "v4.4.1"
-    },
     "symfony/web-link": {
         "version": "v4.1.12"
     },
@@ -527,9 +515,6 @@
     },
     "symfony/yaml": {
         "version": "v4.1.12"
-    },
-    "tecnickcom/tcpdf": {
-        "version": "6.3.5"
     },
     "twig/twig": {
         "version": "v2.12.2"

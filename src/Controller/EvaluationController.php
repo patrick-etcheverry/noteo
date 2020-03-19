@@ -494,21 +494,4 @@ class EvaluationController extends AbstractController
       }
       return $mediane;
     }
-
-    public function exportPDF(){
-      $content = ob_get_clean();
-      require_once( __DIR__ . "/html2pdf.class.php");
-      try
-      {
-        $html2pdf = new HTML2PDF("P", "A4", "fr");
-
-        $html2pdf->setDefaultFont("Arial");
-        $html2pdf->writeHTML($content);
-        $html2pdf->Output("votre_pdf.pdf");
-      }
-      catch(HTML2PDF_exception $e) {
-        echo $e;
-        exit;
-      }
-    }
 }
