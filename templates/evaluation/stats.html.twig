@@ -28,7 +28,12 @@
     </tr>
     <tr>
       <th class="intitule"><label >Actions</label></th>
-      <td ><a href="#"><i style="font-size: 25px;" class="icon-file-pdf"></i></a> <a href="{{path("envoi_mail", {id:evaluation.id})}}"><i style="font-size: 25px;" class="icon-mail"></i></a></td>
+      <td>
+        <a href="#"><i style="font-size: 25px;" class="icon-file-pdf"></i></a>
+        {% if evaluation.enseignant.id == app.user.id or is_granted('ROLE_ADMIN') %}
+        <a href="{{path("envoi_mail", {id:evaluation.id})}}"><i style="font-size: 25px;" class="icon-mail"></i></a>
+        {% endif %}
+      </td>
     </tr>
   </tbody>
 </table>

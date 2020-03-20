@@ -48,6 +48,8 @@ class EvaluationController extends AbstractController
      */
     public function envoiMail(Request $request, EvaluationRepository $evaluationRepository, Evaluation $evaluation, PointsRepository $pointsRepository, \Swift_Mailer $mailer): Response
     {
+        $this->getUser()->checkAdminOrAuthorized($evaluation->getEnseignant());
+
         // Récupération de la session
         $session = $request->getSession();
 
