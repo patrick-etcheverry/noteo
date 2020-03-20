@@ -1,0 +1,26 @@
+Bonjour {{etudiantsEtNotes.etudiant.prenom}} {{etudiantsEtNotes.etudiant.nom}},<br><br>
+Veuillez trouver dans ce mail les informations concernant l'évaluation {{etudiantsEtNotes.partie.evaluation.nom}} du {{etudiantsEtNotes.partie.evaluation.date}}
+<br><br>
+Groupe : {{etudiantsEtNotes.partie.evaluation.groupe.nom}}<br><br>
+{{etudiantsEtNotes.partie.intitule}}<br><br>
+Votre note : {{etudiantsEtNotes.valeur}} / {{etudiantsEtNotes.partie.bareme}}<br>
+Votre rang :<br><br>
+
+{% for statsUnGroupe in stats %}
+<h4>{{statsUnGroupe.nom}}</h4>
+<ul>
+  <li>Moyenne : {{statsUnGroupe.moyenne}}
+  <li>Écart-type : {{statsUnGroupe.ecartType}}
+  <li>Minimum : {{statsUnGroupe.minimum}}
+  <li>Maximum : {{statsUnGroupe.maximum}}
+  <li>Médiane : {{statsUnGroupe.mediane}}
+</ul>
+Répartition des notes
+<ul>
+  <li>[0; 4[ => {{statsUnGroupe.notes[0]}}</li>
+  <li>[4; 8[ => {{statsUnGroupe.notes[1]}}</li>
+  <li>[8; 12[ => {{statsUnGroupe.notes[2]}}</li>
+  <li>[12; 16[ => {{statsUnGroupe.notes[3]}}</li>
+  <li>[16; 20] => {{statsUnGroupe.notes[4]}}</li>
+</ul>
+{% endfor %}

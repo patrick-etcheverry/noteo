@@ -39,6 +39,21 @@ class PointsRepository extends ServiceEntityRepository
             ->execute();
     }
 
+    public function findNotesAndEtudiantByEvaluation($evaluation)
+    {
+        return $this->getEntityManager()->createQuery('
+            SELECT p, et, pa, ev
+            FROM App\Entity\Points p
+            JOIN p.etudiant et
+            JOIN p.partie pa
+            JOIN pa.evaluation ev
+            WHERE ev = :param
+            AND et.estDemissionaire = 0
+        ')
+            ->setParameter('param', $evaluation)
+            ->execute();
+    }
+
     /**
     * @return Points[] Returns an array of Points objects
     */
