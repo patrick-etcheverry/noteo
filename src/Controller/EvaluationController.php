@@ -51,28 +51,27 @@ class EvaluationController extends AbstractController
         // Récupération de la session
         $session = $request->getSession();
 
-        $statsGroupe = $session->get('statsParGroupe');
-        $statsStatut = $session->get('statsParStatut');
+        // Récupération des stats mises en session
+        $stats = $session->get('stats');
 
         $notesEtudiants = $pointsRepository->findNotesAndEtudiantByEvaluation($evaluation);
-
 /*
         for ($i=0; $i < count($notesEtudiants); $i++) {
           $message = (new \Swift_Message('Noteo - ' . $evaluation->getNom()))
           ->setFrom('contact@noteo.me')
-          ->setTo('d.mendiboure64@gmail.com')
+          ->setTo('arthurmurillo9@gmail.com')
           ->setBody(
-              $this->renderView('evaluation/mailEnvoye.html.twig',['etudiantsEtNotes' => $notesEtudiants[$i],
-              'stats' => $listeStatsParGroupe[0]]
-          ),'text/html');
+              $this->renderView('evaluation/mailEnvoye.html.twig',[
+                'etudiantsEtNotes' => $notesEtudiants[$i],
+                'stats' => $statsGroupe
+          ]),'text/html');
 
           $mailer->send($message);
         }
 */
         return $this->render('evaluation/mailEnvoye.html.twig', [
             'etudiantsEtNotes' => $notesEtudiants[0],
-            'statsG' => $statsGroupe,
-            'statsS' => $statsStatut
+            'stats' => $stats
         ]);
     }
 
@@ -97,7 +96,7 @@ class EvaluationController extends AbstractController
         $evaluation = new Evaluation();
         $evaluation->setGroupe($groupeConcerne);
         $partie = new Partie();
-        $partie->setIntitule("");
+        $partie->setIntitule("Évaluation");
         $partie->setBareme(20);
         $evaluation->addPartie($partie);
         foreach ($groupeConcerne->getEtudiants() as $etudiant) {
@@ -372,9 +371,6 @@ class EvaluationController extends AbstractController
                                              "maximum" => $this->maximum($copieTabPoints),
                                              "mediane" => $this->mediane($copieTabPoints)
                                              );
-
-                // Mise en session des stats des groupes sélectionnés
-                $session->set('statsParGroupe',$listeStatsParGroupe);
             }
 
             //Pour tous les statuts sélectionnés
@@ -395,12 +391,12 @@ class EvaluationController extends AbstractController
                                                "maximum" => $this->maximum($copieTabPoints),
                                                "mediane" => $this->mediane($copieTabPoints)
                                                );
-
-                // Mise en session des stats des statuts sélectionnés
-                $session->set('statsParStatut',$listeStatsParStatut);
             }
 
             $groupes = array_merge($listeStatsParGroupe, $listeStatsParStatut); // On fusionne les deux tableaux pour éviter le dédoublement des traitements dans la vue
+
+            // Mise en session des stats
+            $session->set('stats',$groupes);
 
             return $this->render('evaluation/stats.html.twig', [
                 'groupes' => $groupes,
