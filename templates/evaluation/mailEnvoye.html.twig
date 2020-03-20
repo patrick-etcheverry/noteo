@@ -1,15 +1,3 @@
-Bonjour {{etudiantsEtNotes.etudiant.prenom}} {{etudiantsEtNotes.etudiant.nom}},<br><br>
-Veuillez trouver dans ce mail les informations concernant l'évaluation {{etudiantsEtNotes.partie.evaluation.nom}} du {{etudiantsEtNotes.partie.evaluation.date}}
-<br><br>
-Groupe : {{etudiantsEtNotes.partie.evaluation.groupe.nom}}<br><br>
-{{etudiantsEtNotes.partie.intitule}}<br><br>
-Ma note : {{etudiantsEtNotes.valeur}} / {{etudiantsEtNotes.partie.bareme}}<br>
-Mon rang :
-
-<ul>
-  <li>Moyenne : {{stats.moyenne}} / {{etudiantsEtNotes.partie.bareme}}</li>
-  <li>Écart-type : {{stats.ecartType}}</li>
-  <li>Minimum : {{stats.minimum}} / {{etudiantsEtNotes.partie.bareme}}</li>
-  <li>Maximum : {{stats.maximum}} / {{etudiantsEtNotes.partie.bareme}}</li>
-  <li>Médiane : {{stats.mediane}} / {{etudiantsEtNotes.partie.bareme}}</li>
-</ul>
+{{dump(etudiantsEtNotes)}}
+{{dump(statsG)}}
+{{dump(statsS)}}

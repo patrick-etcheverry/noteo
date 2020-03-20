@@ -46,30 +46,17 @@ class EvaluationController extends AbstractController
     /**
      * @Route("/mail/{id}", name="envoi_mail", methods={"GET"})
      */
-    public function envoiMail(EvaluationRepository $evaluationRepository, Evaluation $evaluation, PointsRepository $pointsRepository, \Swift_Mailer $mailer): Response
+    public function envoiMail(Request $request, EvaluationRepository $evaluationRepository, Evaluation $evaluation, PointsRepository $pointsRepository, \Swift_Mailer $mailer): Response
     {
-      $tabPoints = $pointsRepository->findByEvaluation($evaluation->getId());
+        // Récupération de la session
+        $session = $request->getSession();
 
-      //On crée une copie de tabPoints qui contiendra les valeurs des notes pour simplifier le tableau renvoyé par la requete
-      $copieTabPoints = array();
-
-      foreach ($tabPoints as $element) {
-          $copieTabPoints[] = $element["valeur"];
-      }
-
-      //On remplit le tableau qui contiendra toutes les statistiques du groupe
-      $listeStatsParGroupe[] = array(
-                                   "notes" => $this->repartition($copieTabPoints),
-                                   "moyenne" => $this->moyenne($copieTabPoints),
-                                   "ecartType" => $this->ecartType($copieTabPoints),
-                                   "minimum" => $this->minimum($copieTabPoints),
-                                   "maximum" => $this->maximum($copieTabPoints),
-                                   "mediane" => $this->mediane($copieTabPoints)
-                                   );
+        $statsGroupe = $session->get('statsParGroupe');
+        $statsStatut = $session->get('statsParStatut');
 
         $notesEtudiants = $pointsRepository->findNotesAndEtudiantByEvaluation($evaluation);
 
-
+/*
         for ($i=0; $i < count($notesEtudiants); $i++) {
           $message = (new \Swift_Message('Noteo - ' . $evaluation->getNom()))
           ->setFrom('contact@noteo.me')
@@ -81,10 +68,11 @@ class EvaluationController extends AbstractController
 
           $mailer->send($message);
         }
-
+*/
         return $this->render('evaluation/mailEnvoye.html.twig', [
             'etudiantsEtNotes' => $notesEtudiants[0],
-            'stats' => $listeStatsParGroupe[0]
+            'statsG' => $statsGroupe,
+            'statsS' => $statsStatut
         ]);
     }
 
@@ -318,6 +306,9 @@ class EvaluationController extends AbstractController
      */
     public function chooseGroups(Request $request, $idEval, $idGroupe, StatutRepository $repoStatut, EvaluationRepository $repoEval, GroupeEtudiantRepository $repoGroupe, PointsRepository $repoPoints ): Response
     {
+        // Récupération de la session
+        $session = $request->getSession();
+
         //On récupere l'évaluation que l'on traite pour afficher ses informations générales dans les statistiques
         $evaluation = $repoEval->find($idEval);
 
@@ -381,6 +372,9 @@ class EvaluationController extends AbstractController
                                              "maximum" => $this->maximum($copieTabPoints),
                                              "mediane" => $this->mediane($copieTabPoints)
                                              );
+
+                // Mise en session des stats des groupes sélectionnés
+                $session->set('statsParGroupe',$listeStatsParGroupe);
             }
 
             //Pour tous les statuts sélectionnés
@@ -401,6 +395,9 @@ class EvaluationController extends AbstractController
                                                "maximum" => $this->maximum($copieTabPoints),
                                                "mediane" => $this->mediane($copieTabPoints)
                                                );
+
+                // Mise en session des stats des statuts sélectionnés
+                $session->set('statsParStatut',$listeStatsParStatut);
             }
 
             $groupes = array_merge($listeStatsParGroupe, $listeStatsParStatut); // On fusionne les deux tableaux pour éviter le dédoublement des traitements dans la vue
