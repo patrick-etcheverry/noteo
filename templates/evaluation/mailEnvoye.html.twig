@@ -1,36 +1,50 @@
 Bonjour {{etudiantsEtNotes.etudiant.prenom}} {{etudiantsEtNotes.etudiant.nom}},<br><br>
 Veuillez trouver dans ce mail les informations concernant l'évaluation {{etudiantsEtNotes.partie.evaluation.nom}} du {{etudiantsEtNotes.partie.evaluation.date}}
 <br><br>
-Groupe : {{etudiantsEtNotes.partie.evaluation.groupe.nom}}<br><br>
-<h2>{{etudiantsEtNotes.partie.intitule}}</h2>
-<h4>Votre note : {{etudiantsEtNotes.valeur}} / {{etudiantsEtNotes.partie.bareme}}</h4>
-
+Groupe : {{etudiantsEtNotes.partie.evaluation.groupe.nom}}
+<h3>{{etudiantsEtNotes.partie.intitule}}</h3>
+<table border="1" style="border-collapse:collapse;">
+  <tr>
+    <th width=200em>Votre note</th>
+    <th width=200em>Votre rang</th>
+  </tr>
+  <tr style="text-align:center;">
+    <td>{{etudiantsEtNotes.valeur}} / {{etudiantsEtNotes.partie.bareme}}</td>
+    <td>{{position}} / {{effectif}}</td>
+  </tr>
+</table>
+<br>
 {% for statsUnGroupe in stats %}
-  <table border="1" style="border-collapse:collapse;">
-    <tr>
-      <th width=50%>{{statsUnGroupe.nom}}</th>
-      <th>Répartition des notes</th>
-    </tr>
-    <tr style="text-align:center;">
-      <td>
-          Moyenne : {{statsUnGroupe.moyenne}}<br>
-          Écart-type : {{statsUnGroupe.ecartType}}<br>
-          Minimum : {{statsUnGroupe.minimum}}<br>
-          Maximum : {{statsUnGroupe.maximum}}<br>
-          Médiane : {{statsUnGroupe.mediane}}
-      </td>
-      <td>
-          <br>
-          [0; 4[ &#x2794; {{statsUnGroupe.notes[0]}}<br>
-          [4; 8[ &#x2794; {{statsUnGroupe.notes[1]}}<br>
-          [8; 12[ &#x2794; {{statsUnGroupe.notes[2]}}<br>
-          [12; 16[ &#x2794; {{statsUnGroupe.notes[3]}}<br>
-          [16; 20] &#x2794; {{statsUnGroupe.notes[4]}}<br><br>
-      </td>
-    </tr>
-    <tr>
-      <td colspan="2" style="text-align:center">Votre rang : / </td>
-    </tr>
-  </table>
+<table border="1" style="border-collapse:collapse;">
+  <tr>
+    <th width=200em>{{statsUnGroupe.nom}}</th>
+    <th width=200em>Répartition des notes</th>
+  </tr>
+  <tr style="text-align:center;">
+    <td>
+      Moyenne : {{statsUnGroupe.moyenne}}<br>
+      Écart-type : {{statsUnGroupe.ecartType}}<br>
+      Minimum : {{statsUnGroupe.minimum}}<br>
+      Maximum : {{statsUnGroupe.maximum}}<br>
+      Médiane : {{statsUnGroupe.mediane}}
+    </td>
+    <td>
+      <br>
+      [0; 4[ &#x2794; {{statsUnGroupe.notes[0]}}<br>
+      [4; 8[ &#x2794; {{statsUnGroupe.notes[1]}}<br>
+      [8; 12[ &#x2794; {{statsUnGroupe.notes[2]}}<br>
+      [12; 16[ &#x2794; {{statsUnGroupe.notes[3]}}<br>
+      [16; 20] &#x2794; {{statsUnGroupe.notes[4]}}<br><br>
+    </td>
+  </tr>
+</table>
 <br>
 {% endfor %}
+<p style="font-size:10px;text-align:justify;margin-top:20px;">
+  Votre nom et prénom ont été récoltés afin de figurer dans la base de données de l’application. Ces informations nous servent à y associer des notes dans le but de pouvoir obtenir un ensemble de statistiques concernant une évaluation.
+  La loi « Informatique et Liberté » vous permet d’obtenir la suppression de vos données personnelles figurant dans un fichier à travers le droit d’opposition (article 38 de la loi n° 78-17 du 6/01/1978) et le droit de rectification (article 40 de la loi n° 78-17 du 6/01/1978).
+  Pour exercer ces droits, veuillez en informer l’administrateur que vous pourrez contacter à l’adresse suivante : exempleAdresseAdmin@noteo.fr
+</p>
+<div align=center style="margin-top:50px;">
+  <img width="150em" src="https://zupimages.net/up/20/12/rxl0.jpg" alt="">
+</div>

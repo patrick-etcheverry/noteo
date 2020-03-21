@@ -52,29 +52,47 @@ class EvaluationController extends AbstractController
 
         // Récupération de la session
         $session = $request->getSession();
-
         // Récupération des stats mises en session
         $stats = $session->get('stats');
 
         $notesEtudiants = $pointsRepository->findNotesAndEtudiantByEvaluation($evaluation);
-/*
+
+        $tabRang = $pointsRepository->findUniqueByGroupe($evaluation->getId(),$evaluation->getGroupe()->getId());
+        $copieTabRang = array();
+
+        foreach ($tabRang as $element) {
+            $copieTabRang[] = $element["valeur"];
+        }
+
+        $effectif = sizeof($copieTabRang);
+
+        $noteEtudiant = $notesEtudiants[0]->getValeur();
+        $position = array_search($noteEtudiant, $copieTabRang) + 1;
+
         //for ($i=0; $i < count($notesEtudiants); $i++) {
         for ($i=0; $i < 1; $i++) {
+          $noteEtudiant = $notesEtudiants[$i]->getValeur();
+          $position = array_search($noteEtudiant, $copieTabRang) + 1;
+        
           $message = (new \Swift_Message('Noteo - ' . $evaluation->getNom()))
           ->setFrom('contact@noteo.me')
           ->setTo('d.mendiboure64@gmail.com')
           ->setBody(
               $this->renderView('evaluation/mailEnvoye.html.twig',[
                 'etudiantsEtNotes' => $notesEtudiants[$i],
-                'stats' => $stats
+                'stats' => $stats,
+                'position' => $position,
+                'effectif' => $effectif
           ]),'text/html');
 
           $mailer->send($message);
         }
-*/
+
         return $this->render('evaluation/mailEnvoye.html.twig', [
             'etudiantsEtNotes' => $notesEtudiants[0],
-            'stats' => $stats
+            'stats' => $stats,
+            'position' => $position,
+            'effectif' => $effectif
         ]);
     }
 
