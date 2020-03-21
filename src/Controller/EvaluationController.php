@@ -69,14 +69,13 @@ class EvaluationController extends AbstractController
         $noteEtudiant = $notesEtudiants[0]->getValeur();
         $position = array_search($noteEtudiant, $copieTabRang) + 1;
 
-        //for ($i=0; $i < count($notesEtudiants); $i++) {
-        for ($i=0; $i < 1; $i++) {
+        for ($i=0; $i < count($notesEtudiants); $i++) {
           $noteEtudiant = $notesEtudiants[$i]->getValeur();
           $position = array_search($noteEtudiant, $copieTabRang) + 1;
-        
+
           $message = (new \Swift_Message('Noteo - ' . $evaluation->getNom()))
           ->setFrom('contact@noteo.me')
-          ->setTo('d.mendiboure64@gmail.com')
+          ->setTo($notesEtudiants[$i]->getEtudiant()->getMail())
           ->setBody(
               $this->renderView('evaluation/mailEnvoye.html.twig',[
                 'etudiantsEtNotes' => $notesEtudiants[$i],
