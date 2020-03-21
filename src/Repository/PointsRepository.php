@@ -95,7 +95,7 @@ class PointsRepository extends ServiceEntityRepository
     public function findUniqueByGroupe($idEval, $idGroupe)
     {
         return $this->getEntityManager()->createQuery('
-            SELECT UNIQUE p.valeur
+            SELECT DISTINCT p.valeur
             FROM App\Entity\Points p
             JOIN p.etudiant et
             JOIN et.groupes g
@@ -109,26 +109,6 @@ class PointsRepository extends ServiceEntityRepository
             ->setParameter('idG', $idGroupe)
             ->setParameter('idE', $idEval)
             ->execute();
-    }
-
-    public function findUniqueByStatut($idEval, $idStatut)
-    {
-        return $this->getEntityManager()->createQuery('
-            SELECT UNIQUE p.valeur
-            FROM App\Entity\Points p
-            JOIN p.etudiant et
-            JOIN et.statuts s
-            JOIN p.partie pa
-            JOIN pa.evaluation ev
-            WHERE ev.id = :idE
-            AND s.id = :idS
-            AND et.estDemissionaire = 0
-            ORDER BY p.valeur DESC
-        ')
-            ->setParameter('idS', $idStatut)
-            ->setParameter('idE', $idEval)
-            ->execute();
-
     }
 
     public function findByStatut($idEval, $idStatut)
