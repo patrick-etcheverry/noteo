@@ -92,9 +92,44 @@ class PointsRepository extends ServiceEntityRepository
             ->execute();
     }
 
-    /**
-    * @return Points[] Returns an array of Points objects
-    */
+    public function findUniqueByGroupe($idEval, $idGroupe)
+    {
+        return $this->getEntityManager()->createQuery('
+            SELECT UNIQUE p.valeur
+            FROM App\Entity\Points p
+            JOIN p.etudiant et
+            JOIN et.groupes g
+            JOIN p.partie pa
+            JOIN pa.evaluation ev
+            WHERE ev.id = :idE
+            AND g.id = :idG
+            AND et.estDemissionaire = 0
+            ORDER BY p.valeur DESC
+        ')
+            ->setParameter('idG', $idGroupe)
+            ->setParameter('idE', $idEval)
+            ->execute();
+    }
+
+    public function findUniqueByStatut($idEval, $idStatut)
+    {
+        return $this->getEntityManager()->createQuery('
+            SELECT UNIQUE p.valeur
+            FROM App\Entity\Points p
+            JOIN p.etudiant et
+            JOIN et.statuts s
+            JOIN p.partie pa
+            JOIN pa.evaluation ev
+            WHERE ev.id = :idE
+            AND s.id = :idS
+            AND et.estDemissionaire = 0
+            ORDER BY p.valeur DESC
+        ')
+            ->setParameter('idS', $idStatut)
+            ->setParameter('idE', $idEval)
+            ->execute();
+
+    }
 
     public function findByStatut($idEval, $idStatut)
     {
