@@ -58,14 +58,15 @@ class EvaluationController extends AbstractController
 
         $notesEtudiants = $pointsRepository->findNotesAndEtudiantByEvaluation($evaluation);
 /*
-        for ($i=0; $i < count($notesEtudiants); $i++) {
+        //for ($i=0; $i < count($notesEtudiants); $i++) {
+        for ($i=0; $i < 1; $i++) {
           $message = (new \Swift_Message('Noteo - ' . $evaluation->getNom()))
           ->setFrom('contact@noteo.me')
-          ->setTo('arthurmurillo9@gmail.com')
+          ->setTo('d.mendiboure64@gmail.com')
           ->setBody(
               $this->renderView('evaluation/mailEnvoye.html.twig',[
                 'etudiantsEtNotes' => $notesEtudiants[$i],
-                'stats' => $statsGroupe
+                'stats' => $stats
           ]),'text/html');
 
           $mailer->send($message);
