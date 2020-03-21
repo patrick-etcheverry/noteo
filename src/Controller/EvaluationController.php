@@ -65,10 +65,7 @@ class EvaluationController extends AbstractController
         }
 
         $effectif = sizeof($copieTabRang);
-
-        $noteEtudiant = $notesEtudiants[0]->getValeur();
-        $position = array_search($noteEtudiant, $copieTabRang) + 1;
-
+        
         for ($i=0; $i < count($notesEtudiants); $i++) {
           $noteEtudiant = $notesEtudiants[$i]->getValeur();
           $position = array_search($noteEtudiant, $copieTabRang) + 1;
@@ -87,12 +84,7 @@ class EvaluationController extends AbstractController
           $mailer->send($message);
         }
 
-        return $this->render('evaluation/mailEnvoye.html.twig', [
-            'etudiantsEtNotes' => $notesEtudiants[0],
-            'stats' => $stats,
-            'position' => $position,
-            'effectif' => $effectif
-        ]);
+        return $this->redirectToRoute('evaluation_choose_groups',['idEval' => $evaluation->getId(),'idGroupe' => $evaluation->getGroupe()->getId()]);
     }
 
     /**
