@@ -164,7 +164,14 @@ class EvaluationController extends AbstractController
             }
 
             $entityManager->flush();
-            return $this->redirectToRoute('evaluation_enseignant',['id' => $this->getUser()->getId()]);
+
+            if($this->getUser()->getId() == $evaluation->getEnseignant()->getId()) {
+                return $this->redirectToRoute('evaluation_enseignant',['id' => $this->getUser()->getId()]);
+            }
+            else {
+                return $this->redirectToRoute('evaluation_autres',['id' => $this->getUser()->getId()]);
+            }
+
         }
 
         return $this->render('evaluation/new.html.twig', [
@@ -248,9 +255,13 @@ class EvaluationController extends AbstractController
           }
 
           $entityManager->flush();
-          return $this->redirectToRoute('evaluation_enseignant', [
-              'id' => $this->getUser()->getId()
-          ]);
+
+          if($this->getUser()->getId() == $evaluation->getEnseignant()->getId()) {
+              return $this->redirectToRoute('evaluation_enseignant',['id' => $this->getUser()->getId()]);
+          }
+          else {
+              return $this->redirectToRoute('evaluation_autres',['id' => $this->getUser()->getId()]);
+          }
       }
 
       return $this->render('evaluation/edit.html.twig', [
@@ -283,7 +294,12 @@ class EvaluationController extends AbstractController
         $entityManager->remove($evaluation);
         $entityManager->flush();
 
-        return $this->redirectToRoute('evaluation_enseignant');
+        if($this->getUser()->getId() == $evaluation->getEnseignant()->getId()) {
+            return $this->redirectToRoute('evaluation_enseignant',['id' => $this->getUser()->getId()]);
+        }
+        else {
+            return $this->redirectToRoute('evaluation_autres',['id' => $this->getUser()->getId()]);
+        }
     }
 
     /**
