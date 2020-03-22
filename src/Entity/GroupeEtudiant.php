@@ -156,6 +156,9 @@ class GroupeEtudiant
     public function getLft() {
         return $this->lft;
     }
+    public function getRgt() {
+        return $this->rgt;
+    }
 
     public function getNom(): ?string
     {

@@ -24,9 +24,13 @@ class GroupeEtudiantRepository extends NestedTreeRepository
     * @return GroupeEtudiant[] Returns an array of GroupeEtudiant objects
     */
 
-    public function findAllWithoutSpaceAndNonEvaluableGroups()
+    public function findAllWithoutNonEvaluableGroups()
     {
         return $this->createQueryBuilder('g')
+            ->addSelect('et')
+            ->addSelect('en')
+            ->join('g.enseignant', 'en')
+            ->leftJoin('g.etudiants', 'et')
             ->where('g.estEvaluable = :param')
             ->setParameter('param', true)
             ->orderBy('g.lft', 'asc')
@@ -39,9 +43,34 @@ class GroupeEtudiantRepository extends NestedTreeRepository
      * @return GroupeEtudiant[] Returns an array of GroupeEtudiant objects
      */
 
+    public function findAllFromNode($node)
+    {
+        return $this->createQueryBuilder('g')
+            ->addSelect('et')
+            ->addSelect('en')
+            ->join('g.enseignant', 'en')
+            ->leftJoin('g.etudiants', 'et')
+            ->where('g.rgt <= :right')
+            ->andWhere('g.lft >= :left')
+            ->setParameter('right', $node->getRgt())
+            ->setParameter('left', $node->getLft())
+            ->orderBy('g.lft', 'asc')
+            ->getQuery()
+            ->getResult()
+            ;
+    }
+
+    /**
+     * @return GroupeEtudiant[] Returns an array of GroupeEtudiant objects
+     */
+
     public function findAllOrderedAndWithoutSpace()
     {
         return $this->createQueryBuilder('g')
+            ->addSelect('et')
+            ->addSelect('en')
+            ->join('g.enseignant', 'en')
+            ->leftJoin('g.etudiants', 'et')
             ->where('g.slug != :param')
             ->setParameter('param', 'etudiants-non-affectes')
             ->orderBy('g.lft', 'asc')

@@ -291,7 +291,7 @@ class EvaluationController extends AbstractController
      */
     public function chooseGroup(Request $request, GroupeEtudiantRepository $repoGroupe): Response
     {
-      $groupes = $repoGroupe->findAllWithoutSpaceAndNonEvaluableGroups();
+      $groupes = $repoGroupe->findAllWithoutNonEvaluableGroups();
 
       $form = $this->createFormBuilder()
           ->add('groupes', EntityType::class, [
@@ -316,11 +316,6 @@ class EvaluationController extends AbstractController
       return $this->render('evaluation/choix_groupe.html.twig', ['groupes' => $groupes,'form' => $form->createView()]);
     }
 
-    //Cette fonction est utilisée pour trier les groupes dans le choix des groupes, pour avoir une décomposition par enfant
-    public function cmp ($a, $b) {
-        return ($a->getLft() < $b->getLft() ? -1 : 1 );
-    }
-
     /**
      * @Route("/{idEval}/choisir-groupes-et-statuts/{idGroupe}", name="evaluation_choose_groups", methods={"GET","POST"})
      */
@@ -335,16 +330,8 @@ class EvaluationController extends AbstractController
         //On récupère le groupe concerné par l'évaluation
         $groupeConcerne = $repoGroupe->find($idGroupe);
 
-        //On ajoute dans un tableau le groupe concerné ainsi que tous ses enfants, pour pouvoir choisir ceux sur lesquels ont veut des statistiques
-        $choixGroupe[] = $groupeConcerne;
-
-
-        foreach ($this->getDoctrine()->getRepository(GroupeEtudiant::class)->children($groupeConcerne, false) as $enfant) {
-          $choixGroupe[] = $enfant;
-        }
-
-        //Tri du tableau de choix des groupes pour pouvoir avoir une "décomposition" par enfants dans la vue
-        usort($choixGroupe, [$this, "cmp"]);
+        //On récupère la liste de tous les enfants (directs et indirects) du groupe concerné pour choisir ceux sur lesquels on veut des statistiques
+        $choixGroupe = $repoGroupe->findAllFromNode($groupeConcerne);
 
         //Création du formulaire pour choisir les groupes / status sur lesquels on veut des statistiques
         $form = $this->createFormBuilder()
