@@ -68,7 +68,10 @@ class EtudiantController extends AbstractController
      */
     public function edit(Request $request, Etudiant $etudiant): Response
     {
-        $form = $this->createForm(EtudiantType::class, $etudiant);
+
+        $estDemissionaire = $etudiant->getEstDemissionaire();
+
+        $form = $this->createForm(EtudiantType::class, $etudiant, ['estDemissionaire' => $estDemissionaire]);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {

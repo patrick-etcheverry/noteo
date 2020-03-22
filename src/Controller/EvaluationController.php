@@ -65,7 +65,7 @@ class EvaluationController extends AbstractController
         }
 
         $effectif = sizeof($copieTabRang);
-        
+
         for ($i=0; $i < count($notesEtudiants); $i++) {
           $noteEtudiant = $notesEtudiants[$i]->getValeur();
           $position = array_search($noteEtudiant, $copieTabRang) + 1;
@@ -434,6 +434,7 @@ class EvaluationController extends AbstractController
 
         return $this->render('evaluation/choix_groupes.html.twig', [
             'form' => $form->createView(),
+            'evaluation' => $evaluation
         ]);
     }
 
