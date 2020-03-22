@@ -35,6 +35,21 @@ class GroupeEtudiantRepository extends NestedTreeRepository
         ;
     }
 
+    /**
+     * @return GroupeEtudiant[] Returns an array of GroupeEtudiant objects
+     */
+
+    public function findAllOrderedAndWithoutSpace()
+    {
+        return $this->createQueryBuilder('g')
+            ->where('g.nom != :param')
+            ->setParameter('param', 'Etudiants non affectés')
+            ->orderBy('g.lft', 'asc')
+            ->getQuery()
+            ->getResult()
+            ;
+    }
+
     // /**
     //  * @return GroupeEtudiant[] Returns an array of GroupeEtudiant objects
     //  */

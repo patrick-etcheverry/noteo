@@ -6,7 +6,7 @@
 
 {% block contenu %}
 
-{% if tree is not empty %} {# On teste si la chaine représentant l'arbre n'est pas vide : si oui cela veut dire qu'il n'y a aucun groupe #}
+{% if groupes is not empty %} {# On teste si la chaine représentant l'arbre n'est pas vide : si oui cela veut dire qu'il n'y a aucun groupe #}
 
 <table class="table" id="table">
   <thead>
@@ -20,14 +20,42 @@
     </tr>
   </thead>
   <tbody>
+  {% for groupe in groupes %}
+    <tr>
+      <td>
+        {% if groupe.lvl > 0 %}
+          {% for i in 1.. groupe.lvl %}
+            &emsp;
+          {% endfor %}
+        {% endif %}
+        {{ groupe.nom }}
+      </td>
+      <td>{{ groupe.etudiants|length }}</td>
+      <td>{{ groupe.description }}</td>
+      <td>{{ groupe.enseignant.prenom }} {{ groupe.enseignant.nom }}</td>
+      <td>{{ groupe.estEvaluable ? 'oui' : 'non' }}</td>
+      <td>
+        <a href='{{path("groupe_etudiant_show", {id : groupe.id})}}'><i class='icon-eye' data-toggle='tooltip' title='Consulter {{groupe.nom}}'></i></a>
+        {% if is_granted('ROLE_ADMIN') %}
+          <a href='{{path("groupe_etudiant_new_sousGroupe", {id : groupe.id})}}'><i class='icon-plus' data-toggle='tooltip' title='Créer un sous-groupe à partir de {{ groupe.nom }}'></i></a>
+        {% endif %}
+        {% if groupe.estEvaluable %}
+          <a href='{{path("evaluation_new", {id : groupe.id})}}'><i class='icon-eval-simple' data-toggle='tooltip' title='Créer une évaluation pour {{ groupe.nom }}'></i></a>
+          <!-- <a href='#'><i class='icon-eval-composee'></i></a> -->
+        {% endif %}
+        {% if is_granted('ROLE_ADMIN') %}
+          <a href="{{path("groupe_etudiant_edit", {id:groupe.id}) }}"><i class='icon-pencil-1' data-toggle='tooltip' title='Modifier {{groupe.nom}}'></i></a>
+        {% endif %}
+        {% if is_granted('ROLE_ADMIN') %}
+          <a href='{{ path ("groupe_etudiant_delete", {id:groupe.id}) }}' onclick='EcritureModale("{{ path ("groupe_etudiant_delete", {id:groupe.id}) }}")' data-toggle='modal'><i class='icon-trash' data-toggle='tooltip' title='Supprimer {{groupe.nom}}'></i></a>
+        {% endif %}
+      </td>
+    </tr>
 
-    {# Affichage de la chaine en utilisant la fonction 'raw' qui va afficher la chaine telle que fournise, sans transformer le contenu#}
-    {{ tree | raw }}
+  {% endfor %}
   </tbody>
 </table>
-{% endif %}
-
-{% if tree is empty %}
+{% else %}
 <div class="info">
   <h2 class="h4 mb-0 text-gray-800">Vous n'avez aucun groupe</h1>
 </div>
