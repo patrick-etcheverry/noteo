@@ -21,8 +21,8 @@
       <tr>
           <td>
               {# Indentation du groupe en fonction de son niveau pour avoir une décomposition #}
-              {% if groupe.lvl > 0 %}
-                  {% for i in 1.. groupe.lvl %}
+              {% if entity.lvl > 0 %}
+                  {% for i in 1.. entity.lvl %}
                       &emsp;
                   {% endfor %}
               {% endif %}

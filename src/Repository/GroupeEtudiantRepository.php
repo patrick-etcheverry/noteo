@@ -42,8 +42,8 @@ class GroupeEtudiantRepository extends NestedTreeRepository
     public function findAllOrderedAndWithoutSpace()
     {
         return $this->createQueryBuilder('g')
-            ->where('g.nom != :param')
-            ->setParameter('param', 'Etudiants non affectés')
+            ->where('g.slug != :param')
+            ->setParameter('param', 'etudiants-non-affectes')
             ->orderBy('g.lft', 'asc')
             ->getQuery()
             ->getResult()

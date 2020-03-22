@@ -100,7 +100,7 @@ class EvaluationController extends AbstractController
     }
 
     /**
-     * @Route("/nouvelle/{id}", name="evaluation_new", methods={"GET","POST"})
+     * @Route("/nouvelle/{slug}", name="evaluation_new", methods={"GET","POST"})
      */
     public function new(Request $request, GroupeEtudiant $groupeConcerne, ValidatorInterface $validator): Response
     {
@@ -309,9 +309,7 @@ class EvaluationController extends AbstractController
 
       if ($form->isSubmitted()) {
 
-        $idGroupeChoisi = $form->get("groupes")->getData()->getId();
-
-        return $this->redirectToRoute('evaluation_new',['id' => $idGroupeChoisi]);
+        return $this->redirectToRoute('evaluation_new',['slug' => $form->get("groupes")->getData()->getSlug()]);
 
       }
 

@@ -113,7 +113,7 @@ class GroupeEtudiantController extends AbstractController
     }
 
     /**
-     * @Route("/modifier/{id}", name="groupe_etudiant_edit", methods={"GET","POST"})
+     * @Route("/modifier/{slug}", name="groupe_etudiant_edit", methods={"GET","POST"})
      */
     public function edit(Request $request, GroupeEtudiant $groupeEtudiant): Response
     {
@@ -123,7 +123,7 @@ class GroupeEtudiantController extends AbstractController
       $enfants = $this->getDoctrine()->getRepository(GroupeEtudiant::class)->children($groupeEtudiant);
 
       //Récupération du groupe des étudiants non affecté"s pour y ajouter les étudiants supprimés si besoin
-      $GroupeDesNonAffectés = $this->getDoctrine()->getRepository(GroupeEtudiant::class)->findOneByNom("Etudiants non affectés");
+      $GroupeDesNonAffectés = $this->getDoctrine()->getRepository(GroupeEtudiant::class)->findOneBySlug("etudiants-non-affectes");
 
       /* On prépare une variable qui contiendra le groupe à partir duquel ajouter les étudiants. En effet, si le groupe
       est de haut niveau, on ajoute des étudiants depuis le groupe des étudiants non affectés, sinon on ajout des étudiants
@@ -194,7 +194,7 @@ class GroupeEtudiantController extends AbstractController
     }
 
     /**
-     * @Route("/supprimer/{id}", name="groupe_etudiant_delete", methods={"GET"})
+     * @Route("/supprimer/{slug}", name="groupe_etudiant_delete", methods={"GET"})
      */
     public function delete(Request $request, GroupeEtudiant $groupeEtudiant): Response
     {
@@ -236,7 +236,7 @@ class GroupeEtudiantController extends AbstractController
       }
 
       /**
-       * @Route("/nouveau/sous-groupe/{id}", name="groupe_etudiant_new_sousGroupe", methods={"GET","POST"})
+       * @Route("/nouveau/sous-groupe/{slug}", name="groupe_etudiant_new_sousGroupe", methods={"GET","POST"})
        */
       public function NewSousFroupe(GroupeEtudiant $groupeEtudiantParent, Request $request): Response
       {

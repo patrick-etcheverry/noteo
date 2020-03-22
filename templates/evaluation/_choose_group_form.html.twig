@@ -18,8 +18,8 @@
     {% set entity = form.groupes.vars.choices[index].data %}
       <tr>
           <td>
-              {% if groupe.lvl > 0 %}
-                  {% for i in 1.. groupe.lvl %}
+              {% if entity.lvl > 0 %}
+                  {% for i in 1.. entity.lvl %}
                       &emsp;
                   {% endfor %}
               {% endif %}
