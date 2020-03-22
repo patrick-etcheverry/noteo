@@ -38,7 +38,7 @@
               <div class="col-lg-12">
                 <div class="p-5">
                   <div class="text-center">
-                    <img width="200em" style="margin-bottom:50px" src="{{asset('img/banniere_noteo.jpg')}}" alt="">
+                    <img width="200em" style="margin-bottom:30px" src="{{asset('img/banniere_noteo.jpg')}}" alt="">
                   </div>
                   <form class="user" method="post">
                     {% if error %}
@@ -46,8 +46,8 @@
                     {% endif %}
 
                     {% if app.user %}
-                    <div class="mb-3">
-                      You are logged in as {{ app.user.username }}, <a href="{{ path('app_logout') }}">Logout</a>
+                    <div class="mb-3" style="text-align:center">
+                      Vous êtes connecté en tant que {{ app.user.username }}<br><a href="{{ path('app_logout') }}">Déconnexion</a>
                     </div>
                     {% endif %}
 
