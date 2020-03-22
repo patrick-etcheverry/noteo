@@ -31,7 +31,7 @@ class EnseignantController extends AbstractController
   }
 
   /**
-  * @Route("/new", name="enseignant_new", methods={"GET","POST"})
+  * @Route("/nouveau", name="enseignant_new", methods={"GET","POST"})
   */
   public function new(Request $request, ObjectManager $manager, UserPasswordEncoderInterface $encoder): Response
   {
@@ -68,7 +68,7 @@ class EnseignantController extends AbstractController
   }
 
   /**
-  * @Route("/{id}", name="enseignant_show", methods={"GET"})
+  * @Route("/consulter/{id}", name="enseignant_show", methods={"GET"})
   */
   public function show(Enseignant $enseignant): Response
   {
@@ -80,7 +80,7 @@ class EnseignantController extends AbstractController
   }
 
   /**
-  * @Route("/{id}/edit", name="enseignant_edit", methods={"GET","POST"})
+  * @Route("/modifier/{id}", name="enseignant_edit", methods={"GET","POST"})
   */
   public function edit(Request $request, Enseignant $enseignant, UserPasswordEncoderInterface $encoder): Response
   {
@@ -120,7 +120,7 @@ class EnseignantController extends AbstractController
   }
 
   /**
-  * @Route("/{id}/delete", name="enseignant_delete", methods={"GET","POST"})
+  * @Route("/supprimer/{id}", name="enseignant_delete", methods={"GET","POST"})
   */
   public function delete(Request $request, Enseignant $enseignant): Response
   {
