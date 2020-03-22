@@ -26,7 +26,7 @@ class PartieController extends AbstractController
     }
 
     /**
-     * @Route("/new", name="partie_new", methods={"GET","POST"})
+     * @Route("/nouveau", name="partie_new", methods={"GET","POST"})
      */
     public function new(Request $request): Response
     {
@@ -49,7 +49,7 @@ class PartieController extends AbstractController
     }
 
     /**
-     * @Route("/{id}", name="partie_show", methods={"GET"})
+     * @Route("/consulter/{id}", name="partie_show", methods={"GET"})
      */
     public function show(Partie $partie): Response
     {
@@ -59,7 +59,7 @@ class PartieController extends AbstractController
     }
 
     /**
-     * @Route("/{id}/edit", name="partie_edit", methods={"GET","POST"})
+     * @Route("/modifier/{id}", name="partie_edit", methods={"GET","POST"})
      */
     public function edit(Request $request, Partie $partie): Response
     {
@@ -79,7 +79,7 @@ class PartieController extends AbstractController
     }
 
     /**
-     * @Route("/{id}", name="partie_delete", methods={"DELETE"})
+     * @Route("/supprimer/{id}", name="partie_delete", methods={"DELETE"})
      */
     public function delete(Request $request, Partie $partie): Response
     {
