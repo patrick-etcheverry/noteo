@@ -20,7 +20,7 @@ class EnseignantType extends AbstractType
     ->add('email')
     ->add('estAdmin', ChoiceType::class, [
       'choices' => ['Oui' => true, 'Non' => false],
-      'data' => false,
+      'data' => $options['estAdmin'],
       'mapped' => false,
       'disabled' => $options['champDesactive'],
       'expanded' => true, // Pour avoir des boutons radio
@@ -44,7 +44,8 @@ class EnseignantType extends AbstractType
   {
     $resolver->setDefaults([
       'data_class' => Enseignant::class,
-      'champDesactive' => false
+      'champDesactive' => false,
+      'estAdmin' => false
     ]);
   }
 }

@@ -299,5 +299,13 @@ class Enseignant implements UserInterface
       }
     }
 
+    public function checkNotAuthorized(Enseignant $enseignant)
+    {
+      if ($this->id == $enseignant->getId())
+      {
+        throw new AccessDeniedException('Access denied.');
+      }
+    }
+
 
 }

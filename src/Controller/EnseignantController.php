@@ -38,7 +38,7 @@ class EnseignantController extends AbstractController
     $this->getUser()->checkAdmin();
 
     $enseignant = new Enseignant();
-    $form = $this->createForm(EnseignantType::class, $enseignant);
+    $form = $this->createForm(EnseignantType::class);
     $form->handleRequest($request);
 
     if ($form->isSubmitted() && $form->isValid()) {
@@ -87,12 +87,12 @@ class EnseignantController extends AbstractController
     $this->getUser()->checkAdminOrAuthorized($enseignant);
 
     // On verifie le rôle de l'utilisateur pour désactiver ou non les boutons radios permettant de définir le rôle
-    $champDesactive = false;
-    if (!$this->getUser()->isAdmin()) {
-      $champDesactive = true;
-    }
 
-    $form = $this->createForm(EnseignantType::class, $enseignant, ['champDesactive' => $champDesactive]);
+    $champDesactive = !$this->getUser()->isAdmin();
+    // Utiliser pour définir le choix du bouton radio lors de l'édition
+    $estAdmin = $enseignant->isAdmin();
+
+    $form = $this->createForm(EnseignantType::class, $enseignant, ['champDesactive' => $champDesactive, 'estAdmin' => $estAdmin]);
     $form->handleRequest($request);
 
     if ($form->isSubmitted() && $form->isValid()) {
@@ -124,7 +124,7 @@ class EnseignantController extends AbstractController
   */
   public function delete(Request $request, Enseignant $enseignant): Response
   {
-      $this->getUser()->checkAdmin();
+      $this->getUser()->checkNotAuthorized($enseignant);
 
       //Pour qu'un administrateur ne supprime pas son propre profil
       if($this->getUser()->getId() != $enseignant->getId()) {

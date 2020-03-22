@@ -89,8 +89,8 @@
         </a>
         <div id="collapseTwo" class="collapse {% block show %}{% endblock %}" aria-labelledby="headingTwo" data-parent="#accordionSidebar">
           <div class="bg-white py-2 collapse-inner rounded">
-            <a class="collapse-item {% block mesEvaluations %}{% endblock %}" href="{{path('evaluation_enseignant', {'id': app.user.id })}}">Mes évaluations et stats</a>
-            <a class="collapse-item {% block autresEvaluations %}{% endblock %}" href="{{path('evaluation_autres', {'id': app.user.id })}}">Autres évaluations et stats</a>
+            <a class="collapse-item {% block mesEvaluations %}{% endblock %}" href="{{path('evaluation_enseignant')}}">Mes évaluations et stats</a>
+            <a class="collapse-item {% block autresEvaluations %}{% endblock %}" href="{{path('evaluation_autres')}}">Autres évaluations et stats</a>
           </div>
         </div>
       </li>

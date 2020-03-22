@@ -17,8 +17,13 @@
     {# get entity object from its index in the Categories Field #}
     {% set entity = form.groupes.vars.choices[index].data %}
       <tr>
-          <td>{{entity.nom}}</td>
-          <td></td>
+          <td>
+              {% for i in 0.. entity.lvl %}
+                  &emsp;
+              {% endfor %}
+              {{entity.nom}}
+          </td>
+          <td>{{ entity.etudiants|length }}</td>
           <td>{{entity.description}}</td>
           <td>{{entity.enseignant.prenom}} {{entity.enseignant.nom}}</td>
           <td>{{form_widget(form.groupes[index])}}</td>

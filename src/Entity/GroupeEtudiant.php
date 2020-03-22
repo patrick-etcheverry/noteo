@@ -104,6 +104,14 @@ class GroupeEtudiant
         return $this->id;
     }
 
+    public function getLvl() {
+        return $this->lvl;
+    }
+
+    public function getLft() {
+        return $this->lft;
+    }
+
     public function getNom(): ?string
     {
         return $this->nom;
