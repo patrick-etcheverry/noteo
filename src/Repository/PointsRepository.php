@@ -73,7 +73,7 @@ class PointsRepository extends ServiceEntityRepository
             ->execute();
     }
 
-    public function findByGroupe($idEval, $idGroupe)
+    public function findByGroupe($slugEval, $slugGroupe)
     {
         return $this->getEntityManager()->createQuery('
             SELECT p.valeur
@@ -82,13 +82,13 @@ class PointsRepository extends ServiceEntityRepository
             JOIN et.groupes g
             JOIN p.partie pa
             JOIN pa.evaluation ev
-            WHERE ev.id = :idE
-            AND g.id = :idG
+            WHERE ev.slug = :slugE
+            AND g.slug = :slugG
             AND et.estDemissionaire = 0
             ORDER BY p.valeur ASC
         ')
-            ->setParameter('idG', $idGroupe)
-            ->setParameter('idE', $idEval)
+            ->setParameter('slugG', $slugGroupe)
+            ->setParameter('slugE', $slugEval)
             ->execute();
     }
 
@@ -111,7 +111,7 @@ class PointsRepository extends ServiceEntityRepository
             ->execute();
     }
 
-    public function findByStatut($idEval, $idStatut)
+    public function findByStatut($slugEval, $slugStatut)
     {
         return $this->getEntityManager()->createQuery('
             SELECT p.valeur
@@ -120,13 +120,13 @@ class PointsRepository extends ServiceEntityRepository
             JOIN et.statuts s
             JOIN p.partie pa
             JOIN pa.evaluation ev
-            WHERE ev.id = :idE
-            AND s.id = :idS
+            WHERE ev.slug = :slugE
+            AND s.slug = :slugS
             AND et.estDemissionaire = 0
             ORDER BY p.valeur ASC
         ')
-            ->setParameter('idS', $idStatut)
-            ->setParameter('idE', $idEval)
+            ->setParameter('slugS', $slugStatut)
+            ->setParameter('slugE', $slugEval)
             ->execute();
 
     }

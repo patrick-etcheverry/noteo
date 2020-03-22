@@ -62,7 +62,7 @@ class StatutController extends AbstractController
     }
 
     /**
-     * @Route("/consulter/{id}", name="statut_show", methods={"GET"})
+     * @Route("/consulter/{slug}", name="statut_show", methods={"GET"})
      */
     public function show(Statut $statut): Response
     {
@@ -73,7 +73,7 @@ class StatutController extends AbstractController
     }
 
     /**
-     * @Route("/modifier/{id}", name="statut_edit", methods={"GET","POST"})
+     * @Route("/modifier/{slug}", name="statut_edit", methods={"GET","POST"})
      */
     public function edit(Request $request, Statut $statut): Response
     {
@@ -104,7 +104,7 @@ class StatutController extends AbstractController
     }
 
     /**
-     * @Route("/supprimer/{id}", name="statut_delete", methods={"GET"})
+     * @Route("/supprimer/{slug}", name="statut_delete", methods={"GET"})
      */
     public function delete(Request $request, Statut $statut): Response
     {
