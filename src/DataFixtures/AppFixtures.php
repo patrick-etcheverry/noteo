@@ -41,7 +41,6 @@ class AppFixtures extends Fixture
         $espace->setDescription('Tout les étudiants ayant été retirés d\'un groupe de haut niveau et ne faisant partie d\'aucun groupe');
         $espace->setEnseignant($enseignant);
         $espace->setEstEvaluable(false);
-        $espace->setSlug($espace->slugify($espace->getNom()));
 
         ////////////RACINE//////////////
         $DUT = new GroupeEtudiant();
@@ -49,7 +48,7 @@ class AppFixtures extends Fixture
         $DUT->setDescription('Tout les étudiants du DUT Informatique de l\'IUT');
         $DUT->setEnseignant($enseignant);
         $DUT->setEstEvaluable(false);
-        $DUT->setSlug($DUT->slugify($DUT->getNom()));
+
 
         ////////////SEMESTRES//////////////
         $S1 = new GroupeEtudiant();
@@ -58,7 +57,7 @@ class AppFixtures extends Fixture
         $S1->setParent($DUT);
         $S1->setEnseignant($enseignant);
         $S1->setEstEvaluable(true);
-        $S1->setSlug($S1->slugify($S1->getNom()));
+
 
 
             ////////////TDs//////////////
@@ -68,7 +67,7 @@ class AppFixtures extends Fixture
             $S1TD1->setParent($S1);
             $S1TD1->setEnseignant($enseignant);
             $S1TD1->setEstEvaluable(true);
-            $S1TD1->setSlug($S1TD1->slugify($S1TD1->getNom()));
+
 
 
                 ////////////TPs//////////////
@@ -78,7 +77,7 @@ class AppFixtures extends Fixture
                 $S1TD1TP1->setParent($S1TD1);
                 $S1TD1TP1->setEnseignant($enseignant);
                 $S1TD1TP1->setEstEvaluable(true);
-                $S1TD1TP1->setSlug($S1TD1TP1->slugify($S1TD1TP1->getNom()));
+
 
 
                 $S1TD1TP2 = new GroupeEtudiant();
@@ -87,7 +86,7 @@ class AppFixtures extends Fixture
                 $S1TD1TP2->setParent($S1TD1);
                 $S1TD1TP2->setEnseignant($enseignant);
                 $S1TD1TP2->setEstEvaluable(true);
-                $S1TD1TP2->setSlug($S1TD1TP2->slugify($S1TD1TP2->getNom()));
+
 
             $S1TD2 = new GroupeEtudiant();
             $S1TD2->setNom('TD2');
@@ -95,7 +94,7 @@ class AppFixtures extends Fixture
             $S1TD2->setParent($S1);
             $S1TD2->setEnseignant($enseignant);
             $S1TD2->setEstEvaluable(true);
-            $S1TD2->setSlug($S1TD2->slugify($S1TD2->getNom()));
+
 
                 ////////////TPs//////////////
                 $S1TD2TP3 = new GroupeEtudiant();
@@ -104,7 +103,7 @@ class AppFixtures extends Fixture
                 $S1TD2TP3->setParent($S1TD2);
                 $S1TD2TP3->setEnseignant($enseignant);
                 $S1TD2TP3->setEstEvaluable(true);
-                $S1TD2TP3->setSlug($S1TD2TP3->slugify($S1TD2TP3->getNom()));
+
 
                 $S1TD2TP4 = new GroupeEtudiant();
                 $S1TD2TP4->setNom('TP4');
@@ -112,7 +111,7 @@ class AppFixtures extends Fixture
                 $S1TD2TP4->setParent($S1TD2);
                 $S1TD2TP4->setEnseignant($enseignant);
                 $S1TD2TP4->setEstEvaluable(true);
-                $S1TD2TP4->setSlug($S1TD2TP4->slugify($S1TD2TP4->getNom()));
+
 
             $S1TD3 = new GroupeEtudiant();
             $S1TD3->setNom('TD3');
@@ -120,7 +119,7 @@ class AppFixtures extends Fixture
             $S1TD3->setParent($S1);
             $S1TD3->setEnseignant($enseignant);
             $S1TD3->setEstEvaluable(true);
-            $S1TD3->setSlug($S1TD3->slugify($S1TD3->getNom()));
+
 
                 ////////////TPs//////////////
                 $S1TD3TP5 = new GroupeEtudiant();
@@ -129,7 +128,7 @@ class AppFixtures extends Fixture
                 $S1TD3TP5->setParent($S1TD3);
                 $S1TD3TP5->setEnseignant($enseignant);
                 $S1TD3TP5->setEstEvaluable(true);
-                $S1TD3TP5->setSlug($S1TD3TP5->slugify($S1TD3TP5->getNom()));
+
 
         $S2 = new GroupeEtudiant();
         $S2->setNom('S2');
@@ -137,7 +136,7 @@ class AppFixtures extends Fixture
         $S2->setParent($DUT);
         $S2->setEnseignant($enseignant);
         $S2->setEstEvaluable(true);
-        $S2->setSlug($S2->slugify($S2->getNom()));
+
 
                     ////////////TDs//////////////
                     $S2TD1 = new GroupeEtudiant();
@@ -146,7 +145,7 @@ class AppFixtures extends Fixture
                     $S2TD1->setParent($S2);
                     $S2TD1->setEnseignant($enseignant);
                     $S2TD1->setEstEvaluable(true);
-                    $S2TD1->setSlug($S2TD1->slugify($S2TD1->getNom()));
+
 
                         ////////////TPs//////////////
                         $S2TD1TP1 = new GroupeEtudiant();
@@ -155,7 +154,7 @@ class AppFixtures extends Fixture
                         $S2TD1TP1->setParent($S2TD1);
                         $S2TD1TP1->setEnseignant($enseignant);
                         $S2TD1TP1->setEstEvaluable(true);
-                        $S2TD1TP1->setSlug($S2TD1TP1->slugify($S2TD1TP1->getNom()));
+
 
                         $S2TD1TP2 = new GroupeEtudiant();
                         $S2TD1TP2->setNom('TP2');
@@ -163,7 +162,7 @@ class AppFixtures extends Fixture
                         $S2TD1TP2->setParent($S2TD1);
                         $S2TD1TP2->setEnseignant($enseignant);
                         $S2TD1TP2->setEstEvaluable(true);
-                        $S2TD1TP2->setSlug($S2TD1TP2->slugify($S2TD1TP2->getNom()));
+
 
                     $S2TD2 = new GroupeEtudiant();
                     $S2TD2->setNom('TD2');
@@ -171,7 +170,7 @@ class AppFixtures extends Fixture
                     $S2TD2->setParent($S2);
                     $S2TD2->setEnseignant($enseignant);
                     $S2TD2->setEstEvaluable(true);
-                    $S2TD2->setSlug($S2TD2->slugify($S2TD2->getNom()));
+
 
                         ////////////TPs//////////////
                         $S2TD2TP3 = new GroupeEtudiant();
@@ -180,7 +179,7 @@ class AppFixtures extends Fixture
                         $S2TD2TP3->setParent($S2TD2);
                         $S2TD2TP3->setEnseignant($enseignant);
                         $S2TD2TP3->setEstEvaluable(true);
-                        $S2TD2TP3->setSlug($S2TD2TP3->slugify($S2TD2TP3->getNom()));
+
 
                         $S2TD2TP4 = new GroupeEtudiant();
                         $S2TD2TP4->setNom('TP4');
@@ -188,7 +187,7 @@ class AppFixtures extends Fixture
                         $S2TD2TP4->setParent($S2TD2);
                         $S2TD2TP4->setEnseignant($enseignant);
                         $S2TD2TP4->setEstEvaluable(true);
-                        $S2TD2TP4->setSlug($S2TD2TP4->slugify($S2TD2TP4->getNom()));
+
 
                     $S2TD3 = new GroupeEtudiant();
                     $S2TD3->setNom('TD3');
@@ -196,7 +195,7 @@ class AppFixtures extends Fixture
                     $S2TD3->setParent($S2);
                     $S2TD3->setEnseignant($enseignant);
                     $S2TD3->setEstEvaluable(true);
-                    $S2TD3->setSlug($S2TD3->slugify($S2TD3->getNom()));
+
 
                         ////////////TPs//////////////
                         $S2TD3TP5 = new GroupeEtudiant();
@@ -205,7 +204,7 @@ class AppFixtures extends Fixture
                         $S2TD3TP5->setParent($S2TD3);
                         $S2TD3TP5->setEnseignant($enseignant);
                         $S2TD3TP5->setEstEvaluable(true);
-                        $S2TD3TP5->setSlug($S2TD3TP5->slugify($S2TD3TP5->getNom()));
+
 
         //Enregistrement des groupes
         $manager->persist($espace);
@@ -234,13 +233,13 @@ class AppFixtures extends Fixture
         $statut1->setNom('Boursiers');
         $statut1->setDescription('Les étudiants les moins riches de la promotion S3');
         $statut1->setEnseignant($enseignant);
-        $statut1->setSlug($statut1->slugify($statut1->getNom()));
+
 
         $statut2 = new Statut();
         $statut2->setNom('Blonds');
         $statut2->setDescription('Les moins beaux hommes sur terre');
         $statut2->setEnseignant($enseignant);
-        $statut2->setSlug($statut2->slugify($statut2->getNom()));
+
 
         $manager->persist($statut1);
         $manager->persist($statut2);

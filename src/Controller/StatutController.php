@@ -47,7 +47,6 @@ class StatutController extends AbstractController
                     $statut->addEtudiant($etudiant);
                 }
             }
-            $statut->setSlug($statut->slugify($statut->getNom()));
             $entityManager = $this->getDoctrine()->getManager();
             $entityManager->persist($statut);
             $entityManager->flush();
@@ -92,8 +91,6 @@ class StatutController extends AbstractController
             foreach ($form->get('lesEtudiantsASupprimer')->getData() as $key => $etudiant) {
               $etudiant->removeStatut($statut);
             }
-
-            $statut->setSlug($statut->slugify($statut->getNom()));
 
             $this->getDoctrine()->getManager()->flush();
 

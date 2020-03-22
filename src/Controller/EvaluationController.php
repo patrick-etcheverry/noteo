@@ -84,7 +84,7 @@ class EvaluationController extends AbstractController
           $mailer->send($message);
         }
 
-        return $this->redirectToRoute('evaluation_choose_groups',['idEval' => $evaluation->getId(),'idGroupe' => $evaluation->getGroupe()->getId()]);
+        return $this->redirectToRoute('evaluation_choose_groups',['slugEval' => $evaluation->getSlug(),'slugGroupe' => $evaluation->getGroupe()->getSlug()]);
     }
 
     /**
@@ -186,7 +186,7 @@ class EvaluationController extends AbstractController
     }
 
     /**
-     * @Route("/consulter/{id}", name="evaluation_show", methods={"GET"})
+     * @Route("/consulter/{slug}", name="evaluation_show", methods={"GET"})
      */
     public function show(Evaluation $evaluation): Response
     {
@@ -196,7 +196,7 @@ class EvaluationController extends AbstractController
     }
 
     /**
-     * @Route("/modifier/{id}", name="evaluation_edit", methods={"GET","POST"})
+     * @Route("/modifier/{slug}", name="evaluation_edit", methods={"GET","POST"})
      */
     public function edit(Request $request, Evaluation $evaluation, ValidatorInterface $validator): Response
     {
@@ -260,7 +260,7 @@ class EvaluationController extends AbstractController
     }
 
     /**
-     * @Route("/supprimer/{id}", name="evaluation_delete", methods={"GET"})
+     * @Route("/supprimer/{slug}", name="evaluation_delete", methods={"GET"})
      */
     public function delete(Request $request, Evaluation $evaluation): Response
     {
@@ -317,18 +317,18 @@ class EvaluationController extends AbstractController
     }
 
     /**
-     * @Route("/{idEval}/choisir-groupes-et-statuts/{idGroupe}", name="evaluation_choose_groups", methods={"GET","POST"})
+     * @Route("/{slugEval}/choisir-groupes-et-statuts/{slugGroupe}", name="evaluation_choose_groups", methods={"GET","POST"})
      */
-    public function chooseGroups(Request $request, $idEval, $idGroupe, StatutRepository $repoStatut, EvaluationRepository $repoEval, GroupeEtudiantRepository $repoGroupe, PointsRepository $repoPoints ): Response
+    public function chooseGroups(Request $request, $slugEval, $slugGroupe, StatutRepository $repoStatut, EvaluationRepository $repoEval, GroupeEtudiantRepository $repoGroupe, PointsRepository $repoPoints ): Response
     {
         // Récupération de la session
         $session = $request->getSession();
 
         //On récupere l'évaluation que l'on traite pour afficher ses informations générales dans les statistiques
-        $evaluation = $repoEval->find($idEval);
+        $evaluation = $repoEval->findOneBySlug($slugEval);
 
         //On récupère le groupe concerné par l'évaluation
-        $groupeConcerne = $repoGroupe->find($idGroupe);
+        $groupeConcerne = $repoGroupe->findOneBySlug($slugGroupe);
 
         //On récupère la liste de tous les enfants (directs et indirects) du groupe concerné pour choisir ceux sur lesquels on veut des statistiques
         $choixGroupe = $repoGroupe->findAllFromNode($groupeConcerne);
@@ -367,7 +367,7 @@ class EvaluationController extends AbstractController
             foreach ($form->get("groupes")->getData() as $groupe) {
 
                 //On récupère toutes les notes du groupe courant
-                $tabPoints = $repoPoints->findByGroupe($idEval, $groupe->getId());
+                $tabPoints = $repoPoints->findByGroupe($slugEval, $groupe->getSlug());
 
                 //On crée une copie de tabPoints qui contiendra les valeurs des notes pour simplifier le tableau renvoyé par la requete
                 $copieTabPoints = array();
@@ -389,7 +389,7 @@ class EvaluationController extends AbstractController
             //Pour tous les statuts sélectionnés
             foreach ($form->get("statuts")->getData() as $statut) {
 
-                $tabPoints = $repoPoints->findByStatut($idEval, $statut->getId());
+                $tabPoints = $repoPoints->findByStatut($slugEval, $statut->getSlug());
 
                 $copieTabPoints = array();
                 foreach ($tabPoints as $note) {
