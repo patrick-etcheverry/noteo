@@ -33,9 +33,9 @@
       </td>
       <td>{{ etudiant.mail }}</td>
       <td>
-        <a href="{{ path('etudiant_show', {'id': etudiant.id}) }}"><i class="icon-eye" data-toggle='tooltip' title='Consulter un étudiant'></i></a>
-        <a href="{{ path('etudiant_edit', {'id': etudiant.id}) }}"><i class="icon-pencil-1" data-toggle='tooltip' title='Editer un étudiant'></i></a>
-        <a href="#" onclick="supprimerEtudiant('{{ path('etudiant_delete', {'id': etudiant.id}) }}')"><i class="icon-trash" data-toggle='tooltip' title='Supprimer un étudiant'></i></a>
+        <a href="{{ path('etudiant_show', {'id': etudiant.id}) }}"><i class="icon-eye" data-toggle='tooltip' title='Consulter {{ etudiant.prenom }} {{ etudiant.nom }}'></i></a>
+        <a href="{{ path('etudiant_edit', {'id': etudiant.id}) }}"><i class="icon-pencil-1" data-toggle='tooltip' title='Modifier {{ etudiant.prenom }} {{ etudiant.nom }}'></i></a>
+        <a href="#" onclick="supprimerEtudiant('{{ path('etudiant_delete', {'id': etudiant.id}) }}')"><i class="icon-trash" data-toggle='tooltip' title='Supprimer {{ etudiant.prenom }} {{ etudiant.nom }}'></i></a>
       </td>
     </tr>
     {% endfor %}
