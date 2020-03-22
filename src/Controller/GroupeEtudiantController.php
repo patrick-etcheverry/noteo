@@ -51,6 +51,9 @@ class GroupeEtudiantController extends AbstractController
 
             $groupeEtudiant->setEnseignant($this->getUser());
 
+            //On définit le slug
+            $groupeEtudiant->setSlug($groupeEtudiant->slugify($form->get("nom")->getData()));
+
             $entityManager->persist($groupeEtudiant);
 
             // Récupération du fichier CSV
@@ -97,7 +100,7 @@ class GroupeEtudiantController extends AbstractController
     }
 
     /**
-     * @Route("/consulter/{id}", name="groupe_etudiant_show", methods={"GET"})
+     * @Route("/consulter/{slug}", name="groupe_etudiant_show", methods={"GET"})
      */
     public function show(GroupeEtudiant $groupeEtudiant): Response
     {
@@ -172,6 +175,9 @@ class GroupeEtudiantController extends AbstractController
             }
 
           }
+
+          //On modifie le slug
+          $groupeEtudiant->setSlug($groupeEtudiant->slugify($form->get("nom")->getData()));
 
           $this->getDoctrine()->getManager()->persist($groupeEtudiant);
 
