@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Entity\Etudiant;
+use App\Entity\GroupeEtudiant;
 use App\Form\EtudiantType;
 use App\Repository\EtudiantRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -26,15 +27,19 @@ class EtudiantController extends AbstractController
     }
 
     /**
-     * @Route("/new", name="etudiant_new", methods={"GET","POST"})
+     * @Route("/nouveau", name="etudiant_new", methods={"GET","POST"})
      */
     public function new(Request $request): Response
     {
+        $groupeRepository = $this->getDoctrine()->getRepository(GroupeEtudiant::class);
+        $groupeEtudiantsNonAffectes = $groupeRepository->findById(1);
+
         $etudiant = new Etudiant();
         $form = $this->createForm(EtudiantType::class, $etudiant);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
+            $etudiant->addGroupe($groupeEtudiantsNonAffectes[0]);
             $entityManager = $this->getDoctrine()->getManager();
             $entityManager->persist($etudiant);
             $entityManager->flush();
@@ -49,7 +54,7 @@ class EtudiantController extends AbstractController
     }
 
     /**
-     * @Route("/{id}", name="etudiant_show", methods={"GET"})
+     * @Route("/consulter/{id}", name="etudiant_show", methods={"GET"})
      */
     public function show(Etudiant $etudiant): Response
     {
@@ -59,7 +64,7 @@ class EtudiantController extends AbstractController
     }
 
     /**
-     * @Route("/{id}/edit", name="etudiant_edit", methods={"GET","POST"})
+     * @Route("/modifier/{id}", name="etudiant_edit", methods={"GET","POST"})
      */
     public function edit(Request $request, Etudiant $etudiant): Response
     {
@@ -79,7 +84,7 @@ class EtudiantController extends AbstractController
     }
 
     /**
-     * @Route("/{id}/delete", name="etudiant_delete", methods={"GET"})
+     * @Route("/supprimer/{id}", name="etudiant_delete", methods={"GET"})
      */
     public function delete(Etudiant $etudiant): Response
     {

@@ -75,12 +75,12 @@ class GroupeEtudiantController extends AbstractController
 
                     //Consulter
                     $url = $this->generateUrl('groupe_etudiant_show', [ 'id' => $node['id'] ]);
-                    $show = " <a href='$url'><i class='icon-eye' data-toggle='tooltip' title='Consulter le groupe'></i></a>";
+                    $show = " <a href='$url'><i class='icon-eye' data-toggle='tooltip' title='Consulter ".$node['nom']."'></i></a>";
 
                     if ($this->getUser()->isAdmin()) {
                       //Créer un sous-groupe
                       $url = $this->generateUrl('groupe_etudiant_new_sousGroupe', [ 'id' => $node['id'] ]);
-                      $sousGroupe = "<a href='$url'><i class='icon-plus' data-toggle='tooltip' title='Créer un sous groupe'></i></a>";
+                      $sousGroupe = "<a href='$url'><i class='icon-plus' data-toggle='tooltip' title='Créer un sous-groupe à partir de ".$node['nom']."'></i></a>";
                     }
                     else {
                       $sousGroupe = NULL;
@@ -90,7 +90,7 @@ class GroupeEtudiantController extends AbstractController
                     //Créer une évaluation (seulement disponible si le groupe est évaluable)
                     if ($node['estEvaluable']) {
                       $url = $this->generateUrl('evaluation_new', [ 'id' => $node['id'] ]);
-                      $evalSimple = "<a href='$url'><i class='icon-eval-simple' data-toggle='tooltip' title='Créer une évaluation simple'></i></a>";
+                      $evalSimple = "<a href='$url'><i class='icon-eval-simple' data-toggle='tooltip' title='Créer une évaluation pour ".$node['nom']."'></i></a>";
                       // $evalParParties = "<a href='#'><i class='icon-eval-composee'></i></a>";
                     }
                     else {
@@ -101,7 +101,7 @@ class GroupeEtudiantController extends AbstractController
                     //Modifier
                     if ($this->getUser()->isAdmin()) {
                     $url = $this->generateUrl('groupe_etudiant_edit', [ 'id' => $node['id'] ]);
-                    $edit = "<a href=" . $url .  "><i class='icon-pencil-1' data-toggle='tooltip' title='Modifier le groupe'></i></a>";
+                    $edit = "<a href=" . $url .  "><i class='icon-pencil-1' data-toggle='tooltip' title='Modifier ".$node['nom']."'></i></a>";
                     }
                     else {
                       $edit = NULL;
@@ -110,7 +110,7 @@ class GroupeEtudiantController extends AbstractController
                     //Supprimer
                     if ($this->getUser()->isAdmin()) {
                     $url = $this->generateUrl('groupe_etudiant_delete', [ 'id' => $node['id'] ]);
-                    $delete = "<a href='$url' onclick='EcritureModale(\"$url\")' data-toggle='modal'><i class='icon-trash' data-toggle='tooltip' title='Supprimer le groupe'></i></a>";
+                    $delete = "<a href='$url' onclick='EcritureModale(\"$url\")' data-toggle='modal'><i class='icon-trash' data-toggle='tooltip' title='Supprimer ".$node['nom']."'></i></a>";
                     }
                     else {
                       $delete = NULL;
