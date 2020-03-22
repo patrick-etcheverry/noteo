@@ -32,12 +32,12 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 class EvaluationController extends AbstractController
 {
     /**
-     * @Route("/self/{id}", name="evaluation_enseignant", methods={"GET"})
+     * @Route("/mes-evaluations", name="evaluation_enseignant", methods={"GET"})
      */
-    public function indexEnseignant(EvaluationRepository $evaluationRepository, Enseignant $enseignant): Response
+    public function indexEnseignant(EvaluationRepository $evaluationRepository): Response
     {
         return $this->render('evaluation/index.html.twig', [
-            'evaluations' => $evaluationRepository->findByEnseignant($enseignant),
+            'evaluations' => $evaluationRepository->findByEnseignant($this->getUser()),
             'self' => 'active',
             'other' => ''
         ]);
@@ -88,19 +88,19 @@ class EvaluationController extends AbstractController
     }
 
     /**
-     * @Route("/others/{id}", name="evaluation_autres", methods={"GET"})
+     * @Route("/autres-evaluations", name="evaluation_autres", methods={"GET"})
      */
-    public function indexAutres(EvaluationRepository $evaluationRepository, Enseignant $enseignant): Response
+    public function indexAutres(EvaluationRepository $evaluationRepository): Response
     {
         return $this->render('evaluation/index.html.twig', [
-            'evaluations' => $evaluationRepository->findOtherEvaluations($enseignant),
+            'evaluations' => $evaluationRepository->findOtherEvaluations($this->getUser()),
             'self' => '',
             'other' => 'active'
         ]);
     }
 
     /**
-     * @Route("/new/{id}", name="evaluation_new", methods={"GET","POST"})
+     * @Route("/nouvelle/{id}", name="evaluation_new", methods={"GET","POST"})
      */
     public function new(Request $request, GroupeEtudiant $groupeConcerne, ValidatorInterface $validator): Response
     {
@@ -186,7 +186,7 @@ class EvaluationController extends AbstractController
     }
 
     /**
-     * @Route("/{id}", name="evaluation_show", methods={"GET"})
+     * @Route("/consulter/{id}", name="evaluation_show", methods={"GET"})
      */
     public function show(Evaluation $evaluation): Response
     {
@@ -196,7 +196,7 @@ class EvaluationController extends AbstractController
     }
 
     /**
-     * @Route("/{id}/edit", name="evaluation_edit", methods={"GET","POST"})
+     * @Route("/modifier/{id}", name="evaluation_edit", methods={"GET","POST"})
      */
     public function edit(Request $request, Evaluation $evaluation, ValidatorInterface $validator): Response
     {
@@ -260,7 +260,7 @@ class EvaluationController extends AbstractController
     }
 
     /**
-     * @Route("/{id}/delete", name="evaluation_delete", methods={"GET"})
+     * @Route("/supprimer/{id}", name="evaluation_delete", methods={"GET"})
      */
     public function delete(Request $request, Evaluation $evaluation): Response
     {
@@ -287,7 +287,7 @@ class EvaluationController extends AbstractController
     }
 
     /**
-     * @Route("/choose/yoyo/yaya/yiyi", name="evaluation_choose_group")
+     * @Route("/choisir-groupe", name="evaluation_choose_group")
      */
     public function chooseGroup(Request $request, GroupeEtudiantRepository $repoGroupe): Response
     {
@@ -319,7 +319,7 @@ class EvaluationController extends AbstractController
     }
 
     /**
-     * @Route("/{idEval}/choose/{idGroupe}", name="evaluation_choose_groups", methods={"GET","POST"})
+     * @Route("/{idEval}/choisir-groupes-et-statuts/{idGroupe}", name="evaluation_choose_groups", methods={"GET","POST"})
      */
     public function chooseGroups(Request $request, $idEval, $idGroupe, StatutRepository $repoStatut, EvaluationRepository $repoEval, GroupeEtudiantRepository $repoGroupe, PointsRepository $repoPoints ): Response
     {
