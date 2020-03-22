@@ -10,7 +10,7 @@ use Doctrine\Migrations\AbstractMigration;
 /**
  * Auto-generated Migration: Please modify to your needs!
  */
-final class Version20200322183756 extends AbstractMigration
+final class Version20200322205446 extends AbstractMigration
 {
     public function getDescription() : string
     {
@@ -22,8 +22,9 @@ final class Version20200322183756 extends AbstractMigration
         // this up() migration is auto-generated, please modify it to your needs
         $this->abortIf($this->connection->getDatabasePlatform()->getName() !== 'mysql', 'Migration can only be executed safely on \'mysql\'.');
 
+        $this->addSql('ALTER TABLE enseignant CHANGE roles roles JSON NOT NULL');
         $this->addSql('ALTER TABLE evaluation CHANGE enseignant_id enseignant_id INT DEFAULT NULL, CHANGE groupe_id groupe_id INT DEFAULT NULL');
-        $this->addSql('ALTER TABLE groupe_etudiant ADD slug VARCHAR(255) NOT NULL, CHANGE tree_root tree_root INT DEFAULT NULL, CHANGE parent_id parent_id INT DEFAULT NULL');
+        $this->addSql('ALTER TABLE groupe_etudiant CHANGE tree_root tree_root INT DEFAULT NULL, CHANGE parent_id parent_id INT DEFAULT NULL');
         $this->addSql('ALTER TABLE partie CHANGE evaluation_id evaluation_id INT DEFAULT NULL, CHANGE intitule intitule VARCHAR(50) DEFAULT NULL, CHANGE bareme bareme DOUBLE PRECISION DEFAULT NULL');
         $this->addSql('ALTER TABLE points CHANGE etudiant_id etudiant_id INT DEFAULT NULL, CHANGE partie_id partie_id INT DEFAULT NULL');
     }
@@ -33,8 +34,9 @@ final class Version20200322183756 extends AbstractMigration
         // this down() migration is auto-generated, please modify it to your needs
         $this->abortIf($this->connection->getDatabasePlatform()->getName() !== 'mysql', 'Migration can only be executed safely on \'mysql\'.');
 
+        $this->addSql('ALTER TABLE enseignant CHANGE roles roles LONGTEXT CHARACTER SET utf8mb4 NOT NULL COLLATE `utf8mb4_bin`');
         $this->addSql('ALTER TABLE evaluation CHANGE enseignant_id enseignant_id INT DEFAULT NULL, CHANGE groupe_id groupe_id INT DEFAULT NULL');
-        $this->addSql('ALTER TABLE groupe_etudiant DROP slug, CHANGE tree_root tree_root INT DEFAULT NULL, CHANGE parent_id parent_id INT DEFAULT NULL');
+        $this->addSql('ALTER TABLE groupe_etudiant CHANGE tree_root tree_root INT DEFAULT NULL, CHANGE parent_id parent_id INT DEFAULT NULL');
         $this->addSql('ALTER TABLE partie CHANGE evaluation_id evaluation_id INT DEFAULT NULL, CHANGE intitule intitule VARCHAR(50) CHARACTER SET utf8mb4 DEFAULT \'NULL\' COLLATE `utf8mb4_unicode_ci`, CHANGE bareme bareme DOUBLE PRECISION DEFAULT \'NULL\'');
         $this->addSql('ALTER TABLE points CHANGE etudiant_id etudiant_id INT DEFAULT NULL, CHANGE partie_id partie_id INT DEFAULT NULL');
     }
