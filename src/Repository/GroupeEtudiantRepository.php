@@ -29,6 +29,7 @@ class GroupeEtudiantRepository extends NestedTreeRepository
         return $this->createQueryBuilder('g')
             ->where('g.estEvaluable = :param')
             ->setParameter('param', true)
+            ->orderBy('g.lft', 'asc')
             ->getQuery()
             ->getResult()
         ;

@@ -318,6 +318,11 @@ class EvaluationController extends AbstractController
       return $this->render('evaluation/choix_groupe.html.twig', ['groupes' => $groupes,'form' => $form->createView()]);
     }
 
+    //Cette fonction est utilisée pour trier les groupes dans le choix des groupes, pour avoir une décomposition par enfant
+    public function cmp ($a, $b) {
+        return ($a->getLft() < $b->getLft() ? -1 : 1 );
+    }
+
     /**
      * @Route("/{idEval}/choisir-groupes-et-statuts/{idGroupe}", name="evaluation_choose_groups", methods={"GET","POST"})
      */
@@ -334,9 +339,14 @@ class EvaluationController extends AbstractController
 
         //On ajoute dans un tableau le groupe concerné ainsi que tous ses enfants, pour pouvoir choisir ceux sur lesquels ont veut des statistiques
         $choixGroupe[] = $groupeConcerne;
+
+
         foreach ($this->getDoctrine()->getRepository(GroupeEtudiant::class)->children($groupeConcerne, false) as $enfant) {
           $choixGroupe[] = $enfant;
         }
+
+        //Tri du tableau de choix des groupes pour pouvoir avoir une "décomposition" par enfants dans la vue
+        usort($choixGroupe, [$this, "cmp"]);
 
         //Création du formulaire pour choisir les groupes / status sur lesquels on veut des statistiques
         $form = $this->createFormBuilder()
