@@ -39,7 +39,9 @@
       <td>
         <a href="{{ path('enseignant_show', {'id': enseignant.id}) }}"><i class="icon-eye" data-toggle='tooltip' title='Consulter {{ enseignant.prenom }} {{ enseignant.nom }}'></i></a>
         <a href="{{ path('enseignant_edit', {'id': enseignant.id}) }}"><i class="icon-pencil-1" data-toggle='tooltip' title='Modifier {{ enseignant.prenom }} {{ enseignant.nom }}'></i></a>
+        {% if enseignant.id != app.user.id %}
         <a href="#" onclick="supprimerEnseignant('{{ path('enseignant_delete', {'id': enseignant.id}) }}')"><i class="icon-trash" data-toggle='tooltip' title='Supprimer {{ enseignant.prenom }} {{ enseignant.nom }}'></i></a>
+        {% endif %}
       </td>
     </tr>
     {% endfor %}

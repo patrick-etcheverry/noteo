@@ -124,7 +124,7 @@ class EnseignantController extends AbstractController
   */
   public function delete(Request $request, Enseignant $enseignant): Response
   {
-      $this->getUser()->checkAdmin();
+      $this->getUser()->checkNotAuthorized($enseignant);
 
       //Pour qu'un administrateur ne supprime pas son propre profil
       if($this->getUser()->getId() != $enseignant->getId()) {
