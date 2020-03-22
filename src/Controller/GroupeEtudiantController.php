@@ -15,7 +15,7 @@ use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 
 /**
- * @Route("/groupes")
+ * @Route("/groupe")
  */
 class GroupeEtudiantController extends AbstractController
 {
@@ -148,7 +148,7 @@ class GroupeEtudiantController extends AbstractController
     }
 
     /**
-     * @Route("/new", name="groupe_etudiant_new", methods={"GET","POST"})
+     * @Route("/nouveau", name="groupe_etudiant_new", methods={"GET","POST"})
      */
     public function new(Request $request): Response
     {
@@ -213,7 +213,7 @@ class GroupeEtudiantController extends AbstractController
     }
 
     /**
-     * @Route("/{id}/show", name="groupe_etudiant_show", methods={"GET"})
+     * @Route("/consulter/{id}", name="groupe_etudiant_show", methods={"GET"})
      */
     public function show(GroupeEtudiant $groupeEtudiant): Response
     {
@@ -226,7 +226,7 @@ class GroupeEtudiantController extends AbstractController
     }
 
     /**
-     * @Route("/{id}/edit", name="groupe_etudiant_edit", methods={"GET","POST"})
+     * @Route("/modifier/{id}", name="groupe_etudiant_edit", methods={"GET","POST"})
      */
     public function edit(Request $request, GroupeEtudiant $groupeEtudiant): Response
     {
@@ -304,7 +304,7 @@ class GroupeEtudiantController extends AbstractController
     }
 
     /**
-     * @Route("/{id}/delete", name="groupe_etudiant_delete", methods={"GET"})
+     * @Route("/supprimer/{id}", name="groupe_etudiant_delete", methods={"GET"})
      */
     public function delete(Request $request, GroupeEtudiant $groupeEtudiant): Response
     {
@@ -346,7 +346,7 @@ class GroupeEtudiantController extends AbstractController
       }
 
       /**
-       * @Route("/{id}/new/SousGroupe", name="groupe_etudiant_new_sousGroupe", methods={"GET","POST"})
+       * @Route("/nouveau/sous-groupe/{id}", name="groupe_etudiant_new_sousGroupe", methods={"GET","POST"})
        */
       public function NewSousFroupe(GroupeEtudiant $groupeEtudiantParent, Request $request): Response
       {
