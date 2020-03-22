@@ -18,9 +18,11 @@
     {% set entity = form.groupes.vars.choices[index].data %}
       <tr>
           <td>
-              {% for i in 0.. entity.lvl %}
-                  &emsp;
-              {% endfor %}
+              {% if groupe.lvl > 0 %}
+                  {% for i in 1.. groupe.lvl %}
+                      &emsp;
+                  {% endfor %}
+              {% endif %}
               {{entity.nom}}
           </td>
           <td>{{ entity.etudiants|length }}</td>

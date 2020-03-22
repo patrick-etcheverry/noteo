@@ -7,6 +7,7 @@ use App\Entity\GroupeEtudiant;
 use App\Form\GroupeEtudiantType;
 use App\Form\SousGroupeEtudiantType;
 use App\Form\GroupeEtudiantEditType;
+use App\Repository\GroupeEtudiantRepository;
 use Gedmo\Tree\Entity\Repository\NestedTreeRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -22,128 +23,11 @@ class GroupeEtudiantController extends AbstractController
     /**
      * @Route("/", name="groupe_etudiant_index", methods={"GET"})
      */
-    public function index(): Response
+    public function index(GroupeEtudiantRepository $repo): Response
     {
-
       $this->getUser()->checkUser();
-
-
-        // On prépare un tableau d'options qui servera à paramètrer l'affichage de notre arbre
-        $options = array(
-            'decorate' => true,
-            'childOpen' => '<tr>',
-            'childClose' => '</tr>',
-            'nodeDecorator' => function($node) {
-
-                  /* Le but de cette fonction est de déterminer comment sera affiché chaque élément (node) de l'arborescence
-                  sachant que $node est un groupe, la fonction est appliquée à chaque élément qui sera passé en paramètre, et
-                  elle est appliquée à tous les groupes de l'arborescence */
-
-                  /* On prépare un répository pour effectuer quelques requetes pour des éléments qui ne sont pas contenus dans l'élement
-                  $node passé en paramètre (nottament les attributs enseignant et étudiants) */
-                  $repo = $this->getDoctrine()->getRepository(GroupeEtudiant::class);
-
-                  /////NOM/////
-                  $indentation = "";
-
-                  //Cette boucle détermine l'indentation du groupe en fonction de son niveau de profondeur
-                  for ($i=0; $i < $node['lvl'] ; $i++) {
-                    $indentation .= "&emsp;"; // $emsp désigne un ajout de 4 caractères espace
-                  }
-
-                  $nom = "<td>" . $indentation . $node['nom'] . "</td>";
-
-                  /////EFFECTIF/////
-                  $effectif = "<td>" . count($node['etudiants']) . "</td>";
-
-                  /////DESCRIPTION/////
-                  $description =  "<td>" . $node['description'] . "</td>";
-
-                  /////ENSEIGNANT/////
-                  $enseignant = "<td>" . $node['enseignant']['prenom'] . " " . $node['enseignant']['nom'] . "</td>";
-
-                  /////estEvaluable/////
-                  if ($node['estEvaluable']) {
-                    $evaluable = "<td> Oui </td>";
-                  }
-                  else {
-                    $evaluable = "<td> Non </td>";
-                  }
-
-                  /////ACTIONS/////
-                  /////Cette section affiche les boutons d'actions liés à chaque groupes
-
-                    //Consulter
-                    $url = $this->generateUrl('groupe_etudiant_show', [ 'id' => $node['id'] ]);
-                    $show = " <a href='$url'><i class='icon-eye' data-toggle='tooltip' title='Consulter ".$node['nom']."'></i></a>";
-
-                    if ($this->getUser()->isAdmin()) {
-                      //Créer un sous-groupe
-                      $url = $this->generateUrl('groupe_etudiant_new_sousGroupe', [ 'id' => $node['id'] ]);
-                      $sousGroupe = "<a href='$url'><i class='icon-plus' data-toggle='tooltip' title='Créer un sous-groupe à partir de ".$node['nom']."'></i></a>";
-                    }
-                    else {
-                      $sousGroupe = NULL;
-                    }
-
-
-                    //Créer une évaluation (seulement disponible si le groupe est évaluable)
-                    if ($node['estEvaluable']) {
-                      $url = $this->generateUrl('evaluation_new', [ 'id' => $node['id'] ]);
-                      $evalSimple = "<a href='$url'><i class='icon-eval-simple' data-toggle='tooltip' title='Créer une évaluation pour ".$node['nom']."'></i></a>";
-                      // $evalParParties = "<a href='#'><i class='icon-eval-composee'></i></a>";
-                    }
-                    else {
-                      $evalSimple = NULL;
-                    //  $evalParParties = "";
-                    }
-
-                    //Modifier
-                    if ($this->getUser()->isAdmin()) {
-                    $url = $this->generateUrl('groupe_etudiant_edit', [ 'id' => $node['id'] ]);
-                    $edit = "<a href=" . $url .  "><i class='icon-pencil-1' data-toggle='tooltip' title='Modifier ".$node['nom']."'></i></a>";
-                    }
-                    else {
-                      $edit = NULL;
-                    }
-
-                    //Supprimer
-                    if ($this->getUser()->isAdmin()) {
-                    $url = $this->generateUrl('groupe_etudiant_delete', [ 'id' => $node['id'] ]);
-                    $delete = "<a href='$url' onclick='EcritureModale(\"$url\")' data-toggle='modal'><i class='icon-trash' data-toggle='tooltip' title='Supprimer ".$node['nom']."'></i></a>";
-                    }
-                    else {
-                      $delete = NULL;
-                    }
-                    //Mise à la suite des actions en une seule chaîne
-                    $actions = "<td>" . $show  . $sousGroupe . $edit /*. $evalParParties */. $delete . $evalSimple . "</td>";
-
-                  //Mise à la suite du contenu de toutes les colonnes du tableau en une seule chaîne
-                  return $nom . $effectif . $description . $enseignant . $evaluable . $actions;
-            }
-        );
-
-        //Cette variable représente le groupe des étudiants non affectés à un groupe de haut niveau
-        $GroupeEtudiantsNonAffectés = "Etudiants non affectés";
-
-        /* Cette requette personnalisée nous permet de récupérer tous les groupes, dans l'ordre de la hierarchie,
-        sans le groupe de étudiants non affectés */
-        $query = $this->getDoctrine()->getManager()
-          ->createQueryBuilder()
-          ->select('ge, en, et')
-          ->from('App\Entity\GroupeEtudiant', 'ge')
-          ->join('ge.enseignant', 'en')
-          ->leftjoin('ge.etudiants', 'et')
-          ->orderBy('ge.root, ge.lft', 'ASC')
-          ->where("ge.nom != '$GroupeEtudiantsNonAffectés'")
-          ->getQuery()
-          ;
-
-        //On utilise la fonction buildtree qui va créer l'arbre à afficher avec la requete personnalisée et les options que l'on a choisies précédemment
-        $htmlTree = $this->getDoctrine()->getRepository(GroupeEtudiant::class)->buildTree($query->getArrayResult(), $options);
-
         return $this->render('groupe_etudiant/index.html.twig', [
-            'tree' => $htmlTree
+            'groupes' => $repo->findAllOrderedAndWithoutSpace()
         ]);
     }
 
