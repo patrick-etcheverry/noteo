@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Entity\Etudiant;
+use App\Entity\GroupeEtudiant;
 use App\Form\EtudiantType;
 use App\Repository\EtudiantRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -30,11 +31,15 @@ class EtudiantController extends AbstractController
      */
     public function new(Request $request): Response
     {
+        $groupeRepository = $this->getDoctrine()->getRepository(GroupeEtudiant::class);
+        $groupeEtudiantsNonAffectes = $groupeRepository->findById(1);
+
         $etudiant = new Etudiant();
         $form = $this->createForm(EtudiantType::class, $etudiant);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
+            $etudiant->addGroupe($groupeEtudiantsNonAffectes[0]);
             $entityManager = $this->getDoctrine()->getManager();
             $entityManager->persist($etudiant);
             $entityManager->flush();
