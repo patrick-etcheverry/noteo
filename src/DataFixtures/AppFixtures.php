@@ -234,11 +234,13 @@ class AppFixtures extends Fixture
         $statut1->setNom('Boursiers');
         $statut1->setDescription('Les étudiants les moins riches de la promotion S3');
         $statut1->setEnseignant($enseignant);
+        $statut1->setSlug($statut1->slugify($statut1->getNom()));
 
         $statut2 = new Statut();
         $statut2->setNom('Blonds');
         $statut2->setDescription('Les moins beaux hommes sur terre');
         $statut2->setEnseignant($enseignant);
+        $statut2->setSlug($statut2->slugify($statut2->getNom()));
 
         $manager->persist($statut1);
         $manager->persist($statut2);

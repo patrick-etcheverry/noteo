@@ -28,10 +28,10 @@
                 <td>{{ statut.description }}</td>
                 <td>{{ statut.enseignant.nom}} {{ statut.enseignant.prenom}}</td>
                 <td>
-                    <a href="{{ path('statut_show', {'id': statut.id}) }}"><i class="icon-eye" data-toggle='tooltip' title='Consulter {{ statut.nom }}'></i></a>
+                    <a href="{{ path('statut_show', {'slug': statut.slug}) }}"><i class="icon-eye" data-toggle='tooltip' title='Consulter {{ statut.nom }}'></i></a>
                     {% if statut.enseignant.id == app.user.id or is_granted('ROLE_ADMIN') %}
-                    <a href="{{ path('statut_edit', {'id': statut.id}) }}"><i class="icon-pencil-1" data-toggle='tooltip' title='Modifier {{ statut.nom }}'></i></a>
-                    <a href="#" onclick="supprimerStatutEtudiant('{{ path('statut_delete', {'id': statut.id}) }}')"><i class="icon-trash" data-toggle='tooltip' title='Supprimer {{ statut.nom }}'></i></a>
+                    <a href="{{ path('statut_edit', {'slug': statut.slug}) }}"><i class="icon-pencil-1" data-toggle='tooltip' title='Modifier {{ statut.nom }}'></i></a>
+                    <a href="#" onclick="supprimerStatutEtudiant('{{ path('statut_delete', {'slug': statut.slug}) }}')"><i class="icon-trash" data-toggle='tooltip' title='Supprimer {{ statut.nom }}'></i></a>
                     {% endif %}
                 </td>
             </tr>
@@ -43,7 +43,7 @@
 {% else %}
 
 <div class="info">
-  <h2 class="h4 mb-0 text-gray-800">Vous n'avez aucun statut</h1>
+  <h1 class="h4 mb-0 text-gray-800">Vous n'avez aucun statut</h1>
 </div>
 
 <div class='bouton'>
