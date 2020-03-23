@@ -107,14 +107,13 @@
     var date = document.getElementById("date").innerHTML
 
     var capture;
+    var doc = new jsPDF('p','pt','a4');
 
     html2canvas($("#lesStats"),{
       useCORS:true,
       scale:window.devicePixelRatio,
       onrendered:function(canvas){
         capture = canvas.toDataURL('image/png');
-
-        var doc = new jsPDF('p','pt','a4');
 
         doc.setFont('calibri')
         doc.text("Nom de l'évaluation :",20,30)
@@ -123,10 +122,10 @@
         doc.text(nomGroupe,260,60)
         doc.text("Date :",20,90)
         doc.text(date,260,90)
-        doc.addImage(capture,'PNG',20,100);
-
-
-        doc.save(nomEval);
+        doc.addPage()
+        doc.addHTML($("#lesStats"),function() {
+          doc.save(nomEval);
+        });
       }
     })
   }
