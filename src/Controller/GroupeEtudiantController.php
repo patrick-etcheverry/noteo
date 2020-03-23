@@ -47,7 +47,7 @@ class GroupeEtudiantController extends AbstractController
         //Si le nombre de groupes est supérieur à 1 il y a un groupe de haut niveau créé : on ne peut alors plus en créer
         // on jette une erreur car l'utilisateur n'est pas censé avoir accès à cette fonctionnalité dans ce cas la
         if ($nbGroupesDansAppli > 1) {
-            throw new AccessDeniedException('Vous n\'avez pas accès à cette fonctionnalité pour le moment');
+            throw new AccessDeniedException('Accès refusé');
         }
 
         $groupeEtudiant = new GroupeEtudiant();
