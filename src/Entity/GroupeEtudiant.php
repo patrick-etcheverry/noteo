@@ -90,7 +90,7 @@ class GroupeEtudiant
 
     /**
      * @ORM\Column(type="boolean")
-     * @Assert\NotBlank
+     * @Assert\NotNull
      */
     private $estEvaluable;
 
