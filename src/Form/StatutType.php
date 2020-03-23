@@ -22,8 +22,7 @@ class StatutType extends AbstractType
             ->add('nom')
             ->add('description', TextareaType::class, [
               'attr' => [
-                'placeholder' => 'Une belle description',
-                'rows' => 6
+                'rows' => 3
               ]
             ])
             ->add('lesEtudiantsAAjouter', EntityType::class, [

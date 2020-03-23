@@ -23,7 +23,7 @@ class SousGroupeEtudiantType extends AbstractType
 
           ->add('description', TextareaType::class, [
             'attr' => [
-              'rows' => 6
+              'rows' => 3
             ]
           ])
           ->add('estEvaluable', ChoiceType::class, [

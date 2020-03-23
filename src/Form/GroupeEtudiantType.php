@@ -19,16 +19,10 @@ class GroupeEtudiantType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
-            ->add('nom', TextType::class, [
-              'attr' => [
-                'placeholder' => 'DUT Info'
-              ]
-            ])
-
+            ->add('nom')
             ->add('description', TextareaType::class, [
               'attr' => [
-                'placeholder' => 'Une belle description',
-                'rows' => 6
+                'rows' => 3
               ]
             ])
             ->add('estEvaluable', ChoiceType::class, [
