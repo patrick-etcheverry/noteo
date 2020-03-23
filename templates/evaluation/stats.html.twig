@@ -17,20 +17,20 @@
   <tbody>
     <tr>
       <th class="intitule"><label for="evaluation_nom" >Nom de l'évaluation</label></th>
-      <td >{{evaluation.nom}}</td>
+      <td id="nomEval">{{evaluation.nom}}</td>
     </tr>
     <tr>
       <th class="intitule"><label for="evaluation_groupe" >Groupe</label></th>
-      <td >{{evaluation.groupe.nom}}</td>
+      <td id="nomGroupe">{{evaluation.groupe.nom}}</td>
     </tr>
     <tr>
       <th class="intitule"><label for="evaluation_date" >Date</label></th>
-      <td >{{evaluation.date}}</td>
+      <td id="date">{{evaluation.date}}</td>
     </tr>
     <tr>
       <th class="intitule"><label >Actions</label></th>
       <td>
-        <a href="#"><i style="font-size: 25px;" class="icon-file-pdf"></i></a>
+        <a href="#"><i style="font-size: 25px;" class="icon-file-pdf" onclick="genPDF()"></i></a>
         {% if evaluation.enseignant.id == app.user.id or is_granted('ROLE_ADMIN') %}
         <a href="{{path("envoi_mail", {id:evaluation.id})}}"><i style="font-size: 25px;" class="icon-mail"></i></a>
         {% endif %}
@@ -43,9 +43,11 @@
   <span style="font-size:15px" class="badge badge-pill badge-danger">Les statistiques ne comportent pas les étudiants démissionaires</span>
 </div>
 <br>
+<div id="lesStats">
 {% if groupes is not empty %}
 
 {% for groupe in groupes %}
+
 
 <br>
 <div class="card">
@@ -79,6 +81,7 @@
 {% endfor %}
 
 {% else %}
+</div>
 
 <div class="info">
   <h2 class="h4 mb-0 text-gray-800">Veuillez sélectionner des groupes ou des statuts sur lesquels voir des statistiques </h2>
@@ -99,14 +102,16 @@
   var sectionCapturer = document.querySelector("#pageContent");
 
   function genPDF(){
+
     var capture;
+
     html2canvas($("#pageContent"),{
       useCORS:true,
       onrendered:function(canvas){
         capture = canvas.toDataURL('image/png');
 
         var doc = new jsPDF('p','pt','a4');
-        doc.addImage(capture,'PNG',10,10,600,600);
+        doc.addImage(capture,'PNG',1,1);
         doc.save('test.pdf');
       }
     })
