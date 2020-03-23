@@ -44,7 +44,7 @@ class EvaluationController extends AbstractController
     }
 
     /**
-     * @Route("/previsualisation-mail/{id}", name="previsualisation_mail", methods={"GET"})
+     * @Route("/previsualisation-mail/{slug}", name="previsualisation_mail", methods={"GET"})
      */
     public function previsualisationMail(Evaluation $evaluation): Response
     {
@@ -90,7 +90,7 @@ class EvaluationController extends AbstractController
        }
 
     /**
-     * @Route("/envoi-mail/{id}", name="envoi_mail", methods={"GET"})
+     * @Route("/envoi-mail/{slug}", name="envoi_mail", methods={"GET"})
      */
     public function envoiMail(Request $request, EvaluationRepository $evaluationRepository, Evaluation $evaluation, PointsRepository $pointsRepository, \Swift_Mailer $mailer): Response
     {
