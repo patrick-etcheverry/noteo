@@ -8,7 +8,7 @@
 
 {% if enseignants is not empty %}
 <div class='bouton'>
-  <button class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm" onclick="location.href='{{ path('enseignant_new') }}'">Créer un enseignant</button>
+  <a class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm" href="{{ path('enseignant_new') }}">Créer un enseignant</a>
 </div>
 <table class="table" id="table">
   <thead>
@@ -53,7 +53,7 @@
   </div>
 
   <div class='bouton'>
-    <button class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm" onclick="location.href='{{ path('enseignant_new') }}'">Créer un enseignant</button>
+    <a class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm" href="{{ path('enseignant_new') }}">Créer un enseignant</a>
   </div>
   {% endif %}
 

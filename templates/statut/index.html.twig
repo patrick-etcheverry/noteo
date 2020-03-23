@@ -9,7 +9,7 @@
 {% if statuts is not empty %}
 
 <div class='bouton'>
-    <button class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm" onclick="location.href='{{ path('statut_new') }}'">Créer un statut étudiant</button>
+    <a class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm" href="{{ path('statut_new') }}">Créer un statut étudiant</a>
 </div>
     <table class="table" id="table">
         <thead>
@@ -47,7 +47,7 @@
 </div>
 
 <div class='bouton'>
-  <button class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm" onclick="location.href='{{ path('statut_new') }}'">Créer un statut étudiant</button>
+  <a class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm" onclick="location.href='{{ path('statut_new') }}'">Créer un statut étudiant</a>
 </div>
 
 {% endif %}

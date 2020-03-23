@@ -6,7 +6,7 @@
 
 {% block contenu %}
 <div class='bouton'>
-  <button class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm" onclick="location.href='{{ path('etudiant_edit', {'id': etudiant.id}) }}'">Modifier l'étudiant</button>
+  <a class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm" href="{{ path('etudiant_edit', {'id': etudiant.id}) }}">Modifier l'étudiant</a>
 </div>
     <table class="table">
         <tbody>
