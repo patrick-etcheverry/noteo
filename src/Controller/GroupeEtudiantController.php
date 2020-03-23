@@ -34,20 +34,40 @@ class GroupeEtudiantController extends AbstractController
     /**
      * @Route("/nouveau", name="groupe_etudiant_new", methods={"GET","POST"})
      */
-    public function new(Request $request): Response
+    public function new(Request $request, GroupeEtudiantRepository $repo): Response
     {
 
         $this->getUser()->checkAdmin();
 
+        //On compte le nombre de groupes présents dans l'application
+        $nbGroupesDansAppli = count($repo->findAll());
+
+        //Si le nombre de groupes est supérieur à 1 il y a un groupe de haut niveau créé : on ne peut alors plus en créer
+        // on jette une erreur car l'utilisateur n'est pas censé avoir accès à cette fonctionnalité dans ce cas la
+        if ($nbGroupesDansAppli > 1) {
+            throw new AccessDeniedException('Vous n\'avez pas accès à cette fonctionnalité pour le moment');
+        }
 
         $groupeEtudiant = new GroupeEtudiant();
+        $groupeEtudiant->setEnseignant($this->getUser());
         $form = $this->createForm(GroupeEtudiantType::class, $groupeEtudiant);
         $form->handleRequest($request);
 
 
         if ($form->isSubmitted() && $form->isValid()) {
 
+
             $entityManager = $this->getDoctrine()->getManager();
+
+            //Si le groupe des étudiants non affectés n'existe pas déjà on le crée
+            if ($repo->findOneBySlug('etudiants-non-affectes') == null) {
+                $nonAffectes = new GroupeEtudiant();
+                $nonAffectes->setNom("Etudiants non affectés");
+                $nonAffectes->setDescription("Tous les étudiants ayant été retirés d'un groupe de haut niveau et ne faisant partie d'aucun groupe");
+                $nonAffectes->setEnseignant($this->getUser());
+                $nonAffectes->setEstEvaluable(false);
+                $entityManager->persist($nonAffectes);
+            }
 
             $groupeEtudiant->setEnseignant($this->getUser());
 

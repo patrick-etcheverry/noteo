@@ -32,14 +32,14 @@ class EtudiantController extends AbstractController
     public function new(Request $request): Response
     {
         $groupeRepository = $this->getDoctrine()->getRepository(GroupeEtudiant::class);
-        $groupeEtudiantsNonAffectes = $groupeRepository->findById(1);
+        $groupeEtudiantsNonAffectes = $groupeRepository->findOneBySlug('etudiants-non-affectes');
 
         $etudiant = new Etudiant();
         $form = $this->createForm(EtudiantType::class, $etudiant);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $etudiant->addGroupe($groupeEtudiantsNonAffectes[0]);
+            $etudiant->addGroupe($groupeEtudiantsNonAffectes);
             $entityManager = $this->getDoctrine()->getManager();
             $entityManager->persist($etudiant);
             $entityManager->flush();
