@@ -90,6 +90,30 @@
 
 {% block javascripts %}
 
+<script type="text/javascript" src="{{asset("js/jspdf.min.js")}}"></script>
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/0.4.1/html2canvas.min.js"></script>
+
+<!-- Patie dédié au la génération du pdf -->
+<script type="text/javascript">
+
+  var sectionCapturer = document.querySelector("#pageContent");
+
+  function genPDF(){
+    var capture;
+    html2canvas($("#pageContent"),{
+      useCORS:true,
+      onrendered:function(canvas){
+        capture = canvas.toDataURL('image/png');
+
+        var doc = new jsPDF('p','pt','a4');
+        doc.addImage(capture,'PNG',10,10,600,600);
+        doc.save('test.pdf');
+      }
+    })
+  }
+
+</script>
+
 <script type="text/javascript">
 
 {% for groupe in groupes%}
