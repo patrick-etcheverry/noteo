@@ -21,7 +21,8 @@ class Statut
     private $id;
 
     /**
-     * @ORM\Column(type="string", length=25)
+     * @ORM\Column(type="string", length=255)
+     * @Assert\Length(max=255)
      * @Assert\NotBlank
      */
     private $nom;
