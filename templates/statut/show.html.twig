@@ -5,7 +5,11 @@
 {% block statutsEtudiants %}active{% endblock %}
 
 {% block contenu %}
-
+{% if statut.enseignant == app.user %}
+<div class='bouton'>
+  <button class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm" onclick="location.href='{{ path('statut_edit', {'slug': statut.slug}) }}'">Modifier le statut</button>
+</div>
+{% endif %}
     <table class="table">
         <tbody>
             <tr>

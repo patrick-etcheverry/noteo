@@ -77,7 +77,9 @@ class EtudiantController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             $this->getDoctrine()->getManager()->flush();
 
-            return $this->redirectToRoute('etudiant_index');
+            return $this->redirectToRoute('etudiant_show', [
+              'id' => $etudiant->getId()
+            ]);
         }
 
         return $this->render('etudiant/edit.html.twig', [

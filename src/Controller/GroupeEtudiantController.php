@@ -209,7 +209,9 @@ class GroupeEtudiantController extends AbstractController
           $this->getDoctrine()->getManager()->flush();
 
 
-          return $this->redirectToRoute('groupe_etudiant_index');
+          return $this->redirectToRoute('groupe_etudiant_show',[
+            'slug' => $groupeEtudiant->getSlug()
+          ]);
         }
 
         return $this->render('groupe_etudiant/edit.html.twig', [

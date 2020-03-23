@@ -96,7 +96,9 @@ class StatutController extends AbstractController
 
             $this->getDoctrine()->getManager()->flush();
 
-            return $this->redirectToRoute('statut_index');
+            return $this->redirectToRoute('statut_show',[
+              'slug' => $statut->getSlug()
+            ]);
         }
 
         return $this->render('statut/edit.html.twig', [

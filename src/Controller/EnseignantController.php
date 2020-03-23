@@ -118,7 +118,9 @@ class EnseignantController extends AbstractController
       $enseignant->setPassword($mdpEncode);
       $this->getDoctrine()->getManager()->flush();
 
-      return $this->redirectToRoute('enseignant_index');
+      return $this->redirectToRoute('enseignant_show',[
+        'id' => $enseignant->getId()
+      ]);
     }
 
     return $this->render('enseignant/edit.html.twig', [

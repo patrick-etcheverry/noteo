@@ -5,7 +5,11 @@
 {% block groupes %}active{% endblock %}
 
 {% block contenu %}
-
+{% if is_granted('ROLE_ADMIN') %}
+<div class='bouton'>
+  <button class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm" onclick="location.href='{{ path('groupe_etudiant_edit', {'slug': groupe_etudiant.slug}) }}'">Modifier le groupe</button>
+</div>
+{% endif %}
     <table class="table">
         <tbody>
             <tr>

@@ -5,6 +5,9 @@
 {% block etudiants %}active{% endblock %}
 
 {% block contenu %}
+<div class='bouton'>
+  <button class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm" onclick="location.href='{{ path('etudiant_edit', {'id': etudiant.id}) }}'">Modifier l'étudiant</button>
+</div>
     <table class="table">
         <tbody>
             <tr>
