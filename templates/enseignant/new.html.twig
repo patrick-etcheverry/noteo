@@ -5,5 +5,5 @@
 {% block enseignants %}active{% endblock %}
 
 {% block contenu %}
-    {{ include('enseignant/_form.html.twig') }}
+    {{ include('enseignant/_form.html.twig', {'button_label': 'Créer l\'enseignant'}) }}
 {% endblock %}

@@ -11,7 +11,7 @@
 {% block collapsed %}{% endblock %}
 
 {% block contenu %}
-    {{ include('evaluation/_form.html.twig') }}
+    {{ include('evaluation/_form.html.twig', {'button_label': 'Créer l\'évaluation'}) }}
 {% endblock %}
 
 {% block datatables %}

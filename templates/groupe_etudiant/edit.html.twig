@@ -5,7 +5,7 @@
 {% block groupes %}active{% endblock %}
 
 {% block contenu %}
-    {{ include('groupe_etudiant/_update_form.html.twig') }}
+    {{ include('groupe_etudiant/_form.html.twig', {'button_label': 'Enregistrer'}) }}
 
     <!-- Modale du ? de évaluable -->
     <div class="modal fade" id="HelpEvaluable" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">

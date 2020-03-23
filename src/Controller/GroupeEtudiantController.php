@@ -216,7 +216,8 @@ class GroupeEtudiantController extends AbstractController
 
         return $this->render('groupe_etudiant/edit.html.twig', [
             'form' => $form->createView(),
-            'groupe_etudiant' => $groupeEtudiant
+            'groupe_etudiant' => $groupeEtudiant,
+            'edit' => true
         ]);
     }
 
@@ -283,7 +284,7 @@ class GroupeEtudiantController extends AbstractController
 
           $groupeEtudiant->setEnseignant($this->getUser());
 
-          foreach ($form->get('etudiants')->getData() as $key => $etudiant) {
+          foreach ($form->get('etudiantsAAjouter')->getData() as $key => $etudiant) {
            $groupeEtudiant->addEtudiant($etudiant);
           }
 
@@ -296,7 +297,8 @@ class GroupeEtudiantController extends AbstractController
 
         return $this->render('groupe_etudiant/newSousGroupe.html.twig', [
             'form' => $form->createView(),
-            'nomParent' => $groupeEtudiantParent->getNom()
+            'nomParent' => $groupeEtudiantParent->getNom(),
+            'edit' => false
         ]);
       }
 

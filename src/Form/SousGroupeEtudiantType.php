@@ -35,7 +35,7 @@ class SousGroupeEtudiantType extends AbstractType
             ]
           ])
 
-          ->add('etudiants', EntityType::class, [
+          ->add('etudiantsAAjouter', EntityType::class, [
             'class' => Etudiant::Class, //On veut choisir des étudiants
             'choice_label' => false, // On n'affichera pas d'attribut de l'entité à côté du bouton pour aider au choix car on liste les entités nous même
             'mapped' => false, // Pour que l'attribut ne soit pas immédiatement mis en BD mais soit récupérable après validation

@@ -2,6 +2,12 @@
 
 <table align="center" class="table">
   <tbody>
+    {% if edit == false %}
+    <tr>
+      <th class="intitule">Nom du groupe parent</th>
+      <td >{{ nomParent }}</td>
+    </tr>
+    {% endif %}
     <tr>
       <th class="intitule"><label for="groupe_etudiant_nom" class="required">Nom</label></th>
       <td >{{form_errors(form.nom)}}{{ form_widget(form.nom) }}</td>
@@ -28,24 +34,24 @@
   </thead>
 
   <tbody>
-  {% for etudiant in form.etudiantsAAjouter %}
+    {% for etudiant in form.etudiantsAAjouter %}
 
     {# store index of the category in a variable #}
     {% set index = etudiant.vars.value %}
 
     {# get entity object from its index in the Categories Field #}
     {% set entity = form.etudiantsAAjouter.vars.choices[index].data %}
-      <tr>
-          <td>{{entity.nom}}</td>
-          <td>{{entity.prenom}}</td>
-          <td>{{entity.mail}}</td>
-          <td>{{form_widget(form.etudiantsAAjouter[index])}}</td>
-      </tr>
-  {% endfor %}
+    <tr>
+      <td>{{entity.nom}}</td>
+      <td>{{entity.prenom}}</td>
+      <td>{{entity.mail}}</td>
+      <td>{{form_widget(form.etudiantsAAjouter[index])}}</td>
+    </tr>
+    {% endfor %}
   </tbody>
 </table>
 
-
+{% if edit %}
 <br> <h1 class="h4 mb-0 text-gray-800">Supprimer des étudiants du sous groupe</h1> <br>
 
 <table class="table" id="tableSupprimer">
@@ -57,22 +63,23 @@
   </thead>
 
   <tbody>
-  {% for etudiant in form.etudiantsASupprimer %}
+    {% for etudiant in form.etudiantsASupprimer %}
 
     {# store index of the category in a variable #}
     {% set index = etudiant.vars.value %}
 
     {# get entity object from its index in the Categories Field #}
     {% set entity = form.etudiantsASupprimer.vars.choices[index].data %}
-      <tr>
-          <td>{{entity.nom}}</td>
-          <td>{{entity.prenom}}</td>
-          <td>{{entity.mail}}</td>
-          <td>{{form_widget(form.etudiantsASupprimer[index])}}</td>
-      </tr>
-  {% endfor %}
+    <tr>
+      <td>{{entity.nom}}</td>
+      <td>{{entity.prenom}}</td>
+      <td>{{entity.mail}}</td>
+      <td>{{form_widget(form.etudiantsASupprimer[index])}}</td>
+    </tr>
+    {% endfor %}
   </tbody>
 </table>
+{% endif  %}
 
 
 
