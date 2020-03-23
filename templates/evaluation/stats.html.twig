@@ -108,27 +108,29 @@
 
     var capture;
     var doc = new jsPDF('p','pt','a4');
+    doc.setFont('calibri')
+    doc.text("Nom de l'évaluation :",20,30)
+    doc.text(nomEval,260,30)
+    doc.text("Groupe :",20,60)
+    doc.text(nomGroupe,260,60)
+    doc.text("Date :",20,90)
+    doc.text(date,260,90)
+    doc.addPage()
 
-    html2canvas($("#lesStats"),{
-      useCORS:true,
-      scale:window.devicePixelRatio,
-      onrendered:function(canvas){
-        capture = canvas.toDataURL('image/png');
-
-        doc.setFont('calibri')
-        doc.text("Nom de l'évaluation :",20,30)
-        doc.text(nomEval,260,30)
-        doc.text("Groupe :",20,60)
-        doc.text(nomGroupe,260,60)
-        doc.text("Date :",20,90)
-        doc.text(date,260,90)
+    $(".lesStats").each(function()
+    { html2canvas(this,
+      {
+        useCORS:true,
+        onrendered:function(canvas)
+        {
+          capture = canvas.toDataURL('image/png');
+        }
+        doc.addImage(capture,'PNG',1,1);
         doc.addPage()
-        doc.addHTML($("#lesStats"),function() {
-          doc.save(nomEval);
-        });
-      }
+      })
     })
   }
+  doc.save(nomEval)
 
 </script>
 
