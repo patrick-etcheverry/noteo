@@ -7,6 +7,7 @@ use App\Entity\GroupeEtudiant;
 use App\Form\GroupeEtudiantType;
 use App\Form\SousGroupeEtudiantType;
 use App\Form\GroupeEtudiantEditType;
+use App\Repository\EtudiantRepository;
 use App\Repository\GroupeEtudiantRepository;
 use Gedmo\Tree\Entity\Repository\NestedTreeRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -134,7 +135,7 @@ class GroupeEtudiantController extends AbstractController
     /**
      * @Route("/modifier/{slug}", name="groupe_etudiant_edit", methods={"GET","POST"})
      */
-    public function edit(Request $request, GroupeEtudiant $groupeEtudiant): Response
+    public function edit(Request $request, GroupeEtudiant $groupeEtudiant, EtudiantRepository $repoEtud): Response
     {
       $this->checkUser();
 
@@ -156,9 +157,13 @@ class GroupeEtudiantController extends AbstractController
         $groupeAPartirDuquelAjouterEtudiants = $groupeEtudiant->getParent();
       }
 
+      //On récupère la liste des étudiants ajoutables. Elle contiendra tous les étudiants faisant partie du groupe à partir duquel ajouter, mais
+      //ne faisant pas partie du groupe que l'on modifie
+      $listeEtudiantsPourAjout = $repoEtud->findAllFromGroupParentButNotCurrent($groupeAPartirDuquelAjouterEtudiants, $groupeEtudiant);
+
       $estEvaluable = $groupeEtudiant->getEstEvaluable();
 
-      $form = $this->createForm(GroupeEtudiantEditType::class, $groupeEtudiant, ['GroupeAjout' => $groupeAPartirDuquelAjouterEtudiants, 'estEvaluable' => $estEvaluable]);
+      $form = $this->createForm(GroupeEtudiantEditType::class, $groupeEtudiant, ['GroupeAjout' => $listeEtudiantsPourAjout, 'estEvaluable' => $estEvaluable]);
       $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {

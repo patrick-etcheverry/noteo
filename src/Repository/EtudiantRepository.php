@@ -19,6 +19,25 @@ class EtudiantRepository extends ServiceEntityRepository
         parent::__construct($registry, Etudiant::class);
     }
 
+    /**
+    * @return Etudiant[] Returns an array of Etudiant objects
+    */
+
+    public function findAllFromGroupParentButNotCurrent($parent, $current)
+    {
+        return $this->getEntityManager()->createQuery('
+        SELECT e
+        FROM App\Entity\Etudiant e
+        JOIN e.groupes g
+        WHERE g.slug = :slugGroupeParent AND
+        e.id NOT IN (SELECT e2.id FROM App\Entity\Etudiant e2 JOIN e2.groupes g2 WHERE g2.slug = :slugGroupeCourant) 
+        ')
+        ->setParameter('slugGroupeParent', $parent->getSlug())
+        ->setParameter('slugGroupeCourant', $current->getSlug())
+        ->execute();
+    }
+
+
     // /**
     //  * @return Etudiant[] Returns an array of Etudiant objects
     //  */

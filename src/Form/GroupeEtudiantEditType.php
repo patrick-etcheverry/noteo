@@ -45,7 +45,7 @@ class GroupeEtudiantEditType extends AbstractType
             'mapped' => false, // Pour que l'attribut ne soit pas immédiatement mis en BD mais soit récupérable après validation
             'expanded' => true, // Pour avoir des cases
             'multiple' => true, // à cocher
-            'choices' => $options['GroupeAjout']->getEtudiants() // On restreint le choix à la liste des étudiants du groupe passé en parametre
+            'choices' => $options['GroupeAjout'] // On restreint le choix à la liste des étudiants passée en parametre
           ])
 
           ->add('etudiantsASupprimer', EntityType::class, [
