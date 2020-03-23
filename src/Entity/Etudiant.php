@@ -43,7 +43,7 @@ class Etudiant
 
     /**
      * @ORM\Column(type="boolean")
-     * @Assert\NotNull
+     * @Assert\NotBlank
      */
     private $estDemissionaire;
 
@@ -80,7 +80,7 @@ class Etudiant
         return $this->nom;
     }
 
-    public function setNom(string $nom): self
+    public function setNom(?string $nom): self
     {
         $this->nom = $nom;
 
@@ -92,7 +92,7 @@ class Etudiant
         return $this->prenom;
     }
 
-    public function setPrenom(string $prenom): self
+    public function setPrenom(?string $prenom): self
     {
         $this->prenom = $prenom;
 
@@ -104,7 +104,7 @@ class Etudiant
         return $this->mail;
     }
 
-    public function setMail(string $mail): self
+    public function setMail(?string $mail): self
     {
         $this->mail = $mail;
 
@@ -116,7 +116,7 @@ class Etudiant
         return $this->estDemissionaire;
     }
 
-    public function setEstDemissionaire(bool $estDemissionaire): self
+    public function setEstDemissionaire(?bool $estDemissionaire): self
     {
         $this->estDemissionaire = $estDemissionaire;
 
