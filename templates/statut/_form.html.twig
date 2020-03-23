@@ -4,18 +4,18 @@
   <tbody>
     <tr>
       <th class="intitule"><label for="statut_nom" class="required">Nom</label></th>
-      <td>{{ form_widget(form.nom) }}</td>
+      <td >{{ form_widget(form.nom) }}</td>
     </tr>
     <tr>
       <th class="intitule"><label for="statut_description" class="required">Description</label></th>
-      <td>{{ form_widget(form.description) }}</td>
+      <td >{{ form_widget(form.description) }}</td>
     </tr>
   </tbody>
 </table>
 
-<h1 class="h4 mb-0 text-gray-800">Liste des étudiants a qui ajouter au statut</h1> <br>
+<h1 class="h4 mb-0 text-gray-800">Liste des étudiants à ajouter au statut</h1> <br>
 
-<table class="table" id="etudAjout">
+<table class="table" id="etud">
   <thead>
     <tr>
       <th>Nom</th>
@@ -42,40 +42,39 @@
   </tbody>
 </table>
 
+{% if edit == true %}
 <br> <h1 class="h4 mb-0 text-gray-800">Liste des étudiants a qui enlever le statut</h1> <br>
 
-    <table class="table" id="etudSuppr">
-      <thead>
-        <tr>
-          <th>Nom</th>
-          <th>Prénom</th>
-          <th>Mail</th>
-          <th></th>
-        </tr>
-      </thead>
-      <tbody>
-      {% for etudiant in form.lesEtudiantsASupprimer %}
-      {# store index of the category in a variable #}
-      {% set index = etudiant.vars.value %}
+<table class="table" id="etudSuppr">
+  <thead>
+    <tr>
+      <th>Nom</th>
+      <th>Prénom</th>
+      <th>Mail</th>
+      <th></th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for etudiant in form.lesEtudiantsASupprimer %}
+    {# store index of the category in a variable #}
+    {% set index = etudiant.vars.value %}
 
-      {# get entity object from its index in the Categories Field #}
-      {% set entity = form.lesEtudiantsASupprimer.vars.choices[index].data %}
-      <tr>
-        <td>{{entity.nom}}</td>
-        <td>{{entity.prenom}}</td>
-        <td>{{entity.mail}}</td>
-        <td>{{form_widget(form.lesEtudiantsASupprimer[index])}}</td>
-      </tr>
-      {% endfor %}
+    {# get entity object from its index in the Categories Field #}
+    {% set entity = form.lesEtudiantsASupprimer.vars.choices[index].data %}
+    <tr>
+      <td>{{entity.nom}}</td>
+      <td>{{entity.prenom}}</td>
+      <td>{{entity.mail}}</td>
+      <td>{{form_widget(form.lesEtudiantsASupprimer[index])}}</td>
+    </tr>
+    {% endfor %}
 
-      </tbody>
-    </table>
-
+  </tbody>
+</table>
+{% endif %}
 <div class='bouton'>
   <a href="{{ path('statut_index') }}" class="d-none d-sm-inline-block btn btn-sm btn-secondary shadow-sm">Annuler</a>
   <button class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm">{{ button_label|default('Enregistrer') }}</button>
 </div>
-
-
 
 {{ form_end(form) }}

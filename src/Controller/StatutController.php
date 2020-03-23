@@ -42,7 +42,7 @@ class StatutController extends AbstractController
 
             if ($statut->getEtudiants() != null)
             {
-                foreach($form->get('lesEtudiants')->getData() as $key => $etudiant)
+                foreach($form->get('lesEtudiantsAAjouter')->getData() as $key => $etudiant)
                 {
                     $statut->addEtudiant($etudiant);
                 }
@@ -58,6 +58,7 @@ class StatutController extends AbstractController
             'statut' => $statut,
             'etudiants' => $etudiantRepository->findAll(),
             'form' => $form->createView(),
+            'edit' => false
         ]);
     }
 
@@ -100,6 +101,7 @@ class StatutController extends AbstractController
         return $this->render('statut/edit.html.twig', [
             'statut' => $statut,
             'form' => $form->createView(),
+            'edit' => true
         ]);
     }
 
