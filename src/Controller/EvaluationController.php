@@ -84,7 +84,10 @@ class EvaluationController extends AbstractController
           $mailer->send($message);
         }
 
-        return $this->redirectToRoute('evaluation_choose_groups',['slugEval' => $evaluation->getSlug(),'slugGroupe' => $evaluation->getGroupe()->getSlug()]);
+        return $this->render('evaluation/stats.html.twig', [
+            'groupes' => $stats,
+            'evaluation' => $evaluation
+          ]);
     }
 
     /**
