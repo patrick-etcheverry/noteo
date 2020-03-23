@@ -38,7 +38,7 @@ class EnseignantController extends AbstractController
     $this->getUser()->checkAdmin();
 
     $enseignant = new Enseignant();
-    $form = $this->createForm(EnseignantType::class);
+    $form = $this->createForm(EnseignantType::class, $enseignant);
     $form->handleRequest($request);
 
     if ($form->isSubmitted() && $form->isValid()) {
