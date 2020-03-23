@@ -28,7 +28,7 @@ class StatutEditType extends AbstractType
                 'mapped' => false, // Pour que l'attribut ne soit pas immédiatement mis en BD mais soit récupérable après validation
                 'expanded' => true, // Pour avoir des cases
                 'multiple' => true, // à cocher
-                'choices' => $options['etudiants'] // On restreint le choix à la liste des étudiants du groupe passé en parametre
+                'choices' => $options['etudiantsAjout'] // On restreint le choix à la liste des étudiants du groupe passé en parametre
               ])
               ->add('lesEtudiantsASupprimer', EntityType::class, [
                   'class' => Etudiant::Class, //On veut choisir des étudiants
@@ -37,7 +37,7 @@ class StatutEditType extends AbstractType
                   'mapped' => false, // Pour que l'attribut ne soit pas immédiatement mis en BD mais soit récupérable après validation
                   'expanded' => true, // Pour avoir des cases
                   'multiple' => true, // à cocher
-                  'choices' => $builder->getData()->getEtudiants() // On restreint le choix à la liste des étudiants du groupe passé en parametre
+                  'choices' => $builder->getData()->getEtudiants() // On restreint le choix à la liste des étudiants possèdant le statut
                 ])
 
         ;
@@ -47,7 +47,7 @@ class StatutEditType extends AbstractType
     {
         $resolver->setDefaults([
             'data_class' => Statut::class,
-            'etudiants' => null
+            'etudiantsAjout' => null
         ]);
     }
 }
