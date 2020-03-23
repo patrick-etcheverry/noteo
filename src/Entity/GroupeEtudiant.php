@@ -22,7 +22,8 @@ class GroupeEtudiant
     private $id;
 
     /**
-     * @ORM\Column(type="string", length=50)
+     * @ORM\Column(type="string", length=255)
+     * @Assert\Length(max=255)
      * @Assert\NotBlank
      */
     private $nom;

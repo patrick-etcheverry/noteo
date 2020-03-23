@@ -22,7 +22,8 @@ class Enseignant implements UserInterface
     private $id;
 
     /**
-     * @ORM\Column(type="string", length=180, unique=true)
+     * @ORM\Column(type="string", length=255, unique=true)
+     * @Assert\Length(max=255)
      * @Assert\NotBlank
      * @Assert\Email
      */
