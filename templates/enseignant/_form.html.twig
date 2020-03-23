@@ -16,11 +16,11 @@
     </tr>
     <tr>
       <th class="intitule"><label for="enseignant_estAdmin" class="required">Administrateur</label></th>
-      <td class="champ">{{ form_errors(form.estAdmin) }}{{ form_widget(form.estAdmin) }}</td>
+      <td class="champ">{{ form_errors(form.estAdmin) }}{{ form_widget(form.estAdmin) }}{% if enseignant == app.user and is_granted('ROLE_ADMIN') %}{{form_help(form.estAdmin)}}{% endif %}</td>
     </tr>
     <tr>
       <th class="intitule"><label for="enseignant_motDePasse" class="required">Mot de passe</label></th>
-      <td class="champ">{{ form_errors(form.password) }}{{ form_widget(form.password) }}</td>
+      <td class="champ">{{ form_errors(form.password) }}{{ form_widget(form.password) }}{% if edit %}{{form_help(form.password)}}{% endif %}</td>
     </tr>
   </tbody>
 </table>
