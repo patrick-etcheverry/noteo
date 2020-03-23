@@ -9,7 +9,7 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Form\Extension\Core\Type\PasswordType;
 use Symfony\Component\Form\Extension\Core\Type\RepeatedType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
-use Symfony\Component\Validator\Constraints\NotBlank;
+use Symfony\Component\Validator\Constraints\NotNull;
 
 class EnseignantType extends AbstractType
 {
@@ -20,7 +20,7 @@ class EnseignantType extends AbstractType
     ->add('prenom')
     ->add('email')
     ->add('estAdmin', ChoiceType::class, [
-      'constraints' => [new NotBlank],
+      'constraints' => [new NotNull],
       'choices' => ['Oui' => true, 'Non' => false],
       'data' => $options['estAdmin'],
       'mapped' => false,
