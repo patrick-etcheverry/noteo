@@ -24,13 +24,11 @@ class GroupeEtudiant
     /**
      * @ORM\Column(type="string", length=50)
      * @Assert\NotBlank
-     * @Assert\Length(max=50)
      */
     private $nom;
 
     /**
      * @ORM\Column(type="text")
-     * @Assert\NotBlank
      */
     private $description;
 
@@ -90,6 +88,7 @@ class GroupeEtudiant
 
     /**
      * @ORM\Column(type="boolean")
+     * @Assert\NotBlank
      */
     private $estEvaluable;
 
