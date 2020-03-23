@@ -23,6 +23,8 @@ class EnseignantController extends AbstractController
   */
   public function index(EnseignantRepository $enseignantRepository): Response
   {
+    $this->checkUser();
+
     $this->getUser()->checkAdmin();
 
     return $this->render('enseignant/index.html.twig', [
@@ -35,10 +37,12 @@ class EnseignantController extends AbstractController
   */
   public function new(Request $request, ObjectManager $manager, UserPasswordEncoderInterface $encoder): Response
   {
+    $this->checkUser();
+
     $this->getUser()->checkAdmin();
 
     $enseignant = new Enseignant();
-    $form = $this->createForm(EnseignantType::class);
+    $form = $this->createForm(EnseignantType::class, $enseignant);
     $form->handleRequest($request);
 
     if ($form->isSubmitted() && $form->isValid()) {
@@ -63,7 +67,7 @@ class EnseignantController extends AbstractController
     return $this->render('enseignant/new.html.twig', [
       'enseignant' => $enseignant,
       'form' => $form->createView(),
-      'label' => 'Créer l\'enseignant'
+      'edit' => false
     ]);
   }
 
@@ -72,6 +76,8 @@ class EnseignantController extends AbstractController
   */
   public function show(Enseignant $enseignant): Response
   {
+    $this->checkUser();
+
     $this->getUser()->checkAdminOrAuthorized($enseignant);
 
     return $this->render('enseignant/show.html.twig', [
@@ -84,6 +90,8 @@ class EnseignantController extends AbstractController
   */
   public function edit(Request $request, Enseignant $enseignant, UserPasswordEncoderInterface $encoder): Response
   {
+    $this->checkUser();
+
     $this->getUser()->checkAdminOrAuthorized($enseignant);
 
     // On verifie le rôle de l'utilisateur pour désactiver ou non les boutons radios permettant de définir le rôle
@@ -109,13 +117,15 @@ class EnseignantController extends AbstractController
       $enseignant->setPassword($mdpEncode);
       $this->getDoctrine()->getManager()->flush();
 
-      return $this->redirectToRoute('enseignant_index');
+      return $this->redirectToRoute('enseignant_show',[
+        'id' => $enseignant->getId()
+      ]);
     }
 
     return $this->render('enseignant/edit.html.twig', [
       'enseignant' => $enseignant,
       'form' => $form->createView(),
-      'label' => 'Enregistrer'
+      'edit' => true
     ]);
   }
 
@@ -124,6 +134,8 @@ class EnseignantController extends AbstractController
   */
   public function delete(Request $request, Enseignant $enseignant): Response
   {
+      $this->checkUser();
+
       $this->getUser()->checkNotAuthorized($enseignant);
 
       //Pour qu'un administrateur ne supprime pas son propre profil
@@ -156,5 +168,11 @@ class EnseignantController extends AbstractController
 
 
     return $this->redirectToRoute('enseignant_index');
+  }
+
+  public function checkUser() {
+    if ($this->getUser() == null) {
+      throw new AccessDeniedException('Accès refusé.');
+    }
   }
 }

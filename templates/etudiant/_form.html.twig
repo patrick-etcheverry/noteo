@@ -4,19 +4,19 @@
   <tbody>
     <tr>
       <th class="intitule"><label for="etudiant_nom" class="required">Nom</label></th>
-      <td >{{ form_widget(form.nom) }}{{ form_errors(form.nom) }}</td>
+      <td >{{ form_errors(form.nom) }}{{ form_widget(form.nom) }}</td>
     </tr>
     <tr>
       <th class="intitule"><label for="etudiant_prenom" class="required">Prénom</label></th>
-      <td >{{ form_widget(form.prenom) }}{{ form_errors(form.prenom) }}</td>
+      <td >{{ form_errors(form.prenom) }}{{ form_widget(form.prenom) }}</td>
     </tr>
     <tr>
       <th class="intitule"><label for="etudiant_mail" class="required">Mail</label></th>
-      <td >{{ form_widget(form.mail) }}{{ form_errors(form.mail) }}</td>
+      <td >{{ form_errors(form.mail) }}{{ form_widget(form.mail) }}</td>
     </tr>
     <tr>
       <th class="intitule"><label for="etudiant_estDemissionaire" class="required">Démissionaire</label></th>
-      <td >{{form_widget(form.estDemissionaire)}}{{ form_errors(form.estDemissionaire) }}</td>
+      <td >{{ form_errors(form.estDemissionaire) }}{{form_widget(form.estDemissionaire)}}</td>
     </tr>
   </tbody>
 </table>

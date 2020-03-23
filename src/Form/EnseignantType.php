@@ -21,6 +21,7 @@ class EnseignantType extends AbstractType
     ->add('email')
     ->add('estAdmin', ChoiceType::class, [
       'constraints' => [new NotNull],
+      'help' => 'Si vous vous retirez vos droits d\'administrateur, assurez-vous qu\'une autre personne dispose de ces derniers.',
       'choices' => ['Oui' => true, 'Non' => false],
       'data' => $options['estAdmin'],
       'mapped' => false,
@@ -31,6 +32,7 @@ class EnseignantType extends AbstractType
       ]
     ])
     ->add('password',RepeatedType::class, [
+      'help' => 'Par mesure de sécurité, merci de resaisir votre mot de passe. Vous pouvez également le changer si vous le souhaitez.',
       'type' => PasswordType::class,
       'invalid_message' => 'Les mots de passe saisis ne correspondent pas.',
       'options' => ['attr' => ['class' => 'password-field']],
@@ -38,7 +40,6 @@ class EnseignantType extends AbstractType
       'first_options'  => ['label' => 'Saisissez le une première fois...'],
       'second_options' => ['label' => 'Puis une deuxième fois...'],
     ])
-
     ;
   }
 

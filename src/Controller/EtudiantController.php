@@ -32,14 +32,14 @@ class EtudiantController extends AbstractController
     public function new(Request $request): Response
     {
         $groupeRepository = $this->getDoctrine()->getRepository(GroupeEtudiant::class);
-        $groupeEtudiantsNonAffectes = $groupeRepository->findById(1);
+        $groupeEtudiantsNonAffectes = $groupeRepository->findOneBySlug('etudiants-non-affectes');
 
         $etudiant = new Etudiant();
         $form = $this->createForm(EtudiantType::class, $etudiant);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $etudiant->addGroupe($groupeEtudiantsNonAffectes[0]);
+            $etudiant->addGroupe($groupeEtudiantsNonAffectes);
             $entityManager = $this->getDoctrine()->getManager();
             $entityManager->persist($etudiant);
             $entityManager->flush();
@@ -77,7 +77,9 @@ class EtudiantController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             $this->getDoctrine()->getManager()->flush();
 
-            return $this->redirectToRoute('etudiant_index');
+            return $this->redirectToRoute('etudiant_show', [
+              'id' => $etudiant->getId()
+            ]);
         }
 
         return $this->render('etudiant/edit.html.twig', [

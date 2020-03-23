@@ -37,7 +37,7 @@ class EvaluationController extends AbstractController
     public function indexEnseignant(EvaluationRepository $evaluationRepository): Response
     {
         return $this->render('evaluation/index.html.twig', [
-            'evaluations' => $evaluationRepository->findByEnseignant($this->getUser()),
+            'evaluations' => $evaluationRepository->findMyEvaluationsWithGradesAndCreatorAndGroup($this->getUser()),
             'self' => 'active',
             'other' => ''
         ]);
@@ -142,7 +142,7 @@ class EvaluationController extends AbstractController
     public function indexAutres(EvaluationRepository $evaluationRepository): Response
     {
         return $this->render('evaluation/index.html.twig', [
-            'evaluations' => $evaluationRepository->findOtherEvaluations($this->getUser()),
+            'evaluations' => $evaluationRepository->findOtherEvaluationsWithGradesAndCreatorAndGroup($this->getUser()),
             'self' => '',
             'other' => 'active'
         ]);
@@ -305,12 +305,11 @@ class EvaluationController extends AbstractController
 
           $entityManager->flush();
 
-          if($this->getUser()->getId() == $evaluation->getEnseignant()->getId()) {
-              return $this->redirectToRoute('evaluation_enseignant',['id' => $this->getUser()->getId()]);
-          }
-          else {
-              return $this->redirectToRoute('evaluation_autres',['id' => $this->getUser()->getId()]);
-          }
+
+              return $this->redirectToRoute('evaluation_show',[
+                'slug' => $evaluation->getSlug()
+              ]);
+
       }
 
       return $this->render('evaluation/edit.html.twig', [

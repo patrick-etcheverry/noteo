@@ -5,8 +5,7 @@
 {% block statutsEtudiants %}active{% endblock %}
 
 {% block contenu %}
-
-    {{ include('statut/_form.html.twig') }}
+    {{ include('statut/_form.html.twig', {'button_label': 'Créer le statut étudiant'}) }}
 {% endblock %}
 
 

@@ -5,7 +5,11 @@
 {% block statutsEtudiants %}active{% endblock %}
 
 {% block contenu %}
-
+{% if statut.enseignant == app.user or is_granted('ROLE_ADMIN') %}
+<div class='bouton'>
+  <a class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm" href="{{ path('statut_edit', {'slug': statut.slug}) }}">Modifier le statut</a>
+</div>
+{% endif %}
     <table class="table">
         <tbody>
             <tr>

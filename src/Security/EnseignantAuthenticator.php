@@ -68,7 +68,7 @@ class EnseignantAuthenticator extends AbstractFormLoginAuthenticator
 
         if (!$user) {
             // fail authentication with a custom error
-            throw new CustomUserMessageAuthenticationException('Email could not be found.');
+            throw new CustomUserMessageAuthenticationException('Adresse mail introuvable.');
         }
 
         return $user;
@@ -86,7 +86,7 @@ class EnseignantAuthenticator extends AbstractFormLoginAuthenticator
         }
 
         // For example : return new RedirectResponse($this->urlGenerator->generate('some_route'));
-        return new RedirectResponse($this->urlGenerator->generate('groupe_etudiant_index'));
+        return new RedirectResponse($this->urlGenerator->generate('evaluation_enseignant'));
     }
 
     protected function getLoginUrl()

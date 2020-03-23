@@ -4,18 +4,18 @@
   <tbody>
     <tr>
       <th class="intitule"><label for="statut_nom" class="required">Nom</label></th>
-      <td >{{ form_widget(form.nom) }}</td>
+      <td >{{ form_errors(form.nom) }}{{ form_widget(form.nom) }}</td>
     </tr>
     <tr>
       <th class="intitule"><label for="statut_description" class="required">Description</label></th>
-      <td >{{ form_widget(form.description) }}</td>
+      <td >{{ form_errors(form.description) }}{{ form_widget(form.description) }}</td>
     </tr>
   </tbody>
 </table>
 
 <h1 class="h4 mb-0 text-gray-800">Liste des étudiants à ajouter au statut</h1> <br>
 
-<table class="table" id="etud">
+<table class="table" id="etudAjout">
   <thead>
     <tr>
       <th>Nom</th>
@@ -42,7 +42,7 @@
   </tbody>
 </table>
 
-{% if edit == true %}
+{% if edit %}
 <br> <h1 class="h4 mb-0 text-gray-800">Liste des étudiants a qui enlever le statut</h1> <br>
 
 <table class="table" id="etudSuppr">

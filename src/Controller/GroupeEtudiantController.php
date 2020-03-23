@@ -7,6 +7,7 @@ use App\Entity\GroupeEtudiant;
 use App\Form\GroupeEtudiantType;
 use App\Form\SousGroupeEtudiantType;
 use App\Form\GroupeEtudiantEditType;
+use App\Repository\EtudiantRepository;
 use App\Repository\GroupeEtudiantRepository;
 use Gedmo\Tree\Entity\Repository\NestedTreeRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -25,7 +26,8 @@ class GroupeEtudiantController extends AbstractController
      */
     public function index(GroupeEtudiantRepository $repo): Response
     {
-      $this->getUser()->checkUser();
+      $this->checkUser();
+
         return $this->render('groupe_etudiant/index.html.twig', [
             'groupes' => $repo->findAllOrderedAndWithoutSpace()
         ]);
@@ -34,20 +36,41 @@ class GroupeEtudiantController extends AbstractController
     /**
      * @Route("/nouveau", name="groupe_etudiant_new", methods={"GET","POST"})
      */
-    public function new(Request $request): Response
+    public function new(Request $request, GroupeEtudiantRepository $repo): Response
     {
+        $this->checkUser();
 
         $this->getUser()->checkAdmin();
 
+        //On compte le nombre de groupes présents dans l'application
+        $nbGroupesDansAppli = count($repo->findAll());
+
+        //Si le nombre de groupes est supérieur à 1 il y a un groupe de haut niveau créé : on ne peut alors plus en créer
+        // on jette une erreur car l'utilisateur n'est pas censé avoir accès à cette fonctionnalité dans ce cas la
+        if ($nbGroupesDansAppli > 1) {
+            throw new AccessDeniedException('Accès refusé');
+        }
 
         $groupeEtudiant = new GroupeEtudiant();
+        $groupeEtudiant->setEnseignant($this->getUser());
         $form = $this->createForm(GroupeEtudiantType::class, $groupeEtudiant);
         $form->handleRequest($request);
 
 
         if ($form->isSubmitted() && $form->isValid()) {
 
+
             $entityManager = $this->getDoctrine()->getManager();
+
+            //Si le groupe des étudiants non affectés n'existe pas déjà on le crée
+            if ($repo->findOneBySlug('etudiants-non-affectes') == null) {
+                $nonAffectes = new GroupeEtudiant();
+                $nonAffectes->setNom("Etudiants non affectés");
+                $nonAffectes->setDescription("Tous les étudiants ayant été retirés d'un groupe de haut niveau et ne faisant partie d'aucun groupe");
+                $nonAffectes->setEnseignant($this->getUser());
+                $nonAffectes->setEstEvaluable(false);
+                $entityManager->persist($nonAffectes);
+            }
 
             $groupeEtudiant->setEnseignant($this->getUser());
 
@@ -101,7 +124,7 @@ class GroupeEtudiantController extends AbstractController
      */
     public function show(GroupeEtudiant $groupeEtudiant): Response
     {
-        $this->getUser()->checkUser();
+        $this->checkUser();
 
         return $this->render('groupe_etudiant/show.html.twig', [
             'groupe_etudiant' => $groupeEtudiant,
@@ -112,8 +135,10 @@ class GroupeEtudiantController extends AbstractController
     /**
      * @Route("/modifier/{slug}", name="groupe_etudiant_edit", methods={"GET","POST"})
      */
-    public function edit(Request $request, GroupeEtudiant $groupeEtudiant): Response
+    public function edit(Request $request, GroupeEtudiant $groupeEtudiant, EtudiantRepository $repoEtud): Response
     {
+      $this->checkUser();
+
       $this->getUser()->checkAdmin();
 
       //Utilisé pour pouvoir supprimer un étudiant dans les sous groupe du groupe selectionné
@@ -132,9 +157,13 @@ class GroupeEtudiantController extends AbstractController
         $groupeAPartirDuquelAjouterEtudiants = $groupeEtudiant->getParent();
       }
 
+      //On récupère la liste des étudiants ajoutables. Elle contiendra tous les étudiants faisant partie du groupe à partir duquel ajouter, mais
+      //ne faisant pas partie du groupe que l'on modifie
+      $listeEtudiantsPourAjout = $repoEtud->findAllFromGroupParentButNotCurrent($groupeAPartirDuquelAjouterEtudiants, $groupeEtudiant);
+
       $estEvaluable = $groupeEtudiant->getEstEvaluable();
 
-      $form = $this->createForm(GroupeEtudiantEditType::class, $groupeEtudiant, ['GroupeAjout' => $groupeAPartirDuquelAjouterEtudiants, 'estEvaluable' => $estEvaluable]);
+      $form = $this->createForm(GroupeEtudiantEditType::class, $groupeEtudiant, ['GroupeAjout' => $listeEtudiantsPourAjout, 'estEvaluable' => $estEvaluable]);
       $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
@@ -180,12 +209,15 @@ class GroupeEtudiantController extends AbstractController
           $this->getDoctrine()->getManager()->flush();
 
 
-          return $this->redirectToRoute('groupe_etudiant_index');
+          return $this->redirectToRoute('groupe_etudiant_show',[
+            'slug' => $groupeEtudiant->getSlug()
+          ]);
         }
 
         return $this->render('groupe_etudiant/edit.html.twig', [
             'form' => $form->createView(),
-            'groupe_etudiant' => $groupeEtudiant
+            'groupe_etudiant' => $groupeEtudiant,
+            'edit' => true
         ]);
     }
 
@@ -194,6 +226,8 @@ class GroupeEtudiantController extends AbstractController
      */
     public function delete(Request $request, GroupeEtudiant $groupeEtudiant): Response
     {
+      $this->checkUser();
+
       $this->getUser()->checkAdmin();
 
       $em = $this->getDoctrine()->getManager();
@@ -236,6 +270,8 @@ class GroupeEtudiantController extends AbstractController
        */
       public function NewSousFroupe(GroupeEtudiant $groupeEtudiantParent, Request $request): Response
       {
+        $this->checkUser();
+
         $this->getUser()->checkAdmin();
 
         $groupeEtudiant = new GroupeEtudiant();
@@ -248,7 +284,7 @@ class GroupeEtudiantController extends AbstractController
 
           $groupeEtudiant->setEnseignant($this->getUser());
 
-          foreach ($form->get('etudiants')->getData() as $key => $etudiant) {
+          foreach ($form->get('etudiantsAAjouter')->getData() as $key => $etudiant) {
            $groupeEtudiant->addEtudiant($etudiant);
           }
 
@@ -261,10 +297,15 @@ class GroupeEtudiantController extends AbstractController
 
         return $this->render('groupe_etudiant/newSousGroupe.html.twig', [
             'form' => $form->createView(),
-            'nomParent' => $groupeEtudiantParent->getNom()
+            'nomParent' => $groupeEtudiantParent->getNom(),
+            'edit' => false
         ]);
+      }
 
-
+      public function checkUser() {
+        if ($this->getUser() == null) {
+          throw new AccessDeniedException('Accès refusé.');
+        }
       }
 
 }
