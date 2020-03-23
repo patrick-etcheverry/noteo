@@ -38,8 +38,7 @@ class EvaluationController extends AbstractController
     {
         return $this->render('evaluation/index.html.twig', [
             'evaluations' => $evaluationRepository->findMyEvaluationsWithGradesAndCreatorAndGroup($this->getUser()),
-            'self' => 'active',
-            'other' => ''
+            'mine' => true
         ]);
     }
 
@@ -143,8 +142,7 @@ class EvaluationController extends AbstractController
     {
         return $this->render('evaluation/index.html.twig', [
             'evaluations' => $evaluationRepository->findOtherEvaluationsWithGradesAndCreatorAndGroup($this->getUser()),
-            'self' => '',
-            'other' => 'active'
+            'mine' => false
         ]);
     }
 

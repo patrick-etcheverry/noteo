@@ -6,9 +6,8 @@
 
 {% block show %}show{% endblock %}
 
-{% block mesEvaluations %}{{ self }}{% endblock %}
-
-{% block autresEvaluations %}{{ other }}{% endblock %}
+{% block mesEvaluations %}{% if mine %}active{% endif %}{% endblock %}
+{% block autresEvaluations %}{% if not mine %}active{% endif %}{% endblock %}
 
 {% block collapsed %}{% endblock %}
 
@@ -70,11 +69,13 @@
 </table>
 {% else %}
   <div class="info">
-    <h1 class="h4 mb-0 text-gray-800">Vous n'avez aucune évaluation</h1>
+    <h1 class="h4 mb-0 text-gray-800">{% if mine %}Vous n'avez{% else %}Les autres enseignants n'ont{% endif %} aucune évaluation</h1>
   </div>
+  {% if mine %}
   <div class='bouton'>
     <a class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm" href="{{ path('evaluation_choose_group') }}">Créer une évaluation</a>
   </div>
+  {% endif %}
 
 {% endif %}
 
