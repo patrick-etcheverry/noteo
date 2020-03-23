@@ -293,14 +293,6 @@ class Enseignant implements UserInterface
       }
     }
 
-    public function checkUser()
-    {
-      if ($this == NULL)
-      {
-        throw new AccessDeniedException('Access denied.');
-      }
-    }
-
     public function checkNotAuthorized(Enseignant $enseignant)
     {
       if ($this->id == $enseignant->getId())

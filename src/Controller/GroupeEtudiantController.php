@@ -25,7 +25,8 @@ class GroupeEtudiantController extends AbstractController
      */
     public function index(GroupeEtudiantRepository $repo): Response
     {
-      $this->getUser()->checkUser();
+      $this->checkUser();
+
         return $this->render('groupe_etudiant/index.html.twig', [
             'groupes' => $repo->findAllOrderedAndWithoutSpace()
         ]);
@@ -36,6 +37,7 @@ class GroupeEtudiantController extends AbstractController
      */
     public function new(Request $request, GroupeEtudiantRepository $repo): Response
     {
+        $this->checkUser();
 
         $this->getUser()->checkAdmin();
 
@@ -121,7 +123,7 @@ class GroupeEtudiantController extends AbstractController
      */
     public function show(GroupeEtudiant $groupeEtudiant): Response
     {
-        $this->getUser()->checkUser();
+        $this->checkUser();
 
         return $this->render('groupe_etudiant/show.html.twig', [
             'groupe_etudiant' => $groupeEtudiant,
@@ -134,6 +136,8 @@ class GroupeEtudiantController extends AbstractController
      */
     public function edit(Request $request, GroupeEtudiant $groupeEtudiant): Response
     {
+      $this->checkUser();
+
       $this->getUser()->checkAdmin();
 
       //Utilisé pour pouvoir supprimer un étudiant dans les sous groupe du groupe selectionné
@@ -214,6 +218,8 @@ class GroupeEtudiantController extends AbstractController
      */
     public function delete(Request $request, GroupeEtudiant $groupeEtudiant): Response
     {
+      $this->checkUser();
+
       $this->getUser()->checkAdmin();
 
       $em = $this->getDoctrine()->getManager();
@@ -256,6 +262,8 @@ class GroupeEtudiantController extends AbstractController
        */
       public function NewSousFroupe(GroupeEtudiant $groupeEtudiantParent, Request $request): Response
       {
+        $this->checkUser();
+
         $this->getUser()->checkAdmin();
 
         $groupeEtudiant = new GroupeEtudiant();
@@ -283,8 +291,12 @@ class GroupeEtudiantController extends AbstractController
             'form' => $form->createView(),
             'nomParent' => $groupeEtudiantParent->getNom()
         ]);
+      }
 
-
+      public function checkUser() {
+        if ($this->getUser() == null) {
+          throw new AccessDeniedException('Accès refusé.');
+        }
       }
 
 }
