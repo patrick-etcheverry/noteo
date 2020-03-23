@@ -30,6 +30,7 @@ class GroupeEtudiant
 
     /**
      * @ORM\Column(type="text")
+     * @Assert\NotBlank
      */
     private $description;
 
@@ -89,7 +90,7 @@ class GroupeEtudiant
 
     /**
      * @ORM\Column(type="boolean")
-     * @Assert\NotNull
+     * @Assert\NotBlank
      */
     private $estEvaluable;
 
@@ -138,7 +139,7 @@ class GroupeEtudiant
         return $this->nom;
     }
 
-    public function setNom(string $nom): self
+    public function setNom(?string $nom): self
     {
         $this->nom = $nom;
 
@@ -150,7 +151,7 @@ class GroupeEtudiant
         return $this->description;
     }
 
-    public function setDescription(string $description): self
+    public function setDescription(?string $description): self
     {
         $this->description = $description;
 
@@ -252,7 +253,7 @@ class GroupeEtudiant
         return $this->estEvaluable;
     }
 
-    public function setEstEvaluable(bool $estEvaluable): self
+    public function setEstEvaluable(?bool $estEvaluable): self
     {
         $this->estEvaluable = $estEvaluable;
 
