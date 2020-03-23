@@ -43,7 +43,7 @@ class GroupeEtudiantRepository extends NestedTreeRepository
      * @return GroupeEtudiant[] Returns an array of GroupeEtudiant objects
      */
 
-    public function findAllFromNode($node)
+    public function findAllOrderedFromNode($node)
     {
         return $this->createQueryBuilder('g')
             ->addSelect('et')
@@ -52,6 +52,7 @@ class GroupeEtudiantRepository extends NestedTreeRepository
             ->leftJoin('g.etudiants', 'et')
             ->where('g.rgt <= :right')
             ->andWhere('g.lft >= :left')
+            ->andWhere('g.slug != \'etudiants-non-affectes\'')
             ->setParameter('right', $node->getRgt())
             ->setParameter('left', $node->getLft())
             ->orderBy('g.lft', 'asc')
@@ -71,8 +72,7 @@ class GroupeEtudiantRepository extends NestedTreeRepository
             ->addSelect('en')
             ->join('g.enseignant', 'en')
             ->leftJoin('g.etudiants', 'et')
-            ->where('g.slug != :param')
-            ->setParameter('param', 'etudiants-non-affectes')
+            ->where('g.slug != \'etudiants-non-affectes\'')
             ->orderBy('g.lft', 'asc')
             ->getQuery()
             ->getResult()

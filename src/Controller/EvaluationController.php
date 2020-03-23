@@ -350,7 +350,7 @@ class EvaluationController extends AbstractController
         $groupeConcerne = $repoGroupe->findOneBySlug($slugGroupe);
 
         //On récupère la liste de tous les enfants (directs et indirects) du groupe concerné pour choisir ceux sur lesquels on veut des statistiques
-        $choixGroupe = $repoGroupe->findAllFromNode($groupeConcerne);
+        $choixGroupe = $repoGroupe->findAllOrderedFromNode($groupeConcerne);
 
         //Création du formulaire pour choisir les groupes / status sur lesquels on veut des statistiques
         $form = $this->createFormBuilder()
