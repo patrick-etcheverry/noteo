@@ -8,15 +8,15 @@
     </tr>
     <tr>
       <th class="intitule"><label for="groupe_etudiant_nom" class="required">Nom du sous groupe</label></th>
-      <td >{{ form_widget(form.nom) }}{{form_errors(form.nom)}}</td>
+      <td >{{form_errors(form.nom)}}{{ form_widget(form.nom) }}</td>
     </tr>
     <tr>
       <th class="intitule"><label for="groupe_etudiant_description" class="required">Description</label></th>
-      <td >{{ form_widget(form.description) }}</td>
+      <td >{{form_errors(form.description)}}{{ form_widget(form.description) }}</td>
     </tr>
     <tr>
       <th class="intitule"><label for="groupe_etudiant_estEvaluable" class="required">Évaluable</label> <a href="#HelpEvaluable" data-toggle='modal' data-target='#HelpEvaluable'><i class="icon-help-circled"></i></a></th>
-      <td >{{form_widget(form.estEvaluable, {'data' : true})}}{{form_errors(form.estEvaluable)}}</td>
+      <td >{{form_errors(form.estEvaluable)}}{{form_widget(form.estEvaluable, {'data' : true})}}</td>
     </tr>
   </tbody>
 </table>
