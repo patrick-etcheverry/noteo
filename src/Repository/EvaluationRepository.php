@@ -24,14 +24,40 @@ class EvaluationRepository extends ServiceEntityRepository
     * @return Evaluation[] Returns an array of Evaluation objects
     */
 
-    public function findOtherEvaluations($enseignant)
+    public function findOtherEvaluationsWithGradesAndCreatorAndGroup($enseignant)
     {
         return $this->createQueryBuilder('e')
+            ->addSelect('p')
+            ->addSelect('en')
+            ->addSelect('g')
+            ->addSelect('n')
+            ->leftJoin('e.parties', 'p')
+            ->leftJoin('p.notes', 'n')
+            ->join('e.groupe', 'g')
+            ->join('e.enseignant', 'en')
             ->andWhere('e.enseignant != :enseignant')
             ->setParameter('enseignant', $enseignant)
             ->getQuery()
             ->getResult()
         ;
+    }
+
+    public function findMyEvaluationsWithGradesAndCreatorAndGroup($enseignant)
+    {
+        return $this->createQueryBuilder('e')
+            ->addSelect('p')
+            ->addSelect('en')
+            ->addSelect('g')
+            ->addSelect('n')
+            ->leftJoin('e.parties', 'p')
+            ->leftJoin('p.notes', 'n')
+            ->join('e.groupe', 'g')
+            ->join('e.enseignant', 'en')
+            ->andWhere('e.enseignant = :enseignant')
+            ->setParameter('enseignant', $enseignant)
+            ->getQuery()
+            ->getResult()
+            ;
     }
 
 

@@ -271,33 +271,22 @@ class AppFixtures extends Fixture
           $evaluation->setGroupe($S1);
 
           ////////////PARTIES//////////////
-          $partie1 = new Partie();
-          $partie1->setIntitule($faker->creditCardType);
-          $partie1->setBareme(10);
-          $partie1->setEvaluation($evaluation);
-
-          $partie2 = new Partie ();
-          $partie2->setIntitule($faker->creditCardType);
-          $partie2->setBareme(10);
-          $partie2->setEvaluation($evaluation);
+          $partie = new Partie();
+          $partie->setIntitule($faker->creditCardType);
+          $partie->setBareme(10);
+          $partie->setEvaluation($evaluation);
 
           ////////////POINTS//////////////
           $pointsEtud = new Points();
           $pointsEtud->setValeur($faker->randomDigit);
           $pointsEtud->setEtudiant($etudiant1);
-          $pointsEtud->setPartie($partie1);
-
-          $pointsEtud = new Points();
-          $pointsEtud->setValeur($faker->randomDigit);
-          $pointsEtud->setEtudiant($etudiant1);
-          $pointsEtud->setPartie($partie2);
+          $pointsEtud->setPartie($partie);
 
           ////////////ENREGISTREMENT DES DONNEES//////////////
           $manager->persist($enseignant);
           $manager->persist($etudiant1);
           $manager->persist($evaluation);
-          $manager->persist($partie1);
-          $manager->persist($partie2);
+          $manager->persist($partie);
           $manager->persist($pointsEtud);
 
         }

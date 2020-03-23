@@ -34,7 +34,20 @@
     <tr>
       <td>{{ evaluation.nom }}</td>
       <td>{{ evaluation.date }}</td>
-      <td> </td>
+      <td>
+        {# Calcul de la moyenne de chaque évaluation #}
+        {% set nbNotes = 0 %}
+        {% set cumulNotes = 0 %}
+        {% set resultat = 0 %}
+        {%  for partie in evaluation.parties %}
+          {% for note in partie.notes %}
+            {% set nbNotes = nbNotes + 1 %}
+            {% set cumulNotes = cumulNotes + note.valeur %}
+          {% endfor %}
+        {% endfor %}
+        {% set resultat = cumulNotes / nbNotes %}
+        {{ resultat|round(2) }}
+      </td>
       <td>{{ evaluation.groupe.nom }}</td>
       <td>{{ evaluation.enseignant.prenom }} {{ evaluation.enseignant.nom }}</td>
       <td>
