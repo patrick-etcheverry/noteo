@@ -44,7 +44,53 @@ class EvaluationController extends AbstractController
     }
 
     /**
-     * @Route("/mail/{id}", name="envoi_mail", methods={"GET"})
+     * @Route("/previsualisation-mail/{id}", name="previsualisation_mail", methods={"GET"})
+     */
+    public function previsualisationMail(Evaluation $evaluation): Response
+    {
+      $this->getUser()->checkAdminOrAuthorized($evaluation->getEnseignant());
+
+      return $this->render('evaluation/previsualisationMail.html.twig',[
+        'evaluation' => $evaluation
+      ]);
+    }
+
+    /**
+     * @Route("/exemple-mail/{id}", name="exemple_mail", methods={"GET"})
+     */
+     public function exempleMail(Request $request, EvaluationRepository $evaluationRepository, Evaluation $evaluation, PointsRepository $pointsRepository): Response
+     {
+         $this->getUser()->checkAdminOrAuthorized($evaluation->getEnseignant());
+
+         // Récupération de la session
+         $session = $request->getSession();
+         // Récupération des stats mises en session
+         $stats = $session->get('stats');
+
+         $notesEtudiants = $pointsRepository->findNotesAndEtudiantByEvaluation($evaluation);
+
+         $tabRang = $pointsRepository->findUniqueByGroupe($evaluation->getId(),$evaluation->getGroupe()->getId());
+         $copieTabRang = array();
+
+         foreach ($tabRang as $element) {
+             $copieTabRang[] = $element["valeur"];
+         }
+
+         $effectif = sizeof($copieTabRang);
+
+         $noteEtudiant = $notesEtudiants[0]->getValeur();
+         $position = array_search($noteEtudiant, $copieTabRang) + 1;
+
+         return $this->render('evaluation/mailEnvoye.html.twig',[
+           'etudiantsEtNotes' => $notesEtudiants[0],
+           'stats' => $stats,
+           'position' => $position,
+           'effectif' => $effectif
+         ]);
+       }
+
+    /**
+     * @Route("/envoi-mail/{id}", name="envoi_mail", methods={"GET"})
      */
     public function envoiMail(Request $request, EvaluationRepository $evaluationRepository, Evaluation $evaluation, PointsRepository $pointsRepository, \Swift_Mailer $mailer): Response
     {
