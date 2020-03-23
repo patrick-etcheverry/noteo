@@ -31,6 +31,7 @@ class GroupeEtudiantEditType extends AbstractType
 
           ->add('estEvaluable', ChoiceType::class, [
             'choices' => ['Oui' => true, 'Non' => false],
+            'data' => $options['estEvaluable'],
             'expanded' => true, // Pour avoir des boutons radio
             'label_attr' =>  [
             'class'=>'radio-inline' //Pour que les boutons radio soient alignés
@@ -64,6 +65,7 @@ class GroupeEtudiantEditType extends AbstractType
     {
         $resolver->setDefaults([
             'GroupeAjout' => null, //Si pas de groupe renseigné, affichera tous les étudiants de la base
+            'estEvaluable' => false
         ]);
     }
 }

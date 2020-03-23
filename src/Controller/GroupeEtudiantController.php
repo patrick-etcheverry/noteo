@@ -132,7 +132,9 @@ class GroupeEtudiantController extends AbstractController
         $groupeAPartirDuquelAjouterEtudiants = $groupeEtudiant->getParent();
       }
 
-      $form = $this->createForm(GroupeEtudiantEditType::class, $groupeEtudiant, ['GroupeAjout' => $groupeAPartirDuquelAjouterEtudiants]);
+      $estEvaluable = $groupeEtudiant->getEstEvaluable();
+
+      $form = $this->createForm(GroupeEtudiantEditType::class, $groupeEtudiant, ['GroupeAjout' => $groupeAPartirDuquelAjouterEtudiants, 'estEvaluable' => $estEvaluable]);
       $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
