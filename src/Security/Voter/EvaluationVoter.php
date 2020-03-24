@@ -6,12 +6,12 @@ use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Core\Authorization\Voter\Voter;
 use Symfony\Component\Security\Core\User\UserInterface;
 
-class StatutVoter extends Voter
+class EvaluationVoter extends Voter
 {
     protected function supports($attribute, $subject)
     {
-        return in_array($attribute, ['STATUT_EDIT', 'STATUT_DELETE'])
-            && $subject instanceof \App\Entity\Statut;
+        return in_array($attribute, ['EVALUATION_PREVISUALISATION_MAIL', 'EVALUATION_EXEMPLE_MAIL', 'EVALUATION_ENVOI_MAIL', 'EVALUATION_EDIT', 'EVALUATION_DELETE'])
+            && $subject instanceof \App\Entity\Evaluation;
     }
 
     protected function voteOnAttribute($attribute, $subject, TokenInterface $token)
@@ -22,12 +22,14 @@ class StatutVoter extends Voter
             return false;
         }
 
-        $accesAutorise = false;
-
+        $accesAutorise = true;
         switch ($attribute) {
-            case 'STATUT_EDIT':
-            case 'STATUT_DELETE':
-                //Cette fonctionnalité est dispo si l'utilisateur est admin ou que l'enseignant modifie/supprime son propre statut
+            case 'EVALUATION_PREVISUALISATION_MAIL':
+            case 'EVALUATION_EXEMPLE_MAIL':
+            case 'EVALUATION_ENVOI_MAIL':
+            case 'EVALUATION_EDIT':
+            case 'EVALUATION_DELETE':
+                //Pour les 5 cas, on vérifie on a accès a la fonctionnalité si on est admin ou propriétaire de l'évaluation
                 $accesAutorise = $accesAutorise = in_array("ROLE_ADMIN", $user->getRoles()) || $subject->getEnseignant()->getId() == $user->getId();
                 break;
         }

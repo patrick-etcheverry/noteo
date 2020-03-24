@@ -10,8 +10,6 @@ class GroupeVoter extends Voter
 {
     protected function supports($attribute, $subject)
     {
-        // replace with your own logic
-        // https://symfony.com/doc/current/security/voters.html
         return in_array($attribute, ['GROUPE_EDIT', 'GROUPE_DELETE', 'GROUPE_SHOW', 'GROUPE_INDEX', 'GROUPE_NEW', 'GROUPE_NEW_SOUS_GROUPE'])
             && $subject instanceof \App\Entity\GroupeEtudiant;
     }
@@ -19,12 +17,10 @@ class GroupeVoter extends Voter
     protected function voteOnAttribute($attribute, $subject, TokenInterface $token)
     {
         $user = $token->getUser();
-        // if the user is anonymous, do not grant access
+
         if (!$user instanceof UserInterface) {
             return false;
         }
-
-        //Logique de test pour déterminer si l'utilisateur a accès
 
         $accesAutorise = false;
 

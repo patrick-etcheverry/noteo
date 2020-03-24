@@ -10,8 +10,6 @@ class EnseignantVoter extends Voter
 {
     protected function supports($attribute, $subject)
     {
-        // replace with your own logic
-        // https://symfony.com/doc/current/security/voters.html
         return in_array($attribute, ['ENSEIGNANT_EDIT', 'ENSEIGNANT_NEW', 'ENSEIGNANT_DELETE', 'ENSEIGNANT_INDEX', 'ENSEIGNANT_SHOW'])
             && $subject instanceof \App\Entity\Enseignant;
     }
@@ -19,7 +17,7 @@ class EnseignantVoter extends Voter
     protected function voteOnAttribute($attribute, $subject, TokenInterface $token)
     {
         $user = $token->getUser();
-        // if the user is anonymous, do not grant access
+
         if (!$user instanceof UserInterface) {
             return false;
         }

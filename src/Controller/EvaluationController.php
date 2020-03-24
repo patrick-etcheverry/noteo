@@ -47,7 +47,7 @@ class EvaluationController extends AbstractController
      */
     public function previsualisationMail(Evaluation $evaluation): Response
     {
-      $this->getUser()->checkAdminOrAuthorized($evaluation->getEnseignant());
+      $this->denyAccessUnlessGranted('EVALUATION_PREVISUALISATION_MAIL', $evaluation);
 
       return $this->render('evaluation/previsualisationMail.html.twig',[
         'evaluation' => $evaluation
@@ -59,7 +59,7 @@ class EvaluationController extends AbstractController
      */
      public function exempleMail(Request $request, EvaluationRepository $evaluationRepository, Evaluation $evaluation, PointsRepository $pointsRepository): Response
      {
-         $this->getUser()->checkAdminOrAuthorized($evaluation->getEnseignant());
+         $this->denyAccessUnlessGranted('EVALUATION_EXEMPLE_MAIL', $evaluation);
 
          // Récupération de la session
          $session = $request->getSession();
@@ -93,7 +93,7 @@ class EvaluationController extends AbstractController
      */
     public function envoiMail(Request $request, EvaluationRepository $evaluationRepository, Evaluation $evaluation, PointsRepository $pointsRepository, \Swift_Mailer $mailer): Response
     {
-        $this->getUser()->checkAdminOrAuthorized($evaluation->getEnseignant());
+        $this->denyAccessUnlessGranted('EVALUATION_ENVOI_MAIL', $evaluation);
 
         // Récupération de la session
         $session = $request->getSession();
@@ -254,7 +254,7 @@ class EvaluationController extends AbstractController
      */
     public function edit(Request $request, Evaluation $evaluation, ValidatorInterface $validator): Response
     {
-      $this->getUser()->checkAdminOrAuthorized($evaluation->getEnseignant());
+      $this->denyAccessUnlessGranted('EVALUATION_EDIT', $evaluation);
 
       ////////////POUR COMMENTAIRES VOIR METHODE NEW////////////
       foreach ($evaluation->getParties() as $partie) {
@@ -321,7 +321,7 @@ class EvaluationController extends AbstractController
      */
     public function delete(Request $request, Evaluation $evaluation): Response
     {
-        $this->getUser()->checkAdminOrAuthorized($evaluation->getEnseignant());
+        $this->denyAccessUnlessGranted('EVALUATION_DELETE', $evaluation);
 
         $entityManager = $this->getDoctrine()->getManager();
 
