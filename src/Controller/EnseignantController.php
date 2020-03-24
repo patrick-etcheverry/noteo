@@ -159,10 +159,4 @@ class EnseignantController extends AbstractController
 
     return $this->redirectToRoute('enseignant_index');
   }
-
-  public function checkUser() {
-    if ($this->getUser() == null) {
-      throw new AccessDeniedException('Accès refusé.');
-    }
-  }
 }
