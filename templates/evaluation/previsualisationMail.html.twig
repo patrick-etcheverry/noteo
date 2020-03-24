@@ -17,7 +17,7 @@
 
 </div>
 <div class='bouton'>
-  <a href="{{ path('groupe_etudiant_index') }}" class="d-none d-sm-inline-block btn btn-sm btn-secondary shadow-sm">Annuler</a>
+  <a href="javascript:history.go(-1)" class="d-none d-sm-inline-block btn btn-sm btn-secondary shadow-sm">Annuler</a>
   <a href="{{path("envoi_mail",{slug:evaluation.slug})}}" class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm">Envoyer le mail aux étudiants</a>
 </div>
 {% endblock %}
