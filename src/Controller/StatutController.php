@@ -78,7 +78,7 @@ class StatutController extends AbstractController
      */
     public function edit(Request $request, Statut $statut, EtudiantRepository $repo): Response
     {
-        $this->getUser()->checkAdminOrAuthorized($statut->getEnseignant());
+        $this->denyAccessUnlessGranted('STATUT_EDIT', $statut);
 
         //On récupère tous les étudiants que l'on pourra ajouter au statut c'est à dire tous sauf ceux qui l'ont déjà
         $form = $this->createForm(StatutEditType::class, $statut, ['etudiantsAjout' => $repo->findAllButNotFromCurrentStatuts($statut)]);
