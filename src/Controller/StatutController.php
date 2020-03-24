@@ -113,7 +113,7 @@ class StatutController extends AbstractController
      */
     public function delete(Request $request, Statut $statut): Response
     {
-        $this->getUser()->checkAdminOrAuthorized($statut->getEnseignant());
+        $this->denyAccessUnlessGranted('STATUT_EDIT', $statut);
 
         foreach($statut->getEtudiants() as $key => $etudiant)
         {
