@@ -276,30 +276,4 @@ class Enseignant implements UserInterface
 
         return $this;
     }
-
-    public function checkAdmin()
-    {
-      if (!$this->isAdmin())
-      {
-        throw new AccessDeniedException('Access denied.');
-      }
-    }
-
-    public function checkAdminOrAuthorized(Enseignant $enseignant)
-    {
-      if (!($this->id == $enseignant->getId() || $this->isAdmin() ? true : false))
-      {
-        throw new AccessDeniedException('Access denied.');
-      }
-    }
-
-    public function checkNotAuthorized(Enseignant $enseignant)
-    {
-      if ($this->id == $enseignant->getId())
-      {
-        throw new AccessDeniedException('Access denied.');
-      }
-    }
-
-
 }
