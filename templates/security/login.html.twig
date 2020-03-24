@@ -46,7 +46,7 @@
                     {% endif %}
 
                     {% if app.user %}
-                    <div class="mb-3" style="text-align:center">
+                    <div class="mb-3" align=center>
                       Vous êtes connecté en tant que {{ app.user.username }}<br>
                       <a href="{{ path('app_logout') }}">Déconnexion</a> | <a href="{{ path('evaluation_enseignant') }}">Accéder à Noteo</a>
                     </div>

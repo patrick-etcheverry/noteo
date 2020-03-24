@@ -8,7 +8,7 @@
 
 {% if statuts is not empty %}
 
-<div class='bouton'>
+<div class='bouton' align=center>
     <a class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm" href="{{ path('statut_new') }}">Créer un statut étudiant</a>
 </div>
     <table class="table" id="table">
@@ -46,7 +46,7 @@
   <h1 class="h4 mb-0 text-gray-800">Vous n'avez aucun statut</h1>
 </div>
 
-<div class='bouton'>
+<div class='bouton' align=center>
   <a class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm" href="{{ path('statut_new') }}">Créer un statut étudiant</a>
 </div>
 
@@ -62,8 +62,8 @@
           </div>
           <div class="modal-body">Etes vous sur de vouloir supprimer le staut d'étudiant ? </div>
           <div class="modal-footer">
-            <button class="d-none d-sm-inline-block btn btn-sm btn-secondary shadow-sm bouton" type="button" data-dismiss="modal">Annuler</button>
-            <a class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm bouton" id = "BoutonSupprimerModale" href="#">Supprimer le statut d'étudiant</a>
+            <button class="d-none d-sm-inline-block btn btn-sm btn-secondary shadow-sm" type="button" data-dismiss="modal">Annuler</button>
+            <a class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm" id = "BoutonSupprimerModale" href="#">Supprimer le statut d'étudiant</a>
           </div>
         </div>
       </div>

@@ -5,7 +5,7 @@
 {% block enseignants %}active{% endblock %}
 
 {% block contenu %}
-<div class='bouton'>
+<div class='bouton' align=center>
   <a class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm" href="{{ path('enseignant_edit', {'id': enseignant.id}) }}">Modifier {% if enseignant == app.user %}mon profil{% else %}l'enseignant{% endif %}</a>
 </div>
     <table class="table">

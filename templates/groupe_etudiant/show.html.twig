@@ -6,7 +6,7 @@
 
 {% block contenu %}
 {% if is_granted('ROLE_ADMIN') %}
-<div class='bouton'>
+<div class='bouton' align=center>
   <a class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm" href="{{ path('groupe_etudiant_edit', {'slug': groupe_etudiant.slug}) }}">Modifier le groupe</a>
 </div>
 {% endif %}
