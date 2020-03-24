@@ -26,7 +26,7 @@ class GroupeEtudiantController extends AbstractController
      */
     public function index(GroupeEtudiantRepository $repo): Response
     {
-      $this->checkUser();
+        $this->denyAccessUnlessGranted('GROUPE_INDEX', new GroupeEtudiant());
 
         return $this->render('groupe_etudiant/index.html.twig', [
             'groupes' => $repo->findAllOrderedAndWithoutSpace()
@@ -38,9 +38,7 @@ class GroupeEtudiantController extends AbstractController
      */
     public function new(Request $request, GroupeEtudiantRepository $repo): Response
     {
-        $this->checkUser();
-
-        $this->getUser()->checkAdmin();
+        $this->denyAccessUnlessGranted('GROUPE_NEW', new GroupeEtudiant());
 
         //On compte le nombre de groupes présents dans l'application
         $nbGroupesDansAppli = count($repo->findAll());
@@ -124,7 +122,7 @@ class GroupeEtudiantController extends AbstractController
      */
     public function show(GroupeEtudiant $groupeEtudiant): Response
     {
-        $this->checkUser();
+        $this->denyAccessUnlessGranted('GROUPE_SHOW', $groupeEtudiant);
 
         return $this->render('groupe_etudiant/show.html.twig', [
             'groupe_etudiant' => $groupeEtudiant,
@@ -137,9 +135,7 @@ class GroupeEtudiantController extends AbstractController
      */
     public function edit(Request $request, GroupeEtudiant $groupeEtudiant, EtudiantRepository $repoEtud): Response
     {
-      $this->checkUser();
-
-      $this->getUser()->checkAdmin();
+      $this->denyAccessUnlessGranted('GROUPE_EDIT', $groupeEtudiant);
 
       //Utilisé pour pouvoir supprimer un étudiant dans les sous groupe du groupe selectionné
       $enfants = $this->getDoctrine()->getRepository(GroupeEtudiant::class)->children($groupeEtudiant);
@@ -226,9 +222,7 @@ class GroupeEtudiantController extends AbstractController
      */
     public function delete(Request $request, GroupeEtudiant $groupeEtudiant): Response
     {
-      $this->checkUser();
-
-      $this->getUser()->checkAdmin();
+        $this->denyAccessUnlessGranted('GROUPE_DELETE', $groupeEtudiant);
 
       $em = $this->getDoctrine()->getManager();
       $repo = $this->getDoctrine()->getRepository(GroupeEtudiant::class);
@@ -270,9 +264,7 @@ class GroupeEtudiantController extends AbstractController
        */
       public function NewSousFroupe(GroupeEtudiant $groupeEtudiantParent, Request $request): Response
       {
-        $this->checkUser();
-
-        $this->getUser()->checkAdmin();
+        $this->denyAccessUnlessGranted('GROUPE_NEW_SOUS_GROUPE', $groupeEtudiantParent);
 
         $groupeEtudiant = new GroupeEtudiant();
         $groupeEtudiant->setParent($groupeEtudiantParent);
