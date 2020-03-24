@@ -30,7 +30,7 @@
 <tr>
   <td>{{form.vars.value.notes[i].etudiant.nom}}</td>
   <td>{{form.vars.value.notes[i].etudiant.prenom}}</td>
-  <td>{{form_widget(form.notes[i].valeur)}}</td>
+  <td>{{ form_errors(form.notes[i].valeur) }}{{form_widget(form.notes[i].valeur)}}</td>
 </tr>
 {% endfor %}
 {% endif %}

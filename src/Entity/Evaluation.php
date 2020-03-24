@@ -29,7 +29,7 @@ class Evaluation
 
     /**
      * @ORM\Column(type="date")
-     * @Assert\NotBlank
+     * @Assert\NotNull
      * @Assert\Date
      */
     private $date;
@@ -82,7 +82,7 @@ class Evaluation
         return $this->nom;
     }
 
-    public function setNom(string $nom): self
+    public function setNom(?string $nom): self
     {
         $this->nom = $nom;
 

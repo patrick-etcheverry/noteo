@@ -24,6 +24,10 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\Validator\Constraints\NotNull;
+use Symfony\Component\Validator\Constraints\NotBlank;
+use Symfony\Component\Validator\Constraints\Date;
+use Symfony\Component\Validator\Constraints\Length;
 
 
 /**
@@ -167,9 +171,12 @@ class EvaluationController extends AbstractController
 
         //Création du formulaire pour saisir les informations de l'évaluation (le formulaire n'est pas lié à une entité)
         $form = $this->createFormBuilder(['notes' => $partie->getNotes()])
-            ->add('nom', TextType::class)
+            ->add('nom', TextType::class,[
+              'constraints' => [new NotBlank, new Length(['max' => 255])]
+            ])
             ->add('date', DateType::class, [
-              'widget' => 'single_text'
+              'widget' => 'single_text',
+              'constraints' => [new NotBlank, new Date]
             ])
             ->add('notes', CollectionType::class , [
               'entry_type' => PointsType::class //Utilisation d'une collection de formulaire pour saisir les valeurs des notes (les formulaires portent sur les entités points
@@ -179,7 +186,7 @@ class EvaluationController extends AbstractController
 
         $form->handleRequest($request);
 
-        if ($form->isSubmitted()) {
+        if ($form->isSubmitted() && $form->isValid()) {
 
             $entityManager = $this->getDoctrine()->getManager();
 
@@ -276,7 +283,7 @@ class EvaluationController extends AbstractController
 
       $form->handleRequest($request);
 
-      if ($form->isSubmitted()) {
+      if ($form->isSubmitted()  && $form->isValid()) {
 
           $entityManager = $this->getDoctrine()->getManager();
 
@@ -357,6 +364,7 @@ class EvaluationController extends AbstractController
 
       $form = $this->createFormBuilder()
           ->add('groupes', EntityType::class, [
+            'constraints' => [new NotNull],
             'class' => GroupeEtudiant::Class, //On veut choisir des groupes
             'choice_label' => false, // On n'affichera pas d'attribut de l'entité à côté du bouton pour aider au choix car on liste les entités en utilisant les variables du champ
             'label' => false, // On n'affiche pas le label du champ
@@ -369,7 +377,7 @@ class EvaluationController extends AbstractController
 
       $form->handleRequest($request);
 
-      if ($form->isSubmitted()) {
+      if ($form->isSubmitted()  && $form->isValid()) {
 
         return $this->redirectToRoute('evaluation_new',['slug' => $form->get("groupes")->getData()->getSlug()]);
 
@@ -419,7 +427,7 @@ class EvaluationController extends AbstractController
 
         $form->handleRequest($request);
 
-        if ($form->isSubmitted()) {
+        if ($form->isSubmitted()  && $form->isValid()) {
 
             $listeStatsParGroupe = array(); // On initialise un tableau vide qui contiendra les statistiques des groupes choisis
 
