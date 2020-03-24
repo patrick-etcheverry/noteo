@@ -7,7 +7,7 @@
 {% block contenu %}
 
 {% if etudiants is not empty %}
-<div class='bouton'>
+<div class='bouton' align=center>
   <a class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm" href="{{ path('etudiant_new') }}">Créer un étudiant</a>
 </div>
 <table class="table" id ="table">
@@ -47,7 +47,7 @@
   <h2 class="h4 mb-0 text-gray-800">Vous n'avez aucun étudiant</h1>
   </div>
 
-  <div class='bouton'>
+<div class='bouton' align=center>
     <a class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm" href="{{ path('groupe_etudiant_new') }}">Créer un groupe</a>
   </div>
 {% endif %}
