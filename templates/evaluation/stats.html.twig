@@ -53,26 +53,26 @@
     <li class="list-group-item">{{groupe.nom}}</li>
     <li class="list-group-item">
       <h5 class="card-title">Réparition des notes</h5><br>
-      <center><canvas id="{{groupe.nom}}"></canvas></center>
+      <canvas align=center id="{{groupe.nom}}"></canvas>
     </li>
-    <li class="list-group-item">
-      <center>
-        <div class="card" style="width: 20em;">
-          <ul class="list-group list-group-flush" style="text-align:left;">
-            <li class="list-group-item">Statistiques</li>
-            <li class="list-group-item">
-              <ul>
-                <li>Moyenne : {{ groupe.moyenne }}</li>
-                <li>Écart-type : {{ groupe.ecartType }}</li>
-                <li>Minimum : {{ groupe.minimum }}</li>
-                <li>Maximum : {{ groupe.maximum }}</li>
-                <li>Médiane : {{ groupe.mediane }}</li>
-              </ul>
-            </li>
-          </ul>
-        </div>
-      </center>
-    </li>
+    <div align=center>
+      <li class="list-group-item">
+          <div class="card" style="width: 20em;">
+            <ul class="list-group list-group-flush" style="text-align:left;">
+              <li class="list-group-item">Statistiques</li>
+              <li class="list-group-item">
+                <ul>
+                  <li>Moyenne : {{ groupe.moyenne }}</li>
+                  <li>Écart-type : {{ groupe.ecartType }}</li>
+                  <li>Minimum : {{ groupe.minimum }}</li>
+                  <li>Maximum : {{ groupe.maximum }}</li>
+                  <li>Médiane : {{ groupe.mediane }}</li>
+                </ul>
+              </li>
+            </ul>
+          </div>
+      </li>
+    </div>
   </ul>
 </div>
 
