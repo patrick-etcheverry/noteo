@@ -117,6 +117,20 @@
     doc.text(date,260,90)
 
 
+    /*html2canvas($("#lesStats .cardhu-S1"),{
+      useCORS:true,
+      logging:true,
+      onrendered:function(canvas,capture){
+        capture = canvas.toDataURL('image/png',1.0);
+        document.body.insertAdjacentHTML('beforeend',"<img id='arthur' src='" + capture +"'>")
+
+      }
+    }).then(function(){
+      doc.addImage(document.getElementById("arthur").src,'PNG',20,110);
+      doc.addPage()
+      doc.save(nomEval)
+    });*/
+
     html2canvas($("#lesStats .cardhu-S1"),{
       useCORS:true,
       logging:true,
@@ -131,22 +145,6 @@
       doc.save(nomEval)
     });
 
-    /*doc.addImage(capture,'PNG',20,110);
-    doc.save(nomEval)*/
-
-
-  /*  $(".lesStats").each(function()
-    { html2canvas(this,
-      {
-        useCORS:true,
-        onrendered:function(canvas)
-        {
-          capture = canvas.toDataURL('image/png');
-        }
-        doc.addImage(capture,'PNG',1,1);
-        doc.addPage()
-      })
-    })*/
 
   }
 
