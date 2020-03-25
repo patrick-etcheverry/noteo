@@ -50,7 +50,7 @@
 
 
 <br>
-<div class="card">
+<div class="card cardhu-{{groupe.nom}}" id="uneCarte">
   <ul class="list-group list-group-flush">
     <li class="list-group-item">{{groupe.nom}}</li>
     <li class="list-group-item">
@@ -59,7 +59,7 @@
     </li>
     <li class="list-group-item">
       <center>
-        <div class="card" style="width: 20em;">
+        <div class="card " style="width: 20em;">
           <ul class="list-group list-group-flush" style="text-align:left;">
             <li class="list-group-item">Statistiques</li>
             <li class="list-group-item">
@@ -115,9 +115,27 @@
     doc.text(nomGroupe,260,60)
     doc.text("Date :",20,90)
     doc.text(date,260,90)
-    doc.addPage()
 
-    $(".lesStats").each(function()
+
+    html2canvas($("#lesStats .cardhu-S1"),{
+      useCORS:true,
+      logging:true,
+      onrendered:function(canvas,capture){
+        capture = canvas.toDataURL('image/png',1.0);
+        document.body.insertAdjacentHTML('beforeend',"<img id='arthur' src='" + capture +"'>")
+
+      }
+    }).then(function(){
+      doc.addImage(document.getElementById("arthur").src,'PNG',20,110);
+      doc.addPage()
+      doc.save(nomEval)
+    });
+
+    /*doc.addImage(capture,'PNG',20,110);
+    doc.save(nomEval)*/
+
+
+  /*  $(".lesStats").each(function()
     { html2canvas(this,
       {
         useCORS:true,
@@ -128,9 +146,10 @@
         doc.addImage(capture,'PNG',1,1);
         doc.addPage()
       })
-    })
+    })*/
+
   }
-  doc.save(nomEval)
+
 
 </script>
 
