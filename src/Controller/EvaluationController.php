@@ -120,7 +120,7 @@ class EvaluationController extends AbstractController
           $position = array_search($noteEtudiant, $copieTabRang) + 1;
 
           $message = (new \Swift_Message('Noteo - ' . $evaluation->getNom()))
-          ->setFrom($_ENV['MAIL'])
+          ->setFrom($_ENV['UTILISATEUR_SMTP'])
           ->setTo($notesEtudiants[$i]->getEtudiant()->getMail())
           ->setBody(
               $this->renderView('evaluation/mailEnvoye.html.twig',[
