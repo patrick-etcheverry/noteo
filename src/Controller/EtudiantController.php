@@ -6,6 +6,7 @@ use App\Entity\Etudiant;
 use App\Entity\GroupeEtudiant;
 use App\Form\EtudiantType;
 use App\Repository\EtudiantRepository;
+use App\Repository\GroupeEtudiantRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -56,10 +57,12 @@ class EtudiantController extends AbstractController
     /**
      * @Route("/consulter/{id}", name="etudiant_show", methods={"GET"})
      */
-    public function show(Etudiant $etudiant): Response
+    public function show(Etudiant $etudiant, GroupeEtudiantRepository $repo): Response
     {
+        $groupesDeLetudiant = $repo->findAllOrderedByStudent($etudiant);
         return $this->render('etudiant/show.html.twig', [
             'etudiant' => $etudiant,
+            'groupes' => $groupesDeLetudiant,
         ]);
     }
 

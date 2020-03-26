@@ -5,6 +5,7 @@
 {% block etudiants %}active{% endblock %}
 
 {% block contenu %}
+
 <div class='bouton' align=center>
   <a class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm" href="{{ path('etudiant_edit', {'id': etudiant.id}) }}">Modifier l'étudiant</a>
 </div>
@@ -49,9 +50,16 @@
         </thead>
 
         <tbody>
-        {% for groupe in etudiant.groupes%}
+        {% for groupe in groupes %}
             <tr>
-                <td>{{ groupe.nom }}</td>
+                <td>
+                    {% if groupe.lvl > 0 %}
+                        {% for i in 1.. groupe.lvl %}
+                            &emsp;
+                        {% endfor %}
+                    {% endif %}
+                    {{ groupe.nom }}
+                </td>
                 <td>{{ groupe.description }}</td>
                 <td>{{ groupe.enseignant.nom }} {{groupe.enseignant.prenom}}</td>
             </tr>
@@ -67,15 +75,13 @@
 
 $(document).ready(function() {
   $('#groupes').dataTable({
+    aaSorting : [], //Désactivation du tri automatique
     language: {
       // Suppression du label Rechercher et ajout du placeholder
       search: "_INPUT_",
       searchPlaceholder: "Rechercher...",
       "url": "{{asset('tradfr.json')}}"
     },
-    order: [
-      [0, "asc"]
-    ],
     columns: [null, null, {"orderable": false}],
     lengthMenu: [
       [10, 25, 50, -1],

@@ -65,6 +65,25 @@ class GroupeEtudiantRepository extends NestedTreeRepository
      * @return GroupeEtudiant[] Returns an array of GroupeEtudiant objects
      */
 
+    public function findAllOrderedByStudent($etudiant)
+    {
+        return $this->createQueryBuilder('g')
+            ->addSelect('et')
+            ->addSelect('en')
+            ->join('g.enseignant', 'en')
+            ->leftJoin('g.etudiants', 'et')
+            ->where('et.id = :IDetudiant')
+            ->orderBy('g.lft', 'asc')
+            ->setParameter('IDetudiant',$etudiant->getId())
+            ->getQuery()
+            ->getResult()
+            ;
+    }
+
+    /**
+     * @return GroupeEtudiant[] Returns an array of GroupeEtudiant objects
+     */
+
     public function findAllOrderedAndWithoutSpace()
     {
         return $this->createQueryBuilder('g')
