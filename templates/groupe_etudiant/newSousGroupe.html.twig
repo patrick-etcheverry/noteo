@@ -33,8 +33,8 @@
 {% block datatables %}
 
 <script>
-$(document).ready(function() {
-  $('#tableAjouter').dataTable({
+
+  var table = $('#tableAjouter').DataTable({
     language: {
       search: "_INPUT_",
       searchPlaceholder: "Rechercher...",
@@ -50,7 +50,11 @@ $(document).ready(function() {
     ],
     info: false,
   });
-});
+
+  //La fonction sera enclenchée lors de la soumission du formulaire
+  $("[name='sous_groupe_etudiant']").on('submit', function () {
+    table.rows().nodes().page.len(-1).draw(); // Cette fonction permet, avant la soumission du formulaire, d'afficher dans le DOM toutes les lignes du tableau pour qu'aucune ne soit ignorée
+  });
 </script>
 
 {% endblock %}
