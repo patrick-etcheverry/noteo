@@ -39,6 +39,12 @@
   </tbody>
 </table>
 
+{% for message in app.flashes('info') %}
+<div class="alert alert-success" role="alert">
+  {{ message }}
+</div>
+{% endfor %}
+
 <div class='bouton' align=center>
   <span style="font-size:15px" class="badge badge-pill badge-danger">Les statistiques ne comportent pas les étudiants démissionaires</span>
 </div>
@@ -59,7 +65,7 @@
       <li class="list-group-item">
           <div class="card" style="width: 20em;">
             <ul class="list-group list-group-flush" style="text-align:left;">
-              <li class="list-group-item">Statistiques</li>
+              <li class="list-group-item">Statistiques {{groupe.nom}}</li>
               <li class="list-group-item">
                 <ul>
                   <li>Moyenne : {{ groupe.moyenne }}</li>
