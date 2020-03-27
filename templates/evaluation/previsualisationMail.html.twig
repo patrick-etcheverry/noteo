@@ -1,6 +1,6 @@
 {% extends 'base.html.twig' %}
 
-{% block titrePage %}Prévisualiser le mail{% endblock %}
+{% block titrePage %}Envoyer les statistiques aux étudiants{% endblock %}
 
 {% block evaluations %}active{% endblock %}
 
@@ -11,7 +11,7 @@
 {% block collapsed %}{% endblock %}
 
 {% block contenu %}
-<h1 class="h4 mb-0 text-gray-800">Voici le mail que les étudiants recevront</h1> <br>
+<h1 class="h4 mb-0 text-gray-800">Aperçu du mail reçu par les étudiants</h1> <br>
 <div align=center>
   <iframe src="{{path("exemple_mail",{id:evaluation.id})}}" width="100%" height="440em"></iframe>
 

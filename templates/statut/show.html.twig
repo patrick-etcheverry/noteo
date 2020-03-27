@@ -1,6 +1,6 @@
 {% extends 'base.html.twig' %}
 
-{% block titrePage %}Consulter un statut étudiant{% endblock %}
+{% block titrePage %}Voir le groupe {{ statut.nom }} {% endblock %}
 
 {% block statutsEtudiants %}active{% endblock %}
 
@@ -12,10 +12,6 @@
 {% endif %}
     <table class="table">
         <tbody>
-            <tr>
-                <th class="intitule">Nom</th>
-                <td >{{ statut.nom }}</td>
-            </tr>
             <tr>
                 <th class="intitule">Description</th>
                 <td >{{ statut.description }}</td>

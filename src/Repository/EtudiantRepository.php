@@ -46,7 +46,7 @@ class EtudiantRepository extends ServiceEntityRepository
         return $this->getEntityManager()->createQuery('
         SELECT e
         FROM App\Entity\Etudiant e
-        JOIN e.statuts s
+        LEFT JOIN e.statuts s
         WHERE e.id NOT IN (SELECT e2.id FROM App\Entity\Etudiant e2 JOIN e2.statuts s2 WHERE s2.slug = :slugStatutCourant) 
         ')
         ->setParameter('slugStatutCourant', $current->getSlug())

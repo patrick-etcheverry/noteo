@@ -105,7 +105,7 @@ class StatutController extends AbstractController
         return $this->render('statut/edit.html.twig', [
             'statut' => $statut,
             'form' => $form->createView(),
-            'edit' => true
+            'edit' => true,
         ]);
     }
 

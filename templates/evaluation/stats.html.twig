@@ -1,6 +1,6 @@
 {% extends 'base.html.twig' %}
 
-{% block titrePage %}Visualiser les statistiques{% endblock %}
+{% block titrePage %}Visualiser les statistiques de l'évaluation {{evaluation.nom}} {% endblock %}
 
 {% block evaluations %}active{% endblock %}
 
@@ -16,23 +16,19 @@
 <table align="center" class="table">
   <tbody>
     <tr>
-      <th class="intitule"><label for="evaluation_nom" >Nom de l'évaluation</label></th>
-      <td >{{evaluation.nom}}</td>
-    </tr>
-    <tr>
-      <th class="intitule"><label for="evaluation_groupe" >Groupe</label></th>
+      <th class="intitule"><label for="evaluation_groupe" >Groupe évalué</label></th>
       <td >{{evaluation.groupe.nom}}</td>
     </tr>
     <tr>
-      <th class="intitule"><label for="evaluation_date" >Date</label></th>
+      <th class="intitule"><label for="evaluation_date" >Date de l'évaluation</label></th>
       <td >{{evaluation.date}}</td>
     </tr>
     <tr>
       <th class="intitule"><label >Actions</label></th>
       <td>
-        <a href="#"><i style="font-size: 25px;" class="icon-file-pdf"></i></a>
+        <a href="#"><i style="font-size: 25px;" data-toggle='tooltip' title="Exporter les statistiques au format PDF" class="icon-file-pdf"></i></a>
         {% if evaluation.enseignant.id == app.user.id or is_granted('ROLE_ADMIN') %}
-        <a href="{{path("previsualisation_mail", {slug:evaluation.slug})}}"><i style="font-size: 25px;" class="icon-mail"></i></a>
+        <a href="{{path("previsualisation_mail", {slug:evaluation.slug})}}"><i style="font-size: 25px;"  data-toggle='tooltip' title="Envoyer les statistiques aux étudiants"  class="icon-mail"></i></a>
         {% endif %}
       </td>
     </tr>
@@ -56,7 +52,14 @@
 <br>
 <div class="card">
   <ul class="list-group list-group-flush">
-    <li class="list-group-item">{{groupe.nom}}</li>
+    <li class="list-group-item">
+      {{groupe.nom}}
+      {% set effectifTotal = 0 %}
+      {% for effectif in groupe.notes %}
+        {% set effectifTotal = effectifTotal + effectif %}
+      {% endfor %}
+      ({{ effectifTotal }} étudiants)
+    </li>
     <li class="list-group-item">
       <h5 class="card-title">Réparition des notes</h5><br>
       <canvas align=center id="{{groupe.nom}}"></canvas>
@@ -70,8 +73,8 @@
                 <ul>
                   <li>Moyenne : {{ groupe.moyenne }}</li>
                   <li>Écart-type : {{ groupe.ecartType }}</li>
-                  <li>Minimum : {{ groupe.minimum }}</li>
-                  <li>Maximum : {{ groupe.maximum }}</li>
+                  <li>Note(s) minimale(s) : {{ groupe.minimum }}</li>
+                  <li>Note(s) maximale(s) : {{ groupe.maximum }}</li>
                   <li>Médiane : {{ groupe.mediane }}</li>
                 </ul>
               </li>

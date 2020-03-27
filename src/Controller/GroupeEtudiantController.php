@@ -286,18 +286,10 @@ class GroupeEtudiantController extends AbstractController
           return $this->redirectToRoute('groupe_etudiant_index');
         }
 
-
         return $this->render('groupe_etudiant/newSousGroupe.html.twig', [
             'form' => $form->createView(),
             'nomParent' => $groupeEtudiantParent->getNom(),
             'edit' => false
         ]);
       }
-
-      public function checkUser() {
-        if ($this->getUser() == null) {
-          throw new AccessDeniedException('Accès refusé.');
-        }
-      }
-
 }

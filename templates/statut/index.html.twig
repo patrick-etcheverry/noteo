@@ -1,6 +1,6 @@
 {% extends 'base.html.twig' %}
 
-{% block titrePage %}Liste des statuts étudiants{% endblock %}
+{% block titrePage %}Groupes des étudiants ayant un statut particulier{% endblock %}
 
 {% block statutsEtudiants %}active{% endblock %}
 
@@ -9,12 +9,13 @@
 {% if statuts is not empty %}
 
 <div class='bouton' align=center>
-    <a class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm" href="{{ path('statut_new') }}">Créer un statut étudiant</a>
+    <a class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm" href="{{ path('statut_new') }}">Créer un groupe</a>
 </div>
     <table class="table" id="table">
         <thead>
             <tr>
                 <th>Nom</th>
+                <th>Effectif</th>
                 <th>Description</th>
                 <th>Créateur</th>
                 <th></th>
@@ -25,8 +26,9 @@
         {% for statut in statuts %}
             <tr>
                 <td>{{ statut.nom }}</td>
+                <td>{{ statut.etudiants|length }}</td>
                 <td>{{ statut.description }}</td>
-                <td>{{ statut.enseignant.nom}} {{ statut.enseignant.prenom}}</td>
+                <td>{{ statut.enseignant.prenom}} {{ statut.enseignant.nom}}</td>
                 <td>
                     <a href="{{ path('statut_show', {'slug': statut.slug}) }}"><i class="icon-eye" data-toggle='tooltip' title='Consulter {{ statut.nom }}'></i></a>
                     {% if statut.enseignant.id == app.user.id or is_granted('ROLE_ADMIN') %}
@@ -47,7 +49,7 @@
 </div>
 
 <div class='bouton' align=center>
-  <a class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm" href="{{ path('statut_new') }}">Créer un statut étudiant</a>
+  <a class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm" href="{{ path('statut_new') }}">Créer un groupe</a>
 </div>
 
 {% endif %}
@@ -61,7 +63,7 @@
             </button>
           </div>
           <div class="modal-body">
-              Etes vous sur de vouloir supprimer le statut d'étudiant ? <br>
+              Êtes-vous sur de vouloir supprimer le statut d'étudiant ? <br>
               Vous ne pourrez plus voir de statistiques sur ce regroupement d'étudiants.
           </div>
           <div class="modal-footer">
@@ -98,7 +100,7 @@ $(document).ready(function() {
     order: [
       [0, "asc"]
     ],
-    columns: [null, {"orderable": false},null,{"orderable": false}],
+    columns: [null, null, {"orderable": false},null,{"orderable": false}],
     lengthMenu: [
       [10, 25, 50, -1],
       [10, 25, 50, "Tout"]

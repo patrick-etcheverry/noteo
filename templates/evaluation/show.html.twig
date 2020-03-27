@@ -1,6 +1,6 @@
 {% extends 'base.html.twig' %}
 
-{% block titrePage %}Consulter une évaluation{% endblock %}
+{% block titrePage %}Consulter l'évaluation {{ evaluation.nom }}{% endblock %}
 
 {% block evaluations %}active{% endblock %}
 
@@ -20,15 +20,11 @@
     <table class="table">
         <tbody>
             <tr>
-                <th class="intitule">Nom</th>
-                <td >{{ evaluation.nom }}</td>
-            </tr>
-            <tr>
                 <th class="intitule">Date</th>
                 <td >{{ evaluation.date }}</td>
             </tr>
             <tr>
-                <th class="intitule">Groupe</th>
+                <th class="intitule">Groupe évalué</th>
                 <td >{{ evaluation.groupe.nom }}</td>
             </tr>
             <tr>
@@ -36,7 +32,7 @@
               <td>{{ evaluation.enseignant.prenom }} {{ evaluation.enseignant.nom }}</td>
             </tr>
         <tr>
-            <th class="intitule">Télécharger les notes</th>
+            <th class="intitule">Télécharger l'évaluation au format CSV</th>
             <td ><a id="export" href="javascript:exportTableToCSV('{{evaluation.nom}}.csv')"><i style="font-size: 20px;" class="icon-file-excel"></i> </a></td>
         </tr>
 
