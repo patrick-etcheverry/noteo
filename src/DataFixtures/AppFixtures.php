@@ -32,14 +32,23 @@ class AppFixtures extends Fixture
         $admin->setPassword('$2y$10$iq3Tby/8xdfCtQiPk/IQKO5j9xypK/uej1cghWXEZmQl1D9OHJaNC'); // patrick_admin
         $manager->persist($admin);
 
-        //Admin Lié aux groupes
-        $enseignant = new Enseignant();
-        $enseignant->setPrenom('Yann');
-        $enseignant->setNom('Carpentier');
-        $enseignant->setEmail('yann.carpentier@iutbayonne.univ-pau.fr');
-        $enseignant->setRoles(['ROLE_USER']);
-        $enseignant->setPassword('$2y$10$e/x1tXHOS9cdVrrZZizbu./XWbc4Cv/l3OxwKqiwA0SpUiyMfqtay'); // patrick_admin
-        $manager->persist($enseignant);
+        //Compte enseignant jury
+        $yon = new Enseignant();
+        $yon->setPrenom('Yon');
+        $yon->setNom('Dourisboure');
+        $yon->setEmail('ydourisb@iutbayonne.univ-pau.fr');
+        $yon->setRoles(['ROLE_USER']);
+        $yon->setPassword('$2y$10$YJkW1Eax17up452.PQFCUewMHg0pwv2jbZDll3XdKGmAc6Q.R48au'); // patrick_admin
+        $manager->persist($yon);
+
+        //Compte enseignant jury
+        $marie = new Enseignant();
+        $marie->setPrenom('Marie');
+        $marie->setNom('Bruyère');
+        $marie->setEmail('bruyere@iutbayonne.univ-pau.fr');
+        $marie->setRoles(['ROLE_USER']);
+        $marie->setPassword('$2y$10$r5EzuVBOaBJ4gasDkuU1keT06kXuvnhgA4g5VePSeX9Lb3C.g7Y66'); // marie_prof
+        $manager->persist($marie);
 
         ////////////GROUPES//////////////
 
@@ -221,20 +230,34 @@ class AppFixtures extends Fixture
         $manager->persist($S4PELTP2);
         $manager->persist($S4PELTP3);
 
-        ////////////EVALUATION//////////////
-        $evaluation = new Evaluation();
-        $evaluation->setNom("M41 03C : Javascript");
-        $evaluation->setDate(new \DateTime('2020-04-09'));
-        $evaluation->setEnseignant($enseignant);
-        $evaluation->setGroupe($IPI);
-        $manager->persist($evaluation);
+        ////////////EVALUATION S4//////////////
+        $evalS4 = new Evaluation();
+        $evalS4->setNom("M42 02C (IPI) - Recherche opérationnelle");
+        $evalS4->setDate(new \DateTime('2020-02-24'));
+        $evalS4->setEnseignant($marie);
+        $evalS4->setGroupe($IPI);
+        $manager->persist($evalS4);
+
+        ////////////EVALUATION S2//////////////
+        $evalS2 = new Evaluation();
+        $evalS2->setNom("M21 03 - Bases de la programmation orientée objets");
+        $evalS2->setDate(new \DateTime('2020-03-13'));
+        $evalS2->setEnseignant($yon);
+        $evalS2->setGroupe($S2);
+        $manager->persist($evalS2);
 
         ////////////PARTIES//////////////
-        $partie = new Partie();
-        $partie->setIntitule("");
-        $partie->setBareme(20);
-        $partie->setEvaluation($evaluation);
-        $manager->persist($partie);
+        $partieS4 = new Partie();
+        $partieS4->setIntitule("");
+        $partieS4->setBareme(20);
+        $partieS4->setEvaluation($evalS4);
+        $manager->persist($partieS4);
+
+        $partieS2 = new Partie();
+        $partieS2->setIntitule("");
+        $partieS2->setBareme(20);
+        $partieS2->setEvaluation($evalS2);
+        $manager->persist($partieS2);
 
         ////////////ETUDIANTS TP1 S2//////////////
         for ($i = 0; $i < $nbEtudiantsParGroupes; $i++) {
@@ -249,6 +272,13 @@ class AppFixtures extends Fixture
             $etudiant->addGroupe($S2);
             $etudiant->addGroupe($DUT);
             $manager->persist($etudiant);
+
+            ////////////AJOUT DE POINTS A L'EVAL//////////////
+            $pointsEtud = new Points();
+            $pointsEtud->setValeur($faker->numberBetween($min = 0, $max = 20));
+            $pointsEtud->setEtudiant($etudiant);
+            $pointsEtud->setPartie($partieS2);
+            $manager->persist($pointsEtud);
         }
 
         ////////////ETUDIANTS TP2 S2//////////////
@@ -264,6 +294,13 @@ class AppFixtures extends Fixture
             $etudiant->addGroupe($S2);
             $etudiant->addGroupe($DUT);
             $manager->persist($etudiant);
+
+            ////////////AJOUT DE POINTS A L'EVAL//////////////
+            $pointsEtud = new Points();
+            $pointsEtud->setValeur($faker->numberBetween($min = 0, $max = 20));
+            $pointsEtud->setEtudiant($etudiant);
+            $pointsEtud->setPartie($partieS2);
+            $manager->persist($pointsEtud);
         }
 
         ////////////ETUDIANTS TP3 S2//////////////
@@ -279,6 +316,13 @@ class AppFixtures extends Fixture
             $etudiant->addGroupe($S2);
             $etudiant->addGroupe($DUT);
             $manager->persist($etudiant);
+
+            ////////////AJOUT DE POINTS A L'EVAL//////////////
+            $pointsEtud = new Points();
+            $pointsEtud->setValeur($faker->numberBetween($min = 0, $max = 20));
+            $pointsEtud->setEtudiant($etudiant);
+            $pointsEtud->setPartie($partieS2);
+            $manager->persist($pointsEtud);
         }
 
         ////////////ETUDIANTS TP4 S2//////////////
@@ -294,6 +338,13 @@ class AppFixtures extends Fixture
             $etudiant->addGroupe($S2);
             $etudiant->addGroupe($DUT);
             $manager->persist($etudiant);
+
+            ////////////AJOUT DE POINTS A L'EVAL//////////////
+            $pointsEtud = new Points();
+            $pointsEtud->setValeur($faker->numberBetween($min = 0, $max = 20));
+            $pointsEtud->setEtudiant($etudiant);
+            $pointsEtud->setPartie($partieS2);
+            $manager->persist($pointsEtud);
         }
 
         ////////////ETUDIANTS TP5 S2//////////////
@@ -309,6 +360,13 @@ class AppFixtures extends Fixture
             $etudiant->addGroupe($S2);
             $etudiant->addGroupe($DUT);
             $manager->persist($etudiant);
+
+            ////////////AJOUT DE POINTS A L'EVAL//////////////
+            $pointsEtud = new Points();
+            $pointsEtud->setValeur($faker->numberBetween($min = 0, $max = 20));
+            $pointsEtud->setEtudiant($etudiant);
+            $pointsEtud->setPartie($partieS2);
+            $manager->persist($pointsEtud);
         }
 
         ////////////ETUDIANTS TP1 IPI S4//////////////
@@ -326,9 +384,9 @@ class AppFixtures extends Fixture
 
             ////////////AJOUT DE POINTS A L'EVAL//////////////
             $pointsEtud = new Points();
-            $pointsEtud->setValeur($faker->randomDigit);
+            $pointsEtud->setValeur($faker->numberBetween($min = 0, $max = 20));
             $pointsEtud->setEtudiant($etudiant);
-            $pointsEtud->setPartie($partie);
+            $pointsEtud->setPartie($partieS4);
             $manager->persist($pointsEtud);
         }
 
@@ -350,7 +408,7 @@ class AppFixtures extends Fixture
             $pointsEtud = new Points();
             $pointsEtud->setValeur($faker->numberBetween($min = 0, $max = 20));
             $pointsEtud->setEtudiant($etudiant);
-            $pointsEtud->setPartie($partie);
+            $pointsEtud->setPartie($partieS4);
             $manager->persist($pointsEtud);
         }
 
