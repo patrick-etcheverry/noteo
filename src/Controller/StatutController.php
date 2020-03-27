@@ -22,8 +22,9 @@ class StatutController extends AbstractController
      */
     public function index(StatutRepository $statutRepository): Response
     {
+
         return $this->render('statut/index.html.twig', [
-            'statuts' => $statutRepository->findAll(),
+            'statuts' => $statutRepository->findAllWithStudents(),
         ]);
     }
 
