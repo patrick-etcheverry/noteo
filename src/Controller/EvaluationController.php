@@ -136,6 +136,11 @@ class EvaluationController extends AbstractController
           $mailer->send($message);
         }
 
+        $this->addFlash(
+          'info',
+          'L\'envoi des mails a été effectué avec succès.'
+        );
+
         return $this->render('evaluation/stats.html.twig', [
             'groupes' => $stats,
             'evaluation' => $evaluation
