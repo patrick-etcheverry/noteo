@@ -1,11 +1,11 @@
 {% extends 'base.html.twig' %}
 
-{% block titrePage %}Créer un statut étudiant{% endblock %}
+{% block titrePage %}Créer un groupe d'étudiants ayant un statuts particulier{% endblock %}
 
 {% block statutsEtudiants %}active{% endblock %}
 
 {% block contenu %}
-    {{ include('statut/_form.html.twig', {'button_label': 'Créer le statut étudiant'}) }}
+    {{ include('statut/_form.html.twig', {'button_label': 'Créer le groupe'}) }}
 {% endblock %}
 
 

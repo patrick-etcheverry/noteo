@@ -15,7 +15,14 @@ Veuillez trouver dans ce mail les informations concernant l'évaluation {{etudia
 {% for statsUnGroupe in stats %}
 <table border="1" style="border-collapse:collapse;">
   <tr>
-    <th width=200em>{{statsUnGroupe.nom}}</th>
+    <th width=200em>
+      {{statsUnGroupe.nom}}
+      {% set effectifTotal = 0 %}
+      {% for effectif in statsUnGroupe.notes %}
+        {% set effectifTotal = effectifTotal + effectif %}
+      {% endfor %}
+      ({{ effectifTotal }} étudiants)
+    </th>
     <th width=200em>Répartition des notes</th>
   </tr>
   <tr style="text-align:center;">
@@ -28,11 +35,11 @@ Veuillez trouver dans ce mail les informations concernant l'évaluation {{etudia
     </td>
     <td>
       <br>
-      [0; 4[ &#x2794; {{statsUnGroupe.notes[0]}}<br>
-      [4; 8[ &#x2794; {{statsUnGroupe.notes[1]}}<br>
-      [8; 12[ &#x2794; {{statsUnGroupe.notes[2]}}<br>
-      [12; 16[ &#x2794; {{statsUnGroupe.notes[3]}}<br>
-      [16; 20] &#x2794; {{statsUnGroupe.notes[4]}}<br><br>
+      [0; 4[ &#x2794; {{statsUnGroupe.notes[0]}} étudiants<br>
+      [4; 8[ &#x2794; {{statsUnGroupe.notes[1]}} étudiants<br>
+      [8; 12[ &#x2794; {{statsUnGroupe.notes[2]}} étudiants<br>
+      [12; 16[ &#x2794; {{statsUnGroupe.notes[3]}} étudiants<br>
+      [16; 20] &#x2794; {{statsUnGroupe.notes[4]}} étudiants<br><br>
     </td>
   </tr>
 </table>
