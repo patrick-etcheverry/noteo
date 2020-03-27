@@ -49,12 +49,15 @@ class EvaluationController extends AbstractController
     /**
      * @Route("/previsualisation-mail/{slug}", name="previsualisation_mail", methods={"GET"})
      */
-    public function previsualisationMail(Evaluation $evaluation): Response
+    public function previsualisationMail(Evaluation $evaluation, PointsRepository $pointsRepository): Response
     {
+      $nbEtudiants = count($pointsRepository->findNotesAndEtudiantByEvaluation($evaluation));
+
       $this->denyAccessUnlessGranted('EVALUATION_PREVISUALISATION_MAIL', $evaluation);
 
       return $this->render('evaluation/previsualisationMail.html.twig',[
-        'evaluation' => $evaluation
+        'evaluation' => $evaluation,
+        'nbEtudiants' => $nbEtudiants
       ]);
     }
 
@@ -132,6 +135,11 @@ class EvaluationController extends AbstractController
 
           $mailer->send($message);
         }
+
+        $this->addFlash(
+          'info',
+          'L\'envoi des mails a été effectué avec succès.'
+        );
 
         return $this->render('evaluation/stats.html.twig', [
             'groupes' => $stats,
