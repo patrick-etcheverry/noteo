@@ -44,8 +44,13 @@
             {% set cumulNotes = cumulNotes + note.valeur %}
           {% endfor %}
         {% endfor %}
-        {% set resultat = cumulNotes / nbNotes %}
-        {{ resultat|round(2) }}
+        {% if nbNotes != 0 %}
+          {% set resultat = cumulNotes / nbNotes %}
+          {{ resultat|round(2) }}
+        {% else %}
+          {{ "N/A" }}
+        {% endif %}
+
       </td>
       <td>{{ evaluation.groupe.nom }}</td>
       <td>{{ evaluation.enseignant.prenom }} {{ evaluation.enseignant.nom }}</td>
