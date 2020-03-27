@@ -38,7 +38,7 @@ class AppFixtures extends Fixture
         $yon->setNom('Dourisboure');
         $yon->setEmail('ydourisb@iutbayonne.univ-pau.fr');
         $yon->setRoles(['ROLE_USER']);
-        $yon->setPassword('$2y$10$YJkW1Eax17up452.PQFCUewMHg0pwv2jbZDll3XdKGmAc6Q.R48au'); // patrick_admin
+        $yon->setPassword('$2y$14$jXvJE90xYv3D7JVQZSBq4.a7reAQa7gZRpqiRDkC0sXjDuGnrHsuy'); // patrick_admin
         $manager->persist($yon);
 
         //Compte enseignant jury
@@ -47,7 +47,7 @@ class AppFixtures extends Fixture
         $marie->setNom('Bruyère');
         $marie->setEmail('bruyere@iutbayonne.univ-pau.fr');
         $marie->setRoles(['ROLE_USER']);
-        $marie->setPassword('$2y$10$r5EzuVBOaBJ4gasDkuU1keT06kXuvnhgA4g5VePSeX9Lb3C.g7Y66'); // marie_prof
+        $marie->setPassword('$2y$14$UDM9JS7jEzoGiPV.upVXI.8uNbr2J7xbCsalNX7m3n6PI0Ul4VnoC'); // marie_prof
         $manager->persist($marie);
 
         ////////////GROUPES//////////////

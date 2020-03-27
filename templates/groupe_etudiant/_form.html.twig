@@ -2,18 +2,12 @@
 
 <table align="center" class="table">
   <tbody>
-    {% if edit == false %}
     <tr>
-      <th class="intitule">Nom du groupe parent</th>
-      <td >{{ nomParent }}</td>
-    </tr>
-    {% endif %}
-    <tr>
-      <th class="intitule"><label for="groupe_etudiant_nom" class="required">Nom</label></th>
+      <th class="intitule"><label for="groupe_etudiant_nom" class="required">Nom du groupe</label></th>
       <td >{{form_errors(form.nom)}}{{ form_widget(form.nom) }}</td>
     </tr>
     <tr>
-      <th class="intitule"><label for="groupe_etudiant_description" class="required">Description</label></th>
+      <th class="intitule"><label for="groupe_etudiant_description" class="required">Description du groupe</label></th>
       <td >{{form_errors(form.description)}}{{ form_widget(form.description) }}</td>
     </tr>
     <tr>
@@ -23,7 +17,7 @@
   </tbody>
 </table>
 
-<h1 class="h4 mb-0 text-gray-800">Ajouter des étudiants au sous groupe</h1> <br>
+<h1 class="h4 mb-0 text-gray-800">Ajouter des étudiants au groupe</h1> <br>
 
 <table class="table" id="tableAjouter">
   <thead>
@@ -52,7 +46,7 @@
 </table>
 
 {% if edit %}
-<br> <h1 class="h4 mb-0 text-gray-800">Supprimer des étudiants du sous groupe</h1> <br>
+<br> <h1 class="h4 mb-0 text-gray-800">Supprimer des étudiants du groupe</h1> <br>
 
 <table class="table" id="tableSupprimer">
   <thead>
