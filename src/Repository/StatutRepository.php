@@ -19,6 +19,21 @@ class StatutRepository extends ServiceEntityRepository
         parent::__construct($registry, Statut::class);
     }
 
+    /**
+    * @return Statut[] Returns an array of Statut objects
+    */
+
+    public function findAllWithStudents()
+    {
+        return $this->createQueryBuilder('s')
+            ->addSelect('e')
+            ->join('s.etudiants', 'e')
+            ->getQuery()
+            ->getResult()
+        ;
+    }
+
+
     // /**
     //  * @return Statut[] Returns an array of Statut objects
     //  */
