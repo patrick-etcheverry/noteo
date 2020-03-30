@@ -35,20 +35,18 @@ Veuillez trouver dans ce mail les informations concernant l'évaluation {{etudia
     </td>
     <td>
       <br>
-      [0; 4[ &#x2794; {{statsUnGroupe.notes[0]}} étudiants<br>
-      [4; 8[ &#x2794; {{statsUnGroupe.notes[1]}} étudiants<br>
-      [8; 12[ &#x2794; {{statsUnGroupe.notes[2]}} étudiants<br>
-      [12; 16[ &#x2794; {{statsUnGroupe.notes[3]}} étudiants<br>
-      [16; 20] &#x2794; {{statsUnGroupe.notes[4]}} étudiants<br><br>
+      [0; 4[ : {{statsUnGroupe.notes[0]}} étudiants<br>
+      [4; 8[ : {{statsUnGroupe.notes[1]}} étudiants<br>
+      [8; 12[ : {{statsUnGroupe.notes[2]}} étudiants<br>
+      [12; 16[ : {{statsUnGroupe.notes[3]}} étudiants<br>
+      [16; 20] : {{statsUnGroupe.notes[4]}} étudiants<br><br>
     </td>
   </tr>
 </table>
 <br>
 {% endfor %}
 <p style="font-size:10px;text-align:justify;margin-top:20px;">
-  Votre nom et prénom ont été récoltés afin de figurer dans la base de données de l’application. Ces informations nous servent à y associer des notes dans le but de pouvoir obtenir un ensemble de statistiques concernant une évaluation.
-  La loi « Informatique et Liberté » vous permet d’obtenir la suppression de vos données personnelles figurant dans un fichier à travers le droit d’opposition (article 38 de la loi n° 78-17 du 6/01/1978) et le droit de rectification (article 40 de la loi n° 78-17 du 6/01/1978).
-  Pour exercer ces droits, veuillez en informer l’administrateur que vous pourrez contacter à l’adresse suivante : <a href="mailto:{{mailAdmin}}">{{mailAdmin}}</a>
+  Votre nom, prénom et vos notes ont été récoltés afin de produire des statistiques sur le taux de réussite des étudiants. La loi « Informatique et Liberté » vous permet de demander la suppression de vos données personnelles figurant dans une base de données à travers le droit d’opposition (article 38 de la loi n° 78-17 du 6/01/1978) et le droit de rectification (article 40 de la loi n° 78-17 du 6/01/1978). Pour exercer ces droits, veuillez en informer l’administrateur : <a href="mailto:{{mailAdmin}}">{{mailAdmin}}</a><br>En cas de suppression de vos informations, vous ne recevrez plus de statistiques concernant votre taux de réussite aux différentes évaluations.
 </p>
 <div align=center style="margin-top:50px;">
   <img width="150em" src="{{asset('img/banniere_noteo.jpg')}}" alt="">

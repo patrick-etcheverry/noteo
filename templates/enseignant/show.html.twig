@@ -1,12 +1,12 @@
 {% extends 'base.html.twig' %}
 
-{% block titrePage %}Consulter {% if enseignant == app.user %}mon profil{% else %}un enseignant{% endif %}{% endblock %}
+{% block titrePage %}{% if enseignant == app.user %}Mon profil{% else %}{{ enseignant.prenom }} {{ enseignant.nom }}{% endif %}{% endblock %}
 
 {% block enseignants %}active{% endblock %}
 
 {% block contenu %}
 <div class='bouton' align=center>
-  <a class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm" href="{{ path('enseignant_edit', {'id': enseignant.id}) }}">Modifier {% if enseignant == app.user %}mon profil{% else %}l'enseignant{% endif %}</a>
+  <a class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm" href="{{ path('enseignant_edit', {'id': enseignant.id}) }}">Modifier {% if enseignant == app.user %}mon profil{% else %}{{ enseignant.prenom }} {{ enseignant.nom }}{% endif %}</a>
 </div>
     <table class="table">
         <tbody>

@@ -1,12 +1,12 @@
 {% extends 'base.html.twig' %}
 
-{% block titrePage %}Créer un sous-groupe de {{ nomParent }}{% endblock %}
+{% block titrePage %}Créer un sous groupe de {{ nomParent }}{% endblock %}
 
 {% block groupes %}active{% endblock %}
 
 {% block contenu %}
 
-  {{ include('groupe_etudiant/_form.html.twig', {'button_label': 'Créer le sous-groupe'}) }}
+  {{ include('groupe_etudiant/_form.html.twig', {'button_label': 'Créer le sous groupe'}) }}
 
   <!-- Modale du ? de évaluable -->
   <div class="modal fade" id="HelpEvaluable" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">

@@ -53,11 +53,14 @@ class EvaluationController extends AbstractController
     {
       $nbEtudiants = count($pointsRepository->findNotesAndEtudiantByEvaluation($evaluation));
 
+      $nomGroupe = $evaluation->getGroupe()->getNom();
+
       $this->denyAccessUnlessGranted('EVALUATION_PREVISUALISATION_MAIL', $evaluation);
 
       return $this->render('evaluation/previsualisationMail.html.twig',[
         'evaluation' => $evaluation,
-        'nbEtudiants' => $nbEtudiants
+        'nbEtudiants' => $nbEtudiants,
+        'nomGroupe' => $nomGroupe
       ]);
     }
 

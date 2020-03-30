@@ -5,6 +5,7 @@ namespace App\Controller;
 use App\Entity\Etudiant;
 use App\Entity\GroupeEtudiant;
 use App\Form\EtudiantType;
+use App\Form\EtudiantEditType;
 use App\Repository\EtudiantRepository;
 use App\Repository\GroupeEtudiantRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -41,6 +42,7 @@ class EtudiantController extends AbstractController
 
         if ($form->isSubmitted() && $form->isValid()) {
             $etudiant->addGroupe($groupeEtudiantsNonAffectes);
+            $etudiant->setEstDemissionaire(false);
             $entityManager = $this->getDoctrine()->getManager();
             $entityManager->persist($etudiant);
             $entityManager->flush();
@@ -51,6 +53,7 @@ class EtudiantController extends AbstractController
         return $this->render('etudiant/new.html.twig', [
             'etudiant' => $etudiant,
             'form' => $form->createView(),
+            'edit'=> false
         ]);
     }
 
@@ -74,7 +77,7 @@ class EtudiantController extends AbstractController
 
         $estDemissionaire = $etudiant->getEstDemissionaire();
 
-        $form = $this->createForm(EtudiantType::class, $etudiant, ['estDemissionaire' => $estDemissionaire]);
+        $form = $this->createForm(EtudiantEditType::class, $etudiant, ['estDemissionaire' => $estDemissionaire]);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
@@ -88,6 +91,7 @@ class EtudiantController extends AbstractController
         return $this->render('etudiant/edit.html.twig', [
             'etudiant' => $etudiant,
             'form' => $form->createView(),
+            'edit' => true
         ]);
     }
 
