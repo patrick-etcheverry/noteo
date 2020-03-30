@@ -94,8 +94,8 @@ class GroupeEtudiantController extends AbstractController
 
                 // Création de l'étudiant
                 $etudiant = new Etudiant();
-                $etudiant->setPrenom($ligneDecoupee[0]);
-                $etudiant->setNom($ligneDecoupee[1]);
+                $etudiant->setNom($ligneDecoupee[0]);
+                $etudiant->setPrenom($ligneDecoupee[1]);
                 $etudiant->setMail($ligneDecoupee[2]);
                 $etudiant->setEstDemissionaire(false);
                 // Ajout de l'étudiant au groupe
