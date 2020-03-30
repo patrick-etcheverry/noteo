@@ -87,11 +87,14 @@ class EvaluationController extends AbstractController
          $noteEtudiant = $notesEtudiants[0]->getValeur();
          $position = array_search($noteEtudiant, $copieTabRang) + 1;
 
+         $mailAdmin = $_ENV['MAIL_ADMINISTRATEUR'];
+
          return $this->render('evaluation/mailEnvoye.html.twig',[
            'etudiantsEtNotes' => $notesEtudiants[0],
            'stats' => $stats,
            'position' => $position,
-           'effectif' => $effectif
+           'effectif' => $effectif,
+           'mailAdmin' =>  $mailAdmin
          ]);
        }
 
@@ -118,6 +121,8 @@ class EvaluationController extends AbstractController
 
         $effectif = sizeof($copieTabRang);
 
+        $mailAdmin = $_ENV['MAIL_ADMINISTRATEUR'];
+
         for ($i=0; $i < count($notesEtudiants); $i++) {
           $noteEtudiant = $notesEtudiants[$i]->getValeur();
           $position = array_search($noteEtudiant, $copieTabRang) + 1;
@@ -130,7 +135,8 @@ class EvaluationController extends AbstractController
                 'etudiantsEtNotes' => $notesEtudiants[$i],
                 'stats' => $stats,
                 'position' => $position,
-                'effectif' => $effectif
+                'effectif' => $effectif,
+                'mailAdmin' => $mailAdmin
           ]),'text/html');
 
           $mailer->send($message);
