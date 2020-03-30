@@ -37,7 +37,7 @@
       <td>
         <a href='{{path("groupe_etudiant_show", {slug : groupe.slug})}}'><i class='icon-eye' data-toggle='tooltip' title='Consulter {{groupe.nom}}'></i></a>
         {% if is_granted('ROLE_ADMIN') %}
-          <a href='{{path("groupe_etudiant_new_sousGroupe", {slug : groupe.slug})}}'><i class='icon-plus' data-toggle='tooltip' title='Créer un sous-groupe à partir de {{ groupe.nom }}'></i></a>
+          <a href='{{path("groupe_etudiant_new_sousGroupe", {slug : groupe.slug})}}'><i class='icon-plus' data-toggle='tooltip' title='Créer un sous groupe à partir de {{ groupe.nom }}'></i></a>
         {% endif %}
         {% if groupe.estEvaluable %}
           <a href='{{path("evaluation_new", {slug : groupe.slug})}}'><i class='icon-eval-simple' data-toggle='tooltip' title='Créer une évaluation pour {{ groupe.nom }}'></i></a>

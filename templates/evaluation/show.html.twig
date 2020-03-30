@@ -1,6 +1,6 @@
 {% extends 'base.html.twig' %}
 
-{% block titrePage %}Consulter l'évaluation {{ evaluation.nom }}{% endblock %}
+{% block titrePage %}{{ evaluation.nom }}{% endblock %}
 
 {% block evaluations %}active{% endblock %}
 
@@ -14,13 +14,13 @@
 {% block contenu %}
 {% if evaluation.enseignant == app.user or is_granted('ROLE_ADMIN') %}
 <div class='bouton' align=center>
-  <a class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm" href="{{ path('evaluation_edit', {'slug': evaluation.slug}) }}">Modifier l'évaluation</a>
+  <a class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm" href="{{ path('evaluation_edit', {'slug': evaluation.slug}) }}">Modifier {{ evaluation.nom }}</a>
 </div>
 {% endif %}
     <table class="table">
         <tbody>
             <tr>
-                <th class="intitule">Date</th>
+                <th class="intitule">Date de l'évaluation</th>
                 <td >{{ evaluation.date }}</td>
             </tr>
             <tr>
@@ -33,15 +33,13 @@
             </tr>
         <tr>
             <th class="intitule">Télécharger l'évaluation au format CSV</th>
-            <td ><a id="export" href="javascript:exportTableToCSV('{{evaluation.nom}}.csv')"><i style="font-size: 20px;" class="icon-file-excel"></i> </a></td>
+            <td ><a id="export" href="javascript:exportTableToCSV('{{evaluation.nom}}.csv')"><i style="font-size: 25px;" data-toggle='tooltip' title="Exporter les statistiques au format CSV" class="icon-file-excel"></i> </a></td>
         </tr>
 
         </tbody>
     </table>
 
 <h1 class="h4 mb-0 text-gray-800">Notes des étudiants</h1> <br>
-
-
       <table data-cols-width="25,25, 10" class="table" id="etud">
         <thead>
           <th>Nom</th>

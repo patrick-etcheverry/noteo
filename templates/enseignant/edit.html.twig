@@ -1,6 +1,6 @@
 {% extends 'base.html.twig' %}
 
-{% block titrePage %}Modifier {% if enseignant == app.user %}mon profil{% else %}un enseignant{% endif %}{% endblock %}
+{% block titrePage %}Modifier {{ enseignant.prenom }} {{ enseignant.nom }}{% endblock %}
 
 {% block enseignants %}active{% endblock %}
 

@@ -7,13 +7,13 @@
 {% block contenu %}
 {% if is_granted('ROLE_ADMIN') %}
 <div class='bouton' align=center>
-  <a class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm" href="{{ path('groupe_etudiant_edit', {'slug': groupe_etudiant.slug}) }}">Modifier le groupe</a>
+  <a class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm" href="{{ path('groupe_etudiant_edit', {'slug': groupe_etudiant.slug}) }}">Modifier {{ groupe_etudiant.nom }}</a>
 </div>
 {% endif %}
     <table class="table">
         <tbody>
             <tr>
-                <th class="intitule" ondblclick="InvasionCommuniste()">Description</th>
+                <th class="intitule" ondblclick="InvasionCommuniste()">Description du groupe</th>
                 <td >{{ groupe_etudiant.description }}</td>
             </tr>
             <tr>

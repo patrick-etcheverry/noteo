@@ -1,19 +1,19 @@
 {% extends 'base.html.twig' %}
 
-{% block titrePage %}Voir le groupe {{ statut.nom }} {% endblock %}
+{% block titrePage %}{{ statut.nom }}{% endblock %}
 
 {% block statutsEtudiants %}active{% endblock %}
 
 {% block contenu %}
 {% if statut.enseignant == app.user or is_granted('ROLE_ADMIN') %}
 <div class='bouton' align=center>
-  <a class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm" href="{{ path('statut_edit', {'slug': statut.slug}) }}">Modifier le statut</a>
+  <a class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm" href="{{ path('statut_edit', {'slug': statut.slug}) }}">Modifier {{ statut.nom }}</a>
 </div>
 {% endif %}
     <table class="table">
         <tbody>
             <tr>
-                <th class="intitule">Description</th>
+                <th class="intitule">Description du groupe</th>
                 <td >{{ statut.description }}</td>
             </tr>
             <tr>
@@ -23,7 +23,7 @@
         </tbody>
     </table>
 
-    <h1 class="h4 mb-0 text-gray-800">Liste des étudiants possédant ce statut</h1> <br>
+    <h1 class="h4 mb-0 text-gray-800">Liste des étudiants du groupe</h1> <br>
 
     <table class="table" id="etud">
       <thead>
