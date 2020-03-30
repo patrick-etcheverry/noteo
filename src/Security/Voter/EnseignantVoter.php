@@ -33,7 +33,7 @@ class EnseignantVoter extends Voter
             case 'ENSEIGNANT_EDIT':
             case 'ENSEIGNANT_SHOW' :
                 //Cette fonctionnalité est dispo si l'utilisateur est admin ou que l'enseignant consulte son propre profil
-                $accesAutorise = $accesAutorise = in_array("ROLE_ADMIN", $user->getRoles()) || $subject->getId() == $user->getId();
+                $accesAutorise = in_array("ROLE_ADMIN", $user->getRoles()) || $subject->getId() == $user->getId();
                 break;
             case 'ENSEIGNANT_DELETE' :
                 //Cette fonctionnalité n'est pas disponible si ce n'est pas un admin ou si l'admin supprime son propre profil
