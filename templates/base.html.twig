@@ -145,7 +145,11 @@
               <div class="dropdown-menu dropdown-menu-right shadow animated--grow-in" aria-labelledby="userDropdown">
                 <a class="dropdown-item" href="{{ path('enseignant_show', {'id': app.user.id}) }}">
                   <i class="fas fa-user fa-sm fa-fw mr-2 text-gray-400"></i>
-                  Profil
+                  Consulter mon profil
+                </a>
+                <a class="dropdown-item" href="https://fr.wikipedia.org/wiki/Mot_de_passe">
+                  <i class="icon-key-1 mr-2 text-gray-400"></i>
+                  Modifier mon mot de passe
                 </a>
                 <div class="dropdown-divider"></div>
                 <a class="dropdown-item" href="{{path('app_logout')}}">

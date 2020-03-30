@@ -1,11 +1,10 @@
 {% extends 'base.html.twig' %}
 
-{% block titrePage %}Modifier l'évaluation {{ evaluation.nom }}{% endblock %}
+{% block titrePage %}Modifier {{ evaluation.nom }}{% endblock %}
 
 {% block evaluations %}active{% endblock %}
 
 {% block show %}show{% endblock %}
-
 
 {% block mesEvaluations %}{% if evaluation.enseignant == app.user %}active{% endif %}{% endblock %}
 {% block autresEvaluations %}{% if evaluation.enseignant != app.user %}active{% endif %}{% endblock %}

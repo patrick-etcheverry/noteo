@@ -16,22 +16,13 @@ class EtudiantType extends AbstractType
             ->add('nom')
             ->add('prenom')
             ->add('mail')
-            ->add('estDemissionaire', ChoiceType::class, [
-            'choices' => ['Oui' => true, 'Non' => false],
-            'data' => $options['estDemissionaire'],
-            'expanded' => true, // Pour avoir des boutons radio
-            'label_attr' =>  [
-            'class'=>'radio-inline' //Pour que les boutons radio soient alignés
-            ]
-            ])
         ;
     }
 
     public function configureOptions(OptionsResolver $resolver)
     {
         $resolver->setDefaults([
-            'data_class' => Etudiant::class,
-            'estDemissionaire' => false
+            'data_class' => Etudiant::class
         ]);
     }
 }

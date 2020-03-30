@@ -6,12 +6,13 @@
 
 {% block show %}show{% endblock %}
 
-{% block mesEvaluations %}active{% endblock %}
+{% block mesEvaluations %}{% if evaluation.enseignant == app.user %}active{% endif %}{% endblock %}
+{% block autresEvaluations %}{% if evaluation.enseignant != app.user %}active{% endif %}{% endblock %}
 
 {% block collapsed %}{% endblock %}
 
 {% block contenu %}
-<h1 class="h4 mb-0 text-gray-800">Aperçu du mail reçu par les étudiants</h1> <br>
+<h1 class="h4 mb-0 text-gray-800">Aperçu du mail que les étudiants du groupe {{ nomGroupe }} recevront</h1> <br>
 <div align=center>
   <iframe src="{{path("exemple_mail",{id:evaluation.id})}}" width="100%" height="440em"></iframe>
 

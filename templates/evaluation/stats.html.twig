@@ -1,6 +1,6 @@
 {% extends 'base.html.twig' %}
 
-{% block titrePage %}Visualiser les statistiques de l'évaluation {{evaluation.nom}} {% endblock %}
+{% block titrePage %}Consulter les statistiques pour {{evaluation.nom}} {% endblock %}
 
 {% block evaluations %}active{% endblock %}
 
@@ -42,9 +42,8 @@
 {% endfor %}
 
 <div class='bouton' align=center>
-  <span style="font-size:15px" class="badge badge-pill badge-primary"><i class="icon-attention-circled"></i>Les statistiques ne prennent pas en compte les étudiants démissionaires ou absents</span>
+  <span style="font-size:15px" class="badge badge-pill badge-primary"><i class="icon-attention-circled"></i> Les statistiques ne prennent pas en compte les étudiants démissionaires ou absents</span>
 </div>
-<br>
 {% if groupes is not empty %}
 
 {% for groupe in groupes %}
@@ -52,7 +51,7 @@
 <br>
 <div class="card">
   <ul class="list-group list-group-flush">
-    <li class="list-group-item">
+    <li class="list-group-item text-white" style="background-color:#bdc3c7;">
       {{groupe.nom}}
       {% set effectifTotal = 0 %}
       {% for effectif in groupe.notes %}

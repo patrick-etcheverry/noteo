@@ -1,6 +1,6 @@
 {% extends 'base.html.twig' %}
 
-{% block titrePage %}Groupes des étudiants ayant un statut particulier{% endblock %}
+{% block titrePage %}Liste des groupes d'étudiants ayant un statut particulier{% endblock %}
 
 {% block statutsEtudiants %}active{% endblock %}
 
@@ -45,7 +45,7 @@
 {% else %}
 
 <div class="info">
-  <h1 class="h4 mb-0 text-gray-800">Vous n'avez aucun statut</h1>
+  <h1 class="h4 mb-0 text-gray-800">Vous n'avez aucun groupes d'étudiants ayant un statut particulier</h1>
 </div>
 
 <div class='bouton' align=center>
@@ -68,7 +68,7 @@
           </div>
           <div class="modal-footer">
             <button class="d-none d-sm-inline-block btn btn-sm btn-secondary shadow-sm" type="button" data-dismiss="modal">Annuler</button>
-            <a class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm" id = "BoutonSupprimerModale" href="#">Supprimer le statut d'étudiant</a>
+            <a class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm" id = "BoutonSupprimerModale" href="#">Supprimer le groupe</a>
           </div>
         </div>
       </div>

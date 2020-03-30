@@ -14,10 +14,12 @@
       <th class="intitule"><label for="etudiant_mail" class="required">Mail</label></th>
       <td >{{ form_errors(form.mail) }}{{ form_widget(form.mail) }}</td>
     </tr>
+    {% if edit %}
     <tr>
       <th class="intitule"><label for="etudiant_estDemissionaire" class="required">Démissionaire</label></th>
       <td >{{ form_errors(form.estDemissionaire) }}{{form_widget(form.estDemissionaire)}}</td>
     </tr>
+    {% endif %}
   </tbody>
 </table>
 

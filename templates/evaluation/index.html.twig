@@ -3,7 +3,7 @@
 {% if mine %}
   {% set texte = 'Liste de mes évaluations' %}
 {% else %}
-  {% set texte =  'Liste des autres évaluations' %}
+  {% set texte = 'Liste des autres évaluations' %}
 {% endif %}
 
 {% block titrePage %}{{texte}}{% endblock %}
@@ -18,9 +18,11 @@
 
 {% block contenu %}
 {% if evaluations is not empty %}
+{% if mine %}
 <div class='bouton' align=center>
   <a class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm" href="{{ path('evaluation_choose_group') }}">Créer une évaluation</a>
 </div>
+{% endif %}
 <table class="table" id="table">
   <thead>
     <tr>
@@ -60,7 +62,7 @@
       <td>{{ evaluation.groupe.nom }}</td>
       <td>{{ evaluation.enseignant.prenom }} {{ evaluation.enseignant.nom }}</td>
       <td>
-        <a href="{{ path('evaluation_show', {'slug': evaluation.slug}) }}"><i class="icon-eye" data-toggle='tooltip' title="Voir les notes de {{ evaluation.nom }}"></i></a>
+        <a href="{{ path('evaluation_show', {'slug': evaluation.slug}) }}"><i class="icon-eye" data-toggle='tooltip' title="Consulter les notes pour {{ evaluation.nom }}"></i></a>
         {% if evaluation.enseignant == app.user or is_granted('ROLE_ADMIN') %}
         <a href="{{ path('evaluation_edit', {'slug': evaluation.slug}) }}"><i class="icon-pencil-1" data-toggle='tooltip' title="Modifier {{ evaluation.nom }}"></i></a>
         {% endif %}
