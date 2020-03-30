@@ -1,6 +1,6 @@
 {{form_start(form)}}
 
-<h1 class="h4 mb-0 text-gray-800">Selectionner les groupes d'étudiants pour lesquels vous désirez voir des statistiques</h1> <br>
+<h1 class="h4 mb-0 text-gray-800">Sélectionner les groupes pour lesquels vous souhaitez voir les statistiques</h1> <br>
 
 <table class="table" id= "groupes">
 <thead>
@@ -37,7 +37,7 @@
 </tbody>
 </table>
 
-<h1 class="h4 mb-0 text-gray-800">Étudiants ayant un statut particulier</h1> <br>
+<h1 class="h4 mb-0 text-gray-800">Sélectionner les groupes d'étudiants ayant un statut particulier pour lesquels vous souhaitez voir les statistiques</h1> <br>
 {% if form.statuts is not empty %}
 <table class="table" id= "statuts">
 <thead>
@@ -71,7 +71,7 @@
 {% endif %}
 <div class='bouton' align=center>
   <a href="{{path('evaluation_enseignant', {'id': app.user.id })}}" class="d-none d-sm-inline-block btn btn-sm btn-secondary shadow-sm">Annuler</a>
-  <button class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm">Voir les statistiques</button>
+  <button class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm">Consulter les statistiques</button>
 </div>
 
 {{form_end(form)}}
