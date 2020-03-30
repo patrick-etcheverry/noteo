@@ -20,9 +20,10 @@
 {% if evaluations is not empty %}
 {% if mine %}
 <div class='bouton' align=center>
-  <a class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm" href="{{ path('evaluation_choose_group') }}">Créer une évaluation</a>
+  <a class="d-sm-inline-block btn btn-sm btn-primary shadow-sm" href="{{ path('evaluation_choose_group') }}">Créer une évaluation</a>
 </div>
 {% endif %}
+<div class="table-responsive">
 <table class="table" id="table">
   <thead>
     <tr>
@@ -79,13 +80,14 @@
 
   </tbody>
 </table>
+</div>
 {% else %}
   <div class="info">
     <h1 class="h4 mb-0 text-gray-800">{% if mine %}Vous n'avez{% else %}Les autres enseignants n'ont{% endif %} aucune évaluation</h1>
   </div>
   {% if mine %}
 <div class='bouton' align=center>
-    <a class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm" href="{{ path('evaluation_choose_group') }}">Créer une évaluation</a>
+    <a class="d-sm-inline-block btn btn-sm btn-primary shadow-sm" href="{{ path('evaluation_choose_group') }}">Créer une évaluation</a>
   </div>
   {% endif %}
 
@@ -105,8 +107,8 @@
         Toutes les notes associées seront supprimées.
       </div>
       <div class="modal-footer">
-        <button class="d-none d-sm-inline-block btn btn-sm btn-secondary shadow-sm" type="button" data-dismiss="modal">Annuler</button>
-        <a class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm" id="BoutonSupprimerModale" href="#">Supprimer l'évaluation</a>
+        <button class="d-sm-inline-block btn btn-sm btn-secondary shadow-sm" type="button" data-dismiss="modal">Annuler</button>
+        <a class="d-sm-inline-block btn btn-sm btn-primary shadow-sm" id="BoutonSupprimerModale" href="#">Supprimer l'évaluation</a>
       </div>
     </div>
   </div>

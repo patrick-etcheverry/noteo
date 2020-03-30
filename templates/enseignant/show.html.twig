@@ -6,11 +6,12 @@
 
 {% block contenu %}
 <div class='bouton' align=center>
-  <a class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm" href="{{ path('enseignant_edit', {'id': enseignant.id}) }}">Modifier {% if enseignant == app.user %}mon profil{% else %}{{ enseignant.prenom }} {{ enseignant.nom }}{% endif %}</a>
+  <a class="d-sm-inline-block btn btn-sm btn-primary shadow-sm" href="{{ path('enseignant_edit', {'id': enseignant.id}) }}">Modifier {% if enseignant == app.user %}mon profil{% else %}{{ enseignant.prenom }} {{ enseignant.nom }}{% endif %}</a>
   {% if enseignant != app.user %}
-  <a class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm" href="{{ path('enseignant_edit_password', {'id': enseignant.id}) }}">Modifier le mot de passe de {{ enseignant.prenom }} {{ enseignant.nom }}</a>
+  <a class="d-sm-inline-block btn btn-sm btn-primary shadow-sm" href="{{ path('enseignant_edit_password', {'id': enseignant.id}) }}">Modifier le mot de passe de {{ enseignant.prenom }} {{ enseignant.nom }}</a>
   {% endif %}
 </div>
+<div class="table-responsive">
     <table class="table">
         <tbody>
             <tr>
@@ -37,4 +38,5 @@
             </tr>
         </tbody>
     </table>
+  </div>
 {% endblock %}

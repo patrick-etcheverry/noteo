@@ -1,5 +1,5 @@
 {{ form_start(form) }}
-
+<div class="table-responsive">
 <table align="center" class="table">
   <tbody>
     <tr>
@@ -12,12 +12,12 @@
     </tr>
   </tbody>
 </table>
-
+</div>
 <div class='bouton' align=center>
   <span style="font-size:15px" class="badge badge-pill badge-primary"><i class="icon-attention-circled"></i> Si un étudiant était absent à l'évaluation, saisissez -1. Sa note ne sera pas prise en compte pour les statistiques</span>
 </div>
 <br> <h1 class="h4 mb-0 text-gray-800">Modifier les notes des étudiants</h1> <br>
-
+<div class="table-responsive">
 <table class="table" id="etudiants">
 <thead>
   <th>Nom</th>
@@ -39,10 +39,10 @@
 {% endif %}
 </tbody>
 </table>
-
+</div>
 <div class='bouton' align=center>
-  <a href="{{ path('groupe_etudiant_index') }}" class="d-none d-sm-inline-block btn btn-sm btn-secondary shadow-sm">Annuler</a>
-  <button class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm">{{ button_label|default('Enregistrer') }}</button>
+  <a href="{{ path('groupe_etudiant_index') }}" class="d-sm-inline-block btn btn-sm btn-secondary shadow-sm">Annuler</a>
+  <button class="d-sm-inline-block btn btn-sm btn-primary shadow-sm">{{ button_label|default('Enregistrer') }}</button>
 </div>
 
 {{ form_end(form) }}

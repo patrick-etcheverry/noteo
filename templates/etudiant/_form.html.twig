@@ -1,5 +1,5 @@
 {{ form_start(form) }}
-
+<div class="table-responsive">
 <table align="center" class="table">
   <tbody>
     <tr>
@@ -22,10 +22,10 @@
     {% endif %}
   </tbody>
 </table>
-
+</div>
 <div class='bouton' align=center>
-  <a href="{{ path('etudiant_index') }}" class="d-none d-sm-inline-block btn btn-sm btn-secondary shadow-sm">Annuler</a>
-  <button class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm">{{ button_label|default('Enregistrer') }}</button>
+  <a href="{{ path('etudiant_index') }}" class="d-sm-inline-block btn btn-sm btn-secondary shadow-sm">Annuler</a>
+  <button class="d-sm-inline-block btn btn-sm btn-primary shadow-sm">{{ button_label|default('Enregistrer') }}</button>
 </div>
 
 {{ form_end(form) }}

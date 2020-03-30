@@ -7,9 +7,10 @@
 {% block contenu %}
 {% if is_granted('ROLE_ADMIN') %}
 <div class='bouton' align=center>
-  <a class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm" href="{{ path('groupe_etudiant_edit', {'slug': groupe_etudiant.slug}) }}">Modifier {{ groupe_etudiant.nom }}</a>
+  <a class="d-sm-inline-block btn btn-sm btn-primary shadow-sm" href="{{ path('groupe_etudiant_edit', {'slug': groupe_etudiant.slug}) }}">Modifier {{ groupe_etudiant.nom }}</a>
 </div>
 {% endif %}
+<div class="table-responsive">
     <table class="table">
         <tbody>
             <tr>
@@ -26,9 +27,9 @@
             </tr>
         </tbody>
     </table>
-
+</div>
     <h1 class="h4 mb-0 text-gray-800">Liste des étudiants du groupe</h1> <br>
-
+<div class="table-responsive">
     <table class="table" id="etud">
       <thead>
         <tr>
@@ -49,7 +50,7 @@
         {% endif %}
       </tbody>
     </table>
-
+</div>
     <!-- Modale du ? de évaluable -->
     <div class="modal fade" id="HelpEvaluable" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
       <div class="modal-dialog" role="document">
@@ -64,7 +65,7 @@
             Cet attribut d'un groupe détermine si vous pourrez, ou non, créer des évaluations pour celui-ci.
           </div>
           <div class="modal-footer">
-            <button class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm" type="button" data-dismiss="modal">Ok</button>
+            <button class="d-sm-inline-block btn btn-sm btn-primary shadow-sm" type="button" data-dismiss="modal">Ok</button>
           </div>
         </div>
       </div>

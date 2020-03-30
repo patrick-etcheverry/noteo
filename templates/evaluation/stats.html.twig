@@ -12,7 +12,7 @@
 {% block collapsed %}{% endblock %}
 
 {% block contenu %}
-
+<div class="table-responsive">
 <table align="center" class="table">
   <tbody>
     <tr>
@@ -34,7 +34,7 @@
     </tr>
   </tbody>
 </table>
-
+</div>
 {% for message in app.flashes('info') %}
 <div class="alert alert-success" role="alert">
   {{ message }}

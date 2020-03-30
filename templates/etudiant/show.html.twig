@@ -7,8 +7,9 @@
 {% block contenu %}
 
 <div class='bouton' align=center>
-  <a class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm" href="{{ path('etudiant_edit', {'id': etudiant.id}) }}">Modifier {{ etudiant.prenom }} {{ etudiant.nom }}</a>
+  <a class="d-sm-inline-block btn btn-sm btn-primary shadow-sm" href="{{ path('etudiant_edit', {'id': etudiant.id}) }}">Modifier {{ etudiant.prenom }} {{ etudiant.nom }}</a>
 </div>
+<div class="table-responsive">
     <table class="table">
         <tbody>
             <tr>
@@ -37,9 +38,9 @@
             </tr>
         </tbody>
     </table>
-
+</div>
     <br> <h1 class="h4 mb-0 text-gray-800">Groupes au(x)quel(s) appartient l'étudiant</h1> <br>
-
+<div class="table-responsive">
     <table class="table" id="groupes">
         <thead>
             <tr>
@@ -66,7 +67,7 @@
         {% endfor %}
         </tbody>
     </table>
-
+</div>
 {% endblock %}
 
 {% block datatables %}

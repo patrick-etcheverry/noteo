@@ -9,8 +9,9 @@
 {% if statuts is not empty %}
 
 <div class='bouton' align=center>
-    <a class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm" href="{{ path('statut_new') }}">Créer un groupe</a>
+    <a class="d-sm-inline-block btn btn-sm btn-primary shadow-sm" href="{{ path('statut_new') }}">Créer un groupe</a>
 </div>
+<div class="table-responsive">
     <table class="table" id="table">
         <thead>
             <tr>
@@ -41,7 +42,7 @@
 
         </tbody>
     </table>
-
+</div>
 {% else %}
 
 <div class="info">
@@ -49,7 +50,7 @@
 </div>
 
 <div class='bouton' align=center>
-  <a class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm" href="{{ path('statut_new') }}">Créer un groupe</a>
+  <a class="d-sm-inline-block btn btn-sm btn-primary shadow-sm" href="{{ path('statut_new') }}">Créer un groupe</a>
 </div>
 
 {% endif %}
@@ -67,8 +68,8 @@
               Vous ne pourrez plus voir de statistiques sur ce regroupement d'étudiants.
           </div>
           <div class="modal-footer">
-            <button class="d-none d-sm-inline-block btn btn-sm btn-secondary shadow-sm" type="button" data-dismiss="modal">Annuler</button>
-            <a class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm" id = "BoutonSupprimerModale" href="#">Supprimer le groupe</a>
+            <button class="d-sm-inline-block btn btn-sm btn-secondary shadow-sm" type="button" data-dismiss="modal">Annuler</button>
+            <a class="d-sm-inline-block btn btn-sm btn-primary shadow-sm" id = "BoutonSupprimerModale" href="#">Supprimer le groupe</a>
           </div>
         </div>
       </div>

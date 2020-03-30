@@ -1,5 +1,6 @@
 {{form_start(form)}}
 {{form_errors(form.groupes)}}
+<div class="table-responsive">
 <table class="table" id= "groupes">
 <thead>
   <th>Nom</th>
@@ -33,10 +34,10 @@
   {% endfor %}
 </tbody>
 </table>
-
+</div>
 <div class='bouton' align=center>
-  <a href="{{path('evaluation_enseignant', {'id': app.user.id })}}" class="d-none d-sm-inline-block btn btn-sm btn-secondary shadow-sm">Annuler</a>
-  <button class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm">Saisir les notes</button>
+  <a href="{{path('evaluation_enseignant', {'id': app.user.id })}}" class="d-sm-inline-block btn btn-sm btn-secondary shadow-sm">Annuler</a>
+  <button class="d-sm-inline-block btn btn-sm btn-primary shadow-sm">Saisir les notes</button>
 </div>
 
 {{form_end(form)}}

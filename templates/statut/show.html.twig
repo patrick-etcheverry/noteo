@@ -7,9 +7,10 @@
 {% block contenu %}
 {% if statut.enseignant == app.user or is_granted('ROLE_ADMIN') %}
 <div class='bouton' align=center>
-  <a class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm" href="{{ path('statut_edit', {'slug': statut.slug}) }}">Modifier {{ statut.nom }}</a>
+  <a class="d-sm-inline-block btn btn-sm btn-primary shadow-sm" href="{{ path('statut_edit', {'slug': statut.slug}) }}">Modifier {{ statut.nom }}</a>
 </div>
 {% endif %}
+<div class="table-responsive">
     <table class="table">
         <tbody>
             <tr>
@@ -22,9 +23,9 @@
             </tr>
         </tbody>
     </table>
-
+</div>
     <br> <h1 class="h4 mb-0 text-gray-800">Liste des étudiants du groupe</h1> <br>
-
+    <div class="table-responsive">
     <table class="table" id="etud">
       <thead>
         <tr>
@@ -45,6 +46,7 @@
         {% endif %}
       </tbody>
     </table>
+  </div>
 
 
 {% endblock %}

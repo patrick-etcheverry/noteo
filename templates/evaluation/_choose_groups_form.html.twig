@@ -1,7 +1,7 @@
 {{form_start(form)}}
 
 <h1 class="h4 mb-0 text-gray-800">Sélectionner les groupes pour lesquels vous souhaitez voir les statistiques</h1> <br>
-
+<div class="table-responsive">
 <table class="table" id= "groupes">
 <thead>
   <th>Nom</th>
@@ -36,9 +36,10 @@
   {% endfor %}
 </tbody>
 </table>
-
+</div>
 <h1 class="h4 mb-0 text-gray-800">Sélectionner les groupes d'étudiants ayant un statut particulier pour lesquels vous souhaitez voir les statistiques</h1> <br>
 {% if form.statuts is not empty %}
+<div class="table-responsive">
 <table class="table" id= "statuts">
 <thead>
   <th>Nom</th>
@@ -64,14 +65,15 @@
   {% endfor %}
 </tbody>
 </table>
+</div>
 {% else %}
     <div class="info">
         <h5 class="h5 mb-0 text-gray-800">Il est possible d'obtenir des statistiques sur des groupes d'étudiants ayant un statut particulier (boursiers, redoublants, ...). Vous pouvez créer de tels groupes <a href="{{ path('statut_new') }}">ici</a>.</h5>
     </div>
 {% endif %}
 <div class='bouton' align=center>
-  <a href="{{path('evaluation_enseignant', {'id': app.user.id })}}" class="d-none d-sm-inline-block btn btn-sm btn-secondary shadow-sm">Annuler</a>
-  <button class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm">Consulter les statistiques</button>
+  <a href="{{path('evaluation_enseignant', {'id': app.user.id })}}" class="d-sm-inline-block btn btn-sm btn-secondary shadow-sm">Annuler</a>
+  <button class="d-sm-inline-block btn btn-sm btn-primary shadow-sm">Consulter les statistiques</button>
 </div>
 
 {{form_end(form)}}

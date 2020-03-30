@@ -7,7 +7,7 @@
 {% block contenu %}
 
 {% if groupes is not empty %} {# On teste si la chaine représentant l'arbre n'est pas vide : si oui cela veut dire qu'il n'y a aucun groupe #}
-
+<div class="table-responsive">
 <table class="table" id="table">
   <thead>
     <tr>
@@ -55,12 +55,13 @@
   {% endfor %}
   </tbody>
 </table>
+</div>
 {% else %}
 <div class="info">
   <h1 class="h4 mb-0 text-gray-800">Vous n'avez aucun groupe</h1>
 </div>
 <div class='bouton' align=center>
-  <a href="{{ path('groupe_etudiant_new') }}" class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm">Créer un groupe</a>
+  <a href="{{ path('groupe_etudiant_new') }}" class="d-sm-inline-block btn btn-sm btn-primary shadow-sm">Créer un groupe</a>
 </div>
 {% endif %}
 
@@ -78,8 +79,8 @@
         Tous ses sous-groupes seront supprimés, ainsi que les évaluations associées.
       </div>
       <div class="modal-footer">
-        <button class="d-none d-sm-inline-block btn btn-sm btn-secondary shadow-sm" type="button" data-dismiss="modal">Annuler</button>
-        <a class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm" id="BoutonSupprimerModale" href="#">Supprimer le groupe</a>
+        <button class="d-sm-inline-block btn btn-sm btn-secondary shadow-sm" type="button" data-dismiss="modal">Annuler</button>
+        <a class="d-sm-inline-block btn btn-sm btn-primary shadow-sm" id="BoutonSupprimerModale" href="#">Supprimer le groupe</a>
       </div>
     </div>
   </div>
@@ -99,7 +100,7 @@
         Cet attribut d'un groupe détermine si vous pourrez, ou non, créer des évaluations pour celui-ci.
       </div>
       <div class="modal-footer">
-        <button class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm" type="button" data-dismiss="modal">Ok</button>
+        <button class="d-sm-inline-block btn btn-sm btn-primary shadow-sm" type="button" data-dismiss="modal">Ok</button>
       </div>
     </div>
   </div>

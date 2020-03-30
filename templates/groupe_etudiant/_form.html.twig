@@ -1,5 +1,5 @@
 {{ form_start(form) }}
-
+<div class="table-responsive">
 <table align="center" class="table">
   <tbody>
     <tr>
@@ -16,9 +16,9 @@
     </tr>
   </tbody>
 </table>
-
+</div>
 <h1 class="h4 mb-0 text-gray-800">Ajouter des étudiants au groupe</h1> <br>
-
+<div class="table-responsive">
 <table class="table" id="tableAjouter">
   <thead>
     <th>Nom</th>
@@ -44,10 +44,10 @@
     {% endfor %}
   </tbody>
 </table>
-
+</div>
 {% if edit %}
 <br> <h1 class="h4 mb-0 text-gray-800">Retirer des étudiants du groupe</h1> <br>
-
+<div class="table-responsive">
 <table class="table" id="tableSupprimer">
   <thead>
     <th>Nom</th>
@@ -73,12 +73,13 @@
     {% endfor %}
   </tbody>
 </table>
+</div>
 {% endif  %}
 
 
 
 <div class='bouton' align=center>
-  <a href="{{ path('groupe_etudiant_index') }}" class="d-none d-sm-inline-block btn btn-sm btn-secondary shadow-sm">Annuler</a>
-  <button class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm">{{ button_label|default('Enregistrer') }}</button>
+  <a href="{{ path('groupe_etudiant_index') }}" class="d-sm-inline-block btn btn-sm btn-secondary shadow-sm">Annuler</a>
+  <button class="d-sm-inline-block btn btn-sm btn-primary shadow-sm">{{ button_label|default('Enregistrer') }}</button>
 </div>
 {{ form_end(form) }}
