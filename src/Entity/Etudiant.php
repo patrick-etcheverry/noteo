@@ -43,7 +43,6 @@ class Etudiant
 
     /**
      * @ORM\Column(type="boolean")
-     * @Assert\NotNull
      */
     private $estDemissionaire;
 
