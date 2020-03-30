@@ -21,7 +21,7 @@ class Points
      * @ORM\Column(type="float")
      * @Assert\Type(type="float", message = "La note doit être un nombre, eventuellement à virgule")
      * @Assert\LessThanOrEqual(20)
-     * @Assert\GreaterThanOrEqual(0)
+     * @Assert\GreaterThanOrEqual(-1)
      */
     private $valeur;
 

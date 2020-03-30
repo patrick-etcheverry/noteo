@@ -54,7 +54,13 @@
           <tr>
             <td>{{note.etudiant.nom}}</td>
             <td>{{note.etudiant.prenom}}</td>
-            <td>{{note.valeur}}</td>
+            <td>
+                {% if note.valeur == -1 %}
+                    Absent
+                {% else %}
+                    {{note.valeur}}
+                {% endif %}
+            </td>
           </tr>
           {% endfor %}
           {% endfor %}

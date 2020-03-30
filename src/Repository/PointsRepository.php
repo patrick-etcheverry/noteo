@@ -33,6 +33,7 @@ class PointsRepository extends ServiceEntityRepository
             JOIN pa.evaluation ev
             WHERE ev.id = :id
             AND et.estDemissionaire = 0
+            AND p.valeur >= 0
             ORDER BY p.valeur ASC
         ')
             ->setParameter('id', $id)
@@ -48,6 +49,7 @@ class PointsRepository extends ServiceEntityRepository
             JOIN p.partie pa
             JOIN pa.evaluation ev
             WHERE ev = :param
+            AND p.valeur >= 0
             AND et.estDemissionaire = 0
         ')
             ->setParameter('param', $evaluation)
@@ -66,6 +68,7 @@ class PointsRepository extends ServiceEntityRepository
             JOIN p.partie pa
             JOIN p.etudiant et
             WHERE pa.id = :id
+            AND p.valeur >= 0
             AND et.estDemissionnaire = 0
             ORDER BY p.valeur ASC
             ')
@@ -85,6 +88,7 @@ class PointsRepository extends ServiceEntityRepository
             WHERE ev.slug = :slugE
             AND g.slug = :slugG
             AND et.estDemissionaire = 0
+            AND p.valeur >= 0
             ORDER BY p.valeur ASC
         ')
             ->setParameter('slugG', $slugGroupe)
@@ -104,6 +108,7 @@ class PointsRepository extends ServiceEntityRepository
             WHERE ev.id = :idE
             AND g.id = :idG
             AND et.estDemissionaire = 0
+            AND p.valeur >= 0
             ORDER BY p.valeur DESC
         ')
             ->setParameter('idG', $idGroupe)
@@ -123,6 +128,7 @@ class PointsRepository extends ServiceEntityRepository
             WHERE ev.slug = :slugE
             AND s.slug = :slugS
             AND et.estDemissionaire = 0
+            AND p.valeur >= 0
             ORDER BY p.valeur ASC
         ')
             ->setParameter('slugS', $slugStatut)
