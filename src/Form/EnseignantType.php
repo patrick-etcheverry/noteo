@@ -32,13 +32,12 @@ class EnseignantType extends AbstractType
       ]
     ])
     ->add('password',RepeatedType::class, [
-      'help' => 'Par mesure de sécurité, merci de resaisir votre mot de passe. Vous pouvez également le changer si vous le souhaitez.',
       'type' => PasswordType::class,
       'invalid_message' => 'Les mots de passe saisis ne correspondent pas.',
       'options' => ['attr' => ['class' => 'password-field']],
       'required' => true,
-      'first_options'  => ['label' => 'Saisissez le une première fois...'],
-      'second_options' => ['label' => 'Puis une deuxième fois...'],
+      'first_options'  => ['label' => 'Saisir le mot de passe'],
+      'second_options' => ['label' => 'Confirmation'],
     ])
     ;
   }

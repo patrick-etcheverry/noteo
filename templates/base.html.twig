@@ -147,7 +147,7 @@
                   <i class="fas fa-user fa-sm fa-fw mr-2 text-gray-400"></i>
                   Consulter mon profil
                 </a>
-                <a class="dropdown-item" href="https://fr.wikipedia.org/wiki/Mot_de_passe">
+                <a class="dropdown-item" href="{{ path('enseignant_edit_password', {'id': app.user.id}) }}">
                   <i class="icon-key-1 mr-2 text-gray-400"></i>
                   Modifier mon mot de passe
                 </a>

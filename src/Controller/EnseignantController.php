@@ -4,6 +4,8 @@ namespace App\Controller;
 
 use App\Entity\Enseignant;
 use App\Form\EnseignantType;
+use App\Form\EnseignantEditType;
+use App\Form\EnseignantEditPasswordType;
 use App\Repository\EnseignantRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -92,7 +94,7 @@ class EnseignantController extends AbstractController
     // Utiliser pour définir le choix du bouton radio lors de l'édition
     $estAdmin = $enseignant->isAdmin();
 
-    $form = $this->createForm(EnseignantType::class, $enseignant, ['champDesactive' => $champDesactive, 'estAdmin' => $estAdmin]);
+    $form = $this->createForm(EnseignantEditType::class, $enseignant, ['champDesactive' => $champDesactive, 'estAdmin' => $estAdmin]);
     $form->handleRequest($request);
 
     if ($form->isSubmitted() && $form->isValid()) {
@@ -118,6 +120,32 @@ class EnseignantController extends AbstractController
       'enseignant' => $enseignant,
       'form' => $form->createView(),
       'edit' => true
+    ]);
+  }
+
+  /**
+  * @Route("/modifier-mot-de-passe/{id}", name="enseignant_edit_password", methods={"GET","POST"})
+  */
+  public function editPassword(Request $request, Enseignant $enseignant, UserPasswordEncoderInterface $encoder): Response
+  {
+    $this->denyAccessUnlessGranted('ENSEIGNANT_EDIT', $enseignant);
+    
+    $form = $this->createForm(EnseignantEditPasswordType::class, $enseignant);
+    $form->handleRequest($request);
+
+    if ($form->isSubmitted() && $form->isValid()) {
+      $mdpEncode = $encoder->encodePassword($enseignant, $enseignant->getPassword());
+      $enseignant->setPassword($mdpEncode);
+      $this->getDoctrine()->getManager()->flush();
+
+      return $this->redirectToRoute('enseignant_show',[
+        'id' => $enseignant->getId()
+      ]);
+    }
+
+    return $this->render('enseignant/edit_password.html.twig', [
+      'enseignant' => $enseignant,
+      'form' => $form->createView()
     ]);
   }
 
