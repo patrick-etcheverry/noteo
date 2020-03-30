@@ -223,7 +223,7 @@ class EvaluationController extends AbstractController
               if ($note->getValeur() > $partie->getBareme()) {
                 $note->setValeur($partie->getBareme());
               }
-              if ($note->getValeur() < 0) {
+              if ($note->getValeur() < -1) { // On teste si une valeur inférieure à -1 est rentrée pour ramener la note à 0. -1 est autorisé pour remarquer les absents
                   $note->setValeur(0);
               }
               //On valide l'entité note hydratée avec la collection de formulaires
