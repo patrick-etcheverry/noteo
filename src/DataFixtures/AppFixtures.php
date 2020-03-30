@@ -36,16 +36,16 @@ class AppFixtures extends Fixture
         $yon = new Enseignant();
         $yon->setPrenom('Yon');
         $yon->setNom('Dourisboure');
-        $yon->setEmail('ydourisb@iutbayonne.univ-pau.fr');
+        $yon->setEmail('yon.dourisboure@iutbayonne.univ-pau.fr');
         $yon->setRoles(['ROLE_USER']);
-        $yon->setPassword('$2y$14$jXvJE90xYv3D7JVQZSBq4.a7reAQa7gZRpqiRDkC0sXjDuGnrHsuy'); // patrick_admin
+        $yon->setPassword('$2y$14$jXvJE90xYv3D7JVQZSBq4.a7reAQa7gZRpqiRDkC0sXjDuGnrHsuy'); // yon_prof
         $manager->persist($yon);
 
         //Compte enseignant jury
         $marie = new Enseignant();
         $marie->setPrenom('Marie');
         $marie->setNom('Bruyère');
-        $marie->setEmail('bruyere@iutbayonne.univ-pau.fr');
+        $marie->setEmail('marie.bruyere@iutbayonne.univ-pau.fr');
         $marie->setRoles(['ROLE_USER']);
         $marie->setPassword('$2y$14$UDM9JS7jEzoGiPV.upVXI.8uNbr2J7xbCsalNX7m3n6PI0Ul4VnoC'); // marie_prof
         $manager->persist($marie);
