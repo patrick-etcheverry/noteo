@@ -6,7 +6,8 @@
 
 {% block show %}show{% endblock %}
 
-{% block mesEvaluations %}active{% endblock %}
+{% block mesEvaluations %}{% if evaluation.enseignant == app.user %}active{% endif %}{% endblock %}
+{% block autresEvaluations %}{% if evaluation.enseignant != app.user %}active{% endif %}{% endblock %}
 
 {% block collapsed %}{% endblock %}
 
