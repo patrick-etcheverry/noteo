@@ -318,7 +318,7 @@ class EvaluationController extends AbstractController
             if ($note->getValeur() > $partie->getBareme()) {
               $note->setValeur($partie->getBareme());
             }
-            if ($note->getValeur() < 0) {
+            if ($note->getValeur() < -1) {
                 $note->setValeur(0);
             }
             $this->validerEntite($note, $validator);
