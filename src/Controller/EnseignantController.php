@@ -107,8 +107,6 @@ class EnseignantController extends AbstractController
         $enseignant->setRoles(['ROLE_USER']);
       }
 
-      $mdpEncode = $encoder->encodePassword($enseignant, $enseignant->getPassword());
-      $enseignant->setPassword($mdpEncode);
       $this->getDoctrine()->getManager()->flush();
 
       return $this->redirectToRoute('enseignant_show',[
@@ -129,7 +127,7 @@ class EnseignantController extends AbstractController
   public function editPassword(Request $request, Enseignant $enseignant, UserPasswordEncoderInterface $encoder): Response
   {
     $this->denyAccessUnlessGranted('ENSEIGNANT_EDIT', $enseignant);
-    
+
     $form = $this->createForm(EnseignantEditPasswordType::class, $enseignant);
     $form->handleRequest($request);
 
