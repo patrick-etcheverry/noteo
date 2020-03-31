@@ -14,11 +14,23 @@
 {% block contenu %}
 <h1 class="h4 mb-0 text-gray-800">Aperçu du mail que les étudiants du groupe {{ nomGroupe }} recevront</h1> <br>
 <div align=center>
-  <iframe src="{{path("exemple_mail",{id:evaluation.id})}}" width="100%" height="440em"></iframe>
-
+  <iframe id="iframe" scrolling="no" src="{{path("exemple_mail",{id:evaluation.id})}}" width="100%" height="100%"></iframe>
 </div>
 <div class='bouton' align=center>
   <a href="javascript:history.go(-1)" class="d-sm-inline-block btn btn-sm btn-secondary shadow-sm">Annuler</a>
   <a href="{{path("envoi_mail",{slug:evaluation.slug})}}" class="d-sm-inline-block btn btn-sm btn-primary shadow-sm">Envoyer le mail aux {{ nbEtudiants }} étudiants</a>
 </div>
+{% endblock %}
+
+{% block javascripts %}
+
+  <script type="text/javascript">
+      window.onload = placementIframe();
+      window.onresize = placementIframe();
+
+      function placementIframe() {
+          iFrame = document.getElementById('iframe')
+          iFrame.height = iFrame.contentWindow.document.body.scrollHeight + "px";
+      }
+  </script>
 {% endblock %}
