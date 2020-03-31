@@ -64,11 +64,11 @@
             <li class="list-group-item">Statistiques</li>
             <li class="list-group-item">
               <ul>
-                <li>Moyenne : {{ groupe.moyenne }}</li>
-                <li>Écart-type : {{ groupe.ecartType }}</li>
-                <li>Minimum : {{ groupe.minimum }}</li>
-                <li>Maximum : {{ groupe.maximum }}</li>
-                <li>Médiane : {{ groupe.mediane }}</li>
+                <li id="moyenne-{{groupe.nom}}">Moyenne : {{ groupe.moyenne }}</li>
+                <li id="ecratType-{{groupe.nom}}">Écart-type : {{ groupe.ecartType }}</li>
+                <li id="min-{{groupe.nom}}">Minimum : {{ groupe.minimum }}</li>
+                <li id="max-{{groupe.nom}}">Maximum : {{ groupe.maximum }}</li>
+                <li id="mediane-{{groupe.nom}}">Médiane : {{ groupe.mediane }}</li>
               </ul>
             </li>
           </ul>
@@ -94,7 +94,7 @@
 {% block javascripts %}
 
 <script type="text/javascript" src="{{asset("js/jspdf.min.js")}}"></script>
-<script type="text/javascript" src="{{path("js/html2canvas.min.js")}}"></script>
+<script type="text/javascript" src="{{asset("js/html2canvas.min.js")}}"></script>
 
 <!-- Patie dédié au la génération du pdf -->
 <script type="text/javascript">
@@ -116,7 +116,20 @@
     doc.text("Date :",20,90)
     doc.text(date,260,90)
 
+    {% for groupe in groupes %}
+    doc.addPage()
+    var nomCarteGroupe = {{groupe.nom}}
+    doc.text("Nom du groupe :",20,30)
+    //doc.text(nomCarteGroupe,260,30)
+    var moyenne = {{groupe.moyenne}}
+    var ecartType = {{groupe.ecartType}}
+    var max = {{groupe.maximum}}
+    alert(nomCarteGroupe)
 
+    {% endfor %}
+
+
+    //Piste de solution pour améliorer l'xport pdf
     /*html2canvas($("#lesStats .cardhu-S1"),{
       useCORS:true,
       logging:true,
@@ -131,7 +144,7 @@
       doc.save(nomEval)
     });*/
 
-    html2canvas($("#lesStats .cardhu-S1"),{
+  /*  html2canvas($("#lesStats .cardhu-S1"),{
       useCORS:true,
       logging:true,
       onrendered:function(canvas,capture){
@@ -143,7 +156,7 @@
       doc.addImage(document.getElementById("arthur").src,'PNG',20,110);
       doc.addPage()
       doc.save(nomEval)
-    });
+    });*/
 
 
   }
