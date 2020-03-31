@@ -14,7 +14,7 @@
 {% block contenu %}
 <h1 class="h4 mb-0 text-gray-800">Aperçu du mail que les étudiants du groupe {{ nomGroupe }} recevront</h1> <br>
 <div align=center>
-  <iframe id="iframe" scrolling="no" src="{{path("exemple_mail",{id:evaluation.id})}}" width="100%" height="100%"></iframe>
+  <iframe id="iframe" scrolling="no" src="{{path("exemple_mail",{id:evaluation.id})}}" width="100%"></iframe>
 </div>
 <div class='bouton' align=center>
   <a href="javascript:history.go(-1)" class="d-sm-inline-block btn btn-sm btn-secondary shadow-sm">Annuler</a>
