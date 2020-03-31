@@ -23,6 +23,14 @@
   </tbody>
 </table>
 </div>
+
+{% if edit %}
+  <div class="info">
+    <h5 class="h5 mb-0 text-gray-800">Pour modifier les groupes auxquels appartient cet étudiant, rendez-vous <a href="{{ path('groupe_etudiant_index') }}">ici</a>. <br>
+      Si vous souhaitez ajouter ou retirer cet étudiant d'un groupe d'étudiants possèdant un statut particulier, rendez-vous <a href="{{ path('statut_index') }}">ici</a>.</h5>
+  </div>
+{% endif %}
+
 <div class='bouton' align=center>
   <a href="{{ path('etudiant_index') }}" class="d-sm-inline-block btn btn-sm btn-secondary shadow-sm">Annuler</a>
   <button class="d-sm-inline-block btn btn-sm btn-primary shadow-sm">{{ button_label|default('Enregistrer') }}</button>
