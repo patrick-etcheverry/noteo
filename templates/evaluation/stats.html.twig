@@ -104,7 +104,9 @@
 <!-- Patie dédié au la génération du pdf -->
 <script type="text/javascript">
 
-  var sectionCapturer = document.querySelector("#pageContent");
+  var xStat = 200
+  var xLabelStat = 30
+
 
   function genPDF(){
     var nomEval = "{{evaluation.nom}}"
@@ -124,46 +126,75 @@
     doc.text(date,260,90)
 
     {% for groupe in groupes %}
+    doc.addPage()
+    doc.setFontSize(40)
+    doc.text("{{groupe.nom}}",250,50)
 
     var effectifDuGroupe="{% set effectifTotal = 0 %}
     {% for effectif in groupe.notes %}
       {% set effectifTotal = effectifTotal + effectif %}
     {% endfor %}
     ({{ effectifTotal }} étudiants)".trim()
+    var y = 100
+    doc.setFontSize(16)
 
-
-    doc.addPage()
     //traitement du nom du groupe
     var nomCarteGroupe = "{{groupe.nom}}" +" "+ effectifDuGroupe
-    doc.text("Nom du groupe :",20,30)
-    doc.text(nomCarteGroupe,260,30)
-
+    var phraseNomGroupe = "Statistiques du groupe " + nomCarteGroupe
+    doc.text(phraseNomGroupe,20,y)
+    y = y + 30
     //traitement de la moyenne
     var moyenne = "{{groupe.moyenne}}"
-    doc.text("Moyenne :",20,60)
-    doc.text(moyenne,260,60)
-
+    doc.text("Moyenne :",xLabelStat,y)
+    doc.text(moyenne,xStat,y)
+    y = y + 30
     //traitement de l'écart type
     var ecartType = "{{groupe.ecartType}}"
-    doc.text("Ecart-type :",20,90)
-    doc.text(ecartType,260,90)
-
+    doc.text("Ecart-type :",xLabelStat,y)
+    doc.text(ecartType,xStat,y)
+    y = y + 30
     //traitement de la note minimal
     var min = "{{groupe.minimum}}"
-    doc.text("Note(s) minimale(s) :",20,120)
-    doc.text(min,260,120)
-
+    doc.text("Note(s) minimale(s) :",xLabelStat,y)
+    doc.text(min,xStat,y)
+    y = y + 30
     //traitement de la note maximal
     var max = "{{groupe.maximum}}"
-    doc.text("Note(s) maximale(s) :",20,150)
-    doc.text(max,260,150)
-
+    doc.text("Note(s) maximale(s) :",xLabelStat,y)
+    doc.text(max,xStat,y)
+    y = y + 30
     //traitement de la mediane
     var mediane = "{{groupe.mediane}}"
-    doc.text("Médiane :",20,180)
-    doc.text(mediane,260,180)
+    doc.text("Médiane :",xLabelStat,y)
+    doc.text(mediane,xStat,y)
 
-    //doc.text(effectifDuGroupe,300,30)
+    //traitement de la répartition des notes
+    y = y + 50
+    doc.text("Répartition des notes", 20,y)
+    y = y + 30
+    doc.text("[0;4[ : ", xLabelStat,y);
+    var premierIntervalle = "{{groupe.notes[0]}}"
+    doc.text(premierIntervalle,xStat, y)
+    y = y + 30
+    doc.text("[4;8[ : ", xLabelStat,y);
+    var deuxiemeIntervalle = "{{groupe.notes[1]}}"
+    doc.text(deuxiemeIntervalle,xStat, y)
+    y = y + 30
+    doc.text("[8;12[ : ", xLabelStat,y);
+    var troisiemeIntervalle = "{{groupe.notes[2]}}"
+    doc.text(troisiemeIntervalle,xStat, y)
+    y = y + 30
+    doc.text("[12;16[ : ", xLabelStat,y);
+    var quatriemeIntervalle = "{{groupe.notes[3]}}"
+    doc.text(quatriemeIntervalle,xStat, y)
+    y = y + 30
+    doc.text("[16;20] : ", xLabelStat,y);
+    var cinquiemeIntervalle = "{{groupe.notes[4]}}"
+    doc.text(cinquiemeIntervalle,xStat, y)
+
+
+
+
 
     {% endfor %}
 
@@ -200,6 +231,11 @@
     });*/
 
 
+  }
+
+  function plus30(y){
+
+    return y
   }
 
 
