@@ -124,9 +124,17 @@
     doc.text(date,260,90)
 
     {% for groupe in groupes %}
+
+    var effectifDuGroupe="{% set effectifTotal = 0 %}
+    {% for effectif in groupe.notes %}
+      {% set effectifTotal = effectifTotal + effectif %}
+    {% endfor %}
+    ({{ effectifTotal }} étudiants)".trim()
+
+
     doc.addPage()
     //traitement du nom du groupe
-    var nomCarteGroupe = "{{groupe.nom}}"
+    var nomCarteGroupe = "{{groupe.nom}}" +" "+ effectifDuGroupe
     doc.text("Nom du groupe :",20,30)
     doc.text(nomCarteGroupe,260,30)
 
@@ -154,6 +162,8 @@
     var mediane = "{{groupe.mediane}}"
     doc.text("Médiane :",20,180)
     doc.text(mediane,260,180)
+
+    //doc.text(effectifDuGroupe,300,30)
 
     {% endfor %}
 
