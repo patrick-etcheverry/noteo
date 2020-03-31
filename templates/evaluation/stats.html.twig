@@ -107,31 +107,57 @@
   var sectionCapturer = document.querySelector("#pageContent");
 
   function genPDF(){
-    var nomEval = document.getElementById("nomEval").innerHTML
-    var nomGroupe = document.getElementById("nomGroupe").innerHTML
-    var date = document.getElementById("date").innerHTML
+    var nomEval = "{{evaluation.nom}}"
+    var nomGroupe = "{{evaluation.groupe.nom}}"
+    var date = "{{evaluation.date}}"
 
     var capture;
     var doc = new jsPDF('p','pt','a4');
     doc.setFont('calibri')
+
+    //Définition du haut du PDF
     doc.text("Nom de l'évaluation :",20,30)
     doc.text(nomEval,260,30)
-    doc.text("Groupe :",20,60)
+    doc.text("Groupe évalué :",20,60)
     doc.text(nomGroupe,260,60)
     doc.text("Date :",20,90)
     doc.text(date,260,90)
 
     {% for groupe in groupes %}
     doc.addPage()
-    var nomCarteGroupe = {{groupe.nom}}
+    //traitement du nom du groupe
+    var nomCarteGroupe = "{{groupe.nom}}"
     doc.text("Nom du groupe :",20,30)
     doc.text(nomCarteGroupe,260,30)
-    var moyenne = {{groupe.moyenne}}
-    var ecartType = {{groupe.ecartType}}
-    var max = {{groupe.maximum}}
-    alert(max)
+
+    //traitement de la moyenne
+    var moyenne = "{{groupe.moyenne}}"
+    doc.text("Moyenne :",20,60)
+    doc.text(moyenne,260,60)
+
+    //traitement de l'écart type
+    var ecartType = "{{groupe.ecartType}}"
+    doc.text("Ecart-type :",20,90)
+    doc.text(ecartType,260,90)
+
+    //traitement de la note minimal
+    var min = "{{groupe.minimum}}"
+    doc.text("Note(s) minimale(s) :",20,120)
+    doc.text(min,260,120)
+
+    //traitement de la note maximal
+    var max = "{{groupe.maximum}}"
+    doc.text("Note(s) maximale(s) :",20,150)
+    doc.text(max,260,150)
+
+    //traitement de la mediane
+    var mediane = "{{groupe.mediane}}"
+    doc.text("Médiane :",20,180)
+    doc.text(mediane,260,180)
 
     {% endfor %}
+
+    doc.save(nomEval)
 
 
     //Piste de solution pour améliorer l'xport pdf
