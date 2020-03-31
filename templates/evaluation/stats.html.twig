@@ -26,7 +26,7 @@
     <tr>
       <th class="intitule"><label >Actions</label></th>
       <td>
-        <a href="#"><i style="font-size: 25px;" data-toggle='tooltip' title="Exporter les statistiques au format PDF" class="icon-file-pdf"></i></a>
+        <a href="#"><i style="font-size: 25px;" data-toggle='tooltip' title="Exporter les statistiques au format PDF" class="icon-file-pdf" onclick="genPDF()"></i></a>
         {% if evaluation.enseignant.id == app.user.id or is_granted('ROLE_ADMIN') %}
         <a href="{{path("previsualisation_mail", {slug:evaluation.slug})}}"><i style="font-size: 25px;"  data-toggle='tooltip' title="Envoyer les statistiques aux étudiants"  class="icon-mail"></i></a>
         {% endif %}
@@ -48,9 +48,8 @@
 
 {% for groupe in groupes %}
 
-
 <br>
-<div class="card cardhu-{{groupe.nom}}" id="uneCarte">
+<div class="card">
   <ul class="list-group list-group-flush">
     <li class="list-group-item text-white" style="background-color:#bdc3c7;">
       {{groupe.nom}}
@@ -88,7 +87,6 @@
 {% endfor %}
 
 {% else %}
-</div>
 
 <div class="info">
   <h2 class="h4 mb-0 text-gray-800">Veuillez sélectionner des groupes ou des statuts sur lesquels voir des statistiques </h2>
@@ -127,11 +125,11 @@
     doc.addPage()
     var nomCarteGroupe = {{groupe.nom}}
     doc.text("Nom du groupe :",20,30)
-    //doc.text(nomCarteGroupe,260,30)
+    doc.text(nomCarteGroupe,260,30)
     var moyenne = {{groupe.moyenne}}
     var ecartType = {{groupe.ecartType}}
     var max = {{groupe.maximum}}
-    alert(nomCarteGroupe)
+    alert(max)
 
     {% endfor %}
 
@@ -243,5 +241,10 @@ var leBarre = new Chart(graph, {
 });
 
 {% endfor %}
+
+
+
 </script>
+
+
 {% endblock %}
