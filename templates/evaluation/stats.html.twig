@@ -111,21 +111,28 @@
   var xTitre = 150
   var yTitre = 50
   var y = 100
+  var deltaY = 20
+  var numeroCarte = 1
 
 
   function genPDF(){
     var nomEval = "{{evaluation.nom}}"
     var nomGroupe = "{{evaluation.groupe.nom}}"
     var date = "{{evaluation.date}}"
-
-    var capture;
     var doc = new jsPDF('p','pt','a4');
-
-
-    var nbDeCarteParPage = 1
+    var longueur = nomEval.length
 
     //Définition du haut du PDF
-    doc.setFontSize(35)
+    if (longueur < 35) {
+      doc.setFontSize(35)
+    }
+    if (longueur < 50 && longueur > 34) {
+      doc.setFontSize(25)
+    }
+    if (longueur > 49) {
+      doc.setFontSize(20)
+    }
+
     doc.text(nomEval,300,200,(align = "center"))
     doc.setFontSize(16)
     doc.text("Groupe évalué :",50,300)
@@ -142,80 +149,91 @@
     ({{ effectifTotal }} étudiants)".trim()
 
 
-    if (nbDeCarteParPage = nbDeCarteParPage%2) {
+    if (numeroCarte == 1) {
       doc.addPage()
-      yTitre = 150
-      y = 200
+      yTitre = 50
+      y = 100
     }
-    else {
-      yTitre = 500
-      y = 550
-
+    if (numeroCarte == 2) {
+      yTitre = 300
+      y = 350
+    }
+    if (numeroCarte == 3) {
+      yTitre = 550
+      y = 600
     }
     doc.setFontSize(35)
     var nomCarteGroupe = "{{groupe.nom}}" +" "+ effectifDuGroupe
     doc.text(nomCarteGroupe,xTitre,yTitre)
-    doc.setFontSize(16)
+    doc.setFontSize(12)
 
     //traitement du nom du groupe
     var phraseNomGroupe = "Statistiques"
     doc.text(phraseNomGroupe,20,y)
-    y = y + 30
+    y = y + deltaY
     //traitement de la moyenne
     var moyenne = "{{groupe.moyenne}}"
     doc.text("Moyenne :",xLabelStat,y)
     doc.text(moyenne,xStat,y)
-    y = y + 30
+    y = y + deltaY
     //traitement de l'écart type
     var ecartType = "{{groupe.ecartType}}"
     doc.text("Ecart-type :",xLabelStat,y)
     doc.text(ecartType,xStat,y)
-    y = y + 30
+    y = y + deltaY
     //traitement de la note minimal
     var min = "{{groupe.minimum}}"
     doc.text("Note(s) minimale(s) :",xLabelStat,y)
     doc.text(min,xStat,y)
-    y = y + 30
+    y = y + deltaY
     //traitement de la note maximal
     var max = "{{groupe.maximum}}"
     doc.text("Note(s) maximale(s) :",xLabelStat,y)
     doc.text(max,xStat,y)
-    y = y + 30
+    y = y + deltaY
     //traitement de la mediane
     var mediane = "{{groupe.mediane}}"
     doc.text("Médiane :",xLabelStat,y)
     doc.text(mediane,xStat,y)
 
     //traitement de la répartition des notes
-    if (nbDeCarteParPage = nbDeCarteParPage%2) {
-      y = 200
+    if (numeroCarte == 1) {
+      y = 100
     }
-    else {
-      y = 550
-
+    if (numeroCarte == 2) {
+      y = 350
+    }
+    if (numeroCarte == 3) {
+      y = 600
     }
     doc.text("Répartition des notes", 320,y)
-    y = y + 30
+    y = y + deltaY
     doc.text("[0;4[ : ", xIntervalle,y);
     var premierIntervalle = "{{groupe.notes[0]}} étudiant(s)"
     doc.text(premierIntervalle,xRepartition, y)
-    y = y + 30
+    y = y + deltaY
     doc.text("[4;8[ : ", xIntervalle,y);
     var deuxiemeIntervalle = "{{groupe.notes[1]}} étudiant(s)"
     doc.text(deuxiemeIntervalle,xRepartition, y)
-    y = y + 30
+    y = y + deltaY
     doc.text("[8;12[ : ", xIntervalle,y);
     var troisiemeIntervalle = "{{groupe.notes[2]}} étudiant(s)"
     doc.text(troisiemeIntervalle,xRepartition, y)
-    y = y + 30
+    y = y + deltaY
     doc.text("[12;16[ : ", xIntervalle,y);
     var quatriemeIntervalle = "{{groupe.notes[3]}} étudiant(s)"
     doc.text(quatriemeIntervalle,xRepartition, y)
-    y = y + 30
+    y = y + deltaY
     doc.text("[16;20] : ", xIntervalle,y);
     var cinquiemeIntervalle = "{{groupe.notes[4]}} étudiant(s)"
     doc.text(cinquiemeIntervalle,xRepartition, y)
-    nbDeCarteParPage ++
+
+    if (numeroCarte == 3) {
+      numeroCarte = 1
+    }
+    else {
+      numeroCarte = numeroCarte + 1
+    }
 
     {% endfor %}
 
