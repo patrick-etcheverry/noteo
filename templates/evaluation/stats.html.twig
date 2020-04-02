@@ -106,8 +106,11 @@
 
   var xStat = 200
   var xLabelStat = 30
-  var xRepartition = 500
+  var xRepartition = 475
   var xIntervalle = 330
+  var xTitre = 150
+  var yTitre = 50
+  var y = 100
 
 
   function genPDF(){
@@ -117,15 +120,18 @@
 
     var capture;
     var doc = new jsPDF('p','pt','a4');
-    doc.setFont('calibri')
+
+
+    var nbDeCarteParPage = 1
 
     //Définition du haut du PDF
-    doc.text("Nom de l'évaluation :",20,30)
-    doc.text(nomEval,260,30)
-    doc.text("Groupe évalué :",20,60)
-    doc.text(nomGroupe,260,60)
-    doc.text("Date :",20,90)
-    doc.text(date,260,90)
+    doc.setFontSize(35)
+    doc.text(nomEval,300,200,(align = "center"))
+    doc.setFontSize(16)
+    doc.text("Groupe évalué :",50,300)
+    doc.text(nomGroupe,260,300)
+    doc.text("Date :",50,330)
+    doc.text(date,260,330)
 
     {% for groupe in groupes %}
 
@@ -134,16 +140,25 @@
       {% set effectifTotal = effectifTotal + effectif %}
     {% endfor %}
     ({{ effectifTotal }} étudiants)".trim()
-    var y = 100
 
-    doc.addPage()
-    doc.setFontSize(40)
+
+    if (nbDeCarteParPage = nbDeCarteParPage%2) {
+      doc.addPage()
+      yTitre = 150
+      y = 200
+    }
+    else {
+      yTitre = 500
+      y = 550
+
+    }
+    doc.setFontSize(35)
     var nomCarteGroupe = "{{groupe.nom}}" +" "+ effectifDuGroupe
-    doc.text(nomCarteGroupe,150,50)
+    doc.text(nomCarteGroupe,xTitre,yTitre)
     doc.setFontSize(16)
 
     //traitement du nom du groupe
-    var phraseNomGroupe = "Statistiques du groupe " + "{{groupe.nom}}"
+    var phraseNomGroupe = "Statistiques"
     doc.text(phraseNomGroupe,20,y)
     y = y + 30
     //traitement de la moyenne
@@ -172,32 +187,35 @@
     doc.text(mediane,xStat,y)
 
     //traitement de la répartition des notes
-    y = 100
+    if (nbDeCarteParPage = nbDeCarteParPage%2) {
+      y = 200
+    }
+    else {
+      y = 550
+
+    }
     doc.text("Répartition des notes", 320,y)
     y = y + 30
     doc.text("[0;4[ : ", xIntervalle,y);
-    var premierIntervalle = "{{groupe.notes[0]}}"
+    var premierIntervalle = "{{groupe.notes[0]}} étudiant(s)"
     doc.text(premierIntervalle,xRepartition, y)
     y = y + 30
     doc.text("[4;8[ : ", xIntervalle,y);
-    var deuxiemeIntervalle = "{{groupe.notes[1]}}"
+    var deuxiemeIntervalle = "{{groupe.notes[1]}} étudiant(s)"
     doc.text(deuxiemeIntervalle,xRepartition, y)
     y = y + 30
     doc.text("[8;12[ : ", xIntervalle,y);
-    var troisiemeIntervalle = "{{groupe.notes[2]}}"
+    var troisiemeIntervalle = "{{groupe.notes[2]}} étudiant(s)"
     doc.text(troisiemeIntervalle,xRepartition, y)
     y = y + 30
     doc.text("[12;16[ : ", xIntervalle,y);
-    var quatriemeIntervalle = "{{groupe.notes[3]}}"
+    var quatriemeIntervalle = "{{groupe.notes[3]}} étudiant(s)"
     doc.text(quatriemeIntervalle,xRepartition, y)
     y = y + 30
     doc.text("[16;20] : ", xIntervalle,y);
-    var cinquiemeIntervalle = "{{groupe.notes[4]}}"
+    var cinquiemeIntervalle = "{{groupe.notes[4]}} étudiant(s)"
     doc.text(cinquiemeIntervalle,xRepartition, y)
-
-
-
-
+    nbDeCarteParPage ++
 
     {% endfor %}
 
@@ -234,11 +252,6 @@
     });*/
 
 
-  }
-
-  function plus30(y){
-
-    return y
   }
 
 
