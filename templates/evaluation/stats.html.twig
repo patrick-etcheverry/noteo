@@ -106,6 +106,8 @@
 
   var xStat = 200
   var xLabelStat = 30
+  var xRepartition = 500
+  var xIntervalle = 330
 
 
   function genPDF(){
@@ -126,9 +128,6 @@
     doc.text(date,260,90)
 
     {% for groupe in groupes %}
-    doc.addPage()
-    doc.setFontSize(40)
-    doc.text("{{groupe.nom}}",250,50)
 
     var effectifDuGroupe="{% set effectifTotal = 0 %}
     {% for effectif in groupe.notes %}
@@ -136,11 +135,15 @@
     {% endfor %}
     ({{ effectifTotal }} étudiants)".trim()
     var y = 100
+
+    doc.addPage()
+    doc.setFontSize(40)
+    var nomCarteGroupe = "{{groupe.nom}}" +" "+ effectifDuGroupe
+    doc.text(nomCarteGroupe,150,50)
     doc.setFontSize(16)
 
     //traitement du nom du groupe
-    var nomCarteGroupe = "{{groupe.nom}}" +" "+ effectifDuGroupe
-    var phraseNomGroupe = "Statistiques du groupe " + nomCarteGroupe
+    var phraseNomGroupe = "Statistiques du groupe " + "{{groupe.nom}}"
     doc.text(phraseNomGroupe,20,y)
     y = y + 30
     //traitement de la moyenne
@@ -169,28 +172,28 @@
     doc.text(mediane,xStat,y)
 
     //traitement de la répartition des notes
-    y = y + 50
-    doc.text("Répartition des notes", 20,y)
+    y = 100
+    doc.text("Répartition des notes", 320,y)
     y = y + 30
-    doc.text("[0;4[ : ", xLabelStat,y);
+    doc.text("[0;4[ : ", xIntervalle,y);
     var premierIntervalle = "{{groupe.notes[0]}}"
-    doc.text(premierIntervalle,xStat, y)
+    doc.text(premierIntervalle,xRepartition, y)
     y = y + 30
-    doc.text("[4;8[ : ", xLabelStat,y);
+    doc.text("[4;8[ : ", xIntervalle,y);
     var deuxiemeIntervalle = "{{groupe.notes[1]}}"
-    doc.text(deuxiemeIntervalle,xStat, y)
+    doc.text(deuxiemeIntervalle,xRepartition, y)
     y = y + 30
-    doc.text("[8;12[ : ", xLabelStat,y);
+    doc.text("[8;12[ : ", xIntervalle,y);
     var troisiemeIntervalle = "{{groupe.notes[2]}}"
-    doc.text(troisiemeIntervalle,xStat, y)
+    doc.text(troisiemeIntervalle,xRepartition, y)
     y = y + 30
-    doc.text("[12;16[ : ", xLabelStat,y);
+    doc.text("[12;16[ : ", xIntervalle,y);
     var quatriemeIntervalle = "{{groupe.notes[3]}}"
-    doc.text(quatriemeIntervalle,xStat, y)
+    doc.text(quatriemeIntervalle,xRepartition, y)
     y = y + 30
-    doc.text("[16;20] : ", xLabelStat,y);
+    doc.text("[16;20] : ", xIntervalle,y);
     var cinquiemeIntervalle = "{{groupe.notes[4]}}"
-    doc.text(cinquiemeIntervalle,xStat, y)
+    doc.text(cinquiemeIntervalle,xRepartition, y)
 
 
 
