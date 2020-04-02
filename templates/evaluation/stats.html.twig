@@ -108,7 +108,7 @@
   var xLabelStat = 30
   var xRepartition = 475
   var xIntervalle = 330
-  var xTitre = 150
+  var xTitre = 300
   var yTitre = 50
   var y = 100
   var deltaY = 20
@@ -129,15 +129,18 @@
     if (longueur < 50 && longueur > 34) {
       doc.setFontSize(25)
     }
-    if (longueur > 49) {
+    if (longueur > 49 && longueur < 70) {
       doc.setFontSize(20)
+    }
+    if (longueur > 69) {
+      doc.setFontSize(16)
     }
 
     doc.text(nomEval,300,200,(align = "center"))
     doc.setFontSize(16)
-    doc.text("Groupe évalué :",50,300)
+    doc.text("Groupe évalué :",70,300)
     doc.text(nomGroupe,260,300)
-    doc.text("Date :",50,330)
+    doc.text("Date :",70,330)
     doc.text(date,260,330)
 
     {% for groupe in groupes %}
@@ -162,9 +165,9 @@
       yTitre = 550
       y = 600
     }
-    doc.setFontSize(35)
+    doc.setFontSize(25)
     var nomCarteGroupe = "{{groupe.nom}}" +" "+ effectifDuGroupe
-    doc.text(nomCarteGroupe,xTitre,yTitre)
+    doc.text(nomCarteGroupe,xTitre,yTitre,(align = "center"))
     doc.setFontSize(12)
 
     //traitement du nom du groupe
