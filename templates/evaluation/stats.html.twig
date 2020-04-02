@@ -26,7 +26,7 @@
     <tr>
       <th class="intitule"><label >Actions</label></th>
       <td>
-        <a href="#"><i style="font-size: 25px;" data-toggle='tooltip' title="Exporter les statistiques au format PDF" class="icon-file-pdf"></i></a>
+        <a href="#"><i style="font-size: 25px;" data-toggle='tooltip' title="Exporter les statistiques au format PDF" class="icon-file-pdf" onclick="genPDF()"></i></a>
         {% if evaluation.enseignant.id == app.user.id or is_granted('ROLE_ADMIN') %}
         <a href="{{path("previsualisation_mail", {slug:evaluation.slug})}}"><i style="font-size: 25px;"  data-toggle='tooltip' title="Envoyer les statistiques aux étudiants"  class="icon-mail"></i></a>
         {% endif %}
@@ -48,9 +48,8 @@
 
 {% for groupe in groupes %}
 
-
 <br>
-<div class="card cardhu-{{groupe.nom}}" id="uneCarte">
+<div class="card">
   <ul class="list-group list-group-flush">
     <li class="list-group-item text-white" style="background-color:#bdc3c7;">
       {{groupe.nom}}
@@ -88,7 +87,6 @@
 {% endfor %}
 
 {% else %}
-</div>
 
 <div class="info">
   <h2 class="h4 mb-0 text-gray-800">Veuillez sélectionner des groupes ou des statuts sur lesquels voir des statistiques </h2>
@@ -106,34 +104,143 @@
 <!-- Patie dédié au la génération du pdf -->
 <script type="text/javascript">
 
-  var sectionCapturer = document.querySelector("#pageContent");
+  var xStat = 200
+  var xLabelStat = 30
+  var xRepartition = 475
+  var xIntervalle = 330
+  var xTitre = 300
+  var yTitre = 50
+  var y = 100
+  var deltaY = 20
+  var numeroCarte = 1
+
 
   function genPDF(){
-    var nomEval = document.getElementById("nomEval").innerHTML
-    var nomGroupe = document.getElementById("nomGroupe").innerHTML
-    var date = document.getElementById("date").innerHTML
-
-    var capture;
+    var nomEval = "{{evaluation.nom}}"
+    var nomGroupe = "{{evaluation.groupe.nom}}"
+    var date = "{{evaluation.date}}"
     var doc = new jsPDF('p','pt','a4');
-    doc.setFont('calibri')
-    doc.text("Nom de l'évaluation :",20,30)
-    doc.text(nomEval,260,30)
-    doc.text("Groupe :",20,60)
-    doc.text(nomGroupe,260,60)
-    doc.text("Date :",20,90)
-    doc.text(date,260,90)
+    var longueur = nomEval.length
+
+    //Définition du haut du PDF
+    if (longueur < 35) {
+      doc.setFontSize(35)
+    }
+    if (longueur < 50 && longueur > 34) {
+      doc.setFontSize(25)
+    }
+    if (longueur > 49 && longueur < 70) {
+      doc.setFontSize(20)
+    }
+    if (longueur > 69) {
+      doc.setFontSize(16)
+    }
+
+    doc.text(nomEval,300,200,(align = "center"))
+    doc.setFontSize(16)
+    doc.text("Groupe évalué :",70,300)
+    doc.text(nomGroupe,260,300)
+    doc.text("Date :",70,330)
+    doc.text(date,260,330)
 
     {% for groupe in groupes %}
-    doc.addPage()
-    var nomCarteGroupe = {{groupe.nom}}
-    doc.text("Nom du groupe :",20,30)
-    //doc.text(nomCarteGroupe,260,30)
-    var moyenne = {{groupe.moyenne}}
-    var ecartType = {{groupe.ecartType}}
-    var max = {{groupe.maximum}}
-    alert(nomCarteGroupe)
+
+    var effectifDuGroupe="{% set effectifTotal = 0 %}
+    {% for effectif in groupe.notes %}
+      {% set effectifTotal = effectifTotal + effectif %}
+    {% endfor %}
+    ({{ effectifTotal }} étudiants)".trim()
+
+
+    if (numeroCarte == 1) {
+      doc.addPage()
+      yTitre = 50
+      y = 100
+    }
+    if (numeroCarte == 2) {
+      yTitre = 300
+      y = 350
+    }
+    if (numeroCarte == 3) {
+      yTitre = 550
+      y = 600
+    }
+    doc.setFontSize(25)
+    var nomCarteGroupe = "{{groupe.nom}}" +" "+ effectifDuGroupe
+    doc.text(nomCarteGroupe,xTitre,yTitre,(align = "center"))
+    doc.setFontSize(12)
+
+    //traitement du nom du groupe
+    var phraseNomGroupe = "Statistiques"
+    doc.text(phraseNomGroupe,20,y)
+    y = y + deltaY
+    //traitement de la moyenne
+    var moyenne = "{{groupe.moyenne}}"
+    doc.text("Moyenne :",xLabelStat,y)
+    doc.text(moyenne,xStat,y)
+    y = y + deltaY
+    //traitement de l'écart type
+    var ecartType = "{{groupe.ecartType}}"
+    doc.text("Ecart-type :",xLabelStat,y)
+    doc.text(ecartType,xStat,y)
+    y = y + deltaY
+    //traitement de la note minimal
+    var min = "{{groupe.minimum}}"
+    doc.text("Note(s) minimale(s) :",xLabelStat,y)
+    doc.text(min,xStat,y)
+    y = y + deltaY
+    //traitement de la note maximal
+    var max = "{{groupe.maximum}}"
+    doc.text("Note(s) maximale(s) :",xLabelStat,y)
+    doc.text(max,xStat,y)
+    y = y + deltaY
+    //traitement de la mediane
+    var mediane = "{{groupe.mediane}}"
+    doc.text("Médiane :",xLabelStat,y)
+    doc.text(mediane,xStat,y)
+
+    //traitement de la répartition des notes
+    if (numeroCarte == 1) {
+      y = 100
+    }
+    if (numeroCarte == 2) {
+      y = 350
+    }
+    if (numeroCarte == 3) {
+      y = 600
+    }
+    doc.text("Répartition des notes", 320,y)
+    y = y + deltaY
+    doc.text("[0;4[ : ", xIntervalle,y);
+    var premierIntervalle = "{{groupe.notes[0]}} étudiant(s)"
+    doc.text(premierIntervalle,xRepartition, y)
+    y = y + deltaY
+    doc.text("[4;8[ : ", xIntervalle,y);
+    var deuxiemeIntervalle = "{{groupe.notes[1]}} étudiant(s)"
+    doc.text(deuxiemeIntervalle,xRepartition, y)
+    y = y + deltaY
+    doc.text("[8;12[ : ", xIntervalle,y);
+    var troisiemeIntervalle = "{{groupe.notes[2]}} étudiant(s)"
+    doc.text(troisiemeIntervalle,xRepartition, y)
+    y = y + deltaY
+    doc.text("[12;16[ : ", xIntervalle,y);
+    var quatriemeIntervalle = "{{groupe.notes[3]}} étudiant(s)"
+    doc.text(quatriemeIntervalle,xRepartition, y)
+    y = y + deltaY
+    doc.text("[16;20] : ", xIntervalle,y);
+    var cinquiemeIntervalle = "{{groupe.notes[4]}} étudiant(s)"
+    doc.text(cinquiemeIntervalle,xRepartition, y)
+
+    if (numeroCarte == 3) {
+      numeroCarte = 1
+    }
+    else {
+      numeroCarte = numeroCarte + 1
+    }
 
     {% endfor %}
+
+    doc.save(nomEval)
 
 
     //Piste de solution pour améliorer l'xport pdf
@@ -243,5 +350,10 @@ var leBarre = new Chart(graph, {
 });
 
 {% endfor %}
+
+
+
 </script>
+
+
 {% endblock %}
