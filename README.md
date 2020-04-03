@@ -12,8 +12,8 @@ et du Pays Basque par le groupe composé de :
   - Arthur **Murillo**
 ***
 ## Manuels
- - Comment installer Noteo ? [Manuel d'installation](https://nextcloud.dylanmendiboure.fr/index.php/s/xoNp3mYdAZBy8FY)
- - Comment maintenir Noteo ? [Manuel de maintenance](https://nextcloud.dylanmendiboure.fr/index.php/s/MPzbBC5r4MfPL3G)
+ - Comment installer Noteo ? *A venir*
+ - Comment maintenir Noteo ? *A venir*
 ***
 ## Contact
-En cas de problèmes, contacter nous sur notre site web (noteo.me) ou directement par mail à support@noteo.me.
+En cas de problèmes, contactez nous par mail à support@noteo.me.
