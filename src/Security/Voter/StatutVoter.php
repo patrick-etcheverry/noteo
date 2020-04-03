@@ -28,7 +28,7 @@ class StatutVoter extends Voter
             case 'STATUT_EDIT':
             case 'STATUT_DELETE':
                 //Cette fonctionnalité est dispo si l'utilisateur est admin ou que l'enseignant modifie/supprime son propre statut
-                $accesAutorise = $accesAutorise = in_array("ROLE_ADMIN", $user->getRoles()) || $subject->getEnseignant()->getId() == $user->getId();
+                $accesAutorise = in_array("ROLE_ADMIN", $user->getRoles()) || $subject->getEnseignant()->getId() == $user->getId();
                 break;
         }
 
