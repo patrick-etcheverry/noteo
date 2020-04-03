@@ -144,7 +144,8 @@ $("#export").on('click', function () {
             }
             //Exemple syntaxe : csv.splice(2,1) <=> on enlève 1 élément du tableau en partant du deuxième élément du tableau
             csv.splice(3,1); // On enleve du csv la ligne "Télécharger les notes" qui est la 5e en partant du début dans tous les cas
-            
+            csv.splice(csv.length-1,1); // On supprime la dernière ligne du tableau qui contient des informations incohérentes et inutiles dans ce cas
+
             // Download CSV file
             downloadCSV(csv.join("\n"), filename);
         }
