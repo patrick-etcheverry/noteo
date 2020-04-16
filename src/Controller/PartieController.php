@@ -15,15 +15,6 @@ use Symfony\Component\Routing\Annotation\Route;
  */
 class PartieController extends AbstractController
 {
-    /**
-     * @Route("/", name="partie_index", methods={"GET"})
-     */
-    public function index(PartieRepository $partieRepository): Response
-    {
-        return $this->render('partie/index.html.twig', [
-            'parties' => $partieRepository->findAll(),
-        ]);
-    }
 
     /**
      * @Route("/nouveau", name="partie_new", methods={"GET","POST"})
@@ -45,16 +36,6 @@ class PartieController extends AbstractController
         return $this->render('partie/new.html.twig', [
             'partie' => $partie,
             'form' => $form->createView(),
-        ]);
-    }
-
-    /**
-     * @Route("/consulter/{id}", name="partie_show", methods={"GET"})
-     */
-    public function show(Partie $partie): Response
-    {
-        return $this->render('partie/show.html.twig', [
-            'partie' => $partie,
         ]);
     }
 
