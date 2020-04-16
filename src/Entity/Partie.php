@@ -6,9 +6,11 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
+use Gedmo\Mapping\Annotation as Gedmo;
 
 /**
- * @ORM\Entity(repositoryClass="App\Repository\PartieRepository")
+ * @Gedmo\Tree(type="nested")
+ * @ORM\Entity(repositoryClass="Gedmo\Tree\Entity\Repository\NestedTreeRepository")
  */
 class Partie
 {
@@ -40,6 +42,74 @@ class Partie
      * @ORM\ManyToOne(targetEntity="App\Entity\Evaluation", inversedBy="parties")
      */
     private $evaluation;
+
+    /**
+     * @Gedmo\TreeLeft
+     * @ORM\Column(name="lft", type="integer")
+     */
+    private $lft;
+
+    /**
+     * @Gedmo\TreeLevel
+     * @ORM\Column(name="lvl", type="integer")
+     */
+    private $lvl;
+
+    /**
+     * @Gedmo\TreeRight
+     * @ORM\Column(name="rgt", type="integer")
+     */
+    private $rgt;
+
+    /**
+     * @Gedmo\TreeRoot
+     * @ORM\ManyToOne(targetEntity="GroupeEtudiant")
+     * @ORM\JoinColumn(name="tree_root", referencedColumnName="id", onDelete="CASCADE")
+     */
+    private $root;
+
+    /**
+     * @Gedmo\TreeParent
+     * @ORM\ManyToOne(targetEntity="GroupeEtudiant", inversedBy="children", cascade={"persist"})
+     * @ORM\JoinColumn(name="parent_id", referencedColumnName="id", onDelete="CASCADE")
+     */
+    private $parent;
+
+    /**
+     * @ORM\OneToMany(targetEntity="GroupeEtudiant", mappedBy="parent")
+     * @ORM\OrderBy({"lft" = "ASC"})
+     */
+    private $children;
+
+    public function getLvl() {
+        return $this->lvl;
+    }
+
+    public function getLft() {
+        return $this->lft;
+    }
+    public function getRgt() {
+        return $this->rgt;
+    }
+
+    public function getRoot()
+    {
+        return $this->root;
+    }
+
+    public function setParent(GroupeEtudiant $parent = null)
+    {
+        $this->parent = $parent;
+    }
+
+    public function getParent()
+    {
+        return $this->parent;
+    }
+
+    public function getChildren() {
+        return $this->children;
+    }
 
     public function __construct()
     {
