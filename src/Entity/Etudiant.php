@@ -81,7 +81,7 @@ class Etudiant
 
     public function setNom(?string $nom): self
     {
-        $this->nom = $nom;
+        $this->nom = trim($nom);
 
         return $this;
     }
@@ -93,7 +93,7 @@ class Etudiant
 
     public function setPrenom(?string $prenom): self
     {
-        $this->prenom = $prenom;
+        $this->prenom = trim($prenom);
 
         return $this;
     }
@@ -105,7 +105,7 @@ class Etudiant
 
     public function setMail(?string $mail): self
     {
-        $this->mail = $mail;
+        $this->mail = trim($mail);
 
         return $this;
     }
