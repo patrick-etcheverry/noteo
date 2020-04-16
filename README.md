@@ -12,8 +12,8 @@ et du Pays Basque par le groupe composé de :
   - Arthur **Murillo**
 ***
 ## Manuels
- - [Manuel d'installation](http://www.mediafire.com/file/lcl8qpkjae0zh1w/manuel_installation_vfinal.pdf/file)
- - [Manuel de maintenance](http://www.mediafire.com/file/ws522ch7xjldfl5/manuel_maintenance_vfinal.pdf/file)
+ - [Manuel d'installation](https://github.com/dmendiboure/Noteo/blob/master/manuels/manuel_installation_noteo.pdf)
+ - [Manuel de maintenance](https://github.com/dmendiboure/Noteo/blob/master/manuels/manuel_maintenance_noteo.pdf)
 ***
 ## Contact
 En cas de problèmes, contactez nous par mail à support@noteo.me.
