@@ -27,7 +27,7 @@ class StatutRepository extends ServiceEntityRepository
     {
         return $this->createQueryBuilder('s')
             ->addSelect('e')
-            ->join('s.etudiants', 'e')
+            ->leftjoin('s.etudiants', 'e')
             ->getQuery()
             ->getResult()
         ;
