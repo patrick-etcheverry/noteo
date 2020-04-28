@@ -89,8 +89,7 @@ class Enseignant implements UserInterface
 
     public function setEmail(?string $email): self
     {
-        $this->email = $email;
-
+        $this->email = strtolower(trim($email));
         return $this;
     }
 
