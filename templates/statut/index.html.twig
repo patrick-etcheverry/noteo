@@ -11,7 +11,7 @@
 <div class='bouton' align=center>
     <a class="d-sm-inline-block btn btn-sm btn-primary shadow-sm" href="{{ path('statut_new') }}">Créer un groupe</a>
 </div>
-<div class="table-responsive">
+<div class="table-responsive table-hover">
     <table class="table" id="table">
         <thead>
             <tr>
@@ -23,7 +23,6 @@
             </tr>
         </thead>
         <tbody>
-
         {% for statut in statuts %}
             <tr>
                 <td>{{ statut.nom }}</td>
@@ -32,14 +31,11 @@
                 <td>{{ statut.enseignant.prenom}} {{ statut.enseignant.nom}}</td>
                 <td>
                     <a href="{{ path('statut_show', {'slug': statut.slug}) }}"><i class="icon-eye" data-toggle='tooltip' title='Consulter {{ statut.nom }}'></i></a>
-                    {% if statut.enseignant.id == app.user.id or is_granted('ROLE_ADMIN') %}
-                    <a href="{{ path('statut_edit', {'slug': statut.slug}) }}"><i class="icon-pencil-1" data-toggle='tooltip' title='Modifier {{ statut.nom }}'></i></a>
-                    <a href="#" onclick="supprimerStatutEtudiant('{{ path('statut_delete', {'slug': statut.slug}) }}')"><i class="icon-trash" data-toggle='tooltip' title='Supprimer {{ statut.nom }}'></i></a>
-                    {% endif %}
+                    <a {% if statut.enseignant.id == app.user.id or is_granted('ROLE_ADMIN') %} href="{{ path('statut_edit', {'slug': statut.slug}) }}" {% endif %}><i class="icon-pencil-1" data-toggle='tooltip' title='Modifier {{ statut.nom }}'></i></a>
+                    <a {% if statut.enseignant.id == app.user.id or is_granted('ROLE_ADMIN') %} href="#" onclick="supprimerStatutEtudiant('{{ path('statut_delete', {'slug': statut.slug}) }}')" {% endif %}><i class="icon-trash" data-toggle='tooltip' title='Supprimer {{ statut.nom }}'></i></a>
                 </td>
             </tr>
         {% endfor %}
-
         </tbody>
     </table>
 </div>
@@ -48,7 +44,6 @@
 <div class="info">
   <h1 class="h4 mb-0 text-gray-800">Vous n'avez aucun groupe d'étudiants ayant un statut particulier</h1>
 </div>
-
 <div class='bouton' align=center>
   <a class="d-sm-inline-block btn btn-sm btn-primary shadow-sm" href="{{ path('statut_new') }}">Créer un groupe</a>
 </div>
@@ -103,9 +98,10 @@ $(document).ready(function() {
     ],
     columns: [null, null, {"orderable": false},null,{"orderable": false}],
     lengthMenu: [
-      [10, 25, 50, -1],
-      [10, 25, 50, "Tout"]
+      [15, 30, 45, -1],
+      [15, 30, 45, "Tout"]
     ],
+    pageLength : {{ app.user.preferenceTri }}, <!-- Pour que le nombre d'éléments affichés par défaut soit celui de la préference de l'utilisateur -->
     info: false,
   });
 });

@@ -85,9 +85,10 @@ var table = $('#etud').DataTable({
                   [0, "asc"]
                 ],
                 lengthMenu: [
-                  [10, 25, 50, -1],
-                  [10, 25, 50, "Tout"]
+                    [15, 30, 45, -1],
+                    [15, 30, 45, "Tout"]
                 ],
+                pageLength : {{ app.user.preferenceTri }}, <!-- Pour que le nombre d'éléments affichés par défaut soit celui de la préference de l'utilisateur -->
                 info: false,
               });
 

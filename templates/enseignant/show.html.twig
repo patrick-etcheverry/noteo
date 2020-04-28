@@ -28,14 +28,24 @@
             </tr>
             <tr>
                 <th class="intitule">Administrateur</th>
-                <td >
-                {% if enseignant.roles[1] is defined %}
+                <td>
+                {% if 'ROLE_ADMIN' in enseignant.roles %}
                     Oui
                 {% else %}
                     Non
                 {% endif %}
                 </td>
             </tr>
+        <tr>
+            <th class="intitule">Préférence de tri des tableaux</th>
+            <td>
+                {% if enseignant.preferenceTri != -1 %}
+                    {{ enseignant.preferenceTri }} éléments
+                {% else %}
+                   Tous les éléments
+                {% endif %}
+            </td>
+        </tr>
         </tbody>
     </table>
   </div>

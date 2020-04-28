@@ -6,11 +6,12 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Security\Core\User\UserInterface;
-use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 use Symfony\Component\Validator\Constraints as Assert;
+use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 
 /**
  * @ORM\Entity(repositoryClass="App\Repository\EnseignantRepository")
+ * @UniqueEntity(fields={"email"}, message="Cette adresse email existe déjà !")
  */
 class Enseignant implements UserInterface
 {
@@ -56,6 +57,14 @@ class Enseignant implements UserInterface
     private $prenom;
 
     /**
+     * @ORM\Column(type="integer")
+     * @Assert\NotBlank
+     * @Assert\GreaterThanOrEqual(-1)
+     * @Assert\NotEqualTo(0)
+     */
+    private $preferenceTri;
+
+    /**
      * @ORM\OneToMany(targetEntity="App\Entity\GroupeEtudiant", mappedBy="enseignant")
      */
     private $groupes;
@@ -89,8 +98,7 @@ class Enseignant implements UserInterface
 
     public function setEmail(?string $email): self
     {
-        $this->email = $email;
-
+        $this->email = strtolower(trim($email));
         return $this;
     }
 
@@ -273,6 +281,18 @@ class Enseignant implements UserInterface
                 $statut->setEnseignant(null);
             }
         }
+
+        return $this;
+    }
+
+    public function getPreferenceTri(): ?int
+    {
+        return $this->preferenceTri;
+    }
+
+    public function setPreferenceTri(int $preferenceTri): self
+    {
+        $this->preferenceTri = $preferenceTri;
 
         return $this;
     }
