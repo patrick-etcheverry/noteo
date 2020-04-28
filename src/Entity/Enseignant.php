@@ -57,6 +57,14 @@ class Enseignant implements UserInterface
     private $prenom;
 
     /**
+     * @ORM\Column(type="integer")
+     * @Assert\NotBlank
+     * @Assert\GreaterThanOrEqual(-1)
+     * @Assert\NotEqualTo(0)
+     */
+    private $preferenceTri;
+
+    /**
      * @ORM\OneToMany(targetEntity="App\Entity\GroupeEtudiant", mappedBy="enseignant")
      */
     private $groupes;
@@ -273,6 +281,18 @@ class Enseignant implements UserInterface
                 $statut->setEnseignant(null);
             }
         }
+
+        return $this;
+    }
+
+    public function getPreferenceTri(): ?int
+    {
+        return $this->preferenceTri;
+    }
+
+    public function setPreferenceTri(int $preferenceTri): self
+    {
+        $this->preferenceTri = $preferenceTri;
 
         return $this;
     }
