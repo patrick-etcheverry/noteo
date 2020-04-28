@@ -10,7 +10,7 @@
 <div class='bouton' align=center>
   <a class="d-sm-inline-block btn btn-sm btn-primary shadow-sm" href="{{ path('etudiant_new') }}">Ajouter un étudiant</a>
 </div>
-<div class="table-responsive">
+<div class="table-responsive table-hover">
 <table class="table" id ="table">
   <thead>
     <tr>
@@ -95,9 +95,10 @@ $(document).ready(function() {
     ],
     columns: [null, null,null,{"orderable": false},{"orderable": false}],
     lengthMenu: [
-      [10, 25, 50, -1],
-      [10, 25, 50, "Tout"]
+      [15, 30, 45, -1],
+      [15, 30, 45, "Tout"]
     ],
+    pageLength : {{ app.user.preferenceTri }}, <!-- Pour que le nombre d'éléments affichés par défaut soit celui de la préference de l'utilisateur -->
     info: false,
   });
 });

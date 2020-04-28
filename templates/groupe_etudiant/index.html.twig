@@ -7,7 +7,7 @@
 {% block contenu %}
 
 {% if groupes is not empty %} {# On teste si la chaine représentant l'arbre n'est pas vide : si oui cela veut dire qu'il n'y a aucun groupe #}
-<div class="table-responsive">
+<div class="table-responsive table-hover">
 <table class="table" id="table">
   <thead>
     <tr>
@@ -130,9 +130,10 @@ d'un groupe dans la fenetre modale, afin de s'adapter au groupe que l'on veut su
         "orderable": false
       }],
       lengthMenu: [
-        [10, 25, 50, -1],
-        [10, 25, 50, "Tout"]
+        [15, 30, 45, -1],
+        [15, 30, 45, "Tout"]
       ],
+      pageLength : {{ app.user.preferenceTri }}, <!-- Pour que le nombre d'éléments affichés par défaut soit celui de la préference de l'utilisateur -->
       info: false,
     });
   });
