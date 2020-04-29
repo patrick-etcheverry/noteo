@@ -41,7 +41,7 @@
         {% endif %}
         {% if groupe.estEvaluable %}
           <a href='{{path("evaluation_new", {slug : groupe.slug})}}'><i class='icon-eval-simple' data-toggle='tooltip' title='Créer une évaluation pour {{ groupe.nom }}'></i></a>
-          <a href='#'><i class='icon-eval-composee' data-toggle='tooltip' title='Créer une évaluation avec parties pour {{ groupe.nom }}'></i></a>
+          <a href='{{ path('partie_new') }}'><i class='icon-eval-composee' data-toggle='tooltip' title='Créer une évaluation avec parties pour {{ groupe.nom }}'></i></a>
         {% endif %}
         {% if is_granted('ROLE_ADMIN') %}
           <a href="{{path("groupe_etudiant_edit", {slug:groupe.slug}) }}"><i class='icon-pencil-1' data-toggle='tooltip' title='Modifier {{groupe.nom}}'></i></a>
