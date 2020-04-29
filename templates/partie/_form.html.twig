@@ -1,8 +1,31 @@
+{% import _self as formMacros %}
+{% macro printPartieRow (form) %}
+    <div class="js-partie-item">
+        <div>{{ form_widget(form) }}</div>
+        <a href="#" class="js-partie-remove"> Supprimer la partie</a>
+    </div>
+{% endmacro %}
+
 {{ form_start(form) }}
-    {{ form(form) }}
+
+        <!-- Ce div contient les formulaires pour saisir tous les -->
+        <div class="js-partie-wrapper"
+             data-prototype="{{ formMacros.printPartieRow(form.parties.vars.prototype)|e('html_attr') }}"
+             data-index="{{ form.parties|length }}">
+            {% for partie in form.parties %}
+                {{ formMacros.printPartieRow(partie) }}
+            {% endfor %}
+            <a href="#" class="js-partie-add">Ajouter une partie</a>
+        </div>
+
 
 <div class='bouton' align=center>
     <a href="{{ path('evaluation_enseignant') }}" class="d-sm-inline-block btn btn-sm btn-secondary shadow-sm">Annuler</a>
     <button class="d-sm-inline-block btn btn-sm btn-primary shadow-sm">{{ button_label|default('Enregistrer') }}</button>
 </div>
 {{ form_end(form) }}
+
+
+
+
+
