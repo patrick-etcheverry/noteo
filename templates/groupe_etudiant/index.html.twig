@@ -44,6 +44,7 @@
         <!-- <a href='#'><i class='icon-eval-composee'></i></a> -->
         <a {% if is_granted('ROLE_ADMIN') %} href="{{path("groupe_etudiant_edit", {slug:groupe.slug}) }}" {% endif %}><i class='icon-pencil-1' data-toggle='tooltip' title='Modifier {{groupe.nom}}'></i></a>
         <a {% if is_granted('ROLE_ADMIN') %} href='{{ path ("groupe_etudiant_delete", {slug:groupe.slug}) }}' onclick='EcritureModale("{{ path ("groupe_etudiant_delete", {slug:groupe.slug}) }}")' data-toggle='modal' {% endif %}><i class='icon-trash' data-toggle='tooltip' title='Supprimer {{groupe.nom}}'></i></a>
+          <a href='{{ path('partie_new') }}'><i class='icon-eval-composee' data-toggle='tooltip' title='Créer une évaluation avec parties pour {{ groupe.nom }}'></i></a>
       </td>
     </tr>
   {% endfor %}

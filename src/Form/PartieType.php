@@ -14,7 +14,6 @@ class PartieType extends AbstractType
         $builder
             ->add('intitule')
             ->add('bareme')
-            ->add('evaluation')
         ;
     }
 

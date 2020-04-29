@@ -1,4 +1,8 @@
 {{ form_start(form) }}
-    {{ form_widget(form) }}
-    <button class="btn">{{ button_label|default('Save') }}</button>
+    {{ form(form) }}
+
+<div class='bouton' align=center>
+    <a href="{{ path('evaluation_enseignant') }}" class="d-sm-inline-block btn btn-sm btn-secondary shadow-sm">Annuler</a>
+    <button class="d-sm-inline-block btn btn-sm btn-primary shadow-sm">{{ button_label|default('Enregistrer') }}</button>
+</div>
 {{ form_end(form) }}

@@ -1,12 +1,17 @@
 {% extends 'base.html.twig' %}
 
-{% block titrePage %}Créer une partie{% endblock %}
+{% block titrePage %}Définir les parties de l'évaluation{% endblock %}
 
 {% block evaluations %}active{% endblock %}
+
+{% block show %}show{% endblock %}
+
+{% block mesEvaluations %}active{% endblock %}
+
+{% block collapsed %}{% endblock %}
 
 {% block contenu %}
 
     {{ include('partie/_form.html.twig') }}
 
-    <a href="{{ path('partie_index') }}">back to list</a>
 {% endblock %}
