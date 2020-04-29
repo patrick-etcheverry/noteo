@@ -7,6 +7,9 @@
 {% block contenu %}
 
 {% if groupes is not empty %} {# On teste si la chaine représentant l'arbre n'est pas vide : si oui cela veut dire qu'il n'y a aucun groupe #}
+<div class='bouton' align=center>
+  <a class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm" href="#" onclick="onReorderTableByHierarchie()">Afficher les groupes par ordre hiérarchique</a>
+</div>
 <div class="table-responsive table-hover">
 <table class="table" id="table">
   <thead>
@@ -115,8 +118,8 @@ d'un groupe dans la fenetre modale, afin de s'adapter au groupe que l'on veut su
 {% block datatables %}
 
 <script type="text/javascript">
-  $(document).ready(function() {
-    $('#table').dataTable({
+
+    var table = $('#table').dataTable({
       aaSorting: [], // Pour désactiver le tri automatique pour pouvoir avoir la décomposition que l'on veut
       language: {
         // Suppression du label Rechercher et ajout du placeholder
@@ -136,7 +139,11 @@ d'un groupe dans la fenetre modale, afin de s'adapter au groupe que l'on veut su
       pageLength : {{ app.user.preferenceTri }}, <!-- Pour que le nombre d'éléments affichés par défaut soit celui de la préference de l'utilisateur -->
       info: false,
     });
-  });
+
+    function onReorderTableByHierarchie() {
+      table.fnSortNeutral(); //Cette fonction (importée d'un plugin) permet de réaorganiser la table html telle que quand les données sont arrivées. Dans ce cas, cela sert à afficher à nouveau
+                             // les groupes hierarchiquement car les données arrivent à la page triées hierarchiquement lors du chargement
+    }
 </script>
 
 {% endblock %}
