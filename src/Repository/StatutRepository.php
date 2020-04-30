@@ -33,6 +33,24 @@ class StatutRepository extends ServiceEntityRepository
         ;
     }
 
+    /**
+    * @return Statut[] Returns an array of Statut objects
+    */
+
+    public function findByEvaluation($idEval) {
+
+        return $this->getEntityManager()->createQuery('
+            SELECT s
+            FROM App\Entity\Statut s
+            JOIN s.etudiants et
+            JOIN et.groupes ge
+            JOIN ge.evaluations ev
+            WHERE ev.id = :id
+            ORDER BY s.id
+        ')
+            ->setParameter('id', $idEval)
+            ->execute();
+    }
 
     // /**
     //  * @return Statut[] Returns an array of Statut objects

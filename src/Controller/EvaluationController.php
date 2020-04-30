@@ -438,7 +438,8 @@ class EvaluationController extends AbstractController
               'mapped' => false,
               'expanded' => true,
               'multiple' => true,
-              'choices' => $repoStatut->findAll() // On choisira parmis tous les statut
+              'choices' => $repoStatut->findByEvaluation($evaluation->getId()) // On choisira parmis les statuts qui possède au moins 1 étudiant ayant participé à l'évaluation
+              // 'choices' => []
             ])
             ->getForm();
 
