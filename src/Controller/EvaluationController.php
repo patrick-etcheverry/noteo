@@ -3,13 +3,10 @@
 namespace App\Controller;
 
 use App\Form\PointsType;
-use App\Form\EvaluationType;
 use App\Entity\Evaluation;
-use App\Entity\Etudiant;
 use App\Entity\Partie;
 use App\Entity\Statut;
 use App\Entity\Points;
-use App\Entity\Enseignant;
 use App\Entity\GroupeEtudiant;
 use App\Repository\StatutRepository;
 use App\Repository\PointsRepository;
@@ -22,6 +19,7 @@ use Symfony\Component\Form\Extension\Core\Type\CollectionType;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Validator\Constraints\Regex;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Validator\Constraints\NotNull;
@@ -189,7 +187,12 @@ class EvaluationController extends AbstractController
         //Création du formulaire pour saisir les informations de l'évaluation (le formulaire n'est pas lié à une entité)
         $form = $this->createFormBuilder(['notes' => $partie->getNotes()])
             ->add('nom', TextType::class,[
-              'constraints' => [new NotBlank, new Length(['max' => 255])]
+              'constraints' => [
+                  new NotBlank,
+                  new Length(['max' => 255]),
+                  new Regex(['pattern' => '/[a-zA-Z0-9]/', 'message' => 'Le nom donné ne correspond pas aux critères demandés'])
+              ],
+              'help' => 'Le nom de l\'évaluation doit contenir au moins un chiffre ou une lettre'
             ])
             ->add('date', DateType::class, [
               'widget' => 'single_text',

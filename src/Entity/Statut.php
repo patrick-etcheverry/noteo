@@ -24,7 +24,7 @@ class Statut
      * @ORM\Column(type="string", length=255)
      * @Assert\Length(max=255)
      * @Assert\NotBlank
-     * @Assert\Regex(pattern="/[a-zA-Z0-9]/", message="bazinga")
+     * @Assert\Regex(pattern="/[a-zA-Z0-9]/", message="Le nom du statut doit contenir au moins un chiffre ou une lettre")
      */
     private $nom;
 
