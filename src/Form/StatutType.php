@@ -19,11 +19,13 @@ class StatutType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
-            ->add('nom')
+            ->add('nom', null, [
+                'help' => 'Le nom du statut doit contenir au moins un chiffre ou une lettre',
+            ])
             ->add('description', TextareaType::class, [
               'attr' => [
                 'rows' => 3
-              ]
+              ],
             ])
             ->add('lesEtudiantsAAjouter', EntityType::class, [
                 'class' => Etudiant::Class, //On veut choisir des étudiants
