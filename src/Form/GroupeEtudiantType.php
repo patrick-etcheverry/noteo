@@ -19,7 +19,9 @@ class GroupeEtudiantType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
-            ->add('nom')
+            ->add('nom', null, [
+                'help' => 'Le nom du groupe doit contenir au moins un chiffre ou une lettre'
+            ])
             ->add('description', TextareaType::class, [
               'attr' => [
                 'rows' => 3
