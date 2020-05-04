@@ -47,24 +47,26 @@
 {% if groupes is not empty %}
 
 <ul class="nav nav-tabs">
+  <li class="nav-item dropdown">
+      <a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">Histogramme</a>
+      <div class="dropdown-menu">
   {% set tabCounter = 0 %}
   {% for groupe in groupes %}
-    {% if tabCounter == 0 %}
-      <li class="active"><a data-toggle="tab" href="#tab{{tabCounter}}">{{groupe.nom}}</a></li>
-    {% else %}
-      <li><a data-toggle="tab" href="#tab{{tabCounter}}">{{groupe.nom}}</a></li>
-    {% endif %}
+      <a class="dropdown-item" data-toggle="tab" href="#histo{{tabCounter}}">{{groupe.nom}}</a>
     {% set tabCounter = tabCounter + 1 %}
   {% endfor %}
+    </div>
+  </li>
 </ul>
 
 <div class="tab-content">
+<!-- Histogramme -->
 {% set tabCounter = 0 %}
 {% for groupe in groupes %}
   {% if tabCounter == 0 %}
-    <div id="tab{{tabCounter}}" class="tab-pane fade in active">
+    <div id="histo{{tabCounter}}" class="tab-pane fade">
   {% else %}
-    <div id="tab{{tabCounter}}" class="tab-pane fade">
+    <div id="histo{{tabCounter}}" class="tab-pane fade">
   {% endif %}
      {% set tabCounter = tabCounter + 1 %}
       <div class="card">
@@ -102,8 +104,17 @@
         </ul>
       </div>
     </div>
+<!-- fin Histogramme -->
+
+<!-- Nuage de points -->
+<!-- fin Nuage de points -->
+
+<!-- Nuage de points -->
+<!-- fin Nuage de points -->
 {% endfor %}
 </div>
+
+
 {% else %}
 <div class="info">
   <h2 class="h4 mb-0 text-gray-800">Veuillez sélectionner des groupes ou des statuts sur lesquels voir des statistiques </h2>
@@ -117,6 +128,7 @@
 
 <script type="text/javascript" src="{{asset("js/jspdf.min.js")}}"></script>
 <script type="text/javascript" src="{{asset("js/html2canvas.min.js")}}"></script>
+<script type="text/javascript" src="{{asset("js/boxplot.js")}}"></script>
 
 <!-- Patie dédié au la génération du pdf -->
 <script type="text/javascript">
