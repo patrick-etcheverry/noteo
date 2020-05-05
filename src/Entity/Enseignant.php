@@ -62,7 +62,7 @@ class Enseignant implements UserInterface
      * @Assert\GreaterThanOrEqual(-1)
      * @Assert\NotEqualTo(0)
      */
-    private $preferenceTri;
+    private $preferenceNbElementsTableaux;
 
     /**
      * @ORM\OneToMany(targetEntity="App\Entity\GroupeEtudiant", mappedBy="enseignant")
@@ -285,14 +285,14 @@ class Enseignant implements UserInterface
         return $this;
     }
 
-    public function getPreferenceTri(): ?int
+    public function getPreferenceNbElementsTableaux(): ?int
     {
-        return $this->preferenceTri;
+        return $this->preferenceNbElementsTableaux;
     }
 
-    public function setPreferenceTri(int $preferenceTri): self
+    public function setPreferenceNbElementsTableaux(int $preferenceNbElementsTableaux): self
     {
-        $this->preferenceTri = $preferenceTri;
+        $this->preferenceNbElementsTableaux = $preferenceNbElementsTableaux;
 
         return $this;
     }

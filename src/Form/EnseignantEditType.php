@@ -29,7 +29,7 @@ class EnseignantEditType extends AbstractType
             'class'=>'radio-inline' //Pour que les boutons radio soient alignés
           ]
         ])
-        ->add('preferenceTri', ChoiceType::class, [
+        ->add('preferenceNbElementsTableaux', ChoiceType::class, [
             'choices' => [
                 '15' => 15,
                 '30' => 30,

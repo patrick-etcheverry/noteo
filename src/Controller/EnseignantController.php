@@ -40,7 +40,7 @@ class EnseignantController extends AbstractController
     $this->denyAccessUnlessGranted('ENSEIGNANT_NEW', new Enseignant());
 
     $enseignant = new Enseignant();
-    $enseignant->setPreferenceTri(15); // Préférence de tri par défaut
+    $enseignant->setPreferenceNbElementsTableaux(15); // Préférence de tri par défaut
     $form = $this->createForm(EnseignantType::class, $enseignant);
     $form->handleRequest($request);
 
