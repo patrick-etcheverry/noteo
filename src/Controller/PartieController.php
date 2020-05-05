@@ -6,6 +6,7 @@ use App\Entity\Partie;
 use App\Form\PartieType;
 use App\Repository\PartieRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\Form\Extension\Core\Type\CollectionType;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -15,46 +16,39 @@ use Symfony\Component\Routing\Annotation\Route;
  */
 class PartieController extends AbstractController
 {
-    /**
-     * @Route("/", name="partie_index", methods={"GET"})
-     */
-    public function index(PartieRepository $partieRepository): Response
-    {
-        return $this->render('partie/index.html.twig', [
-            'parties' => $partieRepository->findAll(),
-        ]);
-    }
 
     /**
-     * @Route("/nouveau", name="partie_new", methods={"GET","POST"})
+     * @Route("/nouvelle", name="partie_new", methods={"GET","POST"})
      */
     public function new(Request $request): Response
     {
-        $partie = new Partie();
-        $form = $this->createForm(PartieType::class, $partie);
+        //Pour créer une évaluation par parties on commence par créer deux premières parties
+
+        $partiesInitiales = [new Partie(), new Partie()]; //On commence par créer deux premieres parties dont l'utilisateur va définir le nom et le barème
+
+        $form = $this->createFormBuilder(['parties' => $partiesInitiales])
+            ->add('parties', CollectionType::class, [
+                'entry_type' => PartieType::class, // Un formulaire sera créé par partie passée en paramètre du formulaire (ici deux)
+                'allow_add' => true,
+                'allow_delete' => true
+            ])
+            ->getForm();
         $form->handleRequest($request);
 
-        if ($form->isSubmitted() && $form->isValid()) {
-            $entityManager = $this->getDoctrine()->getManager();
-            $entityManager->persist($partie);
-            $entityManager->flush();
+        if($form->isSubmitted() && $form->isValid()) {
+            //$entityManager = $this->getDoctrine()->getManager();
+            //$entityManager->persist($partie);
+            //$entityManager->flush();
 
-            return $this->redirectToRoute('partie_index');
+            foreach ($form->getData('parties') as $data) {
+                print_r($data);
+            }
+
+            //return $this->redirectToRoute('groupe_etudiant_index');
         }
 
         return $this->render('partie/new.html.twig', [
-            'partie' => $partie,
             'form' => $form->createView(),
-        ]);
-    }
-
-    /**
-     * @Route("/consulter/{id}", name="partie_show", methods={"GET"})
-     */
-    public function show(Partie $partie): Response
-    {
-        return $this->render('partie/show.html.twig', [
-            'partie' => $partie,
         ]);
     }
 

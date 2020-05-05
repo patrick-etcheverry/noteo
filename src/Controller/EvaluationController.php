@@ -36,7 +36,7 @@ class EvaluationController extends AbstractController
     /**
      * @Route("/mes-evaluations", name="evaluation_enseignant", methods={"GET"})
      */
-    public function indexEnseignant(EvaluationRepository $evaluationRepository): Response
+    public function indexEnseignantConnecte(EvaluationRepository $evaluationRepository): Response
     {
         return $this->render('evaluation/index.html.twig', [
             'evaluations' => $evaluationRepository->findMyEvaluationsWithGradesAndCreatorAndGroup($this->getUser()),

@@ -1,4 +1,33 @@
+{% import _self as formMacros %}
+{#Cette macro permet d'afficher chaque formulaire pour créer une partie, pour l'utiliser il faut l'importer grace à la ligne au dessus#}
+{% macro printPartieRow (form) %}
+    <div class="js-partie-item">
+        <div>{{ form_widget(form) }}</div>
+        <a class="d-none d-sm-inline-block btn btn-sm btn-danger shadow-sm js-partie-remove" href="#"><i class="fas fa-times"></i> Supprimer la partie</a>
+    </div>
+{% endmacro %}
+
 {{ form_start(form) }}
-    {{ form_widget(form) }}
-    <button class="btn">{{ button_label|default('Save') }}</button>
+    <!-- Ce div contient tous les formulaires de parties affichés. L'attribut "data-prototype" permet d'indiquer que chaque formulaire suivra un prototype, indiqué dans la micro et basé sur les champs du formulaire PartieType -->
+    <div class="js-partie-wrapper"
+        data-prototype="{{ formMacros.printPartieRow(form.parties.vars.prototype)|e('html_attr') }}"
+        data-index="{{ form.parties|length }}">
+        {# Affichage des deux parties initiales #}
+        {% for partie in form.parties %}
+            {{ formMacros.printPartieRow(partie) }}
+        {% endfor %}
+
+        <!-- La ligne ci dessous déclenche une fonction qui ajoutera une partie -->
+        <a class="d-none d-sm-inline-block btn btn-sm btn-success shadow-sm js-partie-add" href="#"><i class="icon-plus"></i> Ajouter une partie</a>
+    </div>
+
+    <div class='bouton' align=center>
+        <a href="{{ path('evaluation_enseignant') }}" class="d-sm-inline-block btn btn-sm btn-secondary shadow-sm">Annuler</a>
+        <button class="d-sm-inline-block btn btn-sm btn-primary shadow-sm">{{ button_label|default('Enregistrer') }}</button>
+    </div>
 {{ form_end(form) }}
+
+
+
+
+
