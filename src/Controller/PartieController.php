@@ -18,10 +18,11 @@ class PartieController extends AbstractController
 {
 
     /**
-     * @Route("/nouvelle", name="partie_new", methods={"GET","POST"})
+     * @Route("/creer-parties", name="partie_new", methods={"GET","POST"})
      */
     public function new(Request $request): Response
     {
+        /*
         //Pour créer une évaluation par parties on commence par créer deux premières parties
 
         $partiesInitiales = [new Partie(), new Partie()]; //On commence par créer deux premieres parties dont l'utilisateur va définir le nom et le barème
@@ -45,11 +46,9 @@ class PartieController extends AbstractController
             }
 
             //return $this->redirectToRoute('groupe_etudiant_index');
-        }
+        } */
 
-        return $this->render('partie/new.html.twig', [
-            'form' => $form->createView(),
-        ]);
+        return $this->render('partie/arborescence.html.twig');
     }
 
     /**
