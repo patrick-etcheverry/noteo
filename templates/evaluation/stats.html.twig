@@ -47,71 +47,111 @@
 {% if groupes is not empty %}
 
 <ul class="nav nav-tabs">
-  <li class="nav-item dropdown">
-      <a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">Histogramme</a>
-      <div class="dropdown-menu">
-  {% set tabCounter = 0 %}
-  {% for groupe in groupes %}
-      <a class="dropdown-item" data-toggle="tab" href="#histo{{tabCounter}}">{{groupe.nom}}</a>
-    {% set tabCounter = tabCounter + 1 %}
-  {% endfor %}
-    </div>
-  </li>
+    <li class="active"><a class="nav-link" data-toggle="tab" href="#Histogramme">Histogramme</a></li>
+  <!--  <li><a class="nav-link" data-toggle="tab" href="#Nuages">Nuages de points</a></li> -->
+    <li><a class="nav-link" data-toggle="tab" href="#Boites">Boîte à moustache</a></li>
 </ul>
+
+<!--
+
+{#  <a class="dropdown-item" data-toggle="tab" href="#histo{{tabCounter}}">{{groupe.nom}}</a>
+
+  <div align=center>
+    <li class="list-group-item">
+        <div class="card" style="width: 20em;">
+          <ul class="list-group list-group-flush" style="text-align:left;">
+            <li class="list-group-item">Statistiques {{groupe.nom}}</li>
+            <li class="list-group-item">
+              <ul>
+                <li>Moyenne : {{ groupe.moyenne }}</li>
+                <li>Écart-type : {{ groupe.ecartType }}</li>
+                <li>Note(s) minimale(s) : {{ groupe.minimum }}</li>
+                <li>Note(s) maximale(s) : {{ groupe.maximum }}</li>
+                <li>Médiane : {{ groupe.mediane }}</li>
+              </ul>
+            </li>
+          </ul>
+        </div>
+    </li>
+  </div>
+
+  <div class="card">
+    <ul class="list-group list-group-flush">
+      <li class="list-group-item text-white" style="background-color:#bdc3c7;">
+        {{groupe.nom}}
+        {% set effectifTotal = 0 %}
+        {% for effectif in groupe.notes %}
+          {% set effectifTotal = effectifTotal + effectif %}
+        {% endfor %}
+        ({{ effectifTotal }} étudiants)
+      </li>
+      <li class="list-group-item">
+        <h5 class="card-title">Répartition des notes</h5><br>
+        <canvas align=center id="{{groupe.nom}}"></canvas>
+      </li>
+    </ul>
+  </div>
+
+
+#}-->
 
 <div class="tab-content">
 <!-- Histogramme -->
-{% set tabCounter = 0 %}
-{% for groupe in groupes %}
-  {% if tabCounter == 0 %}
-    <div id="histo{{tabCounter}}" class="tab-pane fade">
-  {% else %}
-    <div id="histo{{tabCounter}}" class="tab-pane fade">
-  {% endif %}
-     {% set tabCounter = tabCounter + 1 %}
-      <div class="card">
-        <ul class="list-group list-group-flush">
-          <li class="list-group-item text-white" style="background-color:#bdc3c7;">
-            {{groupe.nom}}
-            {% set effectifTotal = 0 %}
-            {% for effectif in groupe.notes %}
-              {% set effectifTotal = effectifTotal + effectif %}
-            {% endfor %}
-            ({{ effectifTotal }} étudiants)
-          </li>
-          <li class="list-group-item">
-            <h5 class="card-title">Répartition des notes</h5><br>
-            <canvas align=center id="{{groupe.nom}}"></canvas>
-          </li>
-          <div align=center>
-            <li class="list-group-item">
-                <div class="card" style="width: 20em;">
-                  <ul class="list-group list-group-flush" style="text-align:left;">
-                    <li class="list-group-item">Statistiques {{groupe.nom}}</li>
-                    <li class="list-group-item">
-                      <ul>
-                        <li>Moyenne : {{ groupe.moyenne }}</li>
-                        <li>Écart-type : {{ groupe.ecartType }}</li>
-                        <li>Note(s) minimale(s) : {{ groupe.minimum }}</li>
-                        <li>Note(s) maximale(s) : {{ groupe.maximum }}</li>
-                        <li>Médiane : {{ groupe.mediane }}</li>
-                      </ul>
-                    </li>
-                  </ul>
-                </div>
-            </li>
-          </div>
-        </ul>
-      </div>
+<div id="Histogramme" class="tab-pane fade">
+  <div class="container-fluid">
+  <br>
+  <div class="card-md-auto">
+    <div class="card-header">
+      Groupes
     </div>
+    <div class="card-body">
+    {% set tabCounter = 0 %}
+    {% for groupe in groupes %}
+      <div class="form-check form-check-inline">
+        <input class="form-check-input" type="checkbox" id="{{groupe.nom}}" onChange="changement(this.id, this.checked, 'barres')">
+        <label class="form-check-label" for="inlineCheckbox1">{{groupe.nom}}</label>
+      </div>
+     {% set tabCounter = tabCounter + 1 %}
+   {% endfor %}
+   </div>
+  </div>
+   </div>
+   <br>
+   <div class="container-fluid">
+      <canvas align=center id="graphHisto"></canvas>
+   </div>
+</div>
 <!-- fin Histogramme -->
 
 <!-- Nuage de points -->
 <!-- fin Nuage de points -->
 
-<!-- Nuage de points -->
-<!-- fin Nuage de points -->
-{% endfor %}
+<!-- Boîte à moustache -->
+<div id="Boites" class="tab-pane fade">
+  <div class="container-fluid">
+  <br>
+  <div class="card-md-auto">
+    <div class="card-header">
+      Groupes
+    </div>
+    <div class="card-body">
+    {% set tabCounter = 0 %}
+    {% for groupe in groupes %}
+      <div class="form-check form-check-inline">
+        <input class="form-check-input" type="checkbox" id="{{groupe.nom}}" onChange="changement(this.id, this.checked, 'boites')">
+        <label class="form-check-label" for="inlineCheckbox1">{{groupe.nom}}</label>
+      </div>
+     {% set tabCounter = tabCounter + 1 %}
+   {% endfor %}
+   </div>
+  </div>
+   </div>
+   <br>
+   <div class="container-fluid">
+      <canvas align=center id="graphBoites"></canvas>
+   </div>
+</div>
+<!-- fin Boîtes à moustache -->
 </div>
 
 
@@ -129,6 +169,147 @@
 <script type="text/javascript" src="{{asset("js/jspdf.min.js")}}"></script>
 <script type="text/javascript" src="{{asset("js/html2canvas.min.js")}}"></script>
 <script type="text/javascript" src="{{asset("js/boxplot.js")}}"></script>
+
+<!-- Script pour la génération graphiques -->
+<script type="text/javascript">
+
+  var fontSize = 16;
+
+  var groupesChecked = [];
+  var chartDATA = {
+    labels: ['[0;4[', '[4;8[', '[8;12[', '[12;16[', '[16;20]'],
+    datasets: undefined
+  };
+
+  // passage de la liste groupes de twig à js
+  var groupes = "{{groupes|json_encode()}}";
+  groupes = groupes.replace(/&quot;/g, "\"");
+  groupes = JSON.parse(groupes);
+
+  // Charts options
+  var options = {
+    scales: {
+      xAxes: [{
+        gridLines: {
+          display: false
+        },
+        ticks: {
+          maxTicksLimit: 6,
+          fontSize: fontSize,
+        },
+        maxBarThickness: 100,
+        stacked: true
+      }],
+      yAxes: [{
+        ticks: {
+          beginAtZero: true,
+          max: 10,
+          fontSize: fontSize,
+        },
+        stacked: true
+      }]
+    },
+    aspectRatio: 3,
+    maintainAspectRatio: true,
+    responsive: true,
+    tooltips: {
+      intersect: false,
+      mode: 'index',
+      titleMarginBottom: 10,
+      titleFontColor: '#6e707e',
+      titleFontSize: fontSize,
+      backgroundColor: "rgb(255,255,255)",
+      bodyFontColor: "#858796",
+      borderColor: '#dddfeb',
+      borderWidth: 1,
+      xPadding: 15,
+      yPadding: 15,
+      displayColors: false,
+      caretPadding: 10
+    },
+    plugins : {
+      labels: {
+        render: 'value'
+      }
+    }
+  }
+
+  window.onload = function() {
+    window.chartBar = new Chart(document.getElementById("graphHisto").getContext('2d'), {
+      type: 'bar',
+      data: chartDATA,
+      options: options
+    });
+
+    window.chartBoite = new Chart(document.getElementById("graphBoites").getContext('2d'), {
+      type: 'boxplot',
+      data: chartDATA,
+      options: options
+    });
+  }
+
+
+  function changement(id, value, type){
+    // Gère l'addition et la suppression des groupes à afficher dans le graphe
+    if(value){ // a check la box
+      groupesChecked.push(id);
+    } else { // a uncheck la box
+      var index = contains(groupesChecked, id);
+      if(index != -1){
+        groupesChecked.splice(index, 1);
+      }
+    }
+
+    // Génération des datasets des groupes sélectionés pour chartJS
+    dataGraph = [];
+    for(var i = 0; i < groupesChecked.length; i++){
+      var set = {};
+      var index = -1;
+      for(var j = 0; j < groupes.length; j++){
+        if(groupes[j].nom == groupesChecked[i]){
+          index = j;
+        }
+      }
+
+      if(index != -1){
+        set.label = groupes[index].nom;
+        console.log(groupes[index].nom);
+        console.log(index);
+        set.data = groupes[index].notes;
+        set.backgroundColor = genColor();
+        set.hoverBackgroundColor = set.backgroundColor;
+        set.borderColor = genColor();
+        dataGraph.push(set);
+      }
+    }
+
+    // Remplacement des données du graphe par les nouvelles données générées & MaJ du graphe
+    chartDATA.datasets = dataGraph;
+    if(type == "boites"){
+        window.chartBoite.update();
+    } else if(type == "barres"){
+        window.chartBar.update();
+    }
+  }
+
+  // génère des couleurs aléatoires
+  function genColor(){
+    return "rgb(" + Math.floor(Math.random() * Math.floor(255)) + ","
+                  + Math.floor(Math.random() * Math.floor(255)) + ","
+                  + Math.floor(Math.random() * Math.floor(255)) + ")";
+  }
+
+  // retourne l'index au quel se trouve l'élément, s'il n'y est pas renvoie -1
+  function contains(array, element){
+    for(var i = 0; i < array.length; i++){
+      if(array[i] == element){
+        return i;
+      }
+    }
+    return -1;
+  }
+
+</script>
 
 <!-- Patie dédié au la génération du pdf -->
 <script type="text/javascript">
@@ -355,12 +536,15 @@ var leBarre = new Chart(graph, {
     maintainAspectRatio: true,
     responsive: true,
     legend: {
-      display: false
+      display: false,
+      labels: {
+          defaultFontSize: fontSize;
+      },
     },
     tooltips: {
       titleMarginBottom: 10,
       titleFontColor: '#6e707e',
-      titleFontSize: 14,
+      titleFontSize: fontSize,
       backgroundColor: "rgb(255,255,255)",
       bodyFontColor: "#858796",
       borderColor: '#dddfeb',
