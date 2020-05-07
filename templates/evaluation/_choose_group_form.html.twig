@@ -3,11 +3,11 @@
 <div class="table-responsive table-hover">
 <table class="table" id= "groupes">
 <thead>
+  <th></th>
   <th>Nom</th>
   <th>Effectif</th>
   <th>Description</th>
   <th>Créateur</th>
-  <th></th>
 </thead>
 <tbody>
   {% for groupe in form.groupes %}
@@ -18,6 +18,7 @@
     {# get entity object from its index in the Categories Field #}
     {% set entity = form.groupes.vars.choices[index].data %}
       <tr>
+          <td>{{form_widget(form.groupes[index])}}</td>
           <td>
               {% if entity.lvl > 0 %}
                   {% for i in 1.. entity.lvl %}
@@ -29,7 +30,6 @@
           <td>{{ entity.etudiants|length }}</td>
           <td>{{entity.description}}</td>
           <td>{{entity.enseignant.prenom}} {{entity.enseignant.nom}}</td>
-          <td>{{form_widget(form.groupes[index])}}</td>
       </tr>
   {% endfor %}
 </tbody>

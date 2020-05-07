@@ -21,6 +21,7 @@ class GroupeEtudiantEditType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
       $builder
+
           ->add('nom', TextType::class)
 
           ->add('description', TextareaType::class, [
