@@ -10,7 +10,7 @@ use Doctrine\Migrations\AbstractMigration;
 /**
  * Auto-generated Migration: Please modify to your needs!
  */
-final class Version20200505091525 extends AbstractMigration
+final class Version20200507075517 extends AbstractMigration
 {
     public function getDescription() : string
     {
@@ -28,9 +28,9 @@ final class Version20200505091525 extends AbstractMigration
         $this->addSql('CREATE TABLE evaluation (id INT AUTO_INCREMENT NOT NULL, enseignant_id INT DEFAULT NULL, groupe_id INT DEFAULT NULL, nom VARCHAR(255) NOT NULL, date DATE NOT NULL, slug VARCHAR(255) NOT NULL, INDEX IDX_1323A575E455FCC0 (enseignant_id), INDEX IDX_1323A5757A45358C (groupe_id), PRIMARY KEY(id)) DEFAULT CHARACTER SET utf8mb4 COLLATE `utf8mb4_unicode_ci` ENGINE = InnoDB');
         $this->addSql('CREATE TABLE groupe_etudiant (id INT AUTO_INCREMENT NOT NULL, enseignant_id INT NOT NULL, tree_root INT DEFAULT NULL, parent_id INT DEFAULT NULL, nom VARCHAR(255) NOT NULL, description LONGTEXT NOT NULL, lft INT NOT NULL, lvl INT NOT NULL, rgt INT NOT NULL, est_evaluable TINYINT(1) NOT NULL, slug VARCHAR(255) NOT NULL, INDEX IDX_E0DC2993E455FCC0 (enseignant_id), INDEX IDX_E0DC2993A977936C (tree_root), INDEX IDX_E0DC2993727ACA70 (parent_id), PRIMARY KEY(id)) DEFAULT CHARACTER SET utf8mb4 COLLATE `utf8mb4_unicode_ci` ENGINE = InnoDB');
         $this->addSql('CREATE TABLE partie (id INT AUTO_INCREMENT NOT NULL, evaluation_id INT DEFAULT NULL, tree_root INT DEFAULT NULL, parent_id INT DEFAULT NULL, intitule VARCHAR(255) DEFAULT NULL, bareme DOUBLE PRECISION DEFAULT NULL, lft INT NOT NULL, lvl INT NOT NULL, rgt INT NOT NULL, INDEX IDX_59B1F3D456C5646 (evaluation_id), INDEX IDX_59B1F3DA977936C (tree_root), INDEX IDX_59B1F3D727ACA70 (parent_id), PRIMARY KEY(id)) DEFAULT CHARACTER SET utf8mb4 COLLATE `utf8mb4_unicode_ci` ENGINE = InnoDB');
+        $this->addSql('CREATE TABLE points (id INT AUTO_INCREMENT NOT NULL, etudiant_id INT DEFAULT NULL, partie_id INT DEFAULT NULL, valeur DOUBLE PRECISION NOT NULL, INDEX IDX_27BA8E29DDEAB1A3 (etudiant_id), INDEX IDX_27BA8E29E075F7A4 (partie_id), PRIMARY KEY(id)) DEFAULT CHARACTER SET utf8mb4 COLLATE `utf8mb4_unicode_ci` ENGINE = InnoDB');
         $this->addSql('CREATE TABLE statut (id INT AUTO_INCREMENT NOT NULL, enseignant_id INT NOT NULL, nom VARCHAR(255) NOT NULL, description LONGTEXT NOT NULL, slug VARCHAR(255) NOT NULL, INDEX IDX_E564F0BFE455FCC0 (enseignant_id), PRIMARY KEY(id)) DEFAULT CHARACTER SET utf8mb4 COLLATE `utf8mb4_unicode_ci` ENGINE = InnoDB');
         $this->addSql('CREATE TABLE statut_etudiant (statut_id INT NOT NULL, etudiant_id INT NOT NULL, INDEX IDX_E789E42F6203804 (statut_id), INDEX IDX_E789E42DDEAB1A3 (etudiant_id), PRIMARY KEY(statut_id, etudiant_id)) DEFAULT CHARACTER SET utf8mb4 COLLATE `utf8mb4_unicode_ci` ENGINE = InnoDB');
-        $this->addSql('CREATE TABLE points (id INT AUTO_INCREMENT NOT NULL, etudiant_id INT DEFAULT NULL, partie_id INT DEFAULT NULL, valeur DOUBLE PRECISION NOT NULL, INDEX IDX_27BA8E29DDEAB1A3 (etudiant_id), INDEX IDX_27BA8E29E075F7A4 (partie_id), PRIMARY KEY(id)) DEFAULT CHARACTER SET utf8mb4 COLLATE `utf8mb4_unicode_ci` ENGINE = InnoDB');
         $this->addSql('ALTER TABLE etudiant_groupe_etudiant ADD CONSTRAINT FK_B7A6D635DDEAB1A3 FOREIGN KEY (etudiant_id) REFERENCES etudiant (id) ON DELETE CASCADE');
         $this->addSql('ALTER TABLE etudiant_groupe_etudiant ADD CONSTRAINT FK_B7A6D6355237C26D FOREIGN KEY (groupe_etudiant_id) REFERENCES groupe_etudiant (id) ON DELETE CASCADE');
         $this->addSql('ALTER TABLE evaluation ADD CONSTRAINT FK_1323A575E455FCC0 FOREIGN KEY (enseignant_id) REFERENCES enseignant (id)');
@@ -39,13 +39,13 @@ final class Version20200505091525 extends AbstractMigration
         $this->addSql('ALTER TABLE groupe_etudiant ADD CONSTRAINT FK_E0DC2993A977936C FOREIGN KEY (tree_root) REFERENCES groupe_etudiant (id) ON DELETE CASCADE');
         $this->addSql('ALTER TABLE groupe_etudiant ADD CONSTRAINT FK_E0DC2993727ACA70 FOREIGN KEY (parent_id) REFERENCES groupe_etudiant (id) ON DELETE CASCADE');
         $this->addSql('ALTER TABLE partie ADD CONSTRAINT FK_59B1F3D456C5646 FOREIGN KEY (evaluation_id) REFERENCES evaluation (id)');
-        $this->addSql('ALTER TABLE partie ADD CONSTRAINT FK_59B1F3DA977936C FOREIGN KEY (tree_root) REFERENCES groupe_etudiant (id) ON DELETE CASCADE');
-        $this->addSql('ALTER TABLE partie ADD CONSTRAINT FK_59B1F3D727ACA70 FOREIGN KEY (parent_id) REFERENCES groupe_etudiant (id) ON DELETE CASCADE');
+        $this->addSql('ALTER TABLE partie ADD CONSTRAINT FK_59B1F3DA977936C FOREIGN KEY (tree_root) REFERENCES partie (id) ON DELETE CASCADE');
+        $this->addSql('ALTER TABLE partie ADD CONSTRAINT FK_59B1F3D727ACA70 FOREIGN KEY (parent_id) REFERENCES partie (id) ON DELETE CASCADE');
+        $this->addSql('ALTER TABLE points ADD CONSTRAINT FK_27BA8E29DDEAB1A3 FOREIGN KEY (etudiant_id) REFERENCES etudiant (id)');
+        $this->addSql('ALTER TABLE points ADD CONSTRAINT FK_27BA8E29E075F7A4 FOREIGN KEY (partie_id) REFERENCES partie (id)');
         $this->addSql('ALTER TABLE statut ADD CONSTRAINT FK_E564F0BFE455FCC0 FOREIGN KEY (enseignant_id) REFERENCES enseignant (id)');
         $this->addSql('ALTER TABLE statut_etudiant ADD CONSTRAINT FK_E789E42F6203804 FOREIGN KEY (statut_id) REFERENCES statut (id) ON DELETE CASCADE');
         $this->addSql('ALTER TABLE statut_etudiant ADD CONSTRAINT FK_E789E42DDEAB1A3 FOREIGN KEY (etudiant_id) REFERENCES etudiant (id) ON DELETE CASCADE');
-        $this->addSql('ALTER TABLE points ADD CONSTRAINT FK_27BA8E29DDEAB1A3 FOREIGN KEY (etudiant_id) REFERENCES etudiant (id)');
-        $this->addSql('ALTER TABLE points ADD CONSTRAINT FK_27BA8E29E075F7A4 FOREIGN KEY (partie_id) REFERENCES partie (id)');
     }
 
     public function down(Schema $schema) : void
@@ -57,8 +57,8 @@ final class Version20200505091525 extends AbstractMigration
         $this->addSql('ALTER TABLE groupe_etudiant DROP FOREIGN KEY FK_E0DC2993E455FCC0');
         $this->addSql('ALTER TABLE statut DROP FOREIGN KEY FK_E564F0BFE455FCC0');
         $this->addSql('ALTER TABLE etudiant_groupe_etudiant DROP FOREIGN KEY FK_B7A6D635DDEAB1A3');
-        $this->addSql('ALTER TABLE statut_etudiant DROP FOREIGN KEY FK_E789E42DDEAB1A3');
         $this->addSql('ALTER TABLE points DROP FOREIGN KEY FK_27BA8E29DDEAB1A3');
+        $this->addSql('ALTER TABLE statut_etudiant DROP FOREIGN KEY FK_E789E42DDEAB1A3');
         $this->addSql('ALTER TABLE partie DROP FOREIGN KEY FK_59B1F3D456C5646');
         $this->addSql('ALTER TABLE etudiant_groupe_etudiant DROP FOREIGN KEY FK_B7A6D6355237C26D');
         $this->addSql('ALTER TABLE evaluation DROP FOREIGN KEY FK_1323A5757A45358C');
@@ -74,8 +74,8 @@ final class Version20200505091525 extends AbstractMigration
         $this->addSql('DROP TABLE evaluation');
         $this->addSql('DROP TABLE groupe_etudiant');
         $this->addSql('DROP TABLE partie');
+        $this->addSql('DROP TABLE points');
         $this->addSql('DROP TABLE statut');
         $this->addSql('DROP TABLE statut_etudiant');
-        $this->addSql('DROP TABLE points');
     }
 }
