@@ -63,20 +63,20 @@ class Partie
 
     /**
      * @Gedmo\TreeRoot
-     * @ORM\ManyToOne(targetEntity="GroupeEtudiant")
+     * @ORM\ManyToOne(targetEntity="Partie")
      * @ORM\JoinColumn(name="tree_root", referencedColumnName="id", onDelete="CASCADE")
      */
     private $root;
 
     /**
      * @Gedmo\TreeParent
-     * @ORM\ManyToOne(targetEntity="GroupeEtudiant", inversedBy="children", cascade={"persist"})
+     * @ORM\ManyToOne(targetEntity="Partie", inversedBy="children", cascade={"persist"})
      * @ORM\JoinColumn(name="parent_id", referencedColumnName="id", onDelete="CASCADE")
      */
     private $parent;
 
     /**
-     * @ORM\OneToMany(targetEntity="GroupeEtudiant", mappedBy="parent")
+     * @ORM\OneToMany(targetEntity="Partie", mappedBy="parent")
      * @ORM\OrderBy({"lft" = "ASC"})
      */
     private $children;
@@ -97,7 +97,7 @@ class Partie
         return $this->root;
     }
 
-    public function setParent(GroupeEtudiant $parent = null)
+    public function setParent(Partie $parent = null)
     {
         $this->parent = $parent;
     }
