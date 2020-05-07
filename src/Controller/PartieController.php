@@ -48,7 +48,12 @@ class PartieController extends AbstractController
             //return $this->redirectToRoute('groupe_etudiant_index');
         } */
 
-        return $this->render('partie/arborescence.html.twig');
+        $form = $this->createForm(PartieType::class);
+        $form->handleRequest($request);
+
+        return $this->render('partie/arborescence.html.twig', [
+            'form' => $form->createView()
+        ]);
     }
 
     /**

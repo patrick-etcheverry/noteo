@@ -19,6 +19,7 @@
   <link href="{{asset('vendor/datatables/dataTables.bootstrap4.css')}}" rel="stylesheet">
   <!-- Surcharge du CSS de Bootstrap -->
   <link rel="stylesheet" href="{{ asset('css/css_perso.css') }}">
+  <link rel="stylesheet" href="{{ asset('vendor/jsTree/themes/default/style.min.css') }}">
   <!-- Fontello -->
   <link rel="stylesheet" href="{{asset('/css/fontello.css')}}">
 
@@ -212,6 +213,9 @@
   <script src="{{asset('vendor/datatables/dataTables.bootstrap4.js')}}"></script>
   <script src="{{asset('vendor/datatables/pluginDate.js')}}"></script>
   <script src="{{asset('vendor/datatables/fnSortPlugin.js')}}"></script>
+
+  <script src="{{ asset('vendor/BoostrapTreeView/js/bootstrap-treeview.js') }}"></script>
+  <script src="{{ asset('vendor/jsTree/jstree.min.js') }}"></script>
 
   {% block javascripts %}
   {% endblock %}
