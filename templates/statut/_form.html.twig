@@ -36,7 +36,6 @@
       <td>{{entity.nom}}</td>
       <td>{{entity.prenom}}</td>
       <td>{{entity.mail}}</td>
-
     </tr>
     {% endfor %}
 
@@ -49,10 +48,10 @@
 <table class="table table-hover" id="etudSuppr">
   <thead>
     <tr>
+      <th></th>
       <th>Nom</th>
       <th>Prénom</th>
       <th>Mail</th>
-      <th></th>
     </tr>
   </thead>
   <tbody>
@@ -63,10 +62,10 @@
     {# get entity object from its index in the Categories Field #}
     {% set entity = form.lesEtudiantsASupprimer.vars.choices[index].data %}
     <tr>
+      <td>{{form_widget(form.lesEtudiantsASupprimer[index])}}</td>
       <td>{{entity.nom}}</td>
       <td>{{entity.prenom}}</td>
       <td>{{entity.mail}}</td>
-      <td>{{form_widget(form.lesEtudiantsASupprimer[index])}}</td>
     </tr>
     {% endfor %}
 
