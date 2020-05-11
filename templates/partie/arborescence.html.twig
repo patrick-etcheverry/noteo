@@ -4,6 +4,28 @@
 
 {% block evaluations %}active{% endblock %}
 
+{% block stylesheets %}
+    <style>
+        .badge {
+            float: right;
+            display: inline-block;
+            min-width: 10px;
+            padding: 3px 7px;
+            font-size: 12px;
+            font-weight: bold;
+            line-height: 1;
+            color: #fff;
+            text-align: center;
+            white-space: nowrap;
+            vertical-align: baseline;
+            background-color: #0275d8;
+            border-radius: 10px;
+        }
+
+        span.blue {color:#0275d8}
+    </style>
+{% endblock %}
+
 {% block contenu %}
     <div class="row">
         <div class="col-lg-4">
@@ -63,18 +85,45 @@
     <script>
             //Variables
             var next_id = 4;
-            var tree = [
+            var treeBoot = [
                 {
                     id: 1,
-                    text: "Evaluation (/20)",
+                    text: "Evaluation",
                     nom: 'Evaluation',
                     bareme: 20,
+                    tags: ['/ '+ 20],
                     nodes: [
                         {
                             id: 2,
                             text: "Exercice 1",
                             nom : "Exercice 1",
                             bareme: 10,
+                            tags: ['/ 10'],
+                        },
+                        {
+                            id: 3,
+                            text: "Exercice 2",
+                            nom : "Exercice 2",
+                            bareme: 10,
+                            tags: ['/ 10'],
+                        },
+                    ]
+                }
+            ];
+            var treeJS = [
+                {
+                    id: 1,
+                    text: "Evaluation (/20)",
+                    nom: 'Evaluation',
+                    bareme: 20,
+                    icon: 'icon-plus',
+                    children: [
+                        {
+                            id: 2,
+                            text: "Exercice 1",
+                            nom : "Exercice 1",
+                            bareme: 10,
+                            icon: 'icon-plus',
                             tags: ['<span class="badge badge-pill badge-primary">/ 10</span>'],
                         },
                         {
@@ -82,15 +131,15 @@
                             text: "Exercice 2",
                             nom : "Exercice 2",
                             bareme: 10,
+                            icon: 'icon-plus',
                             tags: ['<span class="badge badge-pill badge-primary">/ 10</span>'],
                         }
                     ]
                 }
             ];
 
-        //Initialisation des librairies lors du chargement de la page
-        $('#arbre_boot').treeview({data: tree, showTags : true});
-        $('#arbre_js').jstree({ 'core' : { 'data' : tree }});
+            ajouterEnfants()
+        ajoutEnfants()
 
         function modale() {
             $('#modalePartie').modal();

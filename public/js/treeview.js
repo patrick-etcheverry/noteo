@@ -1,18 +1,18 @@
 // les deux ont besoin des variables globales tree (array) et next_id (entier)
 
           //-- BOOTSTRAP --
-  
+
         function addChild(parentID, nom, bareme){
-            var text = nom + " (/" + bareme + ")";
+            var text = nom;
             var new_child = {
               text: text,
               nom: nom,
               bareme: bareme,
               id: next_id,
-              tags: ['<span class="badge badge-pill badge-primary">/ ' + bareme + '</span>'],
+              tags: ['/ '+ bareme],
             }
             next_id++;
-            recursive(tree[0], parentID, new_child);
+            recursive(treeBoot[0], parentID, new_child);
         }
 
       function recursive(root, parentID, newChild){
@@ -36,21 +36,17 @@
             return false;
         }
 
-        function ajoutEnfants(){
-          addChild(1, 'exo3', 3);
-          addChild(3, 'exo4', 1);
-          addChild(4, 'exo5', 1);
-          addChild(5, 'exo6', 3);
-          addChild(6, 'exo7', 3);
-          addChild(7, 'exo8', 3);
-          $('#arbre_boot').treeview({data: tree, showTags : true});
+        function ajouterEnfants(){
+            addChild(2, 'Question 1', 5);
+            addChild(2, 'Question 2', 5);
+            addChild(3, 'Question 3', 5);
+            addChild(3, 'Question 4', 5);
+            $('#arbre_boot').treeview({data: treeBoot, showTags : true, expandIcon: 'fas fa-chevron-right blue', collapseIcon: 'fas fa-chevron-down blue', selectedBackColor: '#0275d8'});
         }
 
 
 
         //--- JSTREE ---
-
-
 
         function addChildJSTREE(parentID, nom, bareme){
             var text = nom + " (/" + bareme + ")";
@@ -62,10 +58,10 @@
                 opened: true,
               },
               id: next_id,
-              tags: ['<span class="badge badge-pill badge-primary">/ ' + bareme + '</span>'],
+              icon: 'icon-plus',
             }
             next_id++;
-            recursiveChildren(tree[0], parentID, new_child);
+            recursiveChildren(treeJS[0], parentID, new_child);
         }
 
 
@@ -99,5 +95,6 @@
           addChildJSTREE(5, 'exo6', 3);
           addChildJSTREE(6, 'exo7', 3);
           addChildJSTREE(7, 'exo8', 3);
-          $('#arbre_js').jstree({ 'core' : { data : tree}});
+          $('#arbre_js').jstree({ 'core' : { data : treeJS, check_callback: true}, 'plugins':['dnd','contextmenu']});
+          console.log(treeJS)
         }
