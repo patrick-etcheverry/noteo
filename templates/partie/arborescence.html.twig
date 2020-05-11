@@ -22,7 +22,11 @@
             border-radius: 10px;
         }
 
-        span.blue {color:#0275d8}
+        .badge-red {
+            background-color: #6610f2; !important;
+        }
+
+        div .blue {color:#0275d8}
     </style>
 {% endblock %}
 
@@ -30,7 +34,7 @@
     <div class="row">
         <div class="col-lg-4">
             <div id="arbre_boot"></div>
-            <button class="btn btn-success" disabled>Ajouter une partie</button>
+            <button class="btn btn-primary" disabled>Ajouter une partie</button>
         </div>
         <div class="col-lg-4">
             <div id="arbre_js"></div>
@@ -90,6 +94,7 @@
                     text: "Evaluation",
                     nom: 'Evaluation',
                     bareme: 20,
+                    state : {expanded: true},
                     tags: ['/ '+ 20],
                     nodes: [
                         {
@@ -97,6 +102,7 @@
                             text: "Exercice 1",
                             nom : "Exercice 1",
                             bareme: 10,
+                            state : {expanded: true},
                             tags: ['/ 10'],
                         },
                         {
@@ -104,6 +110,7 @@
                             text: "Exercice 2",
                             nom : "Exercice 2",
                             bareme: 10,
+                            state : {expanded: true},
                             tags: ['/ 10'],
                         },
                     ]
@@ -115,14 +122,14 @@
                     text: "Evaluation (/20)",
                     nom: 'Evaluation',
                     bareme: 20,
-                    icon: 'icon-plus',
+                    icon: 'icon-plus blue',
                     children: [
                         {
                             id: 2,
                             text: "Exercice 1",
                             nom : "Exercice 1",
                             bareme: 10,
-                            icon: 'icon-plus',
+                            icon: 'icon-plus blue',
                             tags: ['<span class="badge badge-pill badge-primary">/ 10</span>'],
                         },
                         {
@@ -130,7 +137,7 @@
                             text: "Exercice 2",
                             nom : "Exercice 2",
                             bareme: 10,
-                            icon: 'icon-plus',
+                            icon: 'icon-plus blue',
                             tags: ['<span class="badge badge-pill badge-primary">/ 10</span>'],
                         }
                     ]

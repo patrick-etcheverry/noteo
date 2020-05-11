@@ -6,6 +6,7 @@ function addChild(idParent, nom, bareme){
       nom: nom,
       bareme: bareme,
       id: next_id,
+      state : {expanded: true},
       tags: ['/ '+ bareme],
     }
     next_id++;
@@ -31,8 +32,31 @@ function ajoutViaRechercheRecursive(partieCourante, idPartieParente, nouvellePar
             else {
                 partieCourante.nodes[i].nodes = [nouvellePartie];
             }
-            // On vérifie que après l'ajout de cette nouvelle sous-partie dans une partie, les barèmes ne sont pas incohérents
-            
+
+            // On vérifie que si on ajoute cette nouvelle sous-partie dans une partie, les barèmes ne sont pas incohérents. Si oui on affichera une couleur spéciale
+            var totalBareme = 0;
+            //Pour toutes les sous parties de la partie correspondant à idPartieParente
+            for (var j = 0; j < partieCourante.nodes[i].nodes.length; j++) {
+                totalBareme += partieCourante.nodes[i].nodes[j].bareme;
+            }
+            if (totalBareme < partieCourante.nodes[i].bareme) {
+                /* Si la somme des barèmes est inférieure au barème de la partie supérieure on affiche la ligne supérieure en jaune pour avertir
+                l'utilisateur. La couleur jaune a été choisie comme un avertissement pour que l'utilisateur n'oublie pas, car si le barème est inférieur
+                cela peut vouloir dire qu'il est en train de constuire ses parties */
+                partieCourante.nodes[i].backColor = '#f0ad4e';
+                partieCourante.nodes[i].color = 'white';
+            }
+            else if (totalBareme > partieCourante.nodes[i].bareme) {
+                /* Si la somme des barèmes est supérieure au barème de la partie supérieure on affiche la ligne supérieure en rouge pour avertir
+                l'utilisateur. La couleur rouge a été choisie comme un erreur pour que l'utilisateur corrige car c'est une situation qui n'est pas censée être réalisable */
+                partieCourante.nodes[i].backColor = '#d9534f';
+                partieCourante.nodes[i].color = 'white';
+            }
+            else if (totalBareme === partieCourante.nodes[i].bareme) {
+                /* Si la somme des barèmes est égale au barème de la partie supérieure on affiche la ligne normalement, sans définir de couleurs spéciales */
+                partieCourante.nodes[i].backColor = undefined;
+                partieCourante.nodes[i].color = undefined;
+            }
             //On renvoie true pour dire que l'élément a été trouvé
             return true;
             break;
@@ -53,9 +77,9 @@ function ajoutViaRechercheRecursive(partieCourante, idPartieParente, nouvellePar
 //Initialisation du tableau
 function ajouterEnfants(){
     addChild(2, 'Question 1', 5);
-    addChild(2, 'Question 2', 5);
+    addChild(2, 'Question 2', 6);
     addChild(3, 'Question 3', 5);
-    addChild(3, 'Question 4', 5);
+    addChild(3, 'Question 4', 4);
     $('#arbre_boot').treeview({data: treeBoot, showTags : true, expandIcon: 'fas fa-chevron-right blue', collapseIcon: 'fas fa-chevron-down blue', selectedBackColor: '#0275d8'});
 }
 
@@ -111,5 +135,4 @@ addChildJSTREE(5, 'exo6', 3);
 addChildJSTREE(6, 'exo7', 3);
 addChildJSTREE(7, 'exo8', 3);
 $('#arbre_js').jstree({ 'core' : { data : treeJS, check_callback: true}, 'plugins':['dnd','contextmenu']});
-console.log(treeJS)
 }
