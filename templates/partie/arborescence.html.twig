@@ -61,7 +61,6 @@
 
 {% block javascripts %}
     <script>
-        function getArbre() {
             var tree = [
                 {
                     text: "Evaluation (/20)",
@@ -83,40 +82,10 @@
                     ]
                 }
             ];
-            return tree;
-        }
 
-        $('#arbre_boot').treeview({data: getArbre(), showTags : true});
-        $('#arbre_js').jstree({ 'core' : {
-            'data' : [
-                {
-                    'text' : 'Evaluation (/20)',
-                    'nom' : 'Evaluation',
-                    'bareme' : 20,
-                    'state' : {
-                        'opened' : true
-                    },
-                    'children' : [
-                        {
-                            'text' : 'Exercice 1 (/10)',
-                            'nom' : 'Evaluation',
-                            'bareme' : 10,
-                            'state' : {
-                                'opened': true
-                            }
-                        },
-                        {
-                            'text' : 'Exercice 2 (/10)',
-                            'nom' : 'Evaluation',
-                            'bareme' : 10,
-                            'state' : {
-                                'opened': true
-                            }
-                        }
-                    ]
-                }
-            ]
-            }});
+        //Initialisation des librairies lors du chargement de la page
+        $('#arbre_boot').treeview({data: tree, showTags : true});
+        $('#arbre_js').jstree({ 'core' : { 'data' : tree }});
 
         function modale() {
             $('#modalePartie').modal();
