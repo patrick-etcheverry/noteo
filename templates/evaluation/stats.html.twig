@@ -109,7 +109,7 @@
     {% for groupe in groupes %}
       <div class="form-check form-check-inline">
         <input class="form-check-input" type="checkbox" id="{{groupe.nom}}" onChange="changement(this.id, this.checked, 'barres')">
-        <label class="form-check-label" for="inlineCheckbox1">{{groupe.nom}}</label>
+        <label class="form-check-label" for="inlineCheckbox1" id="label_{{groupe.nom}}">{{groupe.nom}}</label>
       </div>
      {% set tabCounter = tabCounter + 1 %}
    {% endfor %}
@@ -175,6 +175,61 @@
 
   var fontSize = 16;
 
+  // Couleurs pour le graphique
+  var noir = "#000000"; // Pour les bordures du graphique
+  // Liste couleurs communes
+  var jaune  = "#FFFF00";
+  var bleu   = "#0000FF";
+  var rouge  = "#FF0000";
+  var vert   = "#00FF00";
+  var violet = "#EE82EE";
+  var blanc  = "#FFFFFF";
+  var gris   = "#808080";
+
+/* Pallette de couleurs - chaque couleur a 2 valeurs d'où l'intervalle
+    [192, 57, 43],  // 1
+    [231, 76, 60],  // 11
+    [155, 89, 182], // 2
+    [142, 68, 173], // 12
+    [41, 128, 185], // 3
+    [26, 188, 156], // 13
+    [22, 160, 133], // 4
+    [39, 174, 96],  // 14
+    [46, 204, 113], // 5
+    [241, 196, 15], // 15
+    [243, 156, 18], // 6
+    [230, 126, 34], // 16
+    [211, 84, 0],   // 7
+    [236, 240, 241],// 17
+    [189, 195, 199],// 8
+    [149, 165, 166],// 18
+    [127, 140, 141],// 9
+    [52, 73, 94],   // 19
+    [44, 62, 80],   // 10
+*/
+
+  var couleurs = [
+    [192, 57, 43],
+    [155, 89, 182],
+    [41, 128, 185],
+    [22, 160, 133],
+    [46, 204, 113],
+    [243, 156, 18],
+    [211, 84, 0],
+    [189, 195, 199],
+    [127, 140, 141],
+    [44, 62, 80],
+    [231, 76, 60],
+    [142, 68, 173],
+    [26, 188, 156],
+    [39, 174, 96],
+    [241, 196, 15],
+    [230, 126, 34],
+    [236, 240, 241],
+    [149, 165, 166],
+    [52, 73, 94],
+  ];
+
   var groupesChecked = [];
   var chartDATA = {
     labels: ['[0;4[', '[4;8[', '[8;12[', '[12;16[', '[16;20]'],
@@ -198,15 +253,15 @@
           fontSize: fontSize,
         },
         maxBarThickness: 100,
-        stacked: true
+        stacked: false,
       }],
       yAxes: [{
         ticks: {
           beginAtZero: true,
-          max: 10,
+          max: getMax(),
           fontSize: fontSize,
         },
-        stacked: true
+        stacked: false,
       }]
     },
     aspectRatio: 3,
@@ -224,7 +279,7 @@
       borderWidth: 1,
       xPadding: 15,
       yPadding: 15,
-      displayColors: false,
+      displayColors: true,
       caretPadding: 10
     },
     plugins : {
@@ -234,20 +289,19 @@
     }
   }
 
-  window.onload = function() {
-    window.chartBar = new Chart(document.getElementById("graphHisto").getContext('2d'), {
-      type: 'bar',
-      data: chartDATA,
-      options: options
-    });
 
-    window.chartBoite = new Chart(document.getElementById("graphBoites").getContext('2d'), {
-      type: 'boxplot',
-      data: chartDATA,
-      options: options
-    });
+  // Renvoie la valeur max Pour l'hisgramme
+  function getMax(){
+    var max = 0;
+    for(var i = 0; i < groupes.length; i++){
+      for(var j = 0; j < groupes[i].notes.length; j++){
+        if(groupes[i].notes[j] > max){
+          max = groupes[i].notes[j];
+        }
+      }
+    }
+    return max;
   }
-
 
   function changement(id, value, type){
     // Gère l'addition et la suppression des groupes à afficher dans le graphe
@@ -270,15 +324,13 @@
           index = j;
         }
       }
-
       if(index != -1){
         set.label = groupes[index].nom;
-        console.log(groupes[index].nom);
-        console.log(index);
         set.data = groupes[index].notes;
-        set.backgroundColor = genColor();
-        set.hoverBackgroundColor = set.backgroundColor;
-        set.borderColor = genColor();
+        var rgb = "rgb("+couleurs[index][0]+","+couleurs[index][1]+","+couleurs[index][2]+")";
+        set.backgroundColor = rgb;
+        set.hoverBackgroundColor = rgb;
+        set.borderColor = gris;
         dataGraph.push(set);
       }
     }
@@ -299,7 +351,7 @@
                   + Math.floor(Math.random() * Math.floor(255)) + ")";
   }
 
-  // retourne l'index au quel se trouve l'élément, s'il n'y est pas renvoie -1
+  // retourne l'index au quel se trouve l'élément dans array, s'il n'y est pas renvoie -1
   function contains(array, element){
     for(var i = 0; i < array.length; i++){
       if(array[i] == element){
@@ -307,6 +359,29 @@
       }
     }
     return -1;
+  }
+
+
+  // Coloration du texte des cases à cocher avec les bonnes couleurs
+  for(var i = 0; i < groupes.length; i++){
+    var nom = groupes[i].nom;
+    var rgb = "rgb("+couleurs[i][0]+","+couleurs[i][1]+","+couleurs[i][2]+")";
+    document.getElementById("label_"+nom).style.color = rgb;
+  }
+
+  // Création du graphe Histogramme
+  window.onload = function() {
+    window.chartBar = new Chart(document.getElementById("graphHisto").getContext('2d'), {
+      type: 'bar',
+      data: chartDATA,
+      options: options
+    });
+
+    window.chartBoite = new Chart(document.getElementById("graphBoites").getContext('2d'), {
+      type: 'boxplot',
+      data: chartDATA,
+      options: options
+    });
   }
 
 </script>
@@ -487,86 +562,5 @@
 
 
 </script>
-
-<script type="text/javascript">
-
-{% for groupe in groupes %}
-
-
-{% set maximumRepartition = max(groupe.notes)|json_encode() %}
-
-{# si le maximum est égal à zéro (pas de notes pour le groupe) on définit une valeur maximale arbitraire de 5 pour y, sinon ce sera égal a la plus grande valeur du tableau de repartition #}
-{% if maximumRepartition == 0 %}
-{% set maximumRepartition = 5 %}
-{% endif %}
-
-var graph = document.getElementById('{{groupe.nom}}').getContext('2d');
-
-var leBarre = new Chart(graph, {
-  type: 'bar',
-  data: {
-    labels: ['[0;4[', '[4;8[', '[8;12[', '[12;16[', '[16;20]'],
-    datasets: [{
-      label: 'Effectif',
-      data: {{groupe.notes|json_encode()}}, {# json_encode sert à rendre le tableau lisible en JavaScript #}
-      backgroundColor: "#4e73df",
-      hoverBackgroundColor: "#2e59d9",
-      borderColor: "#4e73df"
-    }]
-  },
-  options: {
-    scales: {
-      xAxes: [{
-        gridLines: {
-          display: false
-        },
-        ticks: {
-          maxTicksLimit: 6
-        },
-        maxBarThickness: 100,
-      }],
-      yAxes: [{
-        ticks: {
-          beginAtZero: true,
-          max: {{maximumRepartition}}
-        }
-      }]
-    },
-    aspectRatio: 3,
-    maintainAspectRatio: true,
-    responsive: true,
-    legend: {
-      display: false,
-      labels: {
-          defaultFontSize: fontSize;
-      },
-    },
-    tooltips: {
-      titleMarginBottom: 10,
-      titleFontColor: '#6e707e',
-      titleFontSize: fontSize,
-      backgroundColor: "rgb(255,255,255)",
-      bodyFontColor: "#858796",
-      borderColor: '#dddfeb',
-      borderWidth: 1,
-      xPadding: 15,
-      yPadding: 15,
-      displayColors: false,
-      caretPadding: 10
-    },
-    plugins : {
-      labels: {
-        render: 'value'
-      }
-    }
-  }
-});
-
-{% endfor %}
-
-
-
-</script>
-
 
 {% endblock %}
