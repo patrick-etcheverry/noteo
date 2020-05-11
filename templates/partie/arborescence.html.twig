@@ -22,8 +22,10 @@
             border-radius: 10px;
         }
 
-        .badge-red {
-            background-color: #6610f2; !important;
+        .message-erreur-parties {
+            text-align: center;
+            font-size: 13px;
+            color: red;
         }
 
         div .blue {color:#0275d8}
@@ -33,6 +35,9 @@
 {% block contenu %}
     <div class="row">
         <div class="col-lg-4">
+            <div class="message-erreur-parties" id="message-erreur-parties">
+                <i class="icon-attention-circled"></i>Le barème est erroné
+            </div>
             <div id="arbre_boot"></div>
             <button class="btn btn-primary" disabled>Ajouter une partie</button>
         </div>
