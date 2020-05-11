@@ -39,15 +39,8 @@ function ajoutViaRechercheRecursive(partieCourante, idPartieParente, nouvellePar
             for (var j = 0; j < partieCourante.nodes[i].nodes.length; j++) {
                 totalBareme += partieCourante.nodes[i].nodes[j].bareme;
             }
-            if (totalBareme < partieCourante.nodes[i].bareme) {
-                /* Si la somme des barèmes est inférieure au barème de la partie supérieure on affiche la ligne supérieure en jaune pour avertir
-                l'utilisateur. La couleur jaune a été choisie comme un avertissement pour que l'utilisateur n'oublie pas, car si le barème est inférieur
-                cela peut vouloir dire qu'il est en train de constuire ses parties */
-                partieCourante.nodes[i].backColor = '#f0ad4e';
-                partieCourante.nodes[i].color = 'white';
-            }
-            else if (totalBareme > partieCourante.nodes[i].bareme) {
-                /* Si la somme des barèmes est supérieure au barème de la partie supérieure on affiche la ligne supérieure en rouge pour avertir
+            if (totalBareme != partieCourante.nodes[i].bareme) {
+                /* Si la somme des barèmes n'est pas égale au barème de la partie supérieure on affiche la ligne supérieure en rouge pour avertir
                 l'utilisateur. La couleur rouge a été choisie comme un erreur pour que l'utilisateur corrige car c'est une situation qui n'est pas censée être réalisable */
                 partieCourante.nodes[i].backColor = '#d9534f';
                 partieCourante.nodes[i].color = 'white';
@@ -76,10 +69,10 @@ function ajoutViaRechercheRecursive(partieCourante, idPartieParente, nouvellePar
 
 //Initialisation du tableau
 function ajouterEnfants(){
-    addChild(2, 'Question 1', 5);
-    addChild(2, 'Question 2', 6);
+    addChild(2, 'Question 1', 6);
+    addChild(2, 'Question 2', 5);
     addChild(3, 'Question 3', 5);
-    addChild(3, 'Question 4', 4);
+    addChild(3, 'Question 4', 5);
     $('#arbre_boot').treeview({data: treeBoot, showTags : true, expandIcon: 'fas fa-chevron-right blue', collapseIcon: 'fas fa-chevron-down blue', selectedBackColor: '#0275d8'});
 }
 
