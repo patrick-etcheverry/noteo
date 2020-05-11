@@ -61,19 +61,24 @@
 
 {% block javascripts %}
     <script>
+            //Variables
+            var next_id = 4;
             var tree = [
                 {
+                    id: 1,
                     text: "Evaluation (/20)",
                     nom: 'Evaluation',
                     bareme: 20,
                     nodes: [
                         {
+                            id: 2,
                             text: "Exercice 1",
                             nom : "Exercice 1",
                             bareme: 10,
                             tags: ['<span class="badge badge-pill badge-primary">/ 10</span>'],
                         },
                         {
+                            id: 3,
                             text: "Exercice 2",
                             nom : "Exercice 2",
                             bareme: 10,
