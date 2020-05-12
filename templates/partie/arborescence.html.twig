@@ -102,10 +102,10 @@
 
 {% block javascripts %}
     <script>
-        window.onload = ajouterEnfants();
+        window.onload = InitialisationTableau();
 
         //Initialisation du tableau
-        function ajouterEnfants(){
+        function InitialisationTableau(){
             ajoutEnfant(1, 'Exercice 1', 10); //2
             ajoutEnfant(2, 'Question 1', 5); //3
             ajoutEnfant(2, 'Question 2', 5); //4
@@ -116,13 +116,19 @@
         }
 
         function creerPartie() {
+            //Récupération de la partie selectionnée par l'utilisateur
             var partieSelectionnee = $('#arbre_boot').treeview('getSelected');
+            //Si il a selectionné une partie on passe à la suite, sinon on affiche la modale expliquant le fonctionnement des fonctionnalités
             if (partieSelectionnee.length != 0) {
+                //On affiche la modale du formulaire
                 $('#modalePartie').modal('show');
+                //On attend la soumission du formulaire
                 $("#formPartie").submit(function (e) {
                     e.preventDefault(); //Pour que la page ne se rafraichisse pas lors de la validation
-                    console.log('bravo')
-                    $('#modalePartie').modal('hide');
+                    $('#modalePartie').modal('hide'); //Pour refermer la fenêtre modale
+
+                    ajoutEnfant(partieSelectionnee[0].id, $('#champIntitule').val(), $('#champBareme').val());
+
                 })
             }
             else {

@@ -29,6 +29,7 @@ function ajoutEnfant(idParent, nom = "Partie", bareme = 5){
     }
     prochainId++;
     rechercheRecursive(tree[0], idParent, nouvellePartie, "ajouter");
+    chargerArbre()
 }
 
 /*
