@@ -36,7 +36,7 @@
     <div class="row">
         <div class="col-lg-4">
             <div class="message-erreur-parties" id="message-erreur-parties">
-                <i class="icon-attention-circled"></i>Le barème est erroné
+                <!-- Lieu ou les messages d'erreur seront affichés -->
             </div>
             <div id="arbre_boot"></div>
             <button class="btn btn-primary" disabled>Ajouter une partie</button>
@@ -92,8 +92,8 @@
 {% block javascripts %}
     <script>
             //Variables
-            var next_id = 4;
-            var treeBoot = [
+            var prochainId = 4;
+            var tree = [
                 {
                     id: 1,
                     text: "Evaluation",
@@ -101,24 +101,6 @@
                     bareme: 20,
                     state : {expanded: true},
                     tags: ['/ '+ 20],
-                    nodes: [
-                        {
-                            id: 2,
-                            text: "Exercice 1",
-                            nom : "Exercice 1",
-                            bareme: 10,
-                            state : {expanded: true},
-                            tags: ['/ 10'],
-                        },
-                        {
-                            id: 3,
-                            text: "Exercice 2",
-                            nom : "Exercice 2",
-                            bareme: 10,
-                            state : {expanded: true},
-                            tags: ['/ 10'],
-                        },
-                    ]
                 }
             ];
             var treeJS = [
