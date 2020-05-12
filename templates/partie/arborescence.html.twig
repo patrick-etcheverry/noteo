@@ -4,8 +4,88 @@
 
 {% block evaluations %}active{% endblock %}
 
+{% block stylesheets %}
+    <style>
+        .badge {
+            float: right;
+            display: inline-block;
+            min-width: 10px;
+            padding: 3px 7px;
+            font-size: 12px;
+            font-weight: bold;
+            line-height: 1;
+            color: #fff;
+            text-align: center;
+            white-space: nowrap;
+            vertical-align: baseline;
+            background-color: #0275d8;
+            border-radius: 10px;
+        }
+
+        .message-erreur-parties {
+            text-align: center;
+            font-size: 13px;
+            color: red;
+        }
+
+        div .blue {color:#0275d8}
+    </style>
+{% endblock %}
+
 {% block contenu %}
+    <div class="row">
+        <div class="col-lg-4">
+            <div id="arbre_js"></div>
+        </div>
+        <div class="col-lg-4">
+            <div class="message-erreur-parties" id="message-erreur-parties">
+                <!-- Lieu ou les messages d'erreur seront affichés -->
+            </div>
+            <div id="arbre_boot"></div>
+            <div style="text-align: center">
+                <button class="btn btn-primary" disabled>Ajouter une partie</button>
+            </div>
+
+        </div>
+        <div class="col-lg-4">
+        </div>
+
+    </div>
+
+    <div class="modal fade" id="modalePartie" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Créer une partie</h5>
+                    <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">x</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    {{include('partie/_form.html.twig')}}
+                </div>
+            </div>
+        </div>
+    </div>
 {% endblock %}
 
 {% block javascripts %}
+    <script>
+        window.onload = ajouterEnfants();
+
+        //Initialisation du tableau
+        function ajouterEnfants(){
+            ajoutEnfant(1, 'Exercice 1', 10); //2
+            ajoutEnfant(2, 'Question 1', 5); //3
+            ajoutEnfant(2, 'Question 2', 5); //4
+            ajoutEnfant(1, 'Exercice 2', 10); //5
+            ajoutEnfant(5, 'Question 1', 5); //6
+            ajoutEnfant(5, 'Question 2', 5); //7
+            chargerArbre()
+        }
+
+        function modale() {
+            $('#modalePartie').modal();
+        }
+    </script>
 {% endblock %}
