@@ -27,23 +27,11 @@ function ajoutViaRechercheRecursive(partieCourante, idPartieParenteACelleAjoutee
         //On renvoie true pour dire que la partie a été trouvée
         return true;
     }
-    //Pour toutes les sous-parties de la partie courante
-    for(var i = 0; i < partieCourante.nodes.length; i++){
-        //Si on trouve la partie correspondante à celle à qui on veut ajouter une nouvelle sous partie
-        if(partieCourante.nodes[i].id == idPartieParenteACelleAjoutee){
-            //On ajoute la partie dans l'arbre, sous la partie trouvée
-            ajoutDansLarbre(partieCourante.nodes[i], nouvellePartie);
-            //On renvoie true pour dire que l'élément a été trouvé
-            return true;
-            break;
-        }
-        //Sinon on recherche un niveau en dessous (si il existe)
-        else if (partieCourante.nodes[i].nodes != undefined){
-            var partieTrouvee = ajoutViaRechercheRecursive(partieCourante.nodes[i], idPartieParenteACelleAjoutee, nouvellePartie);
-            //Si on l'a trouvé un niveau en dessous, plus besoin de chercher
-            if(partieTrouvee){
-                break;
-            }
+    //Si la partie courante a des enfants on continue la recherche
+    if(partieCourante.nodes != undefined) {
+        //Pour toutes les sous-parties de la partie courante
+        for(var i = 0; i < partieCourante.nodes.length; i++){
+            ajoutViaRechercheRecursive(partieCourante.nodes[i], idPartieParenteACelleAjoutee, nouvellePartie)
         }
     }
     //Si toutes les parties on été parcourues c'est que la partie à laquelle on voulait ajouter une sous-partie n'a pas été trouvée, on renvoie false pour le signifier
@@ -64,26 +52,27 @@ function ajoutDansLarbre(partie, nouvelleSousPartie) {
 }
 
 function checkBaremesArbre(partieCourante) {
-    //On calcule la somme des barèmes des enfants
-    var totalBareme = 0;
-    for (var i = 0; i < partieCourante.nodes.length; i++) {
-        totalBareme += partieCourante.nodes[i].bareme;
-    }
-    if (totalBareme != partieCourante.bareme) {
-        /* Si la somme des barèmes n'est pas égale au barème de la partie supérieure on affiche la ligne supérieure en rouge pour avertir
-        l'utilisateur. La couleur rouge a été choisie comme un erreur pour que l'utilisateur corrige car c'est une situation qui n'est pas censée être réalisable */
-        partieCourante.backColor = '#d9534f';
-        partieCourante.color = 'white';//<i class="icon-attention-circled"></i>Le barème est erroné
-        $('#message-erreur-parties').append('<p><i class="icon-attention-circled"></i> Le total des barèmes pour ' + partieCourante.nom + ' doit être égal à ' + partieCourante.bareme + '</p>');
-    }
-    else if (totalBareme === partieCourante.bareme) {
-        /* Si la somme des barèmes est égale au barème de la partie supérieure on affiche la ligne normalement, sans définir de couleurs spéciales */
-        partieCourante.backColor = undefined;
-        partieCourante.color = undefined;
-    }
-    //On execute la vérification pour tous les enfants de la partie courante, si elle en a
-    for (var i = 0; i< partieCourante.nodes.length; i++) {
-        if(partieCourante.nodes[i].nodes != undefined) {
+    //Si la partie courante a des enfants
+    if(partieCourante.nodes != undefined) {
+        //On calcule la somme des barèmes des enfants
+        var totalBareme = 0;
+        for (var i = 0; i < partieCourante.nodes.length; i++) {
+            totalBareme += partieCourante.nodes[i].bareme;
+        }
+        if (totalBareme != partieCourante.bareme) {
+            /* Si la somme des barèmes n'est pas égale au barème de la partie supérieure on affiche la ligne supérieure en rouge pour avertir
+            l'utilisateur. La couleur rouge a été choisie comme un erreur pour que l'utilisateur corrige car c'est une situation qui n'est pas censée être réalisable */
+            partieCourante.backColor = '#d9534f';
+            partieCourante.color = 'white';//<i class="icon-attention-circled"></i>Le barème est erroné
+            $('#message-erreur-parties').append('<p><i class="icon-attention-circled"></i> Le total des barèmes pour ' + partieCourante.nom + ' doit être égal à ' + partieCourante.bareme + '</p>');
+        }
+        else if (totalBareme === partieCourante.bareme) {
+            /* Si la somme des barèmes est égale au barème de la partie supérieure on affiche la ligne normalement, sans définir de couleurs spéciales */
+            partieCourante.backColor = undefined;
+            partieCourante.color = undefined;
+        }
+        //On execute la vérification pour tous les enfants de la partie courante
+        for (var i = 0; i< partieCourante.nodes.length; i++) {
             checkBaremesArbre(partieCourante.nodes[i]);
         }
     }
@@ -94,7 +83,7 @@ function ajouterEnfants(){
     ajoutEnfant(1, 'Exercice 1', 10); //4
     ajoutEnfant(4, 'Question 1', 5); //5
     ajoutEnfant(4, 'Question 2', 5); //6
-    ajoutEnfant(1, 'Exercice 2', 10); //7
+    ajoutEnfant(1, 'Exercice 2', 9); //7
     ajoutEnfant(7, 'Question 1', 5); //8
     ajoutEnfant(7, 'Question 2', 5); //9
     //Chargement de l'arbre
