@@ -89,23 +89,53 @@
                     text: "Evaluation (/20)",
                     nom: 'Evaluation',
                     bareme: 20,
-                    icon: 'icon-plus blue',
+                    icon: 'fas fa-file-alt blue',
                     children: [
                         {
                             id: 2,
-                            text: "Exercice 1",
+                            text: "Exercice 1 (/10)",
                             nom : "Exercice 1",
                             bareme: 10,
-                            icon: 'icon-plus blue',
-                            tags: ['<span class="badge badge-pill badge-primary">/ 10</span>'],
+                            icon: 'fas fa-file-alt blue',
+                            children : [
+                                {
+                                    id: 4,
+                                    text: "Question 1 (/5)",
+                                    nom : "Question 1",
+                                    bareme: 5,
+                                    icon: 'fas fa-file-alt blue',
+                                },
+                                {
+                                    id: 5,
+                                    text: "Question 2 (/5)",
+                                    nom : "Question 2",
+                                    bareme: 5,
+                                    icon: 'fas fa-file-alt blue',
+                                }
+                            ]
                         },
                         {
                             id: 3,
-                            text: "Exercice 2",
+                            text: "Exercice 2 (/10)",
                             nom : "Exercice 2",
                             bareme: 10,
-                            icon: 'icon-plus blue',
-                            tags: ['<span class="badge badge-pill badge-primary">/ 10</span>'],
+                            icon: 'fas fa-file-alt blue',
+                            children : [
+                                {
+                                    id: 6,
+                                    text: "Question 1 (/5)",
+                                    nom : "Question 1",
+                                    bareme: 10,
+                                    icon: 'fas fa-file-alt blue',
+                                },
+                                {
+                                    id: 7,
+                                    text: "Question 2 (/5)",
+                                    nom : "Question 2",
+                                    bareme: 10,
+                                    icon: 'fas fa-file-alt blue',
+                                }
+                            ]
                         }
                     ]
                 }

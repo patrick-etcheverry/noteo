@@ -111,6 +111,7 @@ function addChildJSTREE(parentID, nom, bareme){
 }
 
 function recursiveChildren(root, parentID, newChild){
+
     for(var i = 0; i < root.children.length; i++){
         if(root.children[i].id == parentID){
             if(root.children[i].children != undefined){
@@ -134,11 +135,5 @@ function recursiveChildren(root, parentID, newChild){
 }
 
 function ajoutEnfants(){
-    addChildJSTREE(1, 'exo3', 3);
-    addChildJSTREE(3, 'exo4', 1);
-    addChildJSTREE(4, 'exo5', 1);
-    addChildJSTREE(5, 'exo6', 3);
-    addChildJSTREE(6, 'exo7', 3);
-    addChildJSTREE(7, 'exo8', 3);
     $('#arbre_js').jstree({ 'core' : { data : treeJS, check_callback: true}, 'plugins':['dnd','contextmenu']});
 }
