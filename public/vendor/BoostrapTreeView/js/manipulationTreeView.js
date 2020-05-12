@@ -80,13 +80,15 @@ function checkBaremesArbre(partieCourante) {
         if (totalBareme != partieCourante.bareme) {
             /* Si la somme des barèmes n'est pas égale au barème de la partie supérieure on affiche la ligne supérieure en rouge pour avertir
             l'utilisateur. La couleur rouge a été choisie comme un erreur pour que l'utilisateur corrige car c'est une situation qui n'est pas censée être réalisable */
-            partieCourante.backColor = '#d9534f';
-            partieCourante.color = 'white';//<i class="icon-attention-circled"></i>Le barème est erroné
-            $('#message-erreur-parties').append('<p><i class="icon-attention-circled"></i> Le total des barèmes pour ' + partieCourante.nom + ' doit être égal à ' + partieCourante.bareme + '</p>');
+            partieCourante.icon = 'icon-attention-circled red';
+            partieCourante.text = partieCourante.nom + ' - Erreur de barème'
+            partieCourante.color = '#FF0000';
+            //$('#message-erreur-parties').append('<p><i class="icon-attention-circled"></i> Le total des barèmes pour ' + partieCourante.nom + ' doit être égal à ' + partieCourante.bareme + '</p>');
         }
         else if (totalBareme === partieCourante.bareme) {
             /* Si la somme des barèmes est égale au barème de la partie supérieure on affiche la ligne normalement, sans définir de couleurs spéciales */
-            partieCourante.backColor = undefined;
+            partieCourante.icon = undefined;
+            partieCourante.text = partieCourante.nom;
             partieCourante.color = undefined;
         }
         //On execute la vérification pour tous les enfants de la partie courante
