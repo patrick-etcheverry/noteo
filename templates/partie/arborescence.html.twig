@@ -29,10 +29,10 @@
 {% block contenu %}
     <div class="row">
         <div class="col-lg-4">
-            <div id="arbre_js"></div>
         </div>
         <div class="col-lg-4">
-            <div id="arbre_boot"></div>
+            <div id="arbre_boot">
+            </div>
             <br>
             <div style="text-align: center">
                 <button class="btn btn-primary" onclick="creerPartie()">Ajouter une partie</button>
@@ -61,7 +61,7 @@
                             </tr>
                             <tr>
                                 <th class="intitule"><label for="statut_description" class="required">Barème de la partie</label></th>
-                                <td > <input type="number" id="champBareme" required min="0" class="form-control"></td>
+                                <td > <input type="number" id="champBareme" required min="0" step="0.1" class="form-control"></td>
                             </tr>
                         </tbody>
                     </table>
@@ -112,7 +112,6 @@
             ajoutEnfant(1, 'Exercice 2', 10); //5
             ajoutEnfant(5, 'Question 1', 5); //6
             ajoutEnfant(5, 'Question 2', 5); //7
-            chargerArbre()
         }
 
         function creerPartie() {
@@ -126,15 +125,16 @@
                 $("#formPartie").submit(function (e) {
                     e.preventDefault(); //Pour que la page ne se rafraichisse pas lors de la validation
                     $('#modalePartie').modal('hide'); //Pour refermer la fenêtre modale
-
-                    ajoutEnfant(partieSelectionnee[0].id, $('#champIntitule').val(), $('#champBareme').val());
-
+                    //On lance la création avec les informations du formulaires
+                    ajoutEnfant(partieSelectionnee[0].id, $('#champIntitule').val(), parseFloat($('#champBareme').val()));
+                    $("#formPartie").unbind() // Pour supprimer l'écouteur d'évenement
                 })
+
+
             }
             else {
                 $('#modalePasDePartieSelectionnee').modal();
             }
-
         }
     </script>
 {% endblock %}
