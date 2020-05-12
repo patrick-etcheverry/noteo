@@ -71,78 +71,31 @@
 
 {% block javascripts %}
     <script>
-            //Variables
-            var prochainId = 4;
-            var tree = [
-                {
-                    id: 1,
-                    text: "Evaluation",
-                    nom: 'Evaluation',
-                    bareme: 20,
-                    state : {expanded: true},
-                    tags: ['/ '+ 20],
-                }
-            ];
-            var treeJS = [
-                {
-                    id: 1,
-                    text: "Evaluation (/20)",
-                    nom: 'Evaluation',
-                    bareme: 20,
-                    icon: 'fas fa-file-alt blue',
-                    children: [
-                        {
-                            id: 2,
-                            text: "Exercice 1 (/10)",
-                            nom : "Exercice 1",
-                            bareme: 10,
-                            icon: 'fas fa-file-alt blue',
-                            children : [
-                                {
-                                    id: 4,
-                                    text: "Question 1 (/5)",
-                                    nom : "Question 1",
-                                    bareme: 5,
-                                    icon: 'fas fa-file-alt blue',
-                                },
-                                {
-                                    id: 5,
-                                    text: "Question 2 (/5)",
-                                    nom : "Question 2",
-                                    bareme: 5,
-                                    icon: 'fas fa-file-alt blue',
-                                }
-                            ]
-                        },
-                        {
-                            id: 3,
-                            text: "Exercice 2 (/10)",
-                            nom : "Exercice 2",
-                            bareme: 10,
-                            icon: 'fas fa-file-alt blue',
-                            children : [
-                                {
-                                    id: 6,
-                                    text: "Question 1 (/5)",
-                                    nom : "Question 1",
-                                    bareme: 10,
-                                    icon: 'fas fa-file-alt blue',
-                                },
-                                {
-                                    id: 7,
-                                    text: "Question 2 (/5)",
-                                    nom : "Question 2",
-                                    bareme: 10,
-                                    icon: 'fas fa-file-alt blue',
-                                }
-                            ]
-                        }
-                    ]
-                }
-            ];
+        //Variables
+        var prochainId = 4;
+        var tree = [
+            {
+                id: 1,
+                text: "Evaluation",
+                nom: 'Evaluation',
+                bareme: 20,
+                state : {expanded: true},
+                tags: ['/ '+ 20],
+            }
+        ];
+        ajouterEnfants()
 
-            ajouterEnfants()
-        ajoutEnfants()
+        //Initialisation du tableau
+        function ajouterEnfants(){
+            ajoutEnfant(1, 'Exercice 1', 9); //4
+            ajoutEnfant(4, 'Question 1', 4); //5
+            ajoutEnfant(4, 'Question 2', 3); //6
+            ajoutEnfant(1, 'Exercice 2', 7); //7
+            ajoutEnfant(7, 'Question 1', 5); //8
+            ajoutEnfant(7, 'Question 2', 3); //9
+            //Chargement de l'arbre
+            $('#arbre_boot').treeview({data: tree, showTags : true, expandIcon: 'fas fa-chevron-right blue', collapseIcon: 'fas fa-chevron-down blue', selectedBackColor: '#0275d8'});
+        }
 
         function modale() {
             $('#modalePartie').modal();
