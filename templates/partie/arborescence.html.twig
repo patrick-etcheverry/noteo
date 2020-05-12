@@ -71,30 +71,17 @@
 
 {% block javascripts %}
     <script>
-        //Variables
-        var prochainId = 4;
-        var tree = [
-            {
-                id: 1,
-                text: "Evaluation",
-                nom: 'Evaluation',
-                bareme: 20,
-                state : {expanded: true},
-                tags: ['/ '+ 20],
-            }
-        ];
-        ajouterEnfants()
+        window.onload = ajouterEnfants();
 
         //Initialisation du tableau
         function ajouterEnfants(){
-            ajoutEnfant(1, 'Exercice 1', 9); //4
-            ajoutEnfant(4, 'Question 1', 4); //5
-            ajoutEnfant(4, 'Question 2', 3); //6
-            ajoutEnfant(1, 'Exercice 2', 7); //7
-            ajoutEnfant(7, 'Question 1', 5); //8
-            ajoutEnfant(7, 'Question 2', 3); //9
-            //Chargement de l'arbre
-            $('#arbre_boot').treeview({data: tree, showTags : true, expandIcon: 'fas fa-chevron-right blue', collapseIcon: 'fas fa-chevron-down blue', selectedBackColor: '#0275d8'});
+            ajoutEnfant(1, 'Exercice 1', 10); //2
+            ajoutEnfant(2, 'Question 1', 5); //3
+            ajoutEnfant(2, 'Question 2', 5); //4
+            ajoutEnfant(1, 'Exercice 2', 10); //5
+            ajoutEnfant(5, 'Question 1', 5); //6
+            ajoutEnfant(5, 'Question 2', 5); //7
+            chargerArbre()
         }
 
         function modale() {

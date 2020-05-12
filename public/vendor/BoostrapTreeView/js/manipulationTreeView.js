@@ -1,3 +1,21 @@
+
+//Variables
+var prochainId = 2; // Représente le prochain identifiant disponible pour les parties
+var tree = [ //Données initiales -> seulement une partie représentant l'évaluation
+    {
+        id: 1,
+        text: "Evaluation",
+        nom: 'Evaluation',
+        bareme: 20,
+        state : {expanded: true},
+        tags: ['/ '+ 20],
+    }
+];
+
+//Cette fonction sert à afficher l'arbre à partir des données contenues dans le json
+function chargerArbre() {
+    $('#arbre_boot').treeview({data: tree, showTags : true, expandIcon: 'fas fa-chevron-right blue', collapseIcon: 'fas fa-chevron-down blue', selectedBackColor: '#0275d8'});
+}
 //Cette fonction sert à créer un tableau au format JSON représentant une partie et à déclencher l'ajout dans le tableau
 function ajoutEnfant(idParent, nom, bareme){
     var nomAffiche = nom; // Le nom qui sera visible par l'utilisateur
