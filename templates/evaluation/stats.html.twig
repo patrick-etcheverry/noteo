@@ -108,8 +108,8 @@
     {% set tabCounter = 0 %}
     {% for groupe in groupes %}
       <div class="form-check form-check-inline">
-        <input class="form-check-input" type="checkbox" id="{{groupe.nom}}" onChange="changement(this.id, this.checked, 'barres')">
-        <label class="form-check-label" for="inlineCheckbox1" id="label_{{groupe.nom}}">{{groupe.nom}}</label>
+        <input class="form-check-input" type="checkbox" id="{{groupe.nom}}" onChange="changement(this.id, this.checked, 'histo')">
+        <label class="form-check-label" for="inlineCheckbox1" id="label_{{groupe.nom}}_histo">{{groupe.nom}}</label>
       </div>
      {% set tabCounter = tabCounter + 1 %}
    {% endfor %}
@@ -138,8 +138,8 @@
     {% set tabCounter = 0 %}
     {% for groupe in groupes %}
       <div class="form-check form-check-inline">
-        <input class="form-check-input" type="checkbox" id="{{groupe.nom}}" onChange="changement(this.id, this.checked, 'boites')">
-        <label class="form-check-label" for="inlineCheckbox1">{{groupe.nom}}</label>
+        <input class="form-check-input" type="checkbox" id="{{groupe.nom}}" onChange="changement(this.id, this.checked, 'bam')">
+        <label class="form-check-label" for="inlineCheckbox1" id="label_{{groupe.nom}}_bam">{{groupe.nom}}</label>
       </div>
      {% set tabCounter = tabCounter + 1 %}
    {% endfor %}
@@ -170,9 +170,12 @@
 <script type="text/javascript" src="{{asset("js/html2canvas.min.js")}}"></script>
 <script type="text/javascript" src="{{asset("js/boxplot.js")}}"></script>
 
-<!-- Script pour la génération graphiques -->
+<!-- Script pour la génération des graphiques -->
 <script type="text/javascript">
 
+  // ----- VARIABLES GLOBALES ---------
+
+  var nomEvaluation = "{{evaluation.nom}}";
   var fontSize = 16;
 
   // Couleurs pour le graphique
@@ -186,28 +189,7 @@
   var blanc  = "#FFFFFF";
   var gris   = "#808080";
 
-/* Pallette de couleurs - chaque couleur a 2 valeurs d'où l'intervalle
-    [192, 57, 43],  // 1
-    [231, 76, 60],  // 11
-    [155, 89, 182], // 2
-    [142, 68, 173], // 12
-    [41, 128, 185], // 3
-    [26, 188, 156], // 13
-    [22, 160, 133], // 4
-    [39, 174, 96],  // 14
-    [46, 204, 113], // 5
-    [241, 196, 15], // 15
-    [243, 156, 18], // 6
-    [230, 126, 34], // 16
-    [211, 84, 0],   // 7
-    [236, 240, 241],// 17
-    [189, 195, 199],// 8
-    [149, 165, 166],// 18
-    [127, 140, 141],// 9
-    [52, 73, 94],   // 19
-    [44, 62, 80],   // 10
-*/
-
+  // Pallette de couleurs (valeurs rgb)
   var couleurs = [
     [192, 57, 43],
     [155, 89, 182],
@@ -230,10 +212,14 @@
     [52, 73, 94],
   ];
 
+  // Groupes sélectionés (avec les cases à cocher) par graphique
   var groupesChecked = [];
+  groupesChecked['histo'] = [];
+  groupesChecked['bam'] = [];
+
   var chartDATA = {
-    labels: ['[0;4[', '[4;8[', '[8;12[', '[12;16[', '[16;20]'],
-    datasets: undefined
+    labels: [],
+    datasets: undefined,
   };
 
   // passage de la liste groupes de twig à js
@@ -258,22 +244,28 @@
       yAxes: [{
         ticks: {
           beginAtZero: true,
-          max: getMax(),
+          max: 10,
+          min: 0,
           fontSize: fontSize,
         },
         stacked: false,
-      }]
+      }],
     },
+    legend: {
+					position: 'top',
+          labels: {
+            fontSize: fontSize,
+          },
+		},
     aspectRatio: 3,
     maintainAspectRatio: true,
     responsive: true,
     tooltips: {
       intersect: false,
-      mode: 'index',
       titleMarginBottom: 10,
       titleFontColor: '#6e707e',
       titleFontSize: fontSize,
-      backgroundColor: "rgb(255,255,255)",
+      backgroundColor: blanc,
       bodyFontColor: "#858796",
       borderColor: '#dddfeb',
       borderWidth: 1,
@@ -289,88 +281,13 @@
     }
   }
 
+ // --------- CODE -------------
 
-  // Renvoie la valeur max Pour l'hisgramme
-  function getMax(){
-    var max = 0;
-    for(var i = 0; i < groupes.length; i++){
-      for(var j = 0; j < groupes[i].notes.length; j++){
-        if(groupes[i].notes[j] > max){
-          max = groupes[i].notes[j];
-        }
-      }
-    }
-    return max;
-  }
+  // Mise en forme du etexte des cases à cocher
+  formatageCasesACocher();
 
-  function changement(id, value, type){
-    // Gère l'addition et la suppression des groupes à afficher dans le graphe
-    if(value){ // a check la box
-      groupesChecked.push(id);
-    } else { // a uncheck la box
-      var index = contains(groupesChecked, id);
-      if(index != -1){
-        groupesChecked.splice(index, 1);
-      }
-    }
-
-    // Génération des datasets des groupes sélectionés pour chartJS
-    dataGraph = [];
-    for(var i = 0; i < groupesChecked.length; i++){
-      var set = {};
-      var index = -1;
-      for(var j = 0; j < groupes.length; j++){
-        if(groupes[j].nom == groupesChecked[i]){
-          index = j;
-        }
-      }
-      if(index != -1){
-        set.label = groupes[index].nom;
-        set.data = groupes[index].notes;
-        var rgb = "rgb("+couleurs[index][0]+","+couleurs[index][1]+","+couleurs[index][2]+")";
-        set.backgroundColor = rgb;
-        set.hoverBackgroundColor = rgb;
-        set.borderColor = gris;
-        dataGraph.push(set);
-      }
-    }
-
-    // Remplacement des données du graphe par les nouvelles données générées & MaJ du graphe
-    chartDATA.datasets = dataGraph;
-    if(type == "boites"){
-        window.chartBoite.update();
-    } else if(type == "barres"){
-        window.chartBar.update();
-    }
-  }
-
-  // génère des couleurs aléatoires
-  function genColor(){
-    return "rgb(" + Math.floor(Math.random() * Math.floor(255)) + ","
-                  + Math.floor(Math.random() * Math.floor(255)) + ","
-                  + Math.floor(Math.random() * Math.floor(255)) + ")";
-  }
-
-  // retourne l'index au quel se trouve l'élément dans array, s'il n'y est pas renvoie -1
-  function contains(array, element){
-    for(var i = 0; i < array.length; i++){
-      if(array[i] == element){
-        return i;
-      }
-    }
-    return -1;
-  }
-
-
-  // Coloration du texte des cases à cocher avec les bonnes couleurs
-  for(var i = 0; i < groupes.length; i++){
-    var nom = groupes[i].nom;
-    var rgb = "rgb("+couleurs[i][0]+","+couleurs[i][1]+","+couleurs[i][2]+")";
-    document.getElementById("label_"+nom).style.color = rgb;
-  }
-
-  // Création du graphe Histogramme
-  window.onload = function() {
+  // Création des graphiques au chargement de la fenètre
+  window.onload = function(){
     window.chartBar = new Chart(document.getElementById("graphHisto").getContext('2d'), {
       type: 'bar',
       data: chartDATA,
@@ -380,9 +297,133 @@
     window.chartBoite = new Chart(document.getElementById("graphBoites").getContext('2d'), {
       type: 'boxplot',
       data: chartDATA,
-      options: options
+      options: options,
     });
   }
+
+// ------  FONCTIONS -----
+
+//Coloration du texte des cases à cocher avec les bonnes couleurs + réajustement de la taille de la police
+// Chaque label de case à cocher à comme id : label_nomGroupe_nomGraphe
+function formatageCasesACocher(){
+  for(var i = 0; i < groupes.length; i++){
+    for(var clef in groupesChecked){
+      var nom = groupes[i].nom;
+      var rgb = "rgb("+couleurs[i][0]+","+couleurs[i][1]+","+couleurs[i][2]+")";
+      document.getElementById("label_"+nom+"_"+clef).style.color = rgb;
+      document.getElementById("label_"+nom+"_"+clef).style.fontSize = fontSize+"px";
+    }
+    }
+}
+
+// Renvoie la valeur max de l'axe Y pour l'histogramme
+function getMax(){
+  var max = 0;
+  for(var i = 0; i < groupes.length; i++){
+    for(var j = 0; j < groupes[i].notes.length; j++){
+      if(groupes[i].notes[j] > max){
+        max = groupes[i].notes[j];
+      }
+    }
+  }
+  return max;
+}
+
+// Met à jour le graphique en fonction des cases qui sont cochées
+function changement(id, value, type){
+  // Gère l'addition et la suppression des groupes à afficher dans le graphe
+  if(value){ // la case à été cochée
+    groupesChecked[type].push(id);
+  } else { // la case à été décochée
+    var index = contains(groupesChecked[type], id);
+    if(index != -1){
+      groupesChecked[type].splice(index, 1);
+    }
+  }
+
+  // Génération des labels & cacul du max
+  switch (type) {
+    case 'histo':
+      // Changement des labels + de l'échelle de l'axe Y
+      chartDATA.labels = ['[0;4[', '[4;8[', '[8;12[', '[12;16[', '[16;20]'];
+      options.scales.yAxes[0].ticks.min = 0;
+      options.scales.yAxes[0].ticks.max = getMax();
+      break;
+    case 'bam': // Boîte à moustache
+      // Changement des labels + de l'échelle de l'axe Y
+      chartDATA.labels = [nomEvaluation];
+      options.scales.yAxes[0].ticks.min = 0;
+      options.scales.yAxes[0].ticks.max = 20;
+      break;
+    default:
+      break;
+  }
+
+  // Génération des datasets des groupes sélectionés pour chartJS en fonction du graphique sélectioné
+  dataGraph = [];
+  for(var i = 0; i < groupesChecked[type].length; i++){
+    var set = {};
+    var index = -1;
+    for(var j = 0; j < groupes.length; j++){
+      if(groupes[j].nom == groupesChecked[type][i]){
+        index = j;
+      }
+    }
+    if(index != -1){
+      set.label = groupes[index].nom;
+      switch (type) {
+        case 'histo': // Histogramme
+          set.data = groupes[index].notes;
+          set.borderColor = gris;
+          break;
+        case 'bam': // Boîte à moustaches
+          set.data = [groupes[index].allNotes];
+          set.borderColor = noir;
+          break;
+        default:
+          break;
+      }
+      var rgb = "rgb("+couleurs[index][0]+","+couleurs[index][1]+","+couleurs[index][2]+")";
+      set.backgroundColor = rgb;
+      set.hoverBackgroundColor = rgb;
+      dataGraph.push(set);
+    }
+  }
+
+  // Remplacement des données du graphe par les nouvelles données générées & MaJ du graphique
+  //              + MaJ des options
+  chartDATA.datasets = dataGraph;
+  switch (type) {
+    case 'histo':
+      window.chartBar.options = options;
+      window.chartBar.update();
+      break;
+    case 'bam': // Boîte à moustaches
+      window.chartBoite.options = options;
+      window.chartBoite.update();
+      break;
+    default:
+      break;
+  }
+}
+
+// génère des codes couleurs rgb aléatoires
+function genColor(){
+  return "rgb(" + Math.floor(Math.random() * Math.floor(255)) + ","
+                + Math.floor(Math.random() * Math.floor(255)) + ","
+                + Math.floor(Math.random() * Math.floor(255)) + ")";
+}
+
+// retourne l'index au quel se trouve l'élément dans array, s'il n'y est pas renvoie -1
+function contains(array, element){
+  for(var i = 0; i < array.length; i++){
+    if(array[i] == element){
+      return i;
+    }
+  }
+  return -1;
+}
+
 
 </script>
 
