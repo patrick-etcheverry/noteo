@@ -306,6 +306,14 @@
 //Coloration du texte des cases à cocher avec les bonnes couleurs + réajustement de la taille de la police
 // Chaque label de case à cocher à comme id : label_nomGroupe_nomGraphe
 function formatageCasesACocher(){
+  // Création de couleurs si la liste couleurs n'as pas assez d'éléments
+  if(groupes.length > couleurs.length){
+    var gap = groupes.length - couleurs.length;
+    for(var i = 0; i < gap; i++){
+      var coul = couleurs[i];
+      couleurs.push([(coul[0] + 60) % 255, (coul[1] - 60) % 255, coul[2]]);
+    }
+  }
   for(var i = 0; i < groupes.length; i++){
     for(var clef in groupesChecked){
       var nom = groupes[i].nom;
@@ -313,7 +321,7 @@ function formatageCasesACocher(){
       document.getElementById("label_"+nom+"_"+clef).style.color = rgb;
       document.getElementById("label_"+nom+"_"+clef).style.fontSize = fontSize+"px";
     }
-    }
+  }
 }
 
 // Renvoie la valeur max de l'axe Y pour l'histogramme
