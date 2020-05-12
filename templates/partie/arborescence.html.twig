@@ -21,13 +21,6 @@
             background-color: #0275d8;
             border-radius: 10px;
         }
-
-        .message-erreur-parties {
-            text-align: center;
-            font-size: 13px;
-            color: red;
-        }
-
         div .blue {color:#0275d8}
         div .red {color:red}
     </style>
@@ -39,18 +32,14 @@
             <div id="arbre_js"></div>
         </div>
         <div class="col-lg-4">
-            <div class="message-erreur-parties" id="message-erreur-parties">
-                <!-- Lieu ou les messages d'erreur seront affichés -->
-            </div>
             <div id="arbre_boot"></div>
+            <br>
             <div style="text-align: center">
-                <button class="btn btn-primary" disabled>Ajouter une partie</button>
+                <button class="btn btn-primary" onclick="creerPartie()">Ajouter une partie</button>
             </div>
-
         </div>
         <div class="col-lg-4">
         </div>
-
     </div>
 
     <div class="modal fade" id="modalePartie" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
@@ -62,8 +51,49 @@
                         <span aria-hidden="true">x</span>
                     </button>
                 </div>
+                <form name="form" id="formPartie">
                 <div class="modal-body">
-                    {{include('partie/_form.html.twig')}}
+                    <table align="center" class="table">
+                        <tbody>
+                            <tr>
+                                <th class="intitule"><label for="statut_nom" class="required">Intitulé de la partie</label></th>
+                                <td><input type="text" id="champIntitule" required maxlength="255" minlength="4" class="form-control"></td>
+                            </tr>
+                            <tr>
+                                <th class="intitule"><label for="statut_description" class="required">Barème de la partie</label></th>
+                                <td > <input type="number" id="champBareme" required min="0" class="form-control"></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="modal-footer">
+                    <button type="submit" class="d-sm-inline-block btn btn-sm btn-primary shadow-sm">Valider</button>
+                </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="modalePasDePartieSelectionnee" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Actions sur les parties</h5>
+                    <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">x</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div style="text-align: center; font-weight: bold">Vous n'avez pas selectionné de partie !</div>
+                    <br>
+                    <ul>
+                        <li>Pour ajouter une nouvelle partie, veuillez cliquer sur une partie dans le tableau à laquelle vous voulez ajouter une sous-partie</li>
+                        <li>Pour modifier une partie, veuillez cliquer sur une partie que vous désirez modifier</li>
+                        <li>Pour supprimer une partie, veuillez cliquer sur une partie que vous désirez supprimer</li>
+                    </ul>
+                </div>
+                <div class="modal-footer">
+                    <button class="d-sm-inline-block btn btn-sm btn-primary" type="button" data-dismiss="modal">Ok</button>
                 </div>
             </div>
         </div>
@@ -80,13 +110,25 @@
             ajoutEnfant(2, 'Question 1', 5); //3
             ajoutEnfant(2, 'Question 2', 5); //4
             ajoutEnfant(1, 'Exercice 2', 10); //5
-            ajoutEnfant(5, 'Question 1', 6); //6
+            ajoutEnfant(5, 'Question 1', 5); //6
             ajoutEnfant(5, 'Question 2', 5); //7
             chargerArbre()
         }
 
-        function modale() {
-            $('#modalePartie').modal();
+        function creerPartie() {
+            var partieSelectionnee = $('#arbre_boot').treeview('getSelected');
+            if (partieSelectionnee.length != 0) {
+                $('#modalePartie').modal('show');
+                $("#formPartie").submit(function (e) {
+                    e.preventDefault(); //Pour que la page ne se rafraichisse pas lors de la validation
+                    console.log('bravo')
+                    $('#modalePartie').modal('hide');
+                })
+            }
+            else {
+                $('#modalePasDePartieSelectionnee').modal();
+            }
+
         }
     </script>
 {% endblock %}

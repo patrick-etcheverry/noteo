@@ -17,7 +17,7 @@ function chargerArbre() {
     $('#arbre_boot').treeview({data: tree, showTags : true, expandIcon: 'fas fa-chevron-right blue', collapseIcon: 'fas fa-chevron-down blue', selectedBackColor: '#0275d8'});
 }
 //Cette fonction sert à créer un tableau au format JSON représentant une partie et à déclencher l'ajout dans le tableau
-function ajoutEnfant(idParent, nom, bareme){
+function ajoutEnfant(idParent, nom = "Partie", bareme = 5){
     var nomAffiche = nom; // Le nom qui sera visible par l'utilisateur
     var nouvellePartie = {
       text: nomAffiche,
