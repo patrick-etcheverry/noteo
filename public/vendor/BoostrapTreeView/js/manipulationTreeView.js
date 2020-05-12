@@ -28,28 +28,39 @@ function ajoutEnfant(idParent, nom, bareme){
       tags: ['/ '+ bareme],
     }
     prochainId++;
-    ajoutViaRechercheRecursive(tree[0], idParent, nouvellePartie);
+    rechercheRecursive(tree[0], idParent, nouvellePartie, "ajouter");
 }
 
 /*
-Cette fonction sert à réaliser l'ajout d'une sous-partie à une partie (la partie est un tableau au format JSON).
-La partie à laquelle on veut ajouter la nouvelle sous-partie est repérée par son identifiant.
-La recherche de la partie à laquelle ajouter la nouvelle sous-partie se fait ici recursivement
-dans un tableau JSON qui contient toutes les parties affichées à l'écran.
+Cette fonction sert à parcourir le tableau contenant les différentes parties.
+Elle sert à y retrouver une partie particulière (identifiée par un identifiant numérique), et à executer différentes actions
+en fonction du contexte :
+    - Ajouter une sous partie
+    - Modifier la partie
+    - Supprimer la partie
 */
-function ajoutViaRechercheRecursive(partieCourante, idPartieParenteACelleAjoutee, nouvellePartie){
+function rechercheRecursive(partieCourante, idPartieCherchee, nouvellePartie = [], action){
     //On vérifie si la partie courante est celle à laquelle on veut ajouter une partie
-    if(partieCourante.id == idPartieParenteACelleAjoutee){
-        //On ajoute la partie dans l'arbre, sous la partie trouvée
-        ajoutDansLarbre(partieCourante, nouvellePartie)
-        //On renvoie true pour dire que la partie a été trouvée
+    if(partieCourante.id == idPartieCherchee){
+        switch (action) {
+            case "modifier" :
+                break;
+            case "supprimer" :
+                break;
+            case "ajouter" :
+                //On ajoute la partie dans l'arbre, sous la partie trouvée
+                ajoutDansLarbre(partieCourante, nouvellePartie);
+                break;
+        }
+
+        //On renvoie true pour dire que l'action sur la partie voulue a été effectuée
         return true;
     }
     //Si la partie courante a des enfants on continue la recherche
     if(partieCourante.nodes != undefined) {
         //Pour toutes les sous-parties de la partie courante
         for(var i = 0; i < partieCourante.nodes.length; i++){
-            ajoutViaRechercheRecursive(partieCourante.nodes[i], idPartieParenteACelleAjoutee, nouvellePartie)
+            rechercheRecursive(partieCourante.nodes[i], idPartieCherchee, nouvellePartie, action)
         }
     }
     //Si toutes les parties on été parcourues c'est que la partie à laquelle on voulait ajouter une sous-partie n'a pas été trouvée, on renvoie false pour le signifier
