@@ -83,8 +83,8 @@ function ajouterEnfants(){
     ajoutEnfant(1, 'Exercice 1', 10); //4
     ajoutEnfant(4, 'Question 1', 5); //5
     ajoutEnfant(4, 'Question 2', 5); //6
-    ajoutEnfant(1, 'Exercice 2', 9); //7
-    ajoutEnfant(7, 'Question 1', 5); //8
+    ajoutEnfant(1, 'Exercice 2', 10); //7
+    ajoutEnfant(7, 'Question 1', 6); //8
     ajoutEnfant(7, 'Question 2', 5); //9
     //Chargement de l'arbre
     $('#arbre_boot').treeview({data: tree, showTags : true, expandIcon: 'fas fa-chevron-right blue', collapseIcon: 'fas fa-chevron-down blue', selectedBackColor: '#0275d8'});
