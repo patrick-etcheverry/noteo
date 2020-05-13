@@ -21,36 +21,32 @@ en fonction du contexte :
     - Supprimer la partie (La partie à supprimer est dans les paramètres. On cherche son parent pour supprimer la partie des enfants de son parent)
 */
 function actionViaRechercheRecursive(partieCourante, idPartieCherchee, partieSurLaquelleAgir = [], action){
-    //On vérifie si la partie courante est celle à laquelle on veut ajouter une partie
     if(partieCourante.id == idPartieCherchee){
         switch (action) {
             case "modifier" :
                 break;
             case "supprimer" :
+                effectuerLaSuppressionDansLarbre(partieCourante, partieSurLaquelleAgir);
                 break;
             case "ajouter" :
-                //On ajoute la partie dans l'arbre, sous la partie trouvée
                 effectuerLajoutDansLarbre(partieCourante, partieSurLaquelleAgir);
                 break;
         }
-
-        //On renvoie true pour dire que l'action sur la partie voulue a été effectuée
         return true;
     }
-    //Si la partie courante a des enfants on continue la recherche
     if(partieCourante.nodes != undefined) {
-        //Pour toutes les sous-parties de la partie courante
         for(var i = 0; i < partieCourante.nodes.length; i++){
             actionViaRechercheRecursive(partieCourante.nodes[i], idPartieCherchee, partieSurLaquelleAgir, action)
         }
     }
-    //Si toutes les parties on été parcourues c'est que la partie à laquelle on voulait ajouter une sous-partie n'a pas été trouvée, on renvoie false pour le signifier
     return false;
 }
 
-//Cette fonction sert à créer un tableau au format JSON représentant une partie et à déclencher l'ajout dans le tableau
+/*
+Cette fonction sert à créer un tableau représentant une partie et à déclencher la recherche de l'endroit où l'insérer
+*/
 function ajouterUnePartie(idParent, nom = "Partie", bareme = 5){
-    var nomAffiche = nom; // Le nom qui sera visible par l'utilisateur
+    var nomAffiche = nom;
     var nouvellePartie = {
         text: nomAffiche,
         nom: nom,
@@ -64,49 +60,65 @@ function ajouterUnePartie(idParent, nom = "Partie", bareme = 5){
     chargerArbre()
 }
 
+/*
+Cette fonction sert à effectuer l'ajout d'une nouvelle partie dans le tableau des parties, et ensuite déclencher la vérification de la cohérence des barèmes
+*/
 function effectuerLajoutDansLarbre(partie, nouvelleSousPartie) {
-    //Si la partie qu'on a trouvé a des sous parties on y ajoute la nouvelle
     if(partie.nodes != undefined){
         partie.nodes.push(nouvelleSousPartie);
     }
-    //Sinon, l'attribut n'est pas défini dans le json. On le définit alors
     else {
         partie.nodes = [nouvelleSousPartie];
     }
-    $('#message-erreur-parties').empty();
     checkBaremesArbre(tree[0]);
 }
 
+/*
+Cette fonction sert à déclencher la suppression d'une partie en lancant la recherche de l'endroit d'où la supprimer.
+*/
+function supprimerUnePartie(idParent, partieASupprimer) {
+    actionViaRechercheRecursive(tree[0], idParent, partieASupprimer, "supprimer");
+    chargerArbre();
+}
+
+/*
+Cette fonction sert à réaliser la suppression dans l'arbre à partir du parent d'une partie à supprimer
+*/
+function effectuerLaSuppressionDansLarbre(parent, partieASupprimer) {
+    var positionDeLaPartieASupprimer = parent.nodes.findIndex(partie => partie.id == partieASupprimer.id);
+    parent.nodes.splice(positionDeLaPartieASupprimer,1)
+    checkBaremesArbre(tree[0]);
+}
+
+/*
+Cette fonction sert à vérifier la cohérence des barèmes dans l'arbre de manière récursive.
+Pour chaque partie, elle vérifiera que son barème est égal à la somme des barèmes de ses sous parties directes, si elle en a.
+*/
 function checkBaremesArbre(partieCourante) {
-    //Si la partie courante a des enfants
     if(partieCourante.nodes != undefined) {
-        //On calcule la somme des barèmes des enfants
         var totalBareme = 0;
         for (var i = 0; i < partieCourante.nodes.length; i++) {
             totalBareme += partieCourante.nodes[i].bareme;
         }
         if (totalBareme != partieCourante.bareme) {
-            /* Si la somme des barèmes n'est pas égale au barème de la partie supérieure on affiche la ligne supérieure en rouge pour avertir
-            l'utilisateur. La couleur rouge a été choisie comme un erreur pour que l'utilisateur corrige car c'est une situation qui n'est pas censée être réalisable */
             partieCourante.icon = 'icon-attention-circled red';
             partieCourante.text = partieCourante.nom + ' - Somme des points incorrecte'
             partieCourante.color = '#FF0000';
-            //$('#message-erreur-parties').append('<p><i class="icon-attention-circled"></i> Le total des barèmes pour ' + partieCourante.nom + ' doit être égal à ' + partieCourante.bareme + '</p>');
         }
         else if (totalBareme === partieCourante.bareme) {
-            /* Si la somme des barèmes est égale au barème de la partie supérieure on affiche la ligne normalement, sans définir de couleurs spéciales */
             partieCourante.icon = undefined;
             partieCourante.text = partieCourante.nom;
             partieCourante.color = undefined;
         }
-        //On execute la vérification pour tous les enfants de la partie courante
         for (var i = 0; i< partieCourante.nodes.length; i++) {
             checkBaremesArbre(partieCourante.nodes[i]);
         }
     }
 }
 
-//Cette fonction sert à afficher l'arbre à partir des données contenues dans le json
+/*
+Cette fonction charge l'arbre affiché par la bibliothèque à partir des données des parties.
+*/
 function chargerArbre() {
     $('#arbre_boot').treeview({data: tree, showTags : true, expandIcon: 'fas fa-chevron-right blue', collapseIcon: 'fas fa-chevron-down blue', selectedBackColor: '#0275d8'});
 }

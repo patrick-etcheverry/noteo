@@ -35,7 +35,10 @@
             </div>
             <br>
             <div style="text-align: center">
-                <button class="btn btn-primary" onclick="creerPartie()">Ajouter une partie</button>
+                <button class="btn btn-primary" onclick="onCreerPartie()">Ajouter une partie</button>
+            </div>
+            <div style="text-align: center">
+                <button class="btn btn-primary" onclick="onSupprimerPartie()">Supprimer une partie</button>
             </div>
         </div>
         <div class="col-lg-4">
@@ -114,7 +117,7 @@
             ajouterUnePartie(5, 'Question 2', 5); //7
         }
 
-        function creerPartie() {
+        function onCreerPartie() {
             //Récupération de la partie selectionnée par l'utilisateur
             var partieSelectionnee = $('#arbre_boot').treeview('getSelected');
             //Si il a selectionné une partie on passe à la suite, sinon on affiche la modale expliquant le fonctionnement des fonctionnalités
@@ -132,6 +135,19 @@
                     //On lance la création avec les informations du formulaires
                     ajouterUnePartie(partieSelectionnee[0].id, $('#champIntitule').val(), parseFloat($('#champBareme').val()));
                 })
+            }
+            else {
+                $('#modalePasDePartieSelectionnee').modal();
+            }
+        }
+
+        function onSupprimerPartie() {
+            //Récupération de la partie selectionnée par l'utilisateur
+            var partieSelectionnee = $('#arbre_boot').treeview('getSelected');
+            //Si il a selectionné une partie on passe à la suite, sinon on affiche la modale expliquant le fonctionnement des fonctionnalités
+            if (partieSelectionnee.length != 0) {
+                var parent = $('#arbre_boot').treeview('getParent', partieSelectionnee); //On recupère le parent d'où on va supprimer la partie selectionnée
+                supprimerUnePartie(parent.id, partieSelectionnee[0]);
             }
             else {
                 $('#modalePasDePartieSelectionnee').modal();
