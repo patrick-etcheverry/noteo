@@ -355,7 +355,23 @@ class EvaluationController extends AbstractController
 
         //Création du formulaire de saisie des points
 
+        //Création du formulaire pour saisir les informations de l'évaluation (le formulaire n'est pas lié à une entité)
+        $form = $this->createFormBuilder(['notes' => $tabPoints])
+            ->add('notes', CollectionType::class , [
+                'entry_type' => PointsType::class //Utilisation d'une collection de formulaire pour saisir les valeurs des notes (les formulaires portent sur les entités points
+                //passées en paramètre du formulaire)
+            ])
+            ->getForm();
+        $form->handleRequest($request);
+
+        if($form->isSubmitted()) {
+
+        }
+
         return $this->render('evaluation/saisie_notes_parties.html.twig', [
+            'evaluation' => $eval,
+            'form' => $form->createView(),
+            'parties' => $parties
         ]);
     }
 
