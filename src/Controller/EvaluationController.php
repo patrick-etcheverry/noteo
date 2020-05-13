@@ -254,6 +254,17 @@ class EvaluationController extends AbstractController
         ]);
     }
 
+    /**
+     * @Route("/nouvelle-avec-parties/{slug}", name="evaluation_avec_parties_new", methods={"GET","POST"})
+     */
+    public function newAvecParties(Request $request, GroupeEtudiant $groupeConcerne, ValidatorInterface $validator): Response
+    {
+
+
+        return $this->render('partie/arborescence.html.twig', [
+        ]);
+    }
+
     public function validerEntite ($entite, $validator) {
 
       //Utilisation de la méthode validate du validator pour valider l'entité selon les regles définies dans celle ci
