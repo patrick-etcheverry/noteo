@@ -285,6 +285,11 @@ class EvaluationController extends AbstractController
             $evaluation->setEnseignant($this->getUser());
             $evaluation->setGroupe($groupeConcerne);
 
+            $tabEtudiants = []; //Ce tableau contient tous les étudiants concernés par l'évaluation, pour pouvoir créer les points plus tard
+            foreach ($groupeConcerne->getEtudiants() as $etudiant) {
+                $tabEtudiants[] = $etudiant;
+            }
+
             $arbreInitial = [ // tableau qui sera utilisé dans la création des parties à la page suivante
                 'id' => 1,
                 'text' => 'Evaluation',
@@ -296,6 +301,7 @@ class EvaluationController extends AbstractController
 
             $request->getSession()->set('evaluation',$evaluation); // Mise en session de l'objet évaluation créé pour le transporter entre les méthodes
             $request->getSession()->set('arbre_json',$arbreInitial); // Pour récupérer le tableau lors du chargement de la vue suivante
+            $request->getSession()->set('etudiants', $tabEtudiants); // Le groupe concerné par l'évaluation
             return $this->redirectToRoute("creation_parties_eval");
         }
         return $this->render('evaluation/saisie_info_eval.html.twig', [
@@ -318,7 +324,7 @@ class EvaluationController extends AbstractController
             $tableauParties = []; //Initialisation du tableau qui contiendra les parties
             $this->definirPartiesDepuisTableauJS($request->getSession()->get('evaluation'), $arbrePartiesRecupere[0], $tableauParties);
             $request->getSession()->set('parties', $tableauParties); //Mise en session des parties créées pour la suite
-            $this->redirectToRoute('saisie_notes_parties_eval');
+            return $this->redirectToRoute('saisie_notes_parties_eval');
         }
         return $this->render('evaluation/creation_arborescence_parties.html.twig', [
             'form' => $form->createView()
@@ -326,11 +332,30 @@ class EvaluationController extends AbstractController
     }
 
     /**
-     * @Route("/saisies-notes-parties", name="saisie_notes_parties_eval", methods={"GET","POST"})
+     * @Route("/saisie-notes-parties", name="saisie_notes_parties_eval", methods={"GET","POST"})
      */
     public function saisieNotesParties(Request $request): Response
     {
-        return $this->render('evaluation/saisie_notes_parties.html.twig/', [
+        //Récupération de l'évaluation créée au départ et des parties créées précédemment
+        $eval = $request->getSession()->get('evaluation');
+        $etudiants = $request->getSession()->get('etudiants');
+        $parties = $request->getSession()->get('parties');
+        $tabPoints = []; //Tableau qui contiendra les entités point dont on doit saisir la valeur
+
+        //Création des points à saisir pour l'évaluation
+        foreach ($etudiants as $etudiant) {
+            foreach ($parties as $partie) {
+                $point = new Points();
+                $point->setEtudiant($etudiant);
+                $point->setPartie($partie);
+                $point->setValeur(0);
+                $tabPoints[] = $point;
+            }
+        }
+
+        //Création du formulaire de saisie des points
+
+        return $this->render('evaluation/saisie_notes_parties.html.twig', [
         ]);
     }
 
