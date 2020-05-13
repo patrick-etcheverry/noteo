@@ -1,5 +1,4 @@
-
-//Variables
+/***********VARIABLES***********/
 var prochainId = 2; // Représente le prochain identifiant disponible pour les parties
 var tree = [ //Données initiales -> seulement une partie représentant l'évaluation
     {
@@ -12,35 +11,16 @@ var tree = [ //Données initiales -> seulement une partie représentant l'évalu
     }
 ];
 
-//Cette fonction sert à afficher l'arbre à partir des données contenues dans le json
-function chargerArbre() {
-    $('#arbre_boot').treeview({data: tree, showTags : true, expandIcon: 'fas fa-chevron-right blue', collapseIcon: 'fas fa-chevron-down blue', selectedBackColor: '#0275d8'});
-}
-//Cette fonction sert à créer un tableau au format JSON représentant une partie et à déclencher l'ajout dans le tableau
-function ajoutEnfant(idParent, nom = "Partie", bareme = 5){
-    var nomAffiche = nom; // Le nom qui sera visible par l'utilisateur
-    var nouvellePartie = {
-      text: nomAffiche,
-      nom: nom,
-      bareme: bareme,
-      id: prochainId,
-      state : {expanded: true},
-      tags: ['/ '+ bareme],
-    }
-    prochainId++;
-    rechercheRecursive(tree[0], idParent, nouvellePartie, "ajouter");
-    chargerArbre()
-}
-
+/***********FONCTIONS***********/
 /*
-Cette fonction sert à parcourir le tableau contenant les différentes parties.
+Cette fonction sert à parcourir le tableau contenant les différentes parties de manière récursive.
 Elle sert à y retrouver une partie particulière (identifiée par un identifiant numérique), et à executer différentes actions
 en fonction du contexte :
-    - Ajouter une sous partie
-    - Modifier la partie
-    - Supprimer la partie
+    - Ajouter une sous partie (la nouvelle sous-partie est en paramètre de la fonction)
+    - Modifier la partie (la partie qui la remplacera avec les nouvelles informations est en paramètre de la fonction)
+    - Supprimer la partie (La partie à supprimer est dans les paramètres. On cherche son parent pour supprimer la partie des enfants de son parent)
 */
-function rechercheRecursive(partieCourante, idPartieCherchee, nouvellePartie = [], action){
+function actionViaRechercheRecursive(partieCourante, idPartieCherchee, partieSurLaquelleAgir = [], action){
     //On vérifie si la partie courante est celle à laquelle on veut ajouter une partie
     if(partieCourante.id == idPartieCherchee){
         switch (action) {
@@ -50,7 +30,7 @@ function rechercheRecursive(partieCourante, idPartieCherchee, nouvellePartie = [
                 break;
             case "ajouter" :
                 //On ajoute la partie dans l'arbre, sous la partie trouvée
-                ajoutDansLarbre(partieCourante, nouvellePartie);
+                effectuerLajoutDansLarbre(partieCourante, partieSurLaquelleAgir);
                 break;
         }
 
@@ -61,14 +41,30 @@ function rechercheRecursive(partieCourante, idPartieCherchee, nouvellePartie = [
     if(partieCourante.nodes != undefined) {
         //Pour toutes les sous-parties de la partie courante
         for(var i = 0; i < partieCourante.nodes.length; i++){
-            rechercheRecursive(partieCourante.nodes[i], idPartieCherchee, nouvellePartie, action)
+            actionViaRechercheRecursive(partieCourante.nodes[i], idPartieCherchee, partieSurLaquelleAgir, action)
         }
     }
     //Si toutes les parties on été parcourues c'est que la partie à laquelle on voulait ajouter une sous-partie n'a pas été trouvée, on renvoie false pour le signifier
     return false;
 }
 
-function ajoutDansLarbre(partie, nouvelleSousPartie) {
+//Cette fonction sert à créer un tableau au format JSON représentant une partie et à déclencher l'ajout dans le tableau
+function ajouterUnePartie(idParent, nom = "Partie", bareme = 5){
+    var nomAffiche = nom; // Le nom qui sera visible par l'utilisateur
+    var nouvellePartie = {
+        text: nomAffiche,
+        nom: nom,
+        bareme: bareme,
+        id: prochainId,
+        state : {expanded: true},
+        tags: ['/ '+ bareme],
+    }
+    prochainId++;
+    actionViaRechercheRecursive(tree[0], idParent, nouvellePartie, "ajouter");
+    chargerArbre()
+}
+
+function effectuerLajoutDansLarbre(partie, nouvelleSousPartie) {
     //Si la partie qu'on a trouvé a des sous parties on y ajoute la nouvelle
     if(partie.nodes != undefined){
         partie.nodes.push(nouvelleSousPartie);
@@ -78,7 +74,6 @@ function ajoutDansLarbre(partie, nouvelleSousPartie) {
         partie.nodes = [nouvelleSousPartie];
     }
     $('#message-erreur-parties').empty();
-    console.clear()
     checkBaremesArbre(tree[0]);
 }
 
@@ -109,5 +104,10 @@ function checkBaremesArbre(partieCourante) {
             checkBaremesArbre(partieCourante.nodes[i]);
         }
     }
+}
+
+//Cette fonction sert à afficher l'arbre à partir des données contenues dans le json
+function chargerArbre() {
+    $('#arbre_boot').treeview({data: tree, showTags : true, expandIcon: 'fas fa-chevron-right blue', collapseIcon: 'fas fa-chevron-down blue', selectedBackColor: '#0275d8'});
 }
 

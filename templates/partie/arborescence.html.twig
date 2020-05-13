@@ -106,12 +106,12 @@
 
         //Initialisation du tableau
         function InitialisationTableau(){
-            ajoutEnfant(1, 'Exercice 1', 10); //2
-            ajoutEnfant(2, 'Question 1', 5); //3
-            ajoutEnfant(2, 'Question 2', 5); //4
-            ajoutEnfant(1, 'Exercice 2', 10); //5
-            ajoutEnfant(5, 'Question 1', 5); //6
-            ajoutEnfant(5, 'Question 2', 5); //7
+            ajouterUnePartie(1, 'Exercice 1', 10); //2
+            ajouterUnePartie(2, 'Question 1', 5); //3
+            ajouterUnePartie(2, 'Question 2', 5); //4
+            ajouterUnePartie(1, 'Exercice 2', 10); //5
+            ajouterUnePartie(5, 'Question 1', 5); //6
+            ajouterUnePartie(5, 'Question 2', 5); //7
         }
 
         function creerPartie() {
@@ -119,6 +119,10 @@
             var partieSelectionnee = $('#arbre_boot').treeview('getSelected');
             //Si il a selectionné une partie on passe à la suite, sinon on affiche la modale expliquant le fonctionnement des fonctionnalités
             if (partieSelectionnee.length != 0) {
+                //Préparation du formulaire
+                $("#formPartie").unbind(); //Suppression des écouteurs d'évenements précédents pour éviter de créer une partie en plusieurs exemplaires
+                $('#champIntitule').val(''); //Vidage du champ
+                $('#champBareme').val(''); //Vidage du champ
                 //On affiche la modale du formulaire
                 $('#modalePartie').modal('show');
                 //On attend la soumission du formulaire
@@ -126,11 +130,8 @@
                     e.preventDefault(); //Pour que la page ne se rafraichisse pas lors de la validation
                     $('#modalePartie').modal('hide'); //Pour refermer la fenêtre modale
                     //On lance la création avec les informations du formulaires
-                    ajoutEnfant(partieSelectionnee[0].id, $('#champIntitule').val(), parseFloat($('#champBareme').val()));
-                    $("#formPartie").unbind() // Pour supprimer l'écouteur d'évenement
+                    ajouterUnePartie(partieSelectionnee[0].id, $('#champIntitule').val(), parseFloat($('#champBareme').val()));
                 })
-
-
             }
             else {
                 $('#modalePasDePartieSelectionnee').modal();
