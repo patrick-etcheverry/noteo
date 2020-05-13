@@ -87,7 +87,10 @@ Cette fonction sert à réaliser la suppression dans l'arbre à partir du parent
 */
 function effectuerLaSuppressionDansLarbre(parent, partieASupprimer) {
     var positionDeLaPartieASupprimer = parent.nodes.findIndex(partie => partie.id == partieASupprimer.id);
-    parent.nodes.splice(positionDeLaPartieASupprimer,1)
+    parent.nodes.splice(positionDeLaPartieASupprimer,1);
+    if(parent.nodes.length == 0) {
+        parent.nodes = undefined;
+    }
     checkBaremesArbre(tree[0]);
 }
 
@@ -140,6 +143,11 @@ function checkBaremesArbre(partieCourante) {
         for (var i = 0; i< partieCourante.nodes.length; i++) {
             checkBaremesArbre(partieCourante.nodes[i]);
         }
+    }
+    else {
+        partieCourante.icon = undefined;
+        partieCourante.text = partieCourante.nom;
+        partieCourante.color = undefined;
     }
 }
 
