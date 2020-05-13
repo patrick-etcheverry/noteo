@@ -1,8 +1,6 @@
 {% extends 'base.html.twig' %}
 
-{% set eval = app.session.get('evaluation') %} {# l'évaluation en cours de création #}
-
-{% block titrePage %}Créer des parties pour {{ eval.nom }}{% endblock %}
+{% block titrePage %}Créer des parties pour {{ app.session.get('evaluation').nom }}{% endblock %}
 
 {% block evaluations %}active{% endblock %}
 
@@ -75,7 +73,7 @@
                     </table>
                 </div>
                 <div class="modal-footer">
-                    <button type="submit" class="d-sm-inline-block btn btn-sm btn-primary shadow-sm">Valider</button>
+                    <button type="button" onclick="onValider()" class="d-sm-inline-block btn btn-sm btn-primary shadow-sm">Valider</button>
                 </div>
                 </form>
             </div>
@@ -110,6 +108,7 @@
 
 {% block javascripts %}
     <script>
+        var tree = [{{ app.session.get("arbre_json") | json_encode | raw }}] // Variable venant du serveur
         window.onload = chargerArbre();
 
         function onCreerPartie() {

@@ -1,15 +1,5 @@
 /***********VARIABLES***********/
 var prochainId = 2; // Représente le prochain identifiant disponible pour les parties
-var tree = [ //Données initiales -> seulement une partie représentant l'évaluation
-    {
-        id: 1,
-        text: "Evaluation",
-        nom: 'Evaluation',
-        bareme: 20,
-        state : {expanded: true},
-        tags: ['/ '+ 20],
-    }
-];
 
 /***********FONCTIONS***********/
 /*

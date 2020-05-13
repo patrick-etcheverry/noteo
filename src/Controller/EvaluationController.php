@@ -284,7 +284,17 @@ class EvaluationController extends AbstractController
             $evaluation->setEnseignant($this->getUser());
             $evaluation->setGroupe($groupeConcerne);
 
+            $arbreInitial = [ // tableau qui sera utilisé dans la création des parties à la page suivante
+                'id' => 1,
+                'text' => 'Evaluation',
+                'nom' => 'Evaluation',
+                'bareme' => 20,
+                'state' => ['expanded' => true],
+                'tags' => ['/20']
+            ];
+
             $request->getSession()->set('evaluation',$evaluation); // Mise en session de l'objet évaluation créé pour le transporter entre les méthodes
+            $request->getSession()->set('arbre_json',$arbreInitial); // Pour récupérer le tableau lors du chargement de la vue suivante
             return $this->redirectToRoute("creation-parties-eval");
         }
         return $this->render('evaluation/saisie_info_eval.html.twig', [
