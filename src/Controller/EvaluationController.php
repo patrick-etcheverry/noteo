@@ -284,10 +284,20 @@ class EvaluationController extends AbstractController
             $evaluation->setEnseignant($this->getUser());
             $evaluation->setGroupe($groupeConcerne);
 
+            $request->getSession()->set('evaluation',$evaluation); // Mise en session de l'objet évaluation créé pour le transporter entre les méthodes
+            return $this->redirectToRoute("creation-parties-eval");
         }
-
         return $this->render('evaluation/saisie_info_eval.html.twig', [
             'form' => $formEval->createView()
+        ]);
+    }
+
+    /**
+     * @Route("/creation-parties", name="creation-parties-eval", methods={"GET","POST"})
+     */
+    public function creationParties(Request $request): Response
+    {
+        return $this->render('partie/arborescence.html.twig', [
         ]);
     }
 
