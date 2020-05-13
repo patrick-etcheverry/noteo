@@ -296,7 +296,7 @@ class EvaluationController extends AbstractController
 
             $request->getSession()->set('evaluation',$evaluation); // Mise en session de l'objet évaluation créé pour le transporter entre les méthodes
             $request->getSession()->set('arbre_json',$arbreInitial); // Pour récupérer le tableau lors du chargement de la vue suivante
-            return $this->redirectToRoute("creation-parties-eval");
+            return $this->redirectToRoute("creation_parties_eval");
         }
         return $this->render('evaluation/saisie_info_eval.html.twig', [
             'form' => $formEval->createView()
@@ -304,36 +304,59 @@ class EvaluationController extends AbstractController
     }
 
     /**
-     * @Route("/creation-parties", name="creation-parties-eval", methods={"GET","POST"})
+     * @Route("/creation-parties", name="creation_parties_eval", methods={"GET","POST"})
      */
     public function creationParties(Request $request): Response
     {
         $form = $this->createFormBuilder()
-            ->add('arbre', HiddenType::class, [
-                'data' => 'a'
-            ])
+            ->add('arbre', HiddenType::class) // Pour pouvoir stocker le tableau des parties et le récupérer lors de la validation
             ->getForm();
         $form->handleRequest($request);
-
         if($form->isSubmitted()) {
             $data = $form->getData();
-            $arbreParties = json_decode(urldecode($data['arbre'])); //Récupération des parties créées par l'utilisateur
+            $arbrePartiesRecupere = json_decode(urldecode($data['arbre'])); //Récupération des parties créées par l'utilisateur
+            $tableauParties = []; //Initialisation du tableau qui contiendra les parties
+            $this->definirPartiesDepuisTableauJS($request->getSession()->get('evaluation'), $arbrePartiesRecupere[0], $tableauParties);
+            $request->getSession()->set('parties', $tableauParties); //Mise en session des parties créées pour la suite
+            $this->redirectToRoute('saisie_notes_parties_eval');
         }
-        return $this->render('partie/arborescence.html.twig', [
+        return $this->render('evaluation/creation_arborescence_parties.html.twig', [
             'form' => $form->createView()
         ]);
     }
 
-    public function validerEntite ($entite, $validator) {
+    /**
+     * @Route("/saisies-notes-parties", name="saisie_notes_parties_eval", methods={"GET","POST"})
+     */
+    public function saisieNotesParties(Request $request): Response
+    {
+        return $this->render('evaluation/saisie_notes_parties.html.twig/', [
+        ]);
+    }
 
+    public function validerEntite ($entite, $validator) {
       //Utilisation de la méthode validate du validator pour valider l'entité selon les regles définies dans celle ci
       $errors = $validator->validate($entite);
-
       //Si erreur, retour d'un objet Response qui affichera les erreurs
       if (count($errors) > 0) {
           $errorsString = (string) $errors;
           return new Response($errorsString);
       }
+    }
+
+    //Cette fonction permet, à partir du tableau récupéré de la vue de création des parties, de remplir un tableau d'objets parties exploitable par la suite
+    public function definirPartiesDepuisTableauJS($evaluation, $partieCourante, &$tableauARemplir, $partieParent = null) {
+        $partie = new Partie();
+        $partie->setIntitule($partieCourante->nom);
+        $partie->setBareme($partieCourante->bareme);
+        $partie->setEvaluation($evaluation);
+        $partie->setParent($partieParent);
+        $tableauARemplir[] = $partie;
+        if(isset($partieCourante->nodes)) {
+            foreach ($partieCourante->nodes as $enfant) {
+                $this->definirPartiesDepuisTableauJS($evaluation, $enfant, $tableauARemplir, $partie);
+            }
+        }
     }
 
     /**

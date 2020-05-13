@@ -51,7 +51,7 @@ class PartieController extends AbstractController
         $form = $this->createForm(PartieType::class);
         $form->handleRequest($request);
 
-        return $this->render('partie/arborescence.html.twig', [
+        return $this->render('partie/creation_arborescence_parties.html.twig', [
             'form' => $form->createView()
         ]);
     }
