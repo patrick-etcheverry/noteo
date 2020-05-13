@@ -118,21 +118,15 @@
         }
 
         function onCreerPartie() {
-            //Récupération de la partie selectionnée par l'utilisateur
             var partieSelectionnee = $('#arbre_boot').treeview('getSelected');
-            //Si il a selectionné une partie on passe à la suite, sinon on affiche la modale expliquant le fonctionnement des fonctionnalités
             if (partieSelectionnee.length != 0) {
-                //Préparation du formulaire
-                $("#formPartie").unbind(); //Suppression des écouteurs d'évenements précédents pour éviter de créer une partie en plusieurs exemplaires
-                $('#champIntitule').val(''); //Vidage du champ
-                $('#champBareme').val(''); //Vidage du champ
-                //On affiche la modale du formulaire
+                $("#formPartie").unbind();
+                $('#champIntitule').val('');
+                $('#champBareme').val('');
                 $('#modalePartie').modal('show');
-                //On attend la soumission du formulaire
                 $("#formPartie").submit(function (e) {
                     e.preventDefault(); //Pour que la page ne se rafraichisse pas lors de la validation
-                    $('#modalePartie').modal('hide'); //Pour refermer la fenêtre modale
-                    //On lance la création avec les informations du formulaires
+                    $('#modalePartie').modal('hide');
                     ajouterUnePartie(partieSelectionnee[0].id, $('#champIntitule').val(), parseFloat($('#champBareme').val()));
                 })
             }
@@ -142,11 +136,9 @@
         }
 
         function onSupprimerPartie() {
-            //Récupération de la partie selectionnée par l'utilisateur
             var partieSelectionnee = $('#arbre_boot').treeview('getSelected');
-            //Si il a selectionné une partie on passe à la suite, sinon on affiche la modale expliquant le fonctionnement des fonctionnalités
             if (partieSelectionnee.length != 0) {
-                var parent = $('#arbre_boot').treeview('getParent', partieSelectionnee); //On recupère le parent d'où on va supprimer la partie selectionnée
+                var parent = $('#arbre_boot').treeview('getParent', partieSelectionnee);
                 supprimerUnePartie(parent.id, partieSelectionnee[0]);
             }
             else {
