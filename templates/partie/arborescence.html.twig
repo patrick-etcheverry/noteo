@@ -38,10 +38,10 @@
                 <button class="btn btn-primary" onclick="onCreerPartie()">Ajouter une partie</button>
             </div>
             <div style="text-align: center">
-                <button class="btn btn-primary" onclick="onSupprimerPartie()">Supprimer une partie</button>
+                <button id="boutonSupprimer" class="btn btn-primary" onclick="onSupprimerPartie()">Supprimer une partie</button>
             </div>
             <div style="text-align: center">
-                <button class="btn btn-primary" onclick="onModifierPartie()">Modifier une partie</button>
+                <button id="boutonModifier" class="btn btn-primary" onclick="onModifierPartie()">Modifier une partie</button>
             </div>
         </div>
         <div class="col-lg-4">
@@ -108,17 +108,7 @@
 
 {% block javascripts %}
     <script>
-        window.onload = InitialisationTableau();
-
-        //Initialisation du tableau
-        function InitialisationTableau(){
-            ajouterUnePartie(1, 'Exercice 1', 10); //2
-            ajouterUnePartie(2, 'Question 1', 5); //3
-            ajouterUnePartie(2, 'Question 2', 5); //4
-            ajouterUnePartie(1, 'Exercice 2', 10); //5
-            ajouterUnePartie(5, 'Question 1', 5); //6
-            ajouterUnePartie(5, 'Question 2', 5); //7
-        }
+        window.onload = chargerArbre();
 
         function onCreerPartie() {
             var partieSelectionnee = $('#arbre_boot').treeview('getSelected');
@@ -142,8 +132,10 @@
         function onSupprimerPartie() {
             var partieSelectionnee = $('#arbre_boot').treeview('getSelected');
             if (partieSelectionnee.length != 0) {
-                var parent = $('#arbre_boot').treeview('getParent', partieSelectionnee);
-                supprimerUnePartie(parent.id, partieSelectionnee[0]);
+                if (partieSelectionnee[0].id != 1) {
+                    var parent = $('#arbre_boot').treeview('getParent', partieSelectionnee);
+                    supprimerUnePartie(parent.id, partieSelectionnee[0]);
+                }
             }
             else {
                 $('#modalePasDePartieSelectionnee').modal();
@@ -153,16 +145,18 @@
         function onModifierPartie() {
             var partieSelectionnee = $('#arbre_boot').treeview('getSelected');
             if (partieSelectionnee.length != 0) {
-                $("#formPartie").unbind();
-                $('#titreModaleFormulaire').html("Modifier une partie")
-                $('#champIntitule').val(partieSelectionnee[0].nom);
-                $('#champBareme').val(partieSelectionnee[0].bareme);
-                $('#modalePartie').modal('show');
-                $("#formPartie").submit(function (e) {
-                    e.preventDefault(); //Pour que la page ne se rafraichisse pas lors de la validation
-                    $('#modalePartie').modal('hide');
-                    modifierUnePartie(partieSelectionnee[0].id, $('#champIntitule').val(), parseFloat($('#champBareme').val()));
-                })
+                if (partieSelectionnee[0].id != 1) {
+                    $("#formPartie").unbind();
+                    $('#titreModaleFormulaire').html("Modifier une partie")
+                    $('#champIntitule').val(partieSelectionnee[0].nom);
+                    $('#champBareme').val(partieSelectionnee[0].bareme);
+                    $('#modalePartie').modal('show');
+                    $("#formPartie").submit(function (e) {
+                        e.preventDefault(); //Pour que la page ne se rafraichisse pas lors de la validation
+                        $('#modalePartie').modal('hide');
+                        modifierUnePartie(partieSelectionnee[0].id, $('#champIntitule').val(), parseFloat($('#champBareme').val()));
+                    })
+                }
             }
             else {
                 $('#modalePasDePartieSelectionnee').modal();

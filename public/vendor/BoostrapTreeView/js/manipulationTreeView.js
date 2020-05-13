@@ -145,8 +145,29 @@ function checkBaremesArbre(partieCourante) {
 
 /*
 Cette fonction charge l'arbre affiché par la bibliothèque à partir des données des parties.
+Elle initialise également l'état des boutons de modification et suppression et ajoute des écouteurs d'évenements pour pouvoir les désactiver si on clique sur la partie racine
 */
 function chargerArbre() {
-    $('#arbre_boot').treeview({data: tree, showTags : true, expandIcon: 'fas fa-chevron-right blue', collapseIcon: 'fas fa-chevron-down blue', selectedBackColor: '#0275d8'});
+    $('#boutonModifier').unbind()
+    $('#boutonSupprimer').unbind()
+    $('#boutonModifier').prop('disabled', false)
+    $('#boutonSupprimer').prop('disabled', false)
+    $('#arbre_boot').treeview({
+        data: tree,
+        showTags : true,
+        expandIcon: 'fas fa-chevron-right blue',
+        collapseIcon: 'fas fa-chevron-down blue',
+        selectedBackColor: '#0275d8',
+        onNodeSelected: function(event, data) {
+            if(data.id == 1) {
+                $('#boutonModifier').prop('disabled', true)
+                $('#boutonSupprimer').prop('disabled', true)
+            }
+        },
+        onNodeUnselected: function(event, data) {
+            $('#boutonModifier').prop('disabled', false)
+            $('#boutonSupprimer').prop('disabled', false)
+        }
+    });
 }
 
