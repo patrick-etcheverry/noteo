@@ -40,6 +40,9 @@
             <div style="text-align: center">
                 <button class="btn btn-primary" onclick="onSupprimerPartie()">Supprimer une partie</button>
             </div>
+            <div style="text-align: center">
+                <button class="btn btn-primary" onclick="onModifierPartie()">Modifier une partie</button>
+            </div>
         </div>
         <div class="col-lg-4">
         </div>
@@ -49,7 +52,7 @@
         <div class="modal-dialog" role="document">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="exampleModalLabel">Créer une partie</h5>
+                    <h5 class="modal-title" id="titreModaleFormulaire">Créer une partie</h5>
                     <button class="close" type="button" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">x</span>
                     </button>
@@ -121,6 +124,7 @@
             var partieSelectionnee = $('#arbre_boot').treeview('getSelected');
             if (partieSelectionnee.length != 0) {
                 $("#formPartie").unbind();
+                $('#titreModaleFormulaire').html("Créer une partie")
                 $('#champIntitule').val('');
                 $('#champBareme').val('');
                 $('#modalePartie').modal('show');
@@ -140,6 +144,25 @@
             if (partieSelectionnee.length != 0) {
                 var parent = $('#arbre_boot').treeview('getParent', partieSelectionnee);
                 supprimerUnePartie(parent.id, partieSelectionnee[0]);
+            }
+            else {
+                $('#modalePasDePartieSelectionnee').modal();
+            }
+        }
+
+        function onModifierPartie() {
+            var partieSelectionnee = $('#arbre_boot').treeview('getSelected');
+            if (partieSelectionnee.length != 0) {
+                $("#formPartie").unbind();
+                $('#titreModaleFormulaire').html("Modifier une partie")
+                $('#champIntitule').val(partieSelectionnee[0].nom);
+                $('#champBareme').val(partieSelectionnee[0].bareme);
+                $('#modalePartie').modal('show');
+                $("#formPartie").submit(function (e) {
+                    e.preventDefault(); //Pour que la page ne se rafraichisse pas lors de la validation
+                    $('#modalePartie').modal('hide');
+                    modifierUnePartie(partieSelectionnee[0].id, $('#champIntitule').val(), parseFloat($('#champBareme').val()));
+                })
             }
             else {
                 $('#modalePasDePartieSelectionnee').modal();

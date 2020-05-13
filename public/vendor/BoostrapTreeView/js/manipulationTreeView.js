@@ -24,6 +24,7 @@ function actionViaRechercheRecursive(partieCourante, idPartieCherchee, partieSur
     if(partieCourante.id == idPartieCherchee){
         switch (action) {
             case "modifier" :
+                effectuerLaModificationDansLarbre(partieCourante, partieSurLaquelleAgir)
                 break;
             case "supprimer" :
                 effectuerLaSuppressionDansLarbre(partieCourante, partieSurLaquelleAgir);
@@ -87,6 +88,32 @@ Cette fonction sert à réaliser la suppression dans l'arbre à partir du parent
 function effectuerLaSuppressionDansLarbre(parent, partieASupprimer) {
     var positionDeLaPartieASupprimer = parent.nodes.findIndex(partie => partie.id == partieASupprimer.id);
     parent.nodes.splice(positionDeLaPartieASupprimer,1)
+    checkBaremesArbre(tree[0]);
+}
+
+/*
+Cette fonction sert à créer un tableau représentant les nouvelles informations d'une partie à modifier et à déclencher la recherche de l'ancienne pour remplacer les informations
+*/
+function modifierUnePartie(idPartie, nouveauNom, nouveauBareme) {
+    var nomAffiche = nouveauNom;
+    var partieModifiee = {
+        text: nomAffiche,
+        nom: nouveauNom,
+        bareme: nouveauBareme,
+        tags: ['/ '+ nouveauBareme],
+    }
+    actionViaRechercheRecursive(tree[0], idPartie, partieModifiee, "modifier");
+    chargerArbre();
+}
+
+/*
+Cette fonction sert à réaliser la suppression dans l'arbre à partir du parent d'une partie à supprimer
+*/
+function effectuerLaModificationDansLarbre(partie, nouvellesInfos) {
+    partie.text = nouvellesInfos.text;
+    partie.nom = nouvellesInfos.nom;
+    partie.bareme = nouvellesInfos.bareme;
+    partie.tags = nouvellesInfos.tags;
     checkBaremesArbre(tree[0]);
 }
 
