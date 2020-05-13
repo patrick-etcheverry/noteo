@@ -247,7 +247,6 @@ class EvaluationController extends AbstractController
             }
 
         }
-
         return $this->render('evaluation/new.html.twig', [
             'evaluation' => $evaluation,
             'form' => $form->createView(),
@@ -257,11 +256,38 @@ class EvaluationController extends AbstractController
     /**
      * @Route("/nouvelle-avec-parties/{slug}", name="evaluation_avec_parties_new", methods={"GET","POST"})
      */
-    public function newAvecParties(Request $request, GroupeEtudiant $groupeConcerne, ValidatorInterface $validator): Response
+    public function newAvecParties(Request $request, GroupeEtudiant $groupeConcerne): Response
     {
+        //Récupération des informations de l'évaluation
+        $formEval = $this->createFormBuilder()
+            ->add('nom', TextType::class,[
+                'constraints' => [
+                    new NotBlank,
+                    new Length(['max' => 255]),
+                    new Regex(['pattern' => '/[a-zA-Z0-9]/', 'message' => 'Le nom donné ne correspond pas aux critères demandés'])
+                ],
+                'help' => 'Le nom de l\'évaluation doit contenir au moins un chiffre ou une lettre'
+            ])
+            ->add('date', DateType::class, [
+                'widget' => 'single_text',
+                'constraints' => [new NotBlank, new Date]
+            ])
+            ->getForm()
+        ;
+        $formEval->handleRequest($request);
 
+        if($formEval->isSubmitted() && $formEval->isValid()) {
+            $data = $formEval->getData(); //Récupération des données du formulaire
+            $evaluation = new Evaluation();
+            $evaluation->setNom($data["nom"]);
+            $evaluation->setDate($data["date"]);
+            $evaluation->setEnseignant($this->getUser());
+            $evaluation->setGroupe($groupeConcerne);
 
-        return $this->render('partie/arborescence.html.twig', [
+        }
+
+        return $this->render('evaluation/saisie_info_eval.html.twig', [
+            'form' => $formEval->createView()
         ]);
     }
 
