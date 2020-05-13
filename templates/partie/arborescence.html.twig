@@ -39,10 +39,12 @@
             </div>
             <div id="arbre_boot">
             </div>
+            {{ form_start(form) }}
+            {{ form_widget(form.arbre) }}
             <div class='bouton' align=center>
                 <button class="d-sm-inline-block btn btn-sm btn-primary shadow-sm">Saisir les notes</button>
             </div>
-
+            {{ form_end(form) }}
         </div>
         <div class="col-lg-4">
         </div>
@@ -73,7 +75,7 @@
                     </table>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" onclick="onValider()" class="d-sm-inline-block btn btn-sm btn-primary shadow-sm">Valider</button>
+                    <button type="submit" class="d-sm-inline-block btn btn-sm btn-primary shadow-sm">Valider</button>
                 </div>
                 </form>
             </div>
@@ -110,6 +112,12 @@
     <script>
         var tree = [{{ app.session.get("arbre_json") | json_encode | raw }}] // Variable venant du serveur
         window.onload = chargerArbre();
+
+        //Cet écouteur d'évenement permet d'attendre la validation de création des parties puis de mettre le tableau encodé sous forme d'url dans le champ hidden du formulaire
+        // pour le passer coté serveur et le décoder ensuite
+        $("[name='form']").on('submit', function () {
+            $("[name='form[arbre]']").val(encodeURIComponent(JSON.stringify(tree)))
+        })
 
         function onCreerPartie() {
             var partieSelectionnee = $('#arbre_boot').treeview('getSelected');

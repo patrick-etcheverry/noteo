@@ -13,6 +13,7 @@ use App\Repository\PointsRepository;
 use App\Repository\EvaluationRepository;
 use App\Repository\GroupeEtudiantRepository;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
+use Symfony\Component\Form\Extension\Core\Type\HiddenType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\Extension\Core\Type\DateType;
 use Symfony\Component\Form\Extension\Core\Type\CollectionType;
@@ -307,7 +308,19 @@ class EvaluationController extends AbstractController
      */
     public function creationParties(Request $request): Response
     {
+        $form = $this->createFormBuilder()
+            ->add('arbre', HiddenType::class, [
+                'data' => 'a'
+            ])
+            ->getForm();
+        $form->handleRequest($request);
+
+        if($form->isSubmitted()) {
+            $data = $form->getData();
+            $arbreParties = json_decode(urldecode($data['arbre'])); //Récupération des parties créées par l'utilisateur
+        }
         return $this->render('partie/arborescence.html.twig', [
+            'form' => $form->createView()
         ]);
     }
 
