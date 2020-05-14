@@ -1,0 +1,34 @@
+{{form_start(form)}}
+
+<h1 class="h4 mb-0 text-gray-800">Sélectionner les évaluations pour lesquels vous souhaitez voir les statistiques</h1> <br>
+
+<div class="table-responsive table-hover">
+<table class="table" id= "sousGroupes">
+<thead>
+  <th></th>
+  <th>Nom</th>
+  <th>Date</th>
+  <th>Createur</th>
+</thead>
+<tbody>
+{% for eval in form.evals %}
+
+{# store index of the category in a variable #}
+{% set index = eval.vars.value %}
+
+{# get entity object from its index in the Categories Field #}
+{% set entity = form.evals.vars.choices[index].data %}
+<tr>
+        <td>{{form_widget(form.evals[index])}}</td>
+        <td>{{entity.nom}}</td>
+        <td>{{entity.date}}</td>
+        <td>{{entity.enseignant.prenom}} {{entity.enseignant.nom}}</td>
+</tr>
+{% endfor %}
+</tbody>
+</table>
+<div class='bouton' align=center>
+  <button class="d-sm-inline-block btn btn-sm btn-primary shadow-sm">Consulter les statistiques</button>
+</div>
+
+{{form_end(form)}}

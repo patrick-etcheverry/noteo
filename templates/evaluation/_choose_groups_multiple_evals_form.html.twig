@@ -1,0 +1,35 @@
+{{form_start(form)}}
+
+<h1 class="h4 mb-0 text-gray-800">Sélectionner le groupe pour lequel vous souhaitez voir les statistiques (vous pourrez choisir les sous groupes à l'étape suivante)</h1> <br>
+
+<div class="table-responsive table-hover">
+<table class="table" id= "sousGroupes">
+<thead>
+  <th></th>
+  <th>Nom</th>
+  <th>Effectif</th>
+  <th>Description</th>
+</thead>
+<tbody>
+{% for groupe in form.groupes %}
+
+{# store index of the category in a variable #}
+{% set index = groupe.vars.value %}
+
+{# get entity object from its index in the Categories Field #}
+{% set entity = form.groupes.vars.choices[index].data %}
+<tr>
+        <td>{{form_widget(form.groupes[index])}}</td>
+        <td>{{entity.nom}}</td>
+        <td>{{entity.etudiants.count}}</td>
+        <td>{{entity.description}}</td>
+</tr>
+{% endfor %}
+</tbody>
+</table>
+
+<div class='bouton' align=center>
+  <button class="d-sm-inline-block btn btn-sm btn-primary shadow-sm">Choisir les sous groupes</button>
+</div>
+
+{{form_end(form)}}
