@@ -21,6 +21,9 @@
             </tbody>
         </table>
     </div>
+    <div class='bouton' align=center>
+        <span style="font-size:15px" class="badge badge-pill badge-primary"><i class="icon-attention-circled"></i> Si un étudiant était absent à l'évaluation, saisissez -1. Sa note ne sera pas prise en compte pour les statistiques</span>
+    </div>
     {{ form_start(form)}}
     <br> <h1 class="h4 mb-0 text-gray-800">Modifier les notes des étudiants</h1> <br>
     <div class="table-responsive">
@@ -47,20 +50,9 @@
                         {% endfor %}
                         {% set premierFormulaireAAfficher = premierFormulaireAAfficher + parties | length %}
                         {% set dernierFormulaireAAfficher = (dernierFormulaireAAfficher + parties|length) %}
-                        <td>20</td>
+                        <td>0</td>
                     </tr>
                 {% endfor %}
-{#                #}{# Le tableau form.vars.value.notes contient la liste des entités notes passées en paramètre du formulaire dans le#}
-{#                   controlleur. On boucle dans ces valeurs pour afficher un étudiant et le formulaire de saisie de note qui lui correspond #}
-{#                {% for i in 0..(form.vars.value.notes|length-1) %}#}
-{#                    <tr>#}
-{#                        <td>{{form.vars.value.notes[i].etudiant.nom}}</td>#}
-{#                        <td>{{form.vars.value.notes[i].etudiant.prenom}}</td>#}
-{#                        {% for partie in parties %}#}
-{#                            <td>{{ form_errors(form.notes[i].valeur) }}{{form_widget(form.notes[i].valeur)}}</td>#}
-{#                        {% endfor %}#}
-{#                    </tr>#}
-{#                {% endfor %}#}
             {% endif %}
             </tbody>
         </table>
@@ -107,4 +99,12 @@
         });
     </script>
 
+{% endblock %}
+
+{% block javascripts %}
+    <script>
+        $( "input[type='text']" ).change(function() {
+           alert("dfzefze")
+        })
+    </script>
 {% endblock %}
