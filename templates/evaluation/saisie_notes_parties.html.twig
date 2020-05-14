@@ -31,22 +31,35 @@
             {% for partie in parties %}
                 <th>{{ partie.intitule }} (/{{ partie.bareme }})</th>
             {% endfor %}
+            <th>Note finale (/20)</th>
             </thead>
             <tbody>
-
             {% if form.vars.value.notes is not empty %}
-                {# Le tableau form.vars.value.notes contient la liste des entités notes passées en paramètre du formulaire dans le
-                   controlleur. On boucle dans ces valeurs pour afficher un étudiant et le formulaire de saisie de note qui lui correspond #}
-                {% for i in 0..(form.vars.value.notes|length-1) %}
+                {% set premierIndexAAfficher = 0 %}
+                {% set dernierIndexAAfficher = (premierIndexAAfficher + parties|length) -1  %}
+                {% for etudiant in etudiants %}
                     <tr>
-                        <td>{{form.vars.value.notes[i].etudiant.nom}}</td>
-                        <td>{{form.vars.value.notes[i].etudiant.prenom}}</td>
-                        {% for partie in parties %}
+                        <td>{{ etudiant.nom }}</td>
+                        <td>{{ etudiant.prenom }}</td>
+                        {% for i in premierIndexAAfficher..dernierIndexAAfficher %}
                             <td>{{ form_errors(form.notes[i].valeur) }}{{form_widget(form.notes[i].valeur)}}</td>
                         {% endfor %}
-
+                        {% set premierIndexAAfficher = premierIndexAAfficher + parties | length %}
+                        {% set dernierIndexAAfficher = (dernierIndexAAfficher + parties|length) %}
+                        <td></td>
                     </tr>
                 {% endfor %}
+{#                #}{# Le tableau form.vars.value.notes contient la liste des entités notes passées en paramètre du formulaire dans le#}
+{#                   controlleur. On boucle dans ces valeurs pour afficher un étudiant et le formulaire de saisie de note qui lui correspond #}
+{#                {% for i in 0..(form.vars.value.notes|length-1) %}#}
+{#                    <tr>#}
+{#                        <td>{{form.vars.value.notes[i].etudiant.nom}}</td>#}
+{#                        <td>{{form.vars.value.notes[i].etudiant.prenom}}</td>#}
+{#                        {% for partie in parties %}#}
+{#                            <td>{{ form_errors(form.notes[i].valeur) }}{{form_widget(form.notes[i].valeur)}}</td>#}
+{#                        {% endfor %}#}
+{#                    </tr>#}
+{#                {% endfor %}#}
             {% endif %}
             </tbody>
         </table>
@@ -64,6 +77,7 @@
     {% for partie in parties %}
         {% set tableauColonnes = tableauColonnes |merge([{orderable: false}]) %}
     {% endfor %}
+    {% set tableauColonnes = tableauColonnes|merge([{orderable: false}]) %}
 
     <script type="text/javascript">
         //Activation de Datatables sur le tableau d'ajout des étudiants

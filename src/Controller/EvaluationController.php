@@ -371,7 +371,8 @@ class EvaluationController extends AbstractController
         return $this->render('evaluation/saisie_notes_parties.html.twig', [
             'evaluation' => $eval,
             'form' => $form->createView(),
-            'parties' => $parties
+            'parties' => $parties,
+            'etudiants' => $etudiants
         ]);
     }
 
