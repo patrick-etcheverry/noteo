@@ -34,14 +34,14 @@ class AppFixtures extends Fixture
         $manager->persist($admin);
 
         //Compte enseignant jury
-        $yon = new Enseignant();
-        $yon->setPrenom('Yon');
-        $yon->setNom('Dourisboure');
-        $yon->setEmail('yon.dourisboure@iutbayonne.univ-pau.fr');
-        $yon->setRoles(['ROLE_USER']);
-        $yon->setPassword('$2y$14$jXvJE90xYv3D7JVQZSBq4.a7reAQa7gZRpqiRDkC0sXjDuGnrHsuy'); // yon_prof
-        $yon->setPreferenceNbElementsTableaux(30);
-        $manager->persist($yon);
+        $yann = new Enseignant();
+        $yann->setPrenom('Yann');
+        $yann->setNom('Carpentier');
+        $yann->setEmail('yann.carpentier@iutbayonne.univ-pau.fr');
+        $yann->setRoles(['ROLE_USER']);
+        $yann->setPassword('$2y$14$eecC8BxE2hUdovPKkStY6epSxnsHUS.V7TQhoARgHGwofz16VbGvu'); // yann_prof
+        $yann->setPreferenceNbElementsTableaux(30);
+        $manager->persist($yann);
 
         //Compte enseignant jury
         $marie = new Enseignant();
@@ -245,19 +245,33 @@ class AppFixtures extends Fixture
         $evalS2 = new Evaluation();
         $evalS2->setNom("M21 03 - Bases de la programmation orientée objets");
         $evalS2->setDate(new \DateTime('2020-03-13'));
-        $evalS2->setEnseignant($yon);
+        $evalS2->setEnseignant($yann);
         $evalS2->setGroupe($S2);
         $manager->persist($evalS2);
 
         ////////////PARTIES//////////////
         $partieS4 = new Partie();
-        $partieS4->setIntitule("");
+        $partieS4->setIntitule("Evaluation");
         $partieS4->setBareme(20);
         $partieS4->setEvaluation($evalS4);
         $manager->persist($partieS4);
 
+        $souspartie1 = new Partie();
+        $souspartie1->setIntitule("Exercice 1");
+        $souspartie1->setBareme(10);
+        $souspartie1->setEvaluation($evalS4);
+        $souspartie1->setParent($partieS4);
+        $manager->persist($souspartie1);
+
+        $souspartie2 = new Partie();
+        $souspartie2->setIntitule("Exercice 2");
+        $souspartie2->setBareme(10);
+        $souspartie2->setEvaluation($evalS4);
+        $souspartie2->setParent($partieS4);
+        $manager->persist($souspartie2);
+
         $partieS2 = new Partie();
-        $partieS2->setIntitule("");
+        $partieS2->setIntitule("Evaluation");
         $partieS2->setBareme(20);
         $partieS2->setEvaluation($evalS2);
         $manager->persist($partieS2);
@@ -386,8 +400,24 @@ class AppFixtures extends Fixture
             $manager->persist($etudiant);
 
             ////////////AJOUT DE POINTS A L'EVAL//////////////
+            $pointsExo1 =$faker->numberBetween($min = 0, $max = 10);
+            $pointsExo2 =$faker->numberBetween($min = 0, $max = 10);
+            $pointsTotal = $pointsExo1 + $pointsExo2;
+
             $pointsEtud = new Points();
-            $pointsEtud->setValeur($faker->numberBetween($min = 0, $max = 20));
+            $pointsEtud->setValeur($pointsExo1);
+            $pointsEtud->setEtudiant($etudiant);
+            $pointsEtud->setPartie($souspartie1);
+            $manager->persist($pointsEtud);
+
+            $pointsEtud = new Points();
+            $pointsEtud->setValeur($pointsExo2);
+            $pointsEtud->setEtudiant($etudiant);
+            $pointsEtud->setPartie($souspartie2);
+            $manager->persist($pointsEtud);
+
+            $pointsEtud = new Points();
+            $pointsEtud->setValeur($pointsTotal);
             $pointsEtud->setEtudiant($etudiant);
             $pointsEtud->setPartie($partieS4);
             $manager->persist($pointsEtud);
@@ -408,11 +438,28 @@ class AppFixtures extends Fixture
             $manager->persist($etudiant);
 
             ////////////AJOUT DE POINTS A L'EVAL//////////////
+            $pointsExo1 =$faker->numberBetween($min = 0, $max = 10);
+            $pointsExo2 =$faker->numberBetween($min = 0, $max = 10);
+            $pointsTotal = $pointsExo1 + $pointsExo2;
+
             $pointsEtud = new Points();
-            $pointsEtud->setValeur($faker->numberBetween($min = 0, $max = 20));
+            $pointsEtud->setValeur($pointsExo1);
+            $pointsEtud->setEtudiant($etudiant);
+            $pointsEtud->setPartie($souspartie1);
+            $manager->persist($pointsEtud);
+
+            $pointsEtud = new Points();
+            $pointsEtud->setValeur($pointsExo2);
+            $pointsEtud->setEtudiant($etudiant);
+            $pointsEtud->setPartie($souspartie2);
+            $manager->persist($pointsEtud);
+            $pointsEtud = new Points();
+            $pointsEtud->setValeur($pointsTotal);
             $pointsEtud->setEtudiant($etudiant);
             $pointsEtud->setPartie($partieS4);
             $manager->persist($pointsEtud);
+
+
         }
 
         ////////////ETUDIANTS TP1 PEL S4//////////////
