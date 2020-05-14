@@ -35,18 +35,19 @@
             </thead>
             <tbody>
             {% if form.vars.value.notes is not empty %}
-                {% set premierIndexAAfficher = 0 %}
-                {% set dernierIndexAAfficher = (premierIndexAAfficher + parties|length) -1  %}
+                {% set premierFormulaireAAfficher = 0 %}
+                {% set dernierFormulaireAAfficher = (premierFormulaireAAfficher + parties|length) -1  %}
                 {% for etudiant in etudiants %}
                     <tr>
                         <td>{{ etudiant.nom }}</td>
                         <td>{{ etudiant.prenom }}</td>
-                        {% for i in premierIndexAAfficher..dernierIndexAAfficher %}
+                        {# Pour chaque étudiant, on affiche x formulaires pour saisir les notes (x étant le nombre de parties) #}
+                        {% for i in premierFormulaireAAfficher..dernierFormulaireAAfficher %}
                             <td>{{ form_errors(form.notes[i].valeur) }}{{form_widget(form.notes[i].valeur)}}</td>
                         {% endfor %}
-                        {% set premierIndexAAfficher = premierIndexAAfficher + parties | length %}
-                        {% set dernierIndexAAfficher = (dernierIndexAAfficher + parties|length) %}
-                        <td></td>
+                        {% set premierFormulaireAAfficher = premierFormulaireAAfficher + parties | length %}
+                        {% set dernierFormulaireAAfficher = (dernierFormulaireAAfficher + parties|length) %}
+                        <td>20</td>
                     </tr>
                 {% endfor %}
 {#                #}{# Le tableau form.vars.value.notes contient la liste des entités notes passées en paramètre du formulaire dans le#}
