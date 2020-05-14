@@ -34,7 +34,6 @@
             {% for partie in parties %}
                 <th>{{ partie.intitule }} (/{{ partie.bareme }})</th>
             {% endfor %}
-            <th>Note finale (/20)</th>
             </thead>
             <tbody>
             {% if form.vars.value.notes is not empty %}
@@ -50,7 +49,6 @@
                         {% endfor %}
                         {% set premierFormulaireAAfficher = premierFormulaireAAfficher + parties | length %}
                         {% set dernierFormulaireAAfficher = (dernierFormulaireAAfficher + parties|length) %}
-                        <td>0</td>
                     </tr>
                 {% endfor %}
             {% endif %}
@@ -70,7 +68,6 @@
     {% for partie in parties %}
         {% set tableauColonnes = tableauColonnes |merge([{orderable: false}]) %}
     {% endfor %}
-    {% set tableauColonnes = tableauColonnes|merge([{orderable: false}]) %}
 
     <script type="text/javascript">
         //Activation de Datatables sur le tableau d'ajout des étudiants
@@ -108,10 +105,23 @@
         $( "input[type='text']" ).change(function() {
             elementsAEtudier = $(this).parent().parent().children(); //On récupère tous les td de la ligne
             totalPts = 0;
-            elementsAEtudier.each(function () {
-                //Si le td a un enfant (ici un input)
-                if(this.children[0] != undefined) {
-                    pointsARajouter =  parseFloat(this.children[0].value);
+            // elementsAEtudier.each(function () {
+            //     //Si le td a un enfant (ici un input)
+            //     if( )
+            //     if(this.children[0] != undefined) {
+            //         pointsARajouter =  parseFloat(this.children[0].value);
+            //         //On teste si la valeur rentrée n'est pas composée de caractères
+            //         if (!isNaN(pointsARajouter)) {
+            //             if(pointsARajouter != -1) {
+            //                 totalPts += pointsARajouter;
+            //             }
+            //         }
+            //     }
+            // })
+            if(elementsAEtudier.length > 3) {
+                //On étudie pas les deux premiers td (nom et prénom de l'étudiant) ni le dernier (qui contiendra la note mise à jour)
+                for (var i = 2; i<= elementsAEtudier.length - 2; i++) {
+                    pointsARajouter = parseFloat(elementsAEtudier[i].children[elementsAEtudier[i].children.length-1].value);
                     //On teste si la valeur rentrée n'est pas composée de caractères
                     if (!isNaN(pointsARajouter)) {
                         if(pointsARajouter != -1) {
@@ -119,19 +129,10 @@
                         }
                     }
                 }
-            })
-            //Mise à jour du total
-            if(totalPts > 20) {
-                //Si total > 20 : message d'erreur
-                elementsAEtudier.last().css('color', 'red')
-                elementsAEtudier.last().html(totalPts + '<i class="icon-attention-circled"></i>')
-                console.log(elementsAEtudier.last().style.background)
+                //Mise à jour du total
+                elementsAEtudier[elementsAEtudier.length-1].children[elementsAEtudier[i].children.length-1].value = totalPts
             }
-            else {
-                //Sinon affichage normal
-                elementsAEtudier.last().css('color', '')
-                elementsAEtudier.last().html(totalPts)
-            }
+            console.log(totalPts)
         })
     </script>
 {% endblock %}

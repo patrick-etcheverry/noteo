@@ -323,6 +323,12 @@ class EvaluationController extends AbstractController
             $arbrePartiesRecupere = json_decode(urldecode($data['arbre'])); //Récupération des parties créées par l'utilisateur
             $tableauParties = []; //Initialisation du tableau qui contiendra les parties
             $this->definirPartiesDepuisTableauJS($request->getSession()->get('evaluation'), $arbrePartiesRecupere[0], $tableauParties);
+            //On déplace la première partie (celle représentant la note à l'évaluation) à la fin du tableau des parties pour saisir sa note en dernier
+            if(count($tableauParties) > 1) {
+                $temp = $tableauParties[0];
+                unset($tableauParties[0]);
+                array_push($tableauParties, $temp);
+            }
             $request->getSession()->set('parties', $tableauParties); //Mise en session des parties créées pour la suite
             return $this->redirectToRoute('saisie_notes_parties_eval');
         }
