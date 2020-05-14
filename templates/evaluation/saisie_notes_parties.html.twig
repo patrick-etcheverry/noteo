@@ -105,19 +105,7 @@
         $( "input[type='text']" ).change(function() {
             elementsAEtudier = $(this).parent().parent().children(); //On récupère tous les td de la ligne
             totalPts = 0;
-            // elementsAEtudier.each(function () {
-            //     //Si le td a un enfant (ici un input)
-            //     if( )
-            //     if(this.children[0] != undefined) {
-            //         pointsARajouter =  parseFloat(this.children[0].value);
-            //         //On teste si la valeur rentrée n'est pas composée de caractères
-            //         if (!isNaN(pointsARajouter)) {
-            //             if(pointsARajouter != -1) {
-            //                 totalPts += pointsARajouter;
-            //             }
-            //         }
-            //     }
-            // })
+            //Si il y a plus d'une partie à saisir
             if(elementsAEtudier.length > 3) {
                 //On étudie pas les deux premiers td (nom et prénom de l'étudiant) ni le dernier (qui contiendra la note mise à jour)
                 for (var i = 2; i<= elementsAEtudier.length - 2; i++) {
@@ -130,7 +118,7 @@
                     }
                 }
                 //Mise à jour du total
-                elementsAEtudier[elementsAEtudier.length-1].children[elementsAEtudier[i].children.length-1].value = totalPts
+                elementsAEtudier[elementsAEtudier.length-1].children[elementsAEtudier[elementsAEtudier.length-1].children.length-1].value = totalPts
             }
             console.log(totalPts)
         })
