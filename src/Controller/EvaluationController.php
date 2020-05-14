@@ -410,13 +410,11 @@ class EvaluationController extends AbstractController
                     $notes[$j]->setPartie($parties[$partieCourante]);
                     $entityManager->persist($notes[$j]);
                     $partieCourante++;
-                    echo $j . "<br>";
                 }
                 //Préparation du tout suivant
                 $premierIndexaTraiter = $dernierIndexATraiter + 1;
                 $dernierIndexATraiter = $dernierIndexATraiter + $intervalle;
             }
-
             //Validation des modifications et libération de la place en mémoire des variables
             $entityManager->flush();
             $request->getSession()->set('evaluation','');
