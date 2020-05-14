@@ -22,6 +22,7 @@ class Points
      * @Assert\Type(type="float", message = "La note doit être un nombre, eventuellement à virgule")
      * @Assert\LessThanOrEqual(20)
      * @Assert\GreaterThanOrEqual(-1)
+     * @Assert\NotBlank()
      */
     private $valeur;
 

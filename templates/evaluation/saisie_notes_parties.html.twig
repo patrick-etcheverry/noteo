@@ -1,0 +1,126 @@
+{% extends 'base.html.twig' %}
+
+{% block titrePage %}Saisir les notes pour {{ app.session.get('evaluation').nom }}{% endblock %}
+
+{% block evaluations %}active{% endblock %}
+
+{% block show %}show{% endblock %}
+
+{% block contenu %}
+    <div class="table-responsive">
+        <table class="table">
+            <tbody>
+            <tr>
+                <th class="intitule">Date de l'évaluation</th>
+                <td >{{ evaluation.date }}</td>
+            </tr>
+            <tr>
+                <th class="intitule">Groupe évalué</th>
+                <td >{{ evaluation.groupe.nom }}</td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+    <div class='bouton' align=center>
+        <span style="font-size:15px" class="badge badge-pill badge-primary"><i class="icon-attention-circled"></i> Si un étudiant était absent à l'évaluation, saisissez -1. Ses notes ne seront pas prises en compte pour les statistiques</span>
+    </div>
+    {{ form_start(form)}}
+    <br> <h1 class="h4 mb-0 text-gray-800">Modifier les notes des étudiants</h1> <br>
+    <div class="table-responsive">
+        <table class="table table-hover" id="etudiants">
+            <thead>
+            <th>Nom</th>
+            <th>Prénom</th>
+            {% for partie in parties %}
+                <th>{{ partie.intitule }} (/{{ partie.bareme }})</th>
+            {% endfor %}
+            </thead>
+            <tbody>
+            {% if form.vars.value.notes is not empty %}
+                {% set premierFormulaireAAfficher = 0 %}
+                {% set dernierFormulaireAAfficher = (premierFormulaireAAfficher + parties|length) -1  %}
+                {% for etudiant in etudiants %}
+                    <tr>
+                        <td>{{ etudiant.nom }}</td>
+                        <td>{{ etudiant.prenom }}</td>
+                        {# Pour chaque étudiant, on affiche x formulaires pour saisir les notes (x étant le nombre de parties) #}
+                        {% for i in premierFormulaireAAfficher..dernierFormulaireAAfficher %}
+                            <td>{{ form_errors(form.notes[i].valeur) }}{{form_widget(form.notes[i].valeur)}}</td>
+                        {% endfor %}
+                        {% set premierFormulaireAAfficher = premierFormulaireAAfficher + parties | length %}
+                        {% set dernierFormulaireAAfficher = (dernierFormulaireAAfficher + parties|length) %}
+                    </tr>
+                {% endfor %}
+            {% endif %}
+            </tbody>
+        </table>
+    </div>
+    <div class='bouton' align=center>
+        <a href="{{ path('evaluation_enseignant') }}" class="d-sm-inline-block btn btn-sm btn-secondary shadow-sm">Annuler</a>
+        <button class="d-sm-inline-block btn btn-sm btn-primary shadow-sm">{{ button_label|default('Enregistrer') }}</button>
+    </div>
+    {{ form_end(form)}}
+{% endblock %}
+
+{% block datatables %}
+    {#  Définition dynamique en fonction du nombre de parties d'un tableau qui permet à Datatables de déterminer si les colonnes sont triables ou non #}
+    {% set tableauColonnes = [null,null] %}
+    {% for partie in parties %}
+        {% set tableauColonnes = tableauColonnes |merge([{orderable: false}]) %}
+    {% endfor %}
+
+    <script type="text/javascript">
+        //Activation de Datatables sur le tableau d'ajout des étudiants
+        var table = $('#etudiants').DataTable({
+            language: {
+                // Suppression du label Rechercher et ajout du placeholder
+                search: "_INPUT_",
+                searchPlaceholder: "Rechercher...",
+                "url": "{{asset('tradfr.json')}}"
+            },
+            order: [
+                [0, "asc"]
+            ],
+            columns: {{ tableauColonnes | json_encode | raw }},
+            lengthMenu: [
+                [15, 30, 45, -1],
+                [15, 30, 45, "Tout"]
+            ],
+            pageLength : {{ app.user.preferenceNbElementsTableaux }}, <!-- Pour que le nombre d'éléments affichés par défaut soit celui de la préference de l'utilisateur -->
+            info: false,
+        });
+
+        //La fonction sera enclenchée lors de la soumission du formulaire
+        $("[name='form']").on('submit', function () {
+            table.rows().nodes().page.len(-1).draw(); // Cette fonction permet, avant la soumission du formulaire, d'afficher dans le DOM toutes les lignes du tableau pour qu'aucune ne soit ignorée
+        });
+    </script>
+
+{% endblock %}
+
+{% block javascripts %}
+    <script>
+        //Cet écouteur d'évenement va attendre qu'un champ input text de la page soit changé.
+        //Quand ce sera le cas, il va mettre à jour le total de la ligne correspondante
+        $( "input[type='text']" ).change(function() {
+            elementsAEtudier = $(this).parent().parent().children(); //On récupère tous les td de la ligne
+            totalPts = 0;
+            //Si il y a plus d'une partie à saisir
+            if(elementsAEtudier.length > 3) {
+                //On étudie pas les deux premiers td (nom et prénom de l'étudiant) ni le dernier (qui contiendra la note mise à jour)
+                for (var i = 2; i<= elementsAEtudier.length - 2; i++) {
+                    pointsARajouter = parseFloat(elementsAEtudier[i].children[elementsAEtudier[i].children.length-1].value);
+                    //On teste si la valeur rentrée n'est pas composée de caractères
+                    if (!isNaN(pointsARajouter)) {
+                        if(pointsARajouter != -1) {
+                            totalPts += pointsARajouter;
+                        }
+                    }
+                }
+                //Mise à jour du total
+                elementsAEtudier[elementsAEtudier.length-1].children[elementsAEtudier[elementsAEtudier.length-1].children.length-1].value = totalPts
+            }
+            console.log(totalPts)
+        })
+    </script>
+{% endblock %}
