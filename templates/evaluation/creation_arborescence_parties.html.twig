@@ -132,14 +132,7 @@
 {% block javascripts %}
     <script>
         var tree = [{{ app.session.get("arbre_json") | json_encode | raw }}] // Variable venant du serveur
-        window.onload = function() {
-            ajouterUnePartie(1, "Exercice 1", 10); //2
-            ajouterUnePartie(2, "Question 1", 5); //3
-            ajouterUnePartie(2, "Question 2", 5); //4
-            ajouterUnePartie(1, "Exercice 2", 10); //5
-            ajouterUnePartie(5, "Question 3", 5); //6
-            ajouterUnePartie(5, "Question 4", 5); //7
-        };
+        window.onload = chargerArbre();
 
         //Cet écouteur d'évenement permet d'attendre la validation de création des parties puis de mettre le tableau encodé sous forme d'url dans le champ hidden du formulaire
         // pour le passer coté serveur et le décoder ensuite

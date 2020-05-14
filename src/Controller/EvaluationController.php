@@ -398,7 +398,7 @@ class EvaluationController extends AbstractController
             //On va devoir recréer les liens entre les entités points et les parties et étudiant. On parcours alors les entités points avec un intervalle égal au nombre de parties.
             //Si x est le nombre de parties, on sait que les xèmes premières correspondent à un étudiant, les x suivantes à un autre, et ainsi de suite
             $intervalle =count($parties);
-            $nbEtudiants = count($evaluation->getGroupe()->getEtudiants()) -1;
+            $nbEtudiants = count($evaluation->getGroupe()->getEtudiants());
             //Initialisiation du parcours
             $premierIndexaTraiter = 0;
             $dernierIndexATraiter = $intervalle -1;
@@ -417,10 +417,7 @@ class EvaluationController extends AbstractController
             }
             //Validation des modifications et libération de la place en mémoire des variables
             $entityManager->flush();
-            $request->getSession()->set('evaluation','');
-            $request->getSession()->set('parties', '');
-            $request->getSession()->set('arbre_json', '');
-            $request->getSession()->set('etudiants', '');
+            return $this->redirectToRoute('evaluation_enseignant');
         }
         return $this->render('evaluation/saisie_notes_parties.html.twig', [
             'evaluation' => $eval,
