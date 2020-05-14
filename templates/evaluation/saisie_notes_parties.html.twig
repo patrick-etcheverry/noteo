@@ -21,6 +21,9 @@
             </tbody>
         </table>
     </div>
+    <div class='bouton' align=center>
+        <span style="font-size:15px" class="badge badge-pill badge-primary"><i class="icon-attention-circled"></i> Si un étudiant était absent à l'évaluation, saisissez -1. Ses notes ne seront pas prises en compte pour les statistiques</span>
+    </div>
     {{ form_start(form)}}
     <br> <h1 class="h4 mb-0 text-gray-800">Modifier les notes des étudiants</h1> <br>
     <div class="table-responsive">
@@ -31,7 +34,6 @@
             {% for partie in parties %}
                 <th>{{ partie.intitule }} (/{{ partie.bareme }})</th>
             {% endfor %}
-            <th>Note finale (/20)</th>
             </thead>
             <tbody>
             {% if form.vars.value.notes is not empty %}
@@ -47,20 +49,8 @@
                         {% endfor %}
                         {% set premierFormulaireAAfficher = premierFormulaireAAfficher + parties | length %}
                         {% set dernierFormulaireAAfficher = (dernierFormulaireAAfficher + parties|length) %}
-                        <td>20</td>
                     </tr>
                 {% endfor %}
-{#                #}{# Le tableau form.vars.value.notes contient la liste des entités notes passées en paramètre du formulaire dans le#}
-{#                   controlleur. On boucle dans ces valeurs pour afficher un étudiant et le formulaire de saisie de note qui lui correspond #}
-{#                {% for i in 0..(form.vars.value.notes|length-1) %}#}
-{#                    <tr>#}
-{#                        <td>{{form.vars.value.notes[i].etudiant.nom}}</td>#}
-{#                        <td>{{form.vars.value.notes[i].etudiant.prenom}}</td>#}
-{#                        {% for partie in parties %}#}
-{#                            <td>{{ form_errors(form.notes[i].valeur) }}{{form_widget(form.notes[i].valeur)}}</td>#}
-{#                        {% endfor %}#}
-{#                    </tr>#}
-{#                {% endfor %}#}
             {% endif %}
             </tbody>
         </table>
@@ -78,7 +68,6 @@
     {% for partie in parties %}
         {% set tableauColonnes = tableauColonnes |merge([{orderable: false}]) %}
     {% endfor %}
-    {% set tableauColonnes = tableauColonnes|merge([{orderable: false}]) %}
 
     <script type="text/javascript">
         //Activation de Datatables sur le tableau d'ajout des étudiants
@@ -107,4 +96,31 @@
         });
     </script>
 
+{% endblock %}
+
+{% block javascripts %}
+    <script>
+        //Cet écouteur d'évenement va attendre qu'un champ input text de la page soit changé.
+        //Quand ce sera le cas, il va mettre à jour le total de la ligne correspondante
+        $( "input[type='text']" ).change(function() {
+            elementsAEtudier = $(this).parent().parent().children(); //On récupère tous les td de la ligne
+            totalPts = 0;
+            //Si il y a plus d'une partie à saisir
+            if(elementsAEtudier.length > 3) {
+                //On étudie pas les deux premiers td (nom et prénom de l'étudiant) ni le dernier (qui contiendra la note mise à jour)
+                for (var i = 2; i<= elementsAEtudier.length - 2; i++) {
+                    pointsARajouter = parseFloat(elementsAEtudier[i].children[elementsAEtudier[i].children.length-1].value);
+                    //On teste si la valeur rentrée n'est pas composée de caractères
+                    if (!isNaN(pointsARajouter)) {
+                        if(pointsARajouter != -1) {
+                            totalPts += pointsARajouter;
+                        }
+                    }
+                }
+                //Mise à jour du total
+                elementsAEtudier[elementsAEtudier.length-1].children[elementsAEtudier[elementsAEtudier.length-1].children.length-1].value = totalPts
+            }
+            console.log(totalPts)
+        })
+    </script>
 {% endblock %}

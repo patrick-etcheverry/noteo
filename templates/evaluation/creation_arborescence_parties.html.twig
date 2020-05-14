@@ -41,12 +41,9 @@
             </div>
             <div id="arbre_boot">
             </div>
-            {{ form_start(form) }}
-            {{ form_widget(form.arbre) }}
             <div class='bouton' align=center>
-                <button class="d-sm-inline-block btn btn-sm btn-primary shadow-sm">Saisir les notes</button>
+                <button onclick='$("#modaleValidationCreation").modal()' class="d-sm-inline-block btn btn-sm btn-primary shadow-sm">Saisir les notes</button>
             </div>
-            {{ form_end(form) }}
         </div>
         <div class="col-lg-4">
         </div>
@@ -104,6 +101,28 @@
                 </div>
                 <div class="modal-footer">
                     <button class="d-sm-inline-block btn btn-sm btn-primary" type="button" data-dismiss="modal">Ok</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="modaleValidationCreation" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                        <h5 class="modal-title">Attention</h5>
+                    <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">x</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    Une fois l'évaluation créée, vous ne pourrez plus modifier ses parties. Êtes-vous sûr de vouloir créer ces parties ?
+                </div>
+                <div class="modal-footer">
+                    {{ form_start(form) }}
+                    {{ form_widget(form.arbre) }}
+                        <button class="d-sm-inline-block btn btn-sm btn-primary">Valider et saisir les notes</button>
+                    {{ form_end(form) }}
                 </div>
             </div>
         </div>
