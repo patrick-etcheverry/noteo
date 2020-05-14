@@ -1,8 +1,10 @@
 {% extends 'base.html.twig' %}
 
-{% block titrePage %}Créer des parties{% endblock %}
+{% block titrePage %}Créer des parties pour {{ app.session.get('evaluation').nom }}{% endblock %}
 
 {% block evaluations %}active{% endblock %}
+
+{% block show %}show{% endblock %}
 
 {% block stylesheets %}
     <style>
@@ -27,22 +29,24 @@
 {% endblock %}
 
 {% block contenu %}
+    <h1 class="h4 mb-0 text-gray-800">Selectionnez une partie pour ajouter une sous-partie, modifier une partie, ou supprimer une partie</h1> <br>
     <div class="row">
         <div class="col-lg-4">
         </div>
         <div class="col-lg-4">
+            <div class='bouton' align=center>
+                <button class="btn btn-success" onclick="onCreerPartie()" title="Créer une sous-partie" data-toggle="tooltip"><i class="icon-plus"></i></button>
+                <button id="boutonModifier" class="btn btn-primary" onclick="onModifierPartie()" title="Modifier une partie" data-toggle="tooltip"><i class="icon-pencil-1"></i> </button>
+                <button id="boutonSupprimer" class="btn btn-danger" onclick="onSupprimerPartie()" title="Supprimer une partie" data-toggle="tooltip"><i class="icon-trash"></i> </button>
+            </div>
             <div id="arbre_boot">
             </div>
-            <br>
-            <div style="text-align: center">
-                <button class="btn btn-primary" onclick="onCreerPartie()">Ajouter une partie</button>
+            {{ form_start(form) }}
+            {{ form_widget(form.arbre) }}
+            <div class='bouton' align=center>
+                <button class="d-sm-inline-block btn btn-sm btn-primary shadow-sm">Saisir les notes</button>
             </div>
-            <div style="text-align: center">
-                <button id="boutonSupprimer" class="btn btn-primary" onclick="onSupprimerPartie()">Supprimer une partie</button>
-            </div>
-            <div style="text-align: center">
-                <button id="boutonModifier" class="btn btn-primary" onclick="onModifierPartie()">Modifier une partie</button>
-            </div>
+            {{ form_end(form) }}
         </div>
         <div class="col-lg-4">
         </div>
@@ -108,7 +112,21 @@
 
 {% block javascripts %}
     <script>
-        window.onload = chargerArbre();
+        var tree = [{{ app.session.get("arbre_json") | json_encode | raw }}] // Variable venant du serveur
+        window.onload = function() {
+            ajouterUnePartie(1, "Exercice 1", 10); //2
+            ajouterUnePartie(2, "Question 1", 5); //3
+            ajouterUnePartie(2, "Question 2", 5); //4
+            ajouterUnePartie(1, "Exercice 2", 10); //5
+            ajouterUnePartie(5, "Question 3", 5); //6
+            ajouterUnePartie(5, "Question 4", 5); //7
+        };
+
+        //Cet écouteur d'évenement permet d'attendre la validation de création des parties puis de mettre le tableau encodé sous forme d'url dans le champ hidden du formulaire
+        // pour le passer coté serveur et le décoder ensuite
+        $("[name='form']").on('submit', function () {
+            $("[name='form[arbre]']").val(encodeURIComponent(JSON.stringify(tree)))
+        })
 
         function onCreerPartie() {
             var partieSelectionnee = $('#arbre_boot').treeview('getSelected');
