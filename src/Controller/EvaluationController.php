@@ -282,7 +282,6 @@ class EvaluationController extends AbstractController
             $evaluation = new Evaluation();
             $evaluation->setNom($data["nom"]);
             $evaluation->setDate($data["date"]);
-            $evaluation->setEnseignant($this->getUser());
             $evaluation->setGroupe($groupeConcerne);
 
             $tabEtudiants = []; //Ce tableau contient tous les étudiants concernés par l'évaluation, pour pouvoir créer les points plus tard
@@ -290,7 +289,7 @@ class EvaluationController extends AbstractController
                 $tabEtudiants[] = $etudiant;
             }
 
-            $arbreInitial = [ // tableau qui sera utilisé dans la création des parties à la page suivante
+            $arbreInitial = [ // tableau qui sera utilisé pour initialiser la création des parties à la page suivante
                 'id' => 1,
                 'text' => 'Evaluation',
                 'nom' => 'Evaluation',
@@ -301,7 +300,7 @@ class EvaluationController extends AbstractController
 
             $request->getSession()->set('evaluation',$evaluation); // Mise en session de l'objet évaluation créé pour le transporter entre les méthodes
             $request->getSession()->set('arbre_json',$arbreInitial); // Pour récupérer le tableau lors du chargement de la vue suivante
-            $request->getSession()->set('etudiants', $tabEtudiants); // Le groupe concerné par l'évaluation
+            $request->getSession()->set('etudiants', $tabEtudiants); // Les étudiants concernés par l'évaluation
             return $this->redirectToRoute("creation_parties_eval");
         }
         return $this->render('evaluation/saisie_info_eval.html.twig', [
@@ -340,7 +339,7 @@ class EvaluationController extends AbstractController
     /**
      * @Route("/saisie-notes-parties", name="saisie_notes_parties_eval", methods={"GET","POST"})
      */
-    public function saisieNotesParties(Request $request): Response
+    public function saisieNotesParties(Request $request, GroupeEtudiantRepository $repoGroupe): Response
     {
         //Récupération de l'évaluation créée au départ et des parties créées précédemment
         $eval = $request->getSession()->get('evaluation');
@@ -368,9 +367,62 @@ class EvaluationController extends AbstractController
                                                   //passées en paramètre du formulaire)
             ])
             ->getForm();
-        $form->handleRequest($request);
-        if($form->isSubmitted()) {
 
+        $form->handleRequest($request);
+
+        if($form->isSubmitted()) {
+            //récupération des données
+            $data = $form->getData();
+            $notes = $data['notes'];
+            $evaluation = $request->getSession()->get('evaluation');
+            $parties = $request->getSession()->get('parties');
+            $entityManager = $this->getDoctrine()->getManager();
+//            //Pour que le manager puisse les créer en base de données, on va devoir repréciser les liens entre les entités créées précédemment (parties, points, étudiants, évaluation, enseignant).
+//            //En l'état actuel le manager va penser que toutes les entités sont à persister. Par exemple evaluation->getEnseignant() : Le manager va essayer de persister un nouvel enseignant avec
+//            //cette entité ce qui va causer une erreur car elle exister déjà
+//            //Liens pour évaluation
+            $evaluation->setEnseignant($this->getUser());
+            $evaluation->setGroupe($repoGroupe->findOneById($evaluation->getGroupe()->getId()));
+            $entityManager->persist($evaluation);
+
+            //Persistence des parties
+            foreach ($parties as $partie) {
+                $partie->setEvaluation($evaluation);
+                $entityManager->persist($partie);
+            }
+
+            //On replace la partie représentant l'évaluation au début du tableau des parties
+            $partieEvaluation = array_pop($parties);
+            array_unshift($parties, $partieEvaluation);
+
+            //On va devoir recréer les liens entre les entités points et les parties et étudiant. On parcours alors les entités points avec un intervalle égal au nombre de parties.
+            //Si x est le nombre de parties, on sait que les xèmes premières correspondent à un étudiant, les x suivantes à un autre, et ainsi de suite
+            $intervalle =count($parties);
+            $nbEtudiants = count($evaluation->getGroupe()->getEtudiants()) -1;
+            //Initialisiation du parcours
+            $premierIndexaTraiter = 0;
+            $dernierIndexATraiter = $intervalle -1;
+            //Parcours
+            for($i = 0; $i < $nbEtudiants ; $i++ ) {
+                $partieCourante = 0;
+                for($j = $premierIndexaTraiter; $j <= $dernierIndexATraiter ; $j++ ) {
+                    $notes[$j]->setEtudiant($evaluation->getGroupe()->getEtudiants()[$i]);
+                    $notes[$j]->setPartie($parties[$partieCourante]);
+                    $entityManager->persist($notes[$j]);
+                    $partieCourante++;
+                    echo $j . "<br>";
+                }
+                //Préparation du tout suivant
+                $premierIndexaTraiter = $dernierIndexATraiter + 1;
+                $dernierIndexATraiter = $dernierIndexATraiter + $intervalle;
+            }
+
+            //Validation des modifications et libération de la place en mémoire des variables
+            $entityManager->flush();
+            $request->getSession()->set('evaluation','');
+            $request->getSession()->set('parties', '');
+            $request->getSession()->set('arbre_json', '');
+            $request->getSession()->set('etudiants', '');
         }
         return $this->render('evaluation/saisie_notes_parties.html.twig', [
             'evaluation' => $eval,
@@ -505,11 +557,8 @@ class EvaluationController extends AbstractController
           foreach ($partie->getNotes() as $note) {
             $entityManager->remove($note);
           }
-
           $entityManager->remove($partie);
-
         }
-
         $entityManager->remove($evaluation);
         $entityManager->flush();
 

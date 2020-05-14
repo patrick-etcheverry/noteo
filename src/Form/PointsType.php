@@ -15,7 +15,7 @@ class PointsType extends AbstractType
     {
         $builder
             ->add('valeur', NumberType::class, [
-              'required'  => false
+              'required'  => true
             ])
         ;
     }
