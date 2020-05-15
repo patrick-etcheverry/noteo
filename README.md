@@ -1,4 +1,6 @@
-![Noteo](https://github.com/dmendiboure/Noteo/blob/master/public/img/banniere_noteo.jpg)
+<div class="text-center">
+  <img width="200em" style="margin-bottom:30px" src="https://github.com/dmendiboure/Noteo/blob/master/public/img/banniere_noteo.jpg" alt="Logo Noteo">
+</div>
 ## C'est quoi ?
 Noteo est une application web responsive qui intervient à une époque où l'informatisation des notes des évaluations est très fréquente voire systématique, et où les services de gestion de notes se multiplient avec des fonctions similaires. Les enseignants désirant plus qu'une simple analyse à base de moyenne doivent s'occuper eux-mêmes de la création des statistiques qui leur conviennent. Noteo a donc pour but de proposer un service d'analyse de notes plus large, qui pourra convenir aux enseignants les plus exigeants. Les enseignants pourront aisément générer des statistiques sur une promotion entière ou des regroupements d’étudiants créés selon le critère de son choix. Les statistiques générées, sous forme graphique et textuelle, permettront d’évaluer la performance des étudiants pour adapter au mieux les enseignements dispensés. Noteo a été pensée pour s’adapter à tous les niveaux de l’enseignement afin que n’importe quel établissement puisse l’utiliser.
 ***
