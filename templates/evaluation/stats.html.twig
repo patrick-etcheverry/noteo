@@ -47,12 +47,12 @@
 {% if groupes is not empty %}
 
 <ul class="nav nav-tabs">
-    <li class="active"><a class="nav-link" data-toggle="tab" href="#Repartition_Histogramme">Répartition (Histogramme)</a></li>
-    <li><a class="nav-link" data-toggle="tab" href="#Repartition_Boites">Répartition (Boîte à moustaches)</a></li>
-    <li><a class="nav-link" data-toggle="tab" href="#Moyenne_ecart">Moyenne & écart-type</a></li>
+    <li class="nav-item"><a class="nav-link active" data-toggle="tab" href="#Repartition_Histogramme">Répartition (Histogramme)</a></li>
+    <li class="nav-item"><a class="nav-link" data-toggle="tab" href="#Repartition_Boites">Répartition (Boîte à moustaches)</a></li>
+    <li class="nav-item"><a class="nav-link" data-toggle="tab" href="#Moyenne_ecart">Moyenne & Écart-type</a></li>
 </ul>
 
-<!--
+<!-- Card avec les stats
 
 {#  <a class="dropdown-item" data-toggle="tab" href="#histo{{tabCounter}}">{{groupe.nom}}</a>
 
@@ -97,7 +97,7 @@
 
 <div class="tab-content">
 <!-- Répartition (Histogramme) -->
-<div id="Repartition_Histogramme" class="tab-pane fade">
+<div id="Repartition_Histogramme" class="tab-pane active">
   <div class="container-fluid">
   <br>
   <div class="card-md-auto">
@@ -260,6 +260,7 @@
         stacked: false,
       }],
       yAxes: [{
+        labelString: 'Intervalle de note',
         ticks: {
           beginAtZero: true,
           max: 10,
@@ -325,9 +326,9 @@
     });
   }
 
-// ------  FONCTIONS -----
+// ------ FONCTIONS -----
 
-//Coloration du texte des cases à cocher avec les bonnes couleurs + réajustement de la taille de la police
+// Coloration du texte des cases à cocher avec les bonnes couleurs + réajustement de la taille de la police
 // Chaque label de case à cocher à comme id : label_nomGroupe_nomGraphe
 function formatageCasesACocher(){
   // Création de couleurs si la liste couleurs n'as pas assez d'éléments
@@ -341,10 +342,13 @@ function formatageCasesACocher(){
   // Coloration + Ajustement de la taille de la police des labels des cases à cocher
   for(var i = 0; i < groupes.length; i++){
     for(var clef in groupesChecked){
+      if(clef == 'moy'){ // Pas de coloration pour le graphique de la moyenne et l'écart-type
+        break;
+      }
       var nom = groupes[i].nom;
       var rgb = "rgb("+couleurs[i][0]+","+couleurs[i][1]+","+couleurs[i][2]+")";
       document.getElementById("label_"+nom+"_"+clef).style.color = rgb;
-      document.getElementById("label_"+nom+"_"+clef).style.fontSize = fontSize+"px";
+      document.getElementById("label_"+nom+"_"+clef).style.fontSize = (fontSize+"px");
     }
   }
 }
@@ -366,11 +370,11 @@ function getMax(){
 function changement(nom, value, type){
   // Gère l'addition et la suppression des groupes à afficher dans le graphe
   if(value){ // la case à été cochée
-    groupesChecked[type].push(id);
+    groupesChecked[type].push(nom); // Ajout dans la liste cochée
   } else { // la case à été décochée
-    var index = contains(groupesChecked[type], id);
+    var index = contains(groupesChecked[type], nom); // index au quel se trouve le groupe dans le tableau groupes s'il existe
     if(index != -1){
-      groupesChecked[type].splice(index, 1);
+      groupesChecked[type].splice(index, 1); // Suppression de la liste cochée
     }
   }
 
@@ -481,7 +485,7 @@ function genDataMoyenneEcart(){
       data: moyenne
     },
     {
-      label: 'ecart-type',
+      label: 'Écart-type',
       backgroundColor: "rgb("+couleurEcartType[0]+","+couleurEcartType[1]+","+couleurEcartType[2]+")",
       hoverBackgroundColor: "rgb("+couleurEcartType[0]+","+couleurEcartType[1]+","+couleurEcartType[2]+")",
       borderColor: gris,
@@ -506,7 +510,7 @@ function getGroupesData(liste){
 }
 
 // génère des codes couleurs rgb aléatoires
-function genColor(){
+function genRandomColor(){
   return "rgb(" + Math.floor(Math.random() * Math.floor(255)) + ","
                 + Math.floor(Math.random() * Math.floor(255)) + ","
                 + Math.floor(Math.random() * Math.floor(255)) + ")";
