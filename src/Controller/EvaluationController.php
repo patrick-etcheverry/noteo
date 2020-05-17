@@ -653,7 +653,17 @@ class EvaluationController extends AbstractController
 
       $groupes = array();
 
-      foreach ($evals as $eval)
+      foreach ($evals as $eval) // Parcours des évaluations de l'utilisateur
+      {
+        if (!in_array($eval->getGroupe(), $groupes))
+        {
+          array_push($groupes, $eval->getGroupe());
+        }
+      }
+
+      $evals = $repoEval->findOtherEvaluationsWithGradesAndCreatorAndGroup($this->getUser());
+
+      foreach ($evals as $eval) // Parcours des autres évaluations
       {
         if (!in_array($eval->getGroupe(), $groupes))
         {
@@ -746,6 +756,16 @@ class EvaluationController extends AbstractController
         }
       }
 
+      $toutesLesEvals = $repoEval->findOtherEvaluationsWithGradesAndCreatorAndGroup($this->getUser());
+      
+      foreach ($toutesLesEvals as $eval)
+      {
+        if ($eval->getGroupe() == $groupePrincipal)
+        {
+          array_push($evals, $eval);
+        }
+      }
+
       $form = $this->createFormBuilder()
       ->add('evals', EntityType::class, [
         'class' => Evaluation::Class, //On veut choisir des evaluations
@@ -781,8 +801,8 @@ class EvaluationController extends AbstractController
           'Evolution des résultats par étudiant' => 2),
         'choice_label' => false, // On n'affichera pas d'attribut de l'entité à côté du bouton pour aider au choix car on liste les entités en utilisant les variables du champ
         'label' => false, // On n'affiche pas le label du champ
-        'expanded' => true, //Pour avoir des boutons
-        'multiple' => false //radios
+        'expanded' => true, //Pour avoir des cases
+        'multiple' => true //à cocher
         ))
         ->getForm();
         $form->handleRequest($request);
@@ -793,9 +813,14 @@ class EvaluationController extends AbstractController
             //stats triviales
             return $this->redirectToRoute();
           }
-          else
+          else if ($form->get("stats")->getData() == 1)
           {
             //évolution des résultats
+            return $this->redirectToRoute();
+          }
+          else
+          {
+            //les 2
             return $this->redirectToRoute();
           }
         
