@@ -1,6 +1,6 @@
 {% extends 'base.html.twig' %}
 
-{% block titrePage %}Créer des parties pour {{ app.session.get('evaluation').nom }}{% endblock %}
+{% block titrePage %}Créer des parties pour {{ app.session.get('nomEval') }}{% endblock %}
 
 {% block evaluations %}active{% endblock %}
 
@@ -122,7 +122,7 @@
                         <i class="icon-attention-circled"></i>Vous n'avez pas créé de parties pour l'évaluation.
                         <br><br>
                     </div>
-                    Une fois l'évaluation créée, vous ne pourrez plus modifier ses parties.
+                    Une fois validé, vous ne pourrez plus modifier les parties de cette évaluation.
                 </div>
                 <div class="modal-footer">
                     {{ form_start(form) }}

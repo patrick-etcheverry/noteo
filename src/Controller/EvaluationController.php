@@ -278,10 +278,10 @@ class EvaluationController extends AbstractController
 
         if($formEval->isSubmitted() && $formEval->isValid()) {
             $data = $formEval->getData(); //Récupération des données du formulaire
-            $evaluation = new Evaluation();
-            $evaluation->setNom($data["nom"]);
-            $evaluation->setDate($data["date"]);
-            $evaluation->setGroupe($groupeConcerne);
+            //Mise en session des données de l'évaluation pour la créer à l'action suivante
+            $request->getSession()->set('nomEval',$data["nom"]);
+            $request->getSession()->set('dateEval', $data["date"]);
+            $request->getSession()->set('idGroupeEval',$groupeConcerne->getId());
 
             $arbreInitial = [ // tableau qui sera utilisé pour initialiser la création des parties à la page suivante
                 'id' => 1,
@@ -291,9 +291,7 @@ class EvaluationController extends AbstractController
                 'state' => ['expanded' => true],
                 'tags' => ['/20']
             ];
-
-            $request->getSession()->set('evaluation',$evaluation); // Mise en session de l'objet évaluation créé pour le persister à la fonction suivante une fois les parties créées
-            $request->getSession()->set('arbre_json',$arbreInitial); // Pour récupérer le tableau lors du chargement de la vue suivante
+            $request->getSession()->set('arbre_json',$arbreInitial); // Pour récupérer le tableau lors du chargement de la vue de l'action suivante
             return $this->redirectToRoute("creation_parties_eval");
         }
         return $this->render('evaluation/saisie_info_eval_par_parties.html.twig', [
@@ -311,20 +309,22 @@ class EvaluationController extends AbstractController
             ->getForm();
         $form->handleRequest($request);
         if($form->isSubmitted()) {
+            $entityManager = $this->getDoctrine()->getManager();
             $data = $form->getData();
             $arbrePartiesRecupere = json_decode(urldecode($data['arbre'])); //Récupération des parties créées par l'utilisateur
             $tableauParties = []; //Initialisation du tableau qui contiendra les parties
-            //récupération des objets Partie depuis l'arborescence créée dans le JSON
-            $this->definirPartiesDepuisTableauJS($request->getSession()->get('evaluation'), $arbrePartiesRecupere[0], $tableauParties);
-            $entityManager = $this->getDoctrine()->getManager();
-            $evaluation = $request->getSession()->get('evaluation');
-            $evaluation->setGroupe($repo->findOneById($evaluation->getGroupe())); //On refait le lien avec le groupe sinon le manager essaye de le persist lui aussi comme si c'était une nouvelle entité
+            $evaluation = new Evaluation();
+            $evaluation->setNom($request->getSession()->get("nomEval"));
+            $evaluation->setDate($request->getSession()->get("dateEval"));
+            $evaluation->setGroupe($repo->findOneById($request->getSession()->get("idGroupeEval"))); //On refait le lien avec le groupe sinon le manager essaye de le persist lui aussi comme si c'était une nouvelle entité
             $evaluation->setEnseignant($this->getUser());
             $entityManager->persist($evaluation);
+            //récupération des objets Partie depuis l'arborescence créée dans le JSON et mise en base de données
+            $this->definirPartiesDepuisTableauJS($evaluation, $arbrePartiesRecupere[0], $tableauParties);
             foreach ($tableauParties as $partie) {
                 $entityManager->persist($partie);
             }
-            //Creation des entités points correspondant à l'évaluation et toutes ses parties
+            //Creation des entités points correspondant à l'évaluation et toutes ses parties et mise en base de données
             foreach ($evaluation->getGroupe()->getEtudiants() as $etudiant) {
                 foreach ($tableauParties as $partie) {
                     $note = new Points();
@@ -335,7 +335,9 @@ class EvaluationController extends AbstractController
                 }
             }
             $entityManager->flush();
-            return $this->redirectToRoute('saisie_notes_parties_eval');
+            return $this->redirectToRoute('saisie_notes_parties_eval', [
+                'slug' => $evaluation->getSlug()
+            ]);
         }
         return $this->render('evaluation/creation_arborescence_parties.html.twig', [
             'form' => $form->createView()
@@ -343,12 +345,11 @@ class EvaluationController extends AbstractController
     }
 
     /**
-     * @Route("/saisie-notes-parties", name="saisie_notes_parties_eval", methods={"GET","POST"})
+     * @Route("/saisie-notes-parties/{slug}", name="saisie_notes_parties_eval", methods={"GET","POST"})
      */
-    public function saisieNotesParties(Request $request, EvaluationRepository $repoEval, PartieRepository $repoPartie, PointsRepository $repoPoints): Response
+    public function saisieNotesParties(Request $request, Evaluation $evaluation, EvaluationRepository $repoEval, PartieRepository $repoPartie, PointsRepository $repoPoints): Response
     {
         //Récupération de l'évaluation créée au départ et des parties créées précédemment
-        $evaluation = $repoEval->findEvaluationWithGroupAndStudents($request->getSession()->get('evaluation')->getId());
         $partiesASaisir = $repoPartie->findLowestPartiesByEvaluationIdWithGrades($evaluation->getId());
         $notes = $repoPoints->findAllFromLowestParties($evaluation->getId());
 
@@ -415,7 +416,7 @@ class EvaluationController extends AbstractController
             'form' => $form->createView(),
             'evaluation' => $evaluation,
             'parties' => $partiesASaisir,
-            'etudiants' => $evaluation->getGroupe()->getEtudiants()
+            'etudiants' => $evaluation->getGroupe()->getEtudiants(),
         ]);
     }
 
