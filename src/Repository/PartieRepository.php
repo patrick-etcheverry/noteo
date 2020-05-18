@@ -19,6 +19,20 @@ class PartieRepository extends ServiceEntityRepository
         parent::__construct($registry, Partie::class);
     }
 
+    public function findLowestPartiesByEvaluationIdWithGrades($evaluation)
+    {
+        return $this->createQueryBuilder('p')
+            ->addSelect('n')
+            ->join('p.evaluation', 'e')
+            ->leftJoin('p.notes', 'n')
+            ->where('e.id = :idEval')
+            ->andWhere('p.rgt = p.lft + 1')
+            ->setParameter('idEval', $evaluation)
+            ->getQuery()
+            ->getResult()
+            ;
+    }
+
     // /**
     //  * @return Partie[] Returns an array of Partie objects
     //  */

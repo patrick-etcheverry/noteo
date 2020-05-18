@@ -62,6 +62,20 @@ class EvaluationRepository extends ServiceEntityRepository
             ;
     }
 
+    public function findEvaluationWithGroupAndStudents($idEval)
+    {
+        return $this->createQueryBuilder('e')
+            ->addSelect('g')
+            ->addSelect('et')
+            ->join('e.groupe', 'g')
+            ->join('g.etudiants', 'et')
+            ->andWhere('e.id = :idEval')
+            ->setParameter('idEval', $idEval)
+            ->getQuery()
+            ->getSingleResult()
+            ;
+    }
+
 
     // /**
     //  * @return Stage[] Returns an array of Stage objects

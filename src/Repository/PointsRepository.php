@@ -60,19 +60,19 @@ class PointsRepository extends ServiceEntityRepository
     * @return Points[] Returns an array of Points objects
     */
 
-    public function findByPartie($id)
+    public function findAllFromLowestParties($idEvaluation)
     {
         return $this->getEntityManager()->createQuery('
-            SELECT p.valeur
+            SELECT p
             FROM App\Entity\Points p
             JOIN p.partie pa
+            JOIN pa.evaluation ev
             JOIN p.etudiant et
-            WHERE pa.id = :id
-            AND p.valeur >= 0
-            AND et.estDemissionnaire = 0
-            ORDER BY p.valeur ASC
+            WHERE ev.id = :idEvaluation
+            AND pa.rgt = pa.lft + 1
+            ORDER BY et.id ASC, pa.lft ASC
             ')
-            ->setParameter('id', $id)
+            ->setParameter('idEvaluation', $idEvaluation)
             ->execute();
     }
 

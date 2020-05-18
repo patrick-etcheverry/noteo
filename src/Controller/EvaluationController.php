@@ -8,6 +8,7 @@ use App\Entity\Partie;
 use App\Entity\Statut;
 use App\Entity\Points;
 use App\Entity\GroupeEtudiant;
+use App\Repository\PartieRepository;
 use App\Repository\StatutRepository;
 use App\Repository\PointsRepository;
 use App\Repository\EvaluationRepository;
@@ -323,6 +324,16 @@ class EvaluationController extends AbstractController
             foreach ($tableauParties as $partie) {
                 $entityManager->persist($partie);
             }
+            //Creation des entités points correspondant à l'évaluation et toutes ses parties
+            foreach ($evaluation->getGroupe()->getEtudiants() as $etudiant) {
+                foreach ($tableauParties as $partie) {
+                    $note = new Points();
+                    $note->setEtudiant($etudiant);
+                    $note->setPartie($partie);
+                    $note->setValeur(0);
+                    $entityManager->persist($note);
+                }
+            }
             $entityManager->flush();
             return $this->redirectToRoute('saisie_notes_parties_eval');
         }
@@ -334,29 +345,15 @@ class EvaluationController extends AbstractController
     /**
      * @Route("/saisie-notes-parties", name="saisie_notes_parties_eval", methods={"GET","POST"})
      */
-    public function saisieNotesParties(Request $request, GroupeEtudiantRepository $repoGroupe): Response
+    public function saisieNotesParties(Request $request, EvaluationRepository $repoEval, PartieRepository $repoPartie, PointsRepository $repoPoints): Response
     {
         //Récupération de l'évaluation créée au départ et des parties créées précédemment
-        $eval = $request->getSession()->get('evaluation');
-        $etudiants = $request->getSession()->get('etudiants');
-        $parties = $request->getSession()->get('parties');
-        $tabPoints = []; //Tableau qui contiendra les entités point dont on doit saisir la valeur
-
-        //Création des points à saisir pour l'évaluation
-        foreach ($etudiants as $etudiant) {
-            foreach ($parties as $partie) {
-                $point = new Points();
-                $point->setEtudiant($etudiant);
-                $point->setPartie($partie);
-                $point->setValeur(0);
-                //L'ordre dans lequel les points sont ajoutés dans ce tableau est important pour la saisie des notes
-                //Si x est le nombre de parties de l'évaluation, les xèmes premieres entités Points dont on doit saisir la valeur correspondent à l'étudiant 1 et ainsi de suite
-                $tabPoints[] = $point;
-            }
-        }
+        $evaluation = $repoEval->findEvaluationWithGroupAndStudents($request->getSession()->get('evaluation')->getId());
+        $partiesASaisir = $repoPartie->findLowestPartiesByEvaluationIdWithGrades($evaluation->getId());
+        $notes = $repoPoints->findAllFromLowestParties($evaluation->getId());
 
         //Création du formulaire de saisie des points
-        $form = $this->createFormBuilder(['notes' => $tabPoints])
+        $form = $this->createFormBuilder(["notes" => $notes])
             ->add('notes', CollectionType::class , [
                 'entry_type' => PointsType::class //Utilisation d'une collection de formulaire pour saisir les valeurs des notes (les formulaires portent sur les entités points
                                                   //passées en paramètre du formulaire)
@@ -415,10 +412,10 @@ class EvaluationController extends AbstractController
             return $this->redirectToRoute('evaluation_enseignant');
         }
         return $this->render('evaluation/saisie_notes_parties.html.twig', [
-            'evaluation' => $eval,
+            'evaluation' => $evaluation,
             'form' => $form->createView(),
-            'parties' => $parties,
-            'etudiants' => $etudiants
+            'parties' => $partiesASaisir,
+            'etudiants' => $evaluation->getGroupe()->getEtudiants()
         ]);
     }
 
