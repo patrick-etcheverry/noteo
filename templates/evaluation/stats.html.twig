@@ -46,48 +46,142 @@
 </div>
 {% if groupes is not empty %}
 
-{% for groupe in groupes %}
+<ul class="nav nav-tabs">
+    <li class="nav-item"><a class="nav-link active" data-toggle="tab" href="#Repartition_Histogramme">Répartition (Histogramme)</a></li>
+    <li class="nav-item"><a class="nav-link" data-toggle="tab" href="#Repartition_Boites">Répartition (Boîte à moustaches)</a></li>
+    <li class="nav-item"><a class="nav-link" data-toggle="tab" href="#Moyenne_ecart">Moyenne & Écart-type</a></li>
+    <li class="nav-item"><a class="nav-link" onclick="downloadPNG()">Télécharger les graphiques</a></li>
+</ul>
 
-<br>
-<div class="card">
-  <ul class="list-group list-group-flush">
-    <li class="list-group-item text-white" style="background-color:#bdc3c7;">
-      {{groupe.nom}}
-      {% set effectifTotal = 0 %}
-      {% for effectif in groupe.notes %}
-        {% set effectifTotal = effectifTotal + effectif %}
-      {% endfor %}
-      ({{ effectifTotal }} étudiants)
-    </li>
+<!-- Card avec les stats
+
+{#  <a class="dropdown-item" data-toggle="tab" href="#histo{{tabCounter}}">{{groupe.nom}}</a>
+
+  <div align=center>
     <li class="list-group-item">
-      <h5 class="card-title">Répartition des notes</h5><br>
-      <canvas align=center id="{{groupe.nom}}"></canvas>
+        <div class="card" style="width: 20em;">
+          <ul class="list-group list-group-flush" style="text-align:left;">
+            <li class="list-group-item">Statistiques {{groupe.nom}}</li>
+            <li class="list-group-item">
+              <ul>
+                <li>Moyenne : {{ groupe.moyenne }}</li>
+                <li>Écart-type : {{ groupe.ecartType }}</li>
+                <li>Note(s) minimale(s) : {{ groupe.minimum }}</li>
+                <li>Note(s) maximale(s) : {{ groupe.maximum }}</li>
+                <li>Médiane : {{ groupe.mediane }}</li>
+              </ul>
+            </li>
+          </ul>
+        </div>
     </li>
-    <div align=center>
-      <li class="list-group-item">
-          <div class="card" style="width: 20em;">
-            <ul class="list-group list-group-flush" style="text-align:left;">
-              <li class="list-group-item">Statistiques {{groupe.nom}}</li>
-              <li class="list-group-item">
-                <ul>
-                  <li>Moyenne : {{ groupe.moyenne }}</li>
-                  <li>Écart-type : {{ groupe.ecartType }}</li>
-                  <li>Note(s) minimale(s) : {{ groupe.minimum }}</li>
-                  <li>Note(s) maximale(s) : {{ groupe.maximum }}</li>
-                  <li>Médiane : {{ groupe.mediane }}</li>
-                </ul>
-              </li>
-            </ul>
-          </div>
+  </div>
+
+  <div class="card">
+    <ul class="list-group list-group-flush">
+      <li class="list-group-item text-white" style="background-color:#bdc3c7;">
+        {{groupe.nom}}
+        {% set effectifTotal = 0 %}
+        {% for effectif in groupe.notes %}
+          {% set effectifTotal = effectifTotal + effectif %}
+        {% endfor %}
+        ({{ effectifTotal }} étudiants)
       </li>
+      <li class="list-group-item">
+        <h5 class="card-title">Répartition des notes</h5><br>
+        <canvas align=center id="{{groupe.nom}}"></canvas>
+      </li>
+    </ul>
+  </div>
+
+
+#}-->
+
+<div class="tab-content">
+<!-- Répartition (Histogramme) -->
+<div id="Repartition_Histogramme" class="tab-pane active">
+  <div class="container-fluid">
+  <br>
+  <div class="card-md-auto">
+    <div class="card-header">
+      Groupes
     </div>
-  </ul>
+    <div class="card-body">
+    {% set tabCounter = 0 %}
+    {% for groupe in groupes %}
+      <div class="form-check form-check-inline">
+        <input class="form-check-input" type="checkbox" id="{{groupe.nom}}" onChange="changement(this.id, this.checked, 'histo')">
+        <label class="form-check-label" for="inlineCheckbox1" id="label_{{groupe.nom}}_histo">{{groupe.nom}}</label>
+      </div>
+     {% set tabCounter = tabCounter + 1 %}
+   {% endfor %}
+   </div>
+  </div>
+   </div>
+   <br>
+   <div class="container-fluid">
+      <canvas align=center id="graphHisto"></canvas>
+   </div>
+</div>
+<!-- fin Répartition (Histogramme) -->
+
+<!-- Répartition (Boîte à moustache) -->
+<div id="Repartition_Boites" class="tab-pane fade">
+  <div class="container-fluid">
+  <br>
+  <div class="card-md-auto">
+    <div class="card-header">
+      Groupes
+    </div>
+    <div class="card-body">
+    {% set tabCounter = 0 %}
+    {% for groupe in groupes %}
+      <div class="form-check form-check-inline">
+        <input class="form-check-input" type="checkbox" id="{{groupe.nom}}" onChange="changement(this.id, this.checked, 'bam')">
+        <label class="form-check-label" for="inlineCheckbox1" id="label_{{groupe.nom}}_bam">{{groupe.nom}}</label>
+      </div>
+     {% set tabCounter = tabCounter + 1 %}
+   {% endfor %}
+   </div>
+  </div>
+   </div>
+   <br>
+   <div class="container-fluid">
+      <canvas align=center id="graphBoites"></canvas>
+   </div>
+</div>
+<!-- fin Répartition (Boîtes à moustache) -->
+
+<!-- Moyenne & Ecart-type -->
+<div id="Moyenne_ecart" class="tab-pane fade">
+  <div class="container-fluid">
+  <br>
+  <div class="card-md-auto">
+    <div class="card-header">
+      Groupes
+    </div>
+    <div class="card-body">
+    {% set tabCounter = 0 %}
+    {% for groupe in groupes %}
+      <div class="form-check form-check-inline">
+        <input class="form-check-input" type="checkbox" id="{{groupe.nom}}" onChange="changement(this.id, this.checked, 'moy')">
+        <label class="form-check-label" for="inlineCheckbox1" id="label_{{groupe.nom}}_moy">{{groupe.nom}}</label>
+      </div>
+     {% set tabCounter = tabCounter + 1 %}
+   {% endfor %}
+   </div>
+  </div>
+   </div>
+   <br>
+   <div class="container-fluid">
+      <canvas align=center id="grapheMoyenne"></canvas>
+   </div>
+</div>
+<!-- fin Moyenne & Ecart-type -->
+
 </div>
 
-{% endfor %}
 
 {% else %}
-
 <div class="info">
   <h2 class="h4 mb-0 text-gray-800">Veuillez sélectionner des groupes ou des statuts sur lesquels voir des statistiques </h2>
 </div>
@@ -100,6 +194,370 @@
 
 <script type="text/javascript" src="{{asset("js/jspdf.min.js")}}"></script>
 <script type="text/javascript" src="{{asset("js/html2canvas.min.js")}}"></script>
+<script type="text/javascript" src="{{asset("js/boxplot.js")}}"></script>
+
+<!-- Script pour la génération des graphiques -->
+<script type="text/javascript">
+
+  // ----- VARIABLES GLOBALES ---------
+
+  var nomEvaluation = "{{evaluation.nom}}";
+  var fontSize = 16;
+
+  // Liste de couleurs communes
+  var noir = "#000000", jaune = "#FFFF00", bleu = "#0000FF", rouge = "#FF0000", vert = "#00FF00", violet = "#EE82EE", blanc = "#FFFFFF", gris = "#808080";
+
+  // Pallette de couleurs (valeurs rgb)
+  var couleurs = [
+    [192, 57, 43],
+    [155, 89, 182],
+    [41, 128, 185],
+    [22, 160, 133],
+    [46, 204, 113],
+    [243, 156, 18],
+    [211, 84, 0],
+    [189, 195, 199],
+    [127, 140, 141],
+    [44, 62, 80],
+    [231, 76, 60],
+    [142, 68, 173],
+    [26, 188, 156],
+    [39, 174, 96],
+    [241, 196, 15],
+    [230, 126, 34],
+    [236, 240, 241],
+    [149, 165, 166],
+    [52, 73, 94],
+  ];
+
+  // passage de la liste groupes de twig à js
+  var groupes = "{{groupes|json_encode()}}";
+  groupes = groupes.replace(/&quot;/g, "\""); // remplacement de toutes les itérations de ' &quot; ' par ' " '
+  groupes = JSON.parse(groupes);
+
+  // Groupes sélectionés (avec les cases à cocher) par graphique
+  var groupesChecked = [];
+  groupesChecked['histo'] = [];
+  groupesChecked['bam'] = [];
+  groupesChecked['moy'] = [];
+
+  // Objet données du graphique
+  const chartDATA = {
+    labels: [],
+    datasets: undefined,
+  };
+
+  // Objet options du graphique
+  const options = {
+    scales: {
+      xAxes: [{
+        gridLines: {
+          display: false
+        },
+        ticks: {
+          fontSize: fontSize,
+        },
+        maxBarThickness: 100,
+        stacked: false,
+      }],
+      yAxes: [{
+        labelString: 'Intervalle de note',
+        ticks: {
+          beginAtZero: true,
+          max: 10,
+          min: 0,
+          fontSize: fontSize,
+        },
+        stacked: false,
+      }],
+    },
+    legend: {
+					position: 'top',
+          labels: {
+            fontSize: fontSize,
+          },
+		},
+    aspectRatio: 3,
+    maintainAspectRatio: true,
+    responsive: true,
+    tooltips: {
+      intersect: false,
+      titleMarginBottom: 10,
+      titleFontColor: '#6e707e',
+      titleFontSize: fontSize,
+      backgroundColor: blanc,
+      bodyFontColor: "#858796",
+      borderColor: '#dddfeb',
+      borderWidth: 1,
+      xPadding: 15,
+      yPadding: 15,
+      displayColors: true,
+      caretPadding: 10
+    },
+    plugins : {
+      labels: {
+        render: 'value'
+      }
+    }
+  }
+
+ // --------- CODE -------------
+
+  // Mise en forme du etexte des cases à cocher
+  formatageCasesACocher();
+
+  // Création des graphiques au chargement de la fenètre
+  window.onload = function(){
+    window.chartBar = new Chart(document.getElementById("graphHisto").getContext('2d'), {
+      type: 'bar',
+      data: chartDATA,
+      options: options
+    });
+
+    window.chartBoite = new Chart(document.getElementById("graphBoites").getContext('2d'), {
+      type: 'boxplot',
+      data: chartDATA,
+      options: options,
+    });
+
+    window.chartMoy = new Chart(document.getElementById("grapheMoyenne").getContext('2d'), {
+      type: 'bar',
+      data: chartDATA,
+      options: options,
+    });
+  }
+
+// ------ FONCTIONS -----
+
+// Coloration du texte des cases à cocher avec les bonnes couleurs + réajustement de la taille de la police
+// Chaque label de case à cocher à comme id : label_nomGroupe_nomGraphe
+function formatageCasesACocher(){
+  // Création de couleurs si la liste couleurs n'as pas assez d'éléments
+  if(groupes.length > couleurs.length){
+    var gap = groupes.length - couleurs.length;
+    for(var i = 0; i < gap; i++){
+      var coul = couleurs[i];
+      couleurs.push([(coul[0] + 60) % 255, (coul[1] - 60) % 255, coul[2]]);
+    }
+  }
+  // Coloration + Ajustement de la taille de la police des labels des cases à cocher
+  for(var i = 0; i < groupes.length; i++){
+    for(var clef in groupesChecked){
+      if(clef == 'moy'){ // Pas de coloration pour le graphique de la moyenne et l'écart-type
+        break;
+      }
+      var nom = groupes[i].nom;
+      var rgb = "rgb("+couleurs[i][0]+","+couleurs[i][1]+","+couleurs[i][2]+")";
+      document.getElementById("label_"+nom+"_"+clef).style.color = rgb;
+      document.getElementById("label_"+nom+"_"+clef).style.fontSize = (fontSize+"px");
+    }
+  }
+}
+
+// Renvoie la valeur max de l'axe Y pour l'histogramme
+function getMax(){
+  var max = 0;
+  for(var i = 0; i < groupes.length; i++){
+    for(var j = 0; j < groupes[i].notes.length; j++){
+      if(groupes[i].notes[j] > max){
+        max = groupes[i].notes[j];
+      }
+    }
+  }
+  return max;
+}
+
+// Met à jour le graphique en fonction des cases qui sont cochées
+function changement(nom, value, type){
+  // Gère l'addition et la suppression des groupes à afficher dans le graphe
+  if(value){ // la case à été cochée
+    groupesChecked[type].push(nom); // Ajout dans la liste cochée
+  } else { // la case à été décochée
+    var index = contains(groupesChecked[type], nom); // index au quel se trouve le groupe dans le tableau groupes s'il existe
+    if(index != -1){
+      groupesChecked[type].splice(index, 1); // Suppression de la liste cochée
+    }
+  }
+
+
+  var chartOptions = options; // Récupération de la template des options
+  var chartDonnees = chartDATA; // Récupération de la template des données du graphique
+  // Génération des labels & cacul du max
+  switch (type) {
+    case 'histo':
+      // Changement des labels + de l'échelle de l'axe Y
+      chartDonnees.labels = ['[0;4[', '[4;8[', '[8;12[', '[12;16[', '[16;20]'];
+      chartOptions.scales.yAxes[0].ticks.min = 0;
+      chartOptions.scales.yAxes[0].ticks.max = getMax();
+      break;
+    case 'bam': // Boîte à moustache
+      // Changement des labels + de l'échelle de l'axe Y
+      chartDonnees.labels = [nomEvaluation];
+      chartOptions.scales.yAxes[0].ticks.min = 0;
+      chartOptions.scales.yAxes[0].ticks.max = 20;
+      break;
+    case 'moy':
+      chartDonnees.labels = groupesChecked[type];
+      chartOptions.scales.yAxes[0].ticks.min = undefined;
+      chartOptions.scales.yAxes[0].ticks.max = undefined;
+      break;
+    default:
+      break;
+  }
+
+  // Génération des datasets des groupes sélectionés pour chartJS en fonction du graphique sélectioné
+  // Remplacement des données du graphe par les nouvelles données générées
+  switch(type){
+    case 'histo':
+    case 'bam':
+      chartDonnees.datasets = genDataRepartition(type);
+      break;
+    case 'moy':
+      chartDonnees.datasets = genDataMoyenneEcart();
+      break;
+  }
+
+  //  MaJ du graphique + MaJ des options
+  switch (type) {
+    case 'histo':
+      window.chartBar.options = chartOptions;
+      window.chartBar.data = chartDonnees;
+      window.chartBar.update();
+      break;
+    case 'bam': // Boîte à moustaches
+      window.chartBoite.options = chartOptions;
+      window.chartBoite.data = chartDonnees;
+      window.chartBoite.update();
+      break;
+    case 'moy' : // Moyenne & écart-type
+      window.chartMoy.options = chartOptions;
+      window.chartMoy.data = chartDonnees;
+      window.chartMoy.update();
+      break;
+    default:
+      break;
+  }
+}
+
+function downloadPNG() {
+
+		var data = window.chartBar.toBase64Image();
+		var element = document.createElement('a');
+	  	element.setAttribute('href', data);
+	  	element.setAttribute('download', 'chartBar');
+	  	element.style.display = 'none';
+	  	document.body.appendChild(element);
+	  	element.click();
+
+      data = window.chartBoite.toBase64Image();
+      element.setAttribute('href', data);
+	  	element.setAttribute('download', 'boxplot');
+      element.click();
+
+      data = window.chartMoy.toBase64Image();
+      element.setAttribute('href', data);
+	  	element.setAttribute('download', 'chartMoy');
+      element.click();
+
+	  	document.body.removeChild(element);
+	}
+
+function genDataRepartition(type){
+  var data = [];
+  for(var i = 0; i < groupesChecked[type].length; i++){
+    var set = {};
+    var index = -1;
+    for(var j = 0; j < groupes.length; j++){
+      if(groupes[j].nom == groupesChecked[type][i]){
+        index = j;
+      }
+    }
+    if(index != -1){
+      set.label = groupes[index].nom;
+      switch (type) {
+        case 'histo': // Histogramme
+          set.data = groupes[index].notes;
+          set.borderColor = gris;
+          break;
+        case 'bam': // Boîte à moustaches
+          set.data = [groupes[index].allNotes];
+          set.borderColor = noir;
+          break;
+        default:
+          break;
+      }
+      var rgb = "rgb("+couleurs[index][0]+","+couleurs[index][1]+","+couleurs[index][2]+")";
+      set.backgroundColor = rgb;
+      set.hoverBackgroundColor = rgb;
+      data.push(set);
+    }
+  }
+  return data;
+}
+
+// Génère les données requises par Chart.js pour le graphique 'Moyenne & écart-type'
+function genDataMoyenneEcart(){
+  var liste = getGroupesData(groupesChecked['moy']); // Récupération des données
+  var moyenne = [];
+  var ecartType = [];
+  for(var i = 0; i < liste.length; i++){ // Choix des informations requises
+    moyenne.push(liste[i].moyenne);
+    ecartType.push(liste[i].ecartType);
+  }
+  var couleurMoyenne = couleurs[0];
+  var couleurEcartType = couleurs[1];
+  data = [ // Création des objets datasets de Chart.js avec nos données
+    {
+      label: 'Moyenne',
+      backgroundColor: "rgb("+couleurMoyenne[0]+","+couleurMoyenne[1]+","+couleurMoyenne[2]+")",
+      hoverBackgroundColor: "rgb("+couleurMoyenne[0]+","+couleurMoyenne[1]+","+couleurMoyenne[2]+")",
+      borderColor: gris,
+      data: moyenne
+    },
+    {
+      label: 'Écart-type',
+      backgroundColor: "rgb("+couleurEcartType[0]+","+couleurEcartType[1]+","+couleurEcartType[2]+")",
+      hoverBackgroundColor: "rgb("+couleurEcartType[0]+","+couleurEcartType[1]+","+couleurEcartType[2]+")",
+      borderColor: gris,
+      data: ecartType
+    }
+  ];
+  return data;
+}
+
+// Retourne un tableau d'objets groupe avec leurs données en fonction d'une liste de noms de groupes
+function getGroupesData(liste){
+  groupesAvecDonnees = [];
+  for(var i = 0; i < liste.length; i++){
+    for(var j = 0; j < groupes.length; j++){
+      if(groupes[j].nom == liste[i]){
+        groupesAvecDonnees[i] = groupes[j];
+        break;
+      }
+    }
+  }
+  return groupesAvecDonnees;
+}
+
+// génère des codes couleurs rgb aléatoires
+function genRandomColor(){
+  return "rgb(" + Math.floor(Math.random() * Math.floor(255)) + ","
+                + Math.floor(Math.random() * Math.floor(255)) + ","
+                + Math.floor(Math.random() * Math.floor(255)) + ")";
+}
+
+// retourne l'index au quel se trouve l'élément dans array, s'il n'y est pas renvoie -1
+function contains(array, element){
+  for(var i = 0; i < array.length; i++){
+    if(array[i] == element){
+      return i;
+    }
+  }
+  return -1;
+}
+
+
+</script>
 
 <!-- Patie dédié au la génération du pdf -->
 <script type="text/javascript">
@@ -277,83 +735,5 @@
 
 
 </script>
-
-<script type="text/javascript">
-
-{% for groupe in groupes%}
-
-
-{% set maximumRepartition = max(groupe.notes)|json_encode() %}
-
-{# si le maximum est égal à zéro (pas de notes pour le groupe) on définit une valeur maximale arbitraire de 5 pour y, sinon ce sera égal a la plus grande valeur du tableau de repartition #}
-{% if maximumRepartition == 0 %}
-{% set maximumRepartition = 5 %}
-{% endif %}
-
-var graph = document.getElementById('{{groupe.nom}}').getContext('2d');
-
-var leBarre = new Chart(graph, {
-  type: 'bar',
-  data: {
-    labels: ['[0;4[', '[4;8[', '[8;12[', '[12;16[', '[16;20]'],
-    datasets: [{
-      label: 'Effectif',
-      data: {{groupe.notes|json_encode()}}, {# json_encode sert à rendre le tableau lisible en JavaScript #}
-      backgroundColor: "#4e73df",
-      hoverBackgroundColor: "#2e59d9",
-      borderColor: "#4e73df"
-    }]
-  },
-  options: {
-    scales: {
-      xAxes: [{
-        gridLines: {
-          display: false
-        },
-        ticks: {
-          maxTicksLimit: 6
-        },
-        maxBarThickness: 100,
-      }],
-      yAxes: [{
-        ticks: {
-          beginAtZero: true,
-          max: {{maximumRepartition}}
-        }
-      }]
-    },
-    aspectRatio: 3,
-    maintainAspectRatio: true,
-    responsive: true,
-    legend: {
-      display: false
-    },
-    tooltips: {
-      titleMarginBottom: 10,
-      titleFontColor: '#6e707e',
-      titleFontSize: 14,
-      backgroundColor: "rgb(255,255,255)",
-      bodyFontColor: "#858796",
-      borderColor: '#dddfeb',
-      borderWidth: 1,
-      xPadding: 15,
-      yPadding: 15,
-      displayColors: false,
-      caretPadding: 10
-    },
-    plugins : {
-      labels: {
-        render: 'value'
-      }
-    }
-  }
-});
-
-{% endfor %}
-
-
-
-</script>
-
 
 {% endblock %}

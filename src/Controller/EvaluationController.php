@@ -476,6 +476,7 @@ class EvaluationController extends AbstractController
                 //On remplit le tableau qui contiendra toutes les statistiques du groupe
                 $listeStatsParGroupe[] = array("nom" => $groupe->getNom(),
                                              "notes" => $this->repartition($copieTabPoints),
+                                             "allNotes" => $copieTabPoints,
                                              "moyenne" => $this->moyenne($copieTabPoints),
                                              "ecartType" => $this->ecartType($copieTabPoints),
                                              "minimum" => $this->minimum($copieTabPoints),
@@ -496,6 +497,7 @@ class EvaluationController extends AbstractController
 
                 $listeStatsParStatut[] = array("nom" => $statut->getNom(),
                                                "notes" => $this->repartition($copieTabPoints),
+                                               "allNotes" => $copieTabPoints,
                                                "moyenne" => $this->moyenne($copieTabPoints),
                                                "ecartType" => $this->ecartType($copieTabPoints),
                                                "minimum" => $this->minimum($copieTabPoints),
