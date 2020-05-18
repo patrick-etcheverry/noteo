@@ -32,7 +32,12 @@
             <th>Nom</th>
             <th>Prénom</th>
             {% for partie in parties %}
-                <th>{{ partie.intitule }} (/{{ partie.bareme }})</th>
+                <th>
+                    {% if partie.parent is not null %}
+                        {{ partie.parent.intitule ~ " -" | nl2br }} {# Sortie : NomParent -\n #}
+                    {% endif %}
+                    {{ partie.intitule }} (/{{ partie.bareme }})
+                </th>
             {% endfor %}
             </thead>
             <tbody>

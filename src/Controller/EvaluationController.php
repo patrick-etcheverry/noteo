@@ -191,9 +191,8 @@ class EvaluationController extends AbstractController
               'constraints' => [
                   new NotBlank,
                   new Length(['max' => 255]),
-                  new Regex(['pattern' => '/[a-zA-Z0-9]/', 'message' => 'Le nom donné ne correspond pas aux critères demandés'])
-              ],
-              'help' => 'Le nom de l\'évaluation doit contenir au moins un chiffre ou une lettre'
+                  new Regex(['pattern' => '/[a-zA-Z0-9]/', 'message' => 'Le nom de l\'évaluation doit contenir au moins un chiffre ou une lettre'])
+              ]
             ])
             ->add('date', DateType::class, [
               'widget' => 'single_text',
@@ -265,9 +264,8 @@ class EvaluationController extends AbstractController
                 'constraints' => [
                     new NotBlank,
                     new Length(['max' => 255]),
-                    new Regex(['pattern' => '/[a-zA-Z0-9]/', 'message' => 'Le nom donné ne correspond pas aux critères demandés'])
+                    new Regex(['pattern' => '/[a-zA-Z0-9]/', 'message' => 'Le nom de l\'évaluation doit contenir au moins un chiffre ou une lettre'])
                 ],
-                'help' => 'Le nom de l\'évaluation doit contenir au moins un chiffre ou une lettre'
             ])
             ->add('date', DateType::class, [
                 'widget' => 'single_text',
@@ -284,15 +282,12 @@ class EvaluationController extends AbstractController
             $evaluation->setDate($data["date"]);
             $evaluation->setGroupe($groupeConcerne);
 
-            $tabEtudiants = []; //Ce tableau contient tous les étudiants concernés par l'évaluation, pour pouvoir créer les points plus tard
-            foreach ($groupeConcerne->getEtudiants() as $etudiant) {
-                $tabEtudiants[] = $etudiant;
-            }
+            $tabEtudiants = $groupeConcerne->getEtudiants(); //Ce tableau contient tous les étudiants concernés par l'évaluation, pour pouvoir créer les points dans la 3e étape de la création
 
             $arbreInitial = [ // tableau qui sera utilisé pour initialiser la création des parties à la page suivante
                 'id' => 1,
-                'text' => 'Evaluation',
-                'nom' => 'Evaluation',
+                'text' => $data["nom"],
+                'nom' => $data["nom"],
                 'bareme' => 20,
                 'state' => ['expanded' => true],
                 'tags' => ['/20']
@@ -303,7 +298,7 @@ class EvaluationController extends AbstractController
             $request->getSession()->set('etudiants', $tabEtudiants); // Les étudiants concernés par l'évaluation
             return $this->redirectToRoute("creation_parties_eval");
         }
-        return $this->render('evaluation/saisie_info_eval.html.twig', [
+        return $this->render('evaluation/saisie_info_eval_par_parties.html.twig', [
             'form' => $formEval->createView()
         ]);
     }
@@ -377,10 +372,10 @@ class EvaluationController extends AbstractController
             $evaluation = $request->getSession()->get('evaluation');
             $parties = $request->getSession()->get('parties');
             $entityManager = $this->getDoctrine()->getManager();
-//            //Pour que le manager puisse les créer en base de données, on va devoir repréciser les liens entre les entités créées précédemment (parties, points, étudiants, évaluation, enseignant).
-//            //En l'état actuel le manager va penser que toutes les entités sont à persister. Par exemple evaluation->getEnseignant() : Le manager va essayer de persister un nouvel enseignant avec
-//            //cette entité ce qui va causer une erreur car elle exister déjà
-//            //Liens pour évaluation
+            //Pour que le manager puisse les créer en base de données, on va devoir repréciser les liens entre les entités créées précédemment (parties, points, étudiants, évaluation, enseignant).
+            //En l'état actuel le manager va penser que toutes les entités sont à persister. Par exemple evaluation->getEnseignant() : Le manager va essayer de persister un nouvel enseignant avec
+            //cette entité ce qui va causer une erreur car elle exister déjà
+            //Liens pour évaluation
             $evaluation->setEnseignant($this->getUser());
             $evaluation->setGroupe($repoGroupe->findOneById($evaluation->getGroupe()->getId()));
             $entityManager->persist($evaluation);
@@ -478,11 +473,10 @@ class EvaluationController extends AbstractController
           ->add('nom', TextType::class, [
             'data' => $evaluation->getNom(),
             'constraints' => [
-                new Regex(['pattern' => '/[a-zA-Z0-9]/', 'message' => 'Le nom donné ne correspond pas aux critères demandés']),
+                new Regex(['pattern' => '/[a-zA-Z0-9]/', 'message' => 'Le nom de l\'évaluation doit contenir au moins un chiffre ou une lettre']),
                 new NotBlank(),
                 new Length(['max' => 255]),
-            ],
-            'help' => 'Le nom de l\'évaluation doit contenir au moins un chiffre ou une lettre'
+            ]
           ])
           ->add('date', DateType::class, [
             'widget' => 'single_text',
