@@ -367,27 +367,37 @@ class EvaluationController extends AbstractController
             //récupération des données
             $data = $form->getData();
             $notes = $data['notes'];
-
             //Enregistrement des notes saisies
             foreach ($notes as $note) {
                 $entityManager->persist($note);
             }
-
-            //On va traiter les parties dans l'order invese (partir à chaque fois du plus bas et remonter)
+            //Calcul des notes supérieures
+            //On récupère les parties dont la note n'a pas été calculée (celles qui ont au moins une sous-partie). Les parties sont organisées des plus basses aux plus hautes
             $partiesACalculer = $repoPartie->findHighestByEvaluation($evaluation->getId());
             foreach ($evaluation->getGroupe()->getEtudiants() as $etudiant) {
                 foreach ($partiesACalculer as $partie) {
                     $sommePtsSousPartie = 0;
-                    foreach ($partie->getChildren() as $sousPartie ) {
+                    $sousParties = $partie->getChildren();
+                    //On fait la somme des notes obtenues aux sous parties
+                    foreach ($sousParties as $sousPartie ) {
                         $point = $repoPoints->findByPartieAndByStudent($sousPartie->getId(), $etudiant->getId());
-                        $sommePtsSousPartie += $point->getValeur();
+                        //On ne prend pas en compte -1 dans le calcul total
+                        if ($point->getValeur() >= 0) {
+                            $sommePtsSousPartie += $point->getValeur();
+                        }
                     }
+                    //On met à jour
                     $point = $repoPoints->findByPartieAndByStudent($partie->getId(), $etudiant->getId());
-                    $point->setValeur($sommePtsSousPartie);
+                    //Si la note est inférieure à 0 c'est que l'étudiant était absent, on met donc à jour
+                    if($sommePtsSousPartie < 0 ) {
+                        $point->setValeur(-1);
+                    }
+                    else {
+                        $point->setValeur($sommePtsSousPartie);
+                    }
                     $entityManager->persist($point);
                 }
             }
-
             $entityManager->flush();
             return $this->redirectToRoute('evaluation_enseignant');
         }
