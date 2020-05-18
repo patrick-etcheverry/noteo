@@ -50,6 +50,7 @@
     <li class="nav-item"><a class="nav-link active" data-toggle="tab" href="#Repartition_Histogramme">Répartition (Histogramme)</a></li>
     <li class="nav-item"><a class="nav-link" data-toggle="tab" href="#Repartition_Boites">Répartition (Boîte à moustaches)</a></li>
     <li class="nav-item"><a class="nav-link" data-toggle="tab" href="#Moyenne_ecart">Moyenne & Écart-type</a></li>
+    <li class="nav-item"><a class="nav-link" onclick="downloadPNG()">Télécharger les graphiques</a></li>
 </ul>
 
 <!-- Card avec les stats
@@ -241,13 +242,13 @@
   groupesChecked['moy'] = [];
 
   // Objet données du graphique
-  var chartDATA = {
+  const chartDATA = {
     labels: [],
     datasets: undefined,
   };
 
   // Objet options du graphique
-  var options = {
+  const options = {
     scales: {
       xAxes: [{
         gridLines: {
@@ -378,24 +379,27 @@ function changement(nom, value, type){
     }
   }
 
+
+  var chartOptions = options; // Récupération de la template des options
+  var chartDonnees = chartDATA; // Récupération de la template des données du graphique
   // Génération des labels & cacul du max
   switch (type) {
     case 'histo':
       // Changement des labels + de l'échelle de l'axe Y
-      chartDATA.labels = ['[0;4[', '[4;8[', '[8;12[', '[12;16[', '[16;20]'];
-      options.scales.yAxes[0].ticks.min = 0;
-      options.scales.yAxes[0].ticks.max = getMax();
+      chartDonnees.labels = ['[0;4[', '[4;8[', '[8;12[', '[12;16[', '[16;20]'];
+      chartOptions.scales.yAxes[0].ticks.min = 0;
+      chartOptions.scales.yAxes[0].ticks.max = getMax();
       break;
     case 'bam': // Boîte à moustache
       // Changement des labels + de l'échelle de l'axe Y
-      chartDATA.labels = [nomEvaluation];
-      options.scales.yAxes[0].ticks.min = 0;
-      options.scales.yAxes[0].ticks.max = 20;
+      chartDonnees.labels = [nomEvaluation];
+      chartOptions.scales.yAxes[0].ticks.min = 0;
+      chartOptions.scales.yAxes[0].ticks.max = 20;
       break;
     case 'moy':
-      chartDATA.labels = groupesChecked[type];
-      options.scales.yAxes[0].ticks.min = undefined;
-      options.scales.yAxes[0].ticks.max = undefined;
+      chartDonnees.labels = groupesChecked[type];
+      chartOptions.scales.yAxes[0].ticks.min = undefined;
+      chartOptions.scales.yAxes[0].ticks.max = undefined;
       break;
     default:
       break;
@@ -406,31 +410,57 @@ function changement(nom, value, type){
   switch(type){
     case 'histo':
     case 'bam':
-      chartDATA.datasets = genDataRepartition(type);
+      chartDonnees.datasets = genDataRepartition(type);
       break;
     case 'moy':
-      chartDATA.datasets = genDataMoyenneEcart();
+      chartDonnees.datasets = genDataMoyenneEcart();
       break;
   }
 
   //  MaJ du graphique + MaJ des options
   switch (type) {
     case 'histo':
-      window.chartBar.options = options;
+      window.chartBar.options = chartOptions;
+      window.chartBar.data = chartDonnees;
       window.chartBar.update();
       break;
     case 'bam': // Boîte à moustaches
-      window.chartBoite.options = options;
+      window.chartBoite.options = chartOptions;
+      window.chartBoite.data = chartDonnees;
       window.chartBoite.update();
       break;
     case 'moy' : // Moyenne & écart-type
-      window.chartMoy.options = options;
+      window.chartMoy.options = chartOptions;
+      window.chartMoy.data = chartDonnees;
       window.chartMoy.update();
       break;
     default:
       break;
   }
 }
+
+function downloadPNG() {
+
+		var data = window.chartBar.toBase64Image();
+		var element = document.createElement('a');
+	  	element.setAttribute('href', data);
+	  	element.setAttribute('download', 'chartBar');
+	  	element.style.display = 'none';
+	  	document.body.appendChild(element);
+	  	element.click();
+
+      data = window.chartBoite.toBase64Image();
+      element.setAttribute('href', data);
+	  	element.setAttribute('download', 'boxplot');
+      element.click();
+
+      data = window.chartMoy.toBase64Image();
+      element.setAttribute('href', data);
+	  	element.setAttribute('download', 'chartMoy');
+      element.click();
+
+	  	document.body.removeChild(element);
+	}
 
 function genDataRepartition(type){
   var data = [];
