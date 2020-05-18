@@ -362,7 +362,7 @@ class EvaluationController extends AbstractController
 
         $form->handleRequest($request);
 
-        if($form->isSubmitted()) {
+        if($form->isSubmitted() && $form->isValid()) {
             //récupération des données
             $data = $form->getData();
             $notes = $data['notes'];
@@ -412,8 +412,8 @@ class EvaluationController extends AbstractController
             return $this->redirectToRoute('evaluation_enseignant');
         }
         return $this->render('evaluation/saisie_notes_parties.html.twig', [
-            'evaluation' => $evaluation,
             'form' => $form->createView(),
+            'evaluation' => $evaluation,
             'parties' => $partiesASaisir,
             'etudiants' => $evaluation->getGroupe()->getEtudiants()
         ]);
