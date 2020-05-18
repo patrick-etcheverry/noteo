@@ -50,7 +50,6 @@
     <li class="nav-item"><a class="nav-link active" data-toggle="tab" href="#Repartition_Histogramme">Répartition (Histogramme)</a></li>
     <li class="nav-item"><a class="nav-link" data-toggle="tab" href="#Repartition_Boites">Répartition (Boîte à moustaches)</a></li>
     <li class="nav-item"><a class="nav-link" data-toggle="tab" href="#Moyenne_ecart">Moyenne & Écart-type</a></li>
-    <li class="nav-item"><a class="nav-link" onclick="downloadPNG()">Télécharger les graphiques</a></li>
 </ul>
 
 <!-- Card avec les stats
@@ -438,29 +437,6 @@ function changement(nom, value, type){
       break;
   }
 }
-
-function downloadPNG() {
-
-		var data = window.chartBar.toBase64Image();
-		var element = document.createElement('a');
-	  	element.setAttribute('href', data);
-	  	element.setAttribute('download', 'chartBar');
-	  	element.style.display = 'none';
-	  	document.body.appendChild(element);
-	  	element.click();
-
-      data = window.chartBoite.toBase64Image();
-      element.setAttribute('href', data);
-	  	element.setAttribute('download', 'boxplot');
-      element.click();
-
-      data = window.chartMoy.toBase64Image();
-      element.setAttribute('href', data);
-	  	element.setAttribute('download', 'chartMoy');
-      element.click();
-
-	  	document.body.removeChild(element);
-	}
 
 function genDataRepartition(type){
   var data = [];
