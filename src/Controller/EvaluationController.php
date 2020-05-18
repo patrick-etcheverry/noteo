@@ -355,7 +355,7 @@ class EvaluationController extends AbstractController
         //Création du formulaire de saisie des points
         $form = $this->createFormBuilder(["notes" => $notes])
             ->add('notes', CollectionType::class , [
-                'entry_type' => PointsType::class //Utilisation d'une collection de formulaire pour saisir les valeurs des notes (les formulaires portent sur les entités points
+                'entry_type' => PointsType::class, //Utilisation d'une collection de formulaire pour saisir les valeurs des notes (les formulaires portent sur les entités points
                                                   //passées en paramètre du formulaire)
             ])
             ->getForm();

@@ -117,29 +117,28 @@
         $( "input[type='text']" ).change(function() {
             elementsAEtudier = $(this).parent().parent().children(); //On récupère tous les td de la ligne
             totalPts = 0;
-            //Si il y a plus d'une partie à saisir
-            if(elementsAEtudier.length > 4) {
-                //On étudie pas les deux premiers td (nom et prénom de l'étudiant) ni le dernier (qui contiendra la note mise à jour)
-                for (var i = 2; i <= elementsAEtudier.length - 2; i++) {
-                    pointsARajouter = parseFloat(elementsAEtudier[i].children[elementsAEtudier[i].children.length - 1].value);
-                    //On teste si la valeur rentrée n'est pas composée de caractères
-                    if (!isNaN(pointsARajouter)) {
-                        if (pointsARajouter != -1) {
-                            totalPts += pointsARajouter;
-                        }
+
+            //On étudie pas les deux premiers td (nom et prénom de l'étudiant) ni le dernier (qui contiendra la note mise à jour)
+            for (var i = 2; i <= elementsAEtudier.length - 2; i++) {
+                pointsARajouter = parseFloat(elementsAEtudier[i].children[elementsAEtudier[i].children.length - 1].value);
+                //On teste si la valeur rentrée n'est pas composée de caractères
+                if (!isNaN(pointsARajouter)) {
+                    if (pointsARajouter != -1) {
+                        totalPts += pointsARajouter;
                     }
                 }
-                //Mise à jour du total
-                if(totalPts > 20) {
-                    $(elementsAEtudier[elementsAEtudier.length - 1]).html(totalPts)
-                    $(elementsAEtudier[elementsAEtudier.length - 1]).css('color', 'red')
-                    $(elementsAEtudier[elementsAEtudier.length - 1]).append("<i class='icon-attention-circled'></i>")
-                }
-                else {
-                    $(elementsAEtudier[elementsAEtudier.length - 1]).html(totalPts)
-                    $(elementsAEtudier[elementsAEtudier.length - 1]).css('color', '')
-                }
             }
+            //Mise à jour du total
+            if(totalPts > 20) {
+                $(elementsAEtudier[elementsAEtudier.length - 1]).html(totalPts)
+                $(elementsAEtudier[elementsAEtudier.length - 1]).css('color', 'red')
+                $(elementsAEtudier[elementsAEtudier.length - 1]).append("<i class='icon-attention-circled'></i>")
+            }
+            else {
+                $(elementsAEtudier[elementsAEtudier.length - 1]).html(totalPts)
+                $(elementsAEtudier[elementsAEtudier.length - 1]).css('color', '')
+            }
+
         })
     </script>
 {% endblock %}
