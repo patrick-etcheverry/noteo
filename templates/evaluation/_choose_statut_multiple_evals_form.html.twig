@@ -1,0 +1,42 @@
+{{form_start(form)}}
+
+<h1 class="h4 mb-0 text-gray-800">Sélectionner le statut pour lequel vous souhaitez voir les statistiques</h1> <br>
+
+<div class="table-responsive table-hover">
+<table class="table" id= "sousGroupes">
+<thead>
+  <th></th>
+  <th>Nom</th>
+  <th>Effectif</th>
+  <th>Description</th>
+</thead>
+<tbody>
+
+{% if form.statuts is empty %}
+
+cheh
+
+{% else %}
+{% for statut in form.statuts %}
+
+{# store index of the category in a variable #}
+{% set index = statut.vars.value %}
+
+{# get entity object from its index in the Categories Field #}
+{% set entity = form.statuts.vars.choices[index].data %}
+<tr>
+        <td>{{form_widget(form.statuts[index])}}</td>
+        <td>{{entity.nom}}</td>
+        <td>{{entity.etudiants.count}}</td>
+        <td>{{entity.description}}</td>
+</tr>
+{% endfor %}
+{% endif %}
+</tbody>
+</table>
+
+<div class='bouton' align=center>
+  <button class="d-sm-inline-block btn btn-sm btn-primary shadow-sm">Choisir les évaluations</button>
+</div>
+
+{{form_end(form)}}
