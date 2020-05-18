@@ -282,8 +282,6 @@ class EvaluationController extends AbstractController
             $evaluation->setDate($data["date"]);
             $evaluation->setGroupe($groupeConcerne);
 
-            $tabEtudiants = $groupeConcerne->getEtudiants(); //Ce tableau contient tous les étudiants concernés par l'évaluation, pour pouvoir créer les points dans la 3e étape de la création
-
             $arbreInitial = [ // tableau qui sera utilisé pour initialiser la création des parties à la page suivante
                 'id' => 1,
                 'text' => $data["nom"],
@@ -293,20 +291,19 @@ class EvaluationController extends AbstractController
                 'tags' => ['/20']
             ];
 
-            $request->getSession()->set('evaluation',$evaluation); // Mise en session de l'objet évaluation créé pour le transporter entre les méthodes
+            $request->getSession()->set('evaluation',$evaluation); // Mise en session de l'objet évaluation créé pour le persister à la fonction suivante une fois les parties créées
             $request->getSession()->set('arbre_json',$arbreInitial); // Pour récupérer le tableau lors du chargement de la vue suivante
-            $request->getSession()->set('etudiants', $tabEtudiants); // Les étudiants concernés par l'évaluation
             return $this->redirectToRoute("creation_parties_eval");
         }
         return $this->render('evaluation/saisie_info_eval_par_parties.html.twig', [
-            'form' => $formEval->createView()
+            'form' => $formEval->createView(),
         ]);
     }
 
     /**
      * @Route("/creation-parties", name="creation_parties_eval", methods={"GET","POST"})
      */
-    public function creationParties(Request $request): Response
+    public function creationParties(Request $request, GroupeEtudiantRepository $repo): Response
     {
         $form = $this->createFormBuilder()
             ->add('arbre', HiddenType::class) // Pour pouvoir stocker le tableau des parties et le récupérer lors de la validation
@@ -316,14 +313,17 @@ class EvaluationController extends AbstractController
             $data = $form->getData();
             $arbrePartiesRecupere = json_decode(urldecode($data['arbre'])); //Récupération des parties créées par l'utilisateur
             $tableauParties = []; //Initialisation du tableau qui contiendra les parties
+            //récupération des objets Partie depuis l'arborescence créée dans le JSON
             $this->definirPartiesDepuisTableauJS($request->getSession()->get('evaluation'), $arbrePartiesRecupere[0], $tableauParties);
-            //On déplace la première partie (celle représentant la note à l'évaluation) à la fin du tableau des parties pour saisir sa note en dernier
-            if(count($tableauParties) > 1) {
-                $temp = $tableauParties[0];
-                unset($tableauParties[0]);
-                array_push($tableauParties, $temp);
+            $entityManager = $this->getDoctrine()->getManager();
+            $evaluation = $request->getSession()->get('evaluation');
+            $evaluation->setGroupe($repo->findOneById($evaluation->getGroupe())); //On refait le lien avec le groupe sinon le manager essaye de le persist lui aussi comme si c'était une nouvelle entité
+            $evaluation->setEnseignant($this->getUser());
+            $entityManager->persist($evaluation);
+            foreach ($tableauParties as $partie) {
+                $entityManager->persist($partie);
             }
-            $request->getSession()->set('parties', $tableauParties); //Mise en session des parties créées pour la suite
+            $entityManager->flush();
             return $this->redirectToRoute('saisie_notes_parties_eval');
         }
         return $this->render('evaluation/creation_arborescence_parties.html.twig', [
