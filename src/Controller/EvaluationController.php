@@ -352,7 +352,6 @@ class EvaluationController extends AbstractController
         //Récupération de l'évaluation créée au départ et des parties créées précédemment
         $partiesASaisir = $repoPartie->findLowestPartiesByEvaluationIdWithGrades($evaluation->getId());
         $notes = $repoPoints->findAllFromLowestParties($evaluation->getId());
-
         //Création du formulaire de saisie des points
         $form = $this->createFormBuilder(["notes" => $notes])
             ->add('notes', CollectionType::class , [
@@ -364,51 +363,31 @@ class EvaluationController extends AbstractController
         $form->handleRequest($request);
 
         if($form->isSubmitted() && $form->isValid()) {
+            $entityManager = $this->getDoctrine()->getManager();
             //récupération des données
             $data = $form->getData();
             $notes = $data['notes'];
-            $evaluation = $request->getSession()->get('evaluation');
-            $parties = $request->getSession()->get('parties');
-            $entityManager = $this->getDoctrine()->getManager();
-            //Pour que le manager puisse les créer en base de données, on va devoir repréciser les liens entre les entités créées précédemment (parties, points, étudiants, évaluation, enseignant).
-            //En l'état actuel le manager va penser que toutes les entités sont à persister. Par exemple evaluation->getEnseignant() : Le manager va essayer de persister un nouvel enseignant avec
-            //cette entité ce qui va causer une erreur car elle exister déjà
-            //Liens pour évaluation
-            $evaluation->setEnseignant($this->getUser());
-            $evaluation->setGroupe($repoGroupe->findOneById($evaluation->getGroupe()->getId()));
-            $entityManager->persist($evaluation);
 
-            //Persistence des parties
-            foreach ($parties as $partie) {
-                $partie->setEvaluation($evaluation);
-                $entityManager->persist($partie);
+            //Enregistrement des notes saisies
+            foreach ($notes as $note) {
+                $entityManager->persist($note);
             }
 
-            //On replace la partie représentant l'évaluation au début du tableau des parties
-            $partieEvaluation = array_pop($parties);
-            array_unshift($parties, $partieEvaluation);
-
-            //On va devoir recréer les liens entre les entités points et les parties et étudiant. On parcours alors les entités points avec un intervalle égal au nombre de parties.
-            //Si x est le nombre de parties, on sait que les xèmes premières correspondent à un étudiant, les x suivantes à un autre, et ainsi de suite
-            $intervalle =count($parties);
-            $nbEtudiants = count($evaluation->getGroupe()->getEtudiants());
-            //Initialisiation du parcours
-            $premierIndexaTraiter = 0;
-            $dernierIndexATraiter = $intervalle -1;
-            //Parcours
-            for($i = 0; $i < $nbEtudiants ; $i++ ) {
-                $partieCourante = 0;
-                for($j = $premierIndexaTraiter; $j <= $dernierIndexATraiter ; $j++ ) {
-                    $notes[$j]->setEtudiant($evaluation->getGroupe()->getEtudiants()[$i]);
-                    $notes[$j]->setPartie($parties[$partieCourante]);
-                    $entityManager->persist($notes[$j]);
-                    $partieCourante++;
+            //On va traiter les parties dans l'order invese (partir à chaque fois du plus bas et remonter)
+            $partiesACalculer = $repoPartie->findHighestByEvaluation($evaluation->getId());
+            foreach ($evaluation->getGroupe()->getEtudiants() as $etudiant) {
+                foreach ($partiesACalculer as $partie) {
+                    $sommePtsSousPartie = 0;
+                    foreach ($partie->getChildren() as $sousPartie ) {
+                        $point = $repoPoints->findByPartieAndByStudent($sousPartie->getId(), $etudiant->getId());
+                        $sommePtsSousPartie += $point->getValeur();
+                    }
+                    $point = $repoPoints->findByPartieAndByStudent($partie->getId(), $etudiant->getId());
+                    $point->setValeur($sommePtsSousPartie);
+                    $entityManager->persist($point);
                 }
-                //Préparation du tout suivant
-                $premierIndexaTraiter = $dernierIndexATraiter + 1;
-                $dernierIndexATraiter = $dernierIndexATraiter + $intervalle;
             }
-            //Validation des modifications et libération de la place en mémoire des variables
+
             $entityManager->flush();
             return $this->redirectToRoute('evaluation_enseignant');
         }
