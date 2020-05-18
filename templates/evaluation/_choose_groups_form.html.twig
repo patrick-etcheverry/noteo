@@ -4,11 +4,11 @@
 <div class="table-responsive table-hover">
 <table class="table" id= "groupes">
 <thead>
+  <th></th>
   <th>Nom</th>
   <th>Effectif</th>
   <th>Description</th>
   <th>Créateur</th>
-  <th></th>
 </thead>
 <tbody>
   {% for groupe in form.groupes %}
@@ -19,6 +19,7 @@
     {# get entity object from its index in the Categories Field #}
     {% set entity = form.groupes.vars.choices[index].data %}
       <tr>
+          <td>{{form_widget(form.groupes[index])}}</td>
           <td>
               {# Indentation du groupe en fonction de son niveau pour avoir une décomposition #}
               {% if entity.lvl > 0 %}
@@ -31,7 +32,6 @@
           <td>{{ entity.etudiants|length }}</td>
           <td>{{entity.description}}</td>
           <td>{{entity.enseignant.prenom}} {{entity.enseignant.nom}}</td>
-          <td>{{form_widget(form.groupes[index])}}</td>
       </tr>
   {% endfor %}
 </tbody>
@@ -42,10 +42,10 @@
 <div class="table-responsive table-hover">
 <table class="table" id= "statuts">
 <thead>
+  <th></th>
   <th>Nom</th>
   <th>Description</th>
   <th>Créateur</th>
-  <th></th>
 </thead>
 <tbody>
 
@@ -57,10 +57,10 @@
     {# get entity object from its index in the Categories Field #}
     {% set entity = form.statuts.vars.choices[index].data %}
       <tr>
+          <td>{{form_widget(form.statuts[index])}}</td>
           <td>{{entity.nom}}</td>
           <td>{{entity.description}}</td>
           <td>{{entity.enseignant.prenom}} {{entity.enseignant.nom}}</td>
-          <td>{{form_widget(form.statuts[index])}}</td>
       </tr>
   {% endfor %}
 </tbody>

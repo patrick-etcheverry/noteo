@@ -13,6 +13,7 @@
 {% endblock %}
 
 {% block datatables %}
+
 <script type="text/javascript">
 
   var table = $('#groupes').DataTable({
@@ -23,7 +24,7 @@
       "url": "{{asset('tradfr.json')}}"
     },
     aaSorting : [],
-    columns: [null, null,{"orderable": false},null,{"orderable": false}],
+    columns: [{"orderable": false}, null, null, {"orderable": false}, null],
     lengthMenu: [
       [15, 30, 45, -1],
       [15, 30, 45, "Tout"]
@@ -36,4 +37,5 @@
     table.rows().nodes().page.len(-1).draw(); // Cette fonction permet, avant la soumission du formulaire, d'afficher dans le DOM toutes les lignes du tableau pour qu'aucune ne soit ignorée
   });
 </script>
+
 {% endblock %}
