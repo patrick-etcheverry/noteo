@@ -52,11 +52,8 @@ class EvaluationController extends AbstractController
     public function previsualisationMail(Evaluation $evaluation, PointsRepository $pointsRepository): Response
     {
       $nbEtudiants = count($pointsRepository->findNotesAndEtudiantByEvaluation($evaluation));
-
       $nomGroupe = $evaluation->getGroupe()->getNom();
-
       $this->denyAccessUnlessGranted('EVALUATION_PREVISUALISATION_MAIL', $evaluation);
-
       return $this->render('evaluation/previsualisationMail.html.twig',[
         'evaluation' => $evaluation,
         'nbEtudiants' => $nbEtudiants,
@@ -70,28 +67,20 @@ class EvaluationController extends AbstractController
      public function exempleMail(Request $request, EvaluationRepository $evaluationRepository, Evaluation $evaluation, PointsRepository $pointsRepository): Response
      {
          $this->denyAccessUnlessGranted('EVALUATION_EXEMPLE_MAIL', $evaluation);
-
          // Récupération de la session
          $session = $request->getSession();
          // Récupération des stats mises en session
          $stats = $session->get('stats');
-
          $notesEtudiants = $pointsRepository->findNotesAndEtudiantByEvaluation($evaluation);
-
          $tabRang = $pointsRepository->findUniqueByGroupe($evaluation->getId(),$evaluation->getGroupe()->getId());
          $copieTabRang = array();
-
          foreach ($tabRang as $element) {
              $copieTabRang[] = $element["valeur"];
          }
-
          $effectif = sizeof($copieTabRang);
-
          $noteEtudiant = $notesEtudiants[0]->getValeur();
          $position = array_search($noteEtudiant, $copieTabRang) + 1;
-
          $mailAdmin = $_ENV['MAIL_ADMINISTRATEUR'];
-
          return $this->render('evaluation/mailEnvoye.html.twig',[
            'etudiantsEtNotes' => $notesEtudiants[0],
            'stats' => $stats,
@@ -112,20 +101,14 @@ class EvaluationController extends AbstractController
         $session = $request->getSession();
         // Récupération des stats mises en session
         $stats = $session->get('stats');
-
         $notesEtudiants = $pointsRepository->findNotesAndEtudiantByEvaluation($evaluation);
-
         $tabRang = $pointsRepository->findUniqueByGroupe($evaluation->getId(),$evaluation->getGroupe()->getId());
         $copieTabRang = array();
-
         foreach ($tabRang as $element) {
             $copieTabRang[] = $element["valeur"];
         }
-
         $effectif = sizeof($copieTabRang);
-
         $mailAdmin = $_ENV['MAIL_ADMINISTRATEUR'];
-
         for ($i=0; $i < count($notesEtudiants); $i++) {
           $noteEtudiant = $notesEtudiants[$i]->getValeur();
           $position = array_search($noteEtudiant, $copieTabRang) + 1;
@@ -141,15 +124,12 @@ class EvaluationController extends AbstractController
                 'effectif' => $effectif,
                 'mailAdmin' => $mailAdmin
           ]),'text/html');
-
           $mailer->send($message);
         }
-
         $this->addFlash(
           'info',
           'L\'envoi des mails a été effectué avec succès.'
         );
-
         return $this->render('evaluation/stats.html.twig', [
             'groupes' => $stats,
             'evaluation' => $evaluation
@@ -185,7 +165,6 @@ class EvaluationController extends AbstractController
           $etudiant->addPoint($note);
           $partie->addNote($note);
         }
-
         //Création du formulaire pour saisir les informations de l'évaluation (le formulaire n'est pas lié à une entité)
         $form = $this->createFormBuilder(['notes' => $partie->getNotes()])
             ->add('nom', TextType::class,[
@@ -275,14 +254,12 @@ class EvaluationController extends AbstractController
             ->getForm()
         ;
         $formEval->handleRequest($request);
-
         if($formEval->isSubmitted() && $formEval->isValid()) {
             $data = $formEval->getData(); //Récupération des données du formulaire
             //Mise en session des données de l'évaluation pour la créer à l'action suivante
             $request->getSession()->set('nomEval',$data["nom"]);
             $request->getSession()->set('dateEval', $data["date"]);
             $request->getSession()->set('idGroupeEval',$groupeConcerne->getId());
-
             $arbreInitial = [ // tableau qui sera utilisé pour initialiser la création des parties à la page suivante
                 'id' => 1,
                 'text' => $data["nom"],
@@ -437,10 +414,12 @@ class EvaluationController extends AbstractController
     /**
      * @Route("/consulter/{slug}", name="evaluation_show", methods={"GET"})
      */
-    public function show(Evaluation $evaluation): Response
+    public function show(Evaluation $evaluation, PointsRepository $repoPoints): Response
     {
+        $notes = $repoPoints->findAllByEvaluation($evaluation->getId());
         return $this->render('evaluation/show.html.twig', [
             'evaluation' => $evaluation,
+            'notes' => $notes
         ]);
     }
 
@@ -474,23 +453,15 @@ class EvaluationController extends AbstractController
             'entry_type' => PointsType::class
           ])
           ->getForm();
-
       $form->handleRequest($request);
-
       if ($form->isSubmitted()  && $form->isValid()) {
-
           $entityManager = $this->getDoctrine()->getManager();
-
           $data = $form->getData();
-
           $evaluation->setNom($data["nom"]);
           $evaluation->setDate($data["date"]);
-
           $this->validerEntite($evaluation, $validator);
-
           $entityManager->persist($evaluation);
           $entityManager->persist($partie);
-
           foreach ($partie->getNotes() as $note) {
             if ($note->getValeur() > $partie->getBareme()) {
               $note->setValeur($partie->getBareme());
@@ -501,16 +472,11 @@ class EvaluationController extends AbstractController
             $this->validerEntite($note, $validator);
             $entityManager->persist($note);
           }
-
           $entityManager->flush();
-
-
-              return $this->redirectToRoute('evaluation_show',[
-                'slug' => $evaluation->getSlug()
-              ]);
-
+          return $this->redirectToRoute('evaluation_show',[
+            'slug' => $evaluation->getSlug()
+          ]);
       }
-
       return $this->render('evaluation/edit.html.twig', [
           'evaluation' => $evaluation,
           'form' => $form->createView()
@@ -523,12 +489,9 @@ class EvaluationController extends AbstractController
     public function delete(Request $request, Evaluation $evaluation): Response
     {
         $this->denyAccessUnlessGranted('EVALUATION_DELETE', $evaluation);
-
         $entityManager = $this->getDoctrine()->getManager();
-
         //Suppression des parties associées à l'évaluation
         foreach ($evaluation->getParties() as $partie) {
-
           //Suppression des notes associées à la partie
           foreach ($partie->getNotes() as $note) {
             $entityManager->remove($note);
@@ -537,7 +500,6 @@ class EvaluationController extends AbstractController
         }
         $entityManager->remove($evaluation);
         $entityManager->flush();
-
         if($this->getUser()->getId() == $evaluation->getEnseignant()->getId()) {
             return $this->redirectToRoute('evaluation_enseignant',['id' => $this->getUser()->getId()]);
         }
@@ -552,7 +514,6 @@ class EvaluationController extends AbstractController
     public function chooseGroup(Request $request, GroupeEtudiantRepository $repoGroupe): Response
     {
       $groupes = $repoGroupe->findAllWithoutNonEvaluableGroups();
-
       $form = $this->createFormBuilder()
           ->add('groupes', EntityType::class, [
             'constraints' => [new NotNull],
@@ -565,15 +526,10 @@ class EvaluationController extends AbstractController
             'choices' => $groupes
           ])
           ->getForm();
-
       $form->handleRequest($request);
-
       if ($form->isSubmitted()  && $form->isValid()) {
-
         return $this->redirectToRoute('evaluation_new',['slug' => $form->get("groupes")->getData()->getSlug()]);
-
       }
-
       return $this->render('evaluation/choix_groupe.html.twig', ['groupes' => $groupes,'form' => $form->createView()]);
     }
 
@@ -584,16 +540,12 @@ class EvaluationController extends AbstractController
     {
         // Récupération de la session
         $session = $request->getSession();
-
         //On récupere l'évaluation que l'on traite pour afficher ses informations générales dans les statistiques
         $evaluation = $repoEval->findOneBySlug($slugEval);
-
         //On récupère le groupe concerné par l'évaluation
         $groupeConcerne = $repoGroupe->findOneBySlug($slugGroupe);
-
         //On récupère la liste de tous les enfants (directs et indirects) du groupe concerné pour choisir ceux sur lesquels on veut des statistiques
         $choixGroupe = $repoGroupe->findAllOrderedFromNode($groupeConcerne);
-
         //Création du formulaire pour choisir les groupes / status sur lesquels on veut des statistiques
         $form = $this->createFormBuilder()
             ->add('groupes', EntityType::class, [
@@ -616,27 +568,19 @@ class EvaluationController extends AbstractController
               // 'choices' => []
             ])
             ->getForm();
-
         $form->handleRequest($request);
-
         if ($form->isSubmitted()  && $form->isValid()) {
-
             $listeStatsParGroupe = array(); // On initialise un tableau vide qui contiendra les statistiques des groupes choisis
-
             $listeStatsParStatut = array(); // On initialise un tableau vide qui contiendra les statistiques des statuts choisis
-
             //Pour tous les groupes sélectionnés
             foreach ($form->get("groupes")->getData() as $groupe) {
-
                 //On récupère toutes les notes du groupe courant
                 $tabPoints = $repoPoints->findByGroupe($slugEval, $groupe->getSlug());
-
                 //On crée une copie de tabPoints qui contiendra les valeurs des notes pour simplifier le tableau renvoyé par la requete
                 $copieTabPoints = array();
                 foreach ($tabPoints as $element) {
                     $copieTabPoints[] = $element["valeur"];
                 }
-
                 //On remplit le tableau qui contiendra toutes les statistiques du groupe
                 $listeStatsParGroupe[] = array("nom" => $groupe->getNom(),
                                              "notes" => $this->repartition($copieTabPoints),
@@ -647,17 +591,13 @@ class EvaluationController extends AbstractController
                                              "mediane" => $this->mediane($copieTabPoints)
                                              );
             }
-
             //Pour tous les statuts sélectionnés
             foreach ($form->get("statuts")->getData() as $statut) {
-
                 $tabPoints = $repoPoints->findByStatut($slugEval, $statut->getSlug());
-
                 $copieTabPoints = array();
                 foreach ($tabPoints as $note) {
                     $copieTabPoints[] = $note["valeur"];
                 }
-
                 $listeStatsParStatut[] = array("nom" => $statut->getNom(),
                                                "notes" => $this->repartition($copieTabPoints),
                                                "moyenne" => $this->moyenne($copieTabPoints),
@@ -667,18 +607,14 @@ class EvaluationController extends AbstractController
                                                "mediane" => $this->mediane($copieTabPoints)
                                                );
             }
-
             $groupes = array_merge($listeStatsParGroupe, $listeStatsParStatut); // On fusionne les deux tableaux pour éviter le dédoublement des traitements dans la vue
-
             // Mise en session des stats
             $session->set('stats',$groupes);
-
             return $this->render('evaluation/stats.html.twig', [
                 'groupes' => $groupes,
                 'evaluation' => $evaluation
             ]);
         }
-
         return $this->render('evaluation/choix_groupes.html.twig', [
             'form' => $form->createView(),
             'evaluation' => $evaluation
@@ -704,7 +640,6 @@ class EvaluationController extends AbstractController
           $repartition[4]++;
         }
       }
-
       return $repartition;
     }
 
@@ -717,7 +652,6 @@ class EvaluationController extends AbstractController
         $nbNotes++;
         $moyenne += $note;
       }
-
       if($nbNotes != 0){
         $moyenne = $moyenne/$nbNotes;
       }
@@ -738,7 +672,6 @@ class EvaluationController extends AbstractController
         $ecartType = $ecartType + pow(($note - $moyenne), 2);
         $nbNotes++;
       }
-
       if ($nbNotes != 0) {
         $ecartType = sqrt($ecartType/$nbNotes);
       }
@@ -784,9 +717,7 @@ class EvaluationController extends AbstractController
     public function mediane($tabPoints)
     {
       $mediane = 0;
-
       $nbValeurs = count($tabPoints);
-
       if(!empty($tabPoints)) {
         if ($nbValeurs % 2 == 1) //Si il y a un nombre impair de valeurs, la médiane vaut la valeur au milieu du tableau
         {

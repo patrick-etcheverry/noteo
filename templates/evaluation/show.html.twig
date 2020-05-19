@@ -47,24 +47,31 @@
         <thead>
           <th>Nom</th>
           <th>Prénom</th>
-          <th>Note</th>
+          {% if evaluation.parties|length != 1 %}
+          {% for partie in evaluation.parties %}
+              <th>{{ partie.intitule }}</th>
+          {% endfor %}
+          {% else %}
+              <th>Note</th>
+          {% endif %}
         </thead>
         <tbody>
-          {% for partie in evaluation.parties %}
-          {% for note in partie.notes %}
-          <tr>
-            <td>{{note.etudiant.nom}}</td>
-            <td>{{note.etudiant.prenom}}</td>
-            <td>
-                {% if note.valeur == -1 %}
-                    Absent
-                {% else %}
-                    {{note.valeur}}
-                {% endif %}
-            </td>
-          </tr>
-          {% endfor %}
-          {% endfor %}
+        {% if notes is not empty %}
+            {% set premiereNoteAAfficher = 0 %}
+            {% set derniereNoteAAfficher = (premiereNoteAAfficher +  evaluation.parties|length) -1  %}
+            {% for etudiant in evaluation.groupe.etudiants %}
+                <tr>
+                    <td>{{ etudiant.nom }}</td>
+                    <td>{{ etudiant.prenom }}</td>
+                    {# Pour chaque étudiant, on affiche les x notes suivantes du tableau de notes passé (x étant le nombre de parties) #}
+                    {% for i in premiereNoteAAfficher..derniereNoteAAfficher %}
+                        <td>{{ notes[i].valeur }}</td>
+                    {% endfor %}
+                    {% set premiereNoteAAfficher = premiereNoteAAfficher + evaluation.parties|length %}
+                    {% set derniereNoteAAfficher = (derniereNoteAAfficher + evaluation.parties|length) %}
+                </tr>
+            {% endfor %}
+        {% endif %}
         </tbody>
       </table>
 </div>
@@ -73,6 +80,16 @@
 {% block datatables %}
 
 <script type="text/javascript">
+
+    {#  Définition dynamique en fonction du nombre de parties d'un tableau qui permet à Datatables de déterminer si les colonnes sont triables ou non #}
+    {% set tableauColonnes = [null,null] %}
+    {% if evaluation.parties|length != 1 %}
+        {% for partie in evaluation.parties %}
+            {% set tableauColonnes = tableauColonnes |merge([{orderable: false}]) %}
+        {% endfor %}
+    {% else%}
+    {% set tableauColonnes = [null,null, {orderable: false}] %}
+    {% endif %}
 
 var table = $('#etud').DataTable({
                 language: {
@@ -84,6 +101,7 @@ var table = $('#etud').DataTable({
                 order: [
                   [0, "asc"]
                 ],
+                columns: {{ tableauColonnes | json_encode | raw }},
                 lengthMenu: [
                     [15, 30, 45, -1],
                     [15, 30, 45, "Tout"]

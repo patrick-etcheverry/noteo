@@ -19,10 +19,6 @@ class PointsRepository extends ServiceEntityRepository
         parent::__construct($registry, Points::class);
     }
 
-    /**
-    * @return Points[] Returns an array of Points objects
-    */
-
     public function findByPartieAndByStudent($idPartie, $idEtudiant)
     {
         return $this->createQueryBuilder('n')
@@ -34,6 +30,23 @@ class PointsRepository extends ServiceEntityRepository
             ->setParameter('idEtudiant', $idEtudiant)
             ->getQuery()
             ->getSingleResult()
+            ;
+    }
+
+    public function findAllByEvaluation($idEvaluation)
+    {
+        return $this->createQueryBuilder('n')
+            ->addSelect('p')
+            ->addSelect('et')
+            ->join('n.partie', 'p')
+            ->join('n.etudiant', 'et')
+            ->join('p.evaluation', 'ev')
+            ->andWhere('ev.id = :idEval')
+            ->setParameter('idEval', $idEvaluation)
+            ->addOrderBy('et.id', 'ASC')
+            ->addOrderBy('p.id', 'ASC')
+            ->getQuery()
+            ->getResult()
             ;
     }
 
