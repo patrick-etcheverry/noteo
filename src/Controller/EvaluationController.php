@@ -8,6 +8,7 @@ use App\Entity\Partie;
 use App\Entity\Statut;
 use App\Entity\Points;
 use App\Entity\GroupeEtudiant;
+use App\Repository\PartieRepository;
 use App\Repository\StatutRepository;
 use App\Repository\PointsRepository;
 use App\Repository\EvaluationRepository;
@@ -191,9 +192,8 @@ class EvaluationController extends AbstractController
               'constraints' => [
                   new NotBlank,
                   new Length(['max' => 255]),
-                  new Regex(['pattern' => '/[a-zA-Z0-9]/', 'message' => 'Le nom donné ne correspond pas aux critères demandés'])
-              ],
-              'help' => 'Le nom de l\'évaluation doit contenir au moins un chiffre ou une lettre'
+                  new Regex(['pattern' => '/[a-zA-Z0-9]/', 'message' => 'Le nom de l\'évaluation doit contenir au moins un chiffre ou une lettre'])
+              ]
             ])
             ->add('date', DateType::class, [
               'widget' => 'single_text',
@@ -265,9 +265,8 @@ class EvaluationController extends AbstractController
                 'constraints' => [
                     new NotBlank,
                     new Length(['max' => 255]),
-                    new Regex(['pattern' => '/[a-zA-Z0-9]/', 'message' => 'Le nom donné ne correspond pas aux critères demandés'])
+                    new Regex(['pattern' => '/[a-zA-Z0-9]/', 'message' => 'Le nom de l\'évaluation doit contenir au moins un chiffre ou une lettre'])
                 ],
-                'help' => 'Le nom de l\'évaluation doit contenir au moins un chiffre ou une lettre'
             ])
             ->add('date', DateType::class, [
                 'widget' => 'single_text',
@@ -279,151 +278,134 @@ class EvaluationController extends AbstractController
 
         if($formEval->isSubmitted() && $formEval->isValid()) {
             $data = $formEval->getData(); //Récupération des données du formulaire
-            $evaluation = new Evaluation();
-            $evaluation->setNom($data["nom"]);
-            $evaluation->setDate($data["date"]);
-            $evaluation->setGroupe($groupeConcerne);
-
-            $tabEtudiants = []; //Ce tableau contient tous les étudiants concernés par l'évaluation, pour pouvoir créer les points plus tard
-            foreach ($groupeConcerne->getEtudiants() as $etudiant) {
-                $tabEtudiants[] = $etudiant;
-            }
+            //Mise en session des données de l'évaluation pour la créer à l'action suivante
+            $request->getSession()->set('nomEval',$data["nom"]);
+            $request->getSession()->set('dateEval', $data["date"]);
+            $request->getSession()->set('idGroupeEval',$groupeConcerne->getId());
 
             $arbreInitial = [ // tableau qui sera utilisé pour initialiser la création des parties à la page suivante
                 'id' => 1,
-                'text' => 'Evaluation',
-                'nom' => 'Evaluation',
+                'text' => $data["nom"],
+                'nom' => $data["nom"],
                 'bareme' => 20,
                 'state' => ['expanded' => true],
                 'tags' => ['/20']
             ];
-
-            $request->getSession()->set('evaluation',$evaluation); // Mise en session de l'objet évaluation créé pour le transporter entre les méthodes
-            $request->getSession()->set('arbre_json',$arbreInitial); // Pour récupérer le tableau lors du chargement de la vue suivante
-            $request->getSession()->set('etudiants', $tabEtudiants); // Les étudiants concernés par l'évaluation
+            $request->getSession()->set('arbre_json',$arbreInitial); // Pour récupérer le tableau lors du chargement de la vue de l'action suivante
             return $this->redirectToRoute("creation_parties_eval");
         }
-        return $this->render('evaluation/saisie_info_eval.html.twig', [
-            'form' => $formEval->createView()
+        return $this->render('evaluation_parties/saisie_info_eval_par_parties.html.twig', [
+            'form' => $formEval->createView(),
         ]);
     }
 
     /**
      * @Route("/creation-parties", name="creation_parties_eval", methods={"GET","POST"})
      */
-    public function creationParties(Request $request): Response
+    public function creationParties(Request $request, GroupeEtudiantRepository $repo): Response
     {
         $form = $this->createFormBuilder()
             ->add('arbre', HiddenType::class) // Pour pouvoir stocker le tableau des parties et le récupérer lors de la validation
             ->getForm();
         $form->handleRequest($request);
         if($form->isSubmitted()) {
+            $entityManager = $this->getDoctrine()->getManager();
             $data = $form->getData();
             $arbrePartiesRecupere = json_decode(urldecode($data['arbre'])); //Récupération des parties créées par l'utilisateur
             $tableauParties = []; //Initialisation du tableau qui contiendra les parties
-            $this->definirPartiesDepuisTableauJS($request->getSession()->get('evaluation'), $arbrePartiesRecupere[0], $tableauParties);
-            //On déplace la première partie (celle représentant la note à l'évaluation) à la fin du tableau des parties pour saisir sa note en dernier
-            if(count($tableauParties) > 1) {
-                $temp = $tableauParties[0];
-                unset($tableauParties[0]);
-                array_push($tableauParties, $temp);
+            $evaluation = new Evaluation();
+            $evaluation->setNom($request->getSession()->get("nomEval"));
+            $evaluation->setDate($request->getSession()->get("dateEval"));
+            $evaluation->setGroupe($repo->findOneById($request->getSession()->get("idGroupeEval"))); //On refait le lien avec le groupe sinon le manager essaye de le persist lui aussi comme si c'était une nouvelle entité
+            $evaluation->setEnseignant($this->getUser());
+            $entityManager->persist($evaluation);
+            //récupération des objets Partie depuis l'arborescence créée dans le JSON et mise en base de données
+            $this->definirPartiesDepuisTableauJS($evaluation, $arbrePartiesRecupere[0], $tableauParties);
+            foreach ($tableauParties as $partie) {
+                $entityManager->persist($partie);
             }
-            $request->getSession()->set('parties', $tableauParties); //Mise en session des parties créées pour la suite
-            return $this->redirectToRoute('saisie_notes_parties_eval');
+            //Creation des entités points correspondant à l'évaluation et toutes ses parties et mise en base de données
+            foreach ($evaluation->getGroupe()->getEtudiants() as $etudiant) {
+                foreach ($tableauParties as $partie) {
+                    $note = new Points();
+                    $note->setEtudiant($etudiant);
+                    $note->setPartie($partie);
+                    $note->setValeur(0);
+                    $entityManager->persist($note);
+                }
+            }
+            $entityManager->flush();
+            return $this->redirectToRoute('saisie_notes_parties_eval', [
+                'slug' => $evaluation->getSlug()
+            ]);
         }
-        return $this->render('evaluation/creation_arborescence_parties.html.twig', [
+        return $this->render('evaluation_parties/creation_arborescence_parties.html.twig', [
             'form' => $form->createView()
         ]);
     }
 
     /**
-     * @Route("/saisie-notes-parties", name="saisie_notes_parties_eval", methods={"GET","POST"})
+     * @Route("/saisie-notes-parties/{slug}", name="saisie_notes_parties_eval", methods={"GET","POST"})
      */
-    public function saisieNotesParties(Request $request, GroupeEtudiantRepository $repoGroupe): Response
+    public function saisieNotesParties(Request $request, Evaluation $evaluation, EvaluationRepository $repoEval, PartieRepository $repoPartie, PointsRepository $repoPoints): Response
     {
         //Récupération de l'évaluation créée au départ et des parties créées précédemment
-        $eval = $request->getSession()->get('evaluation');
-        $etudiants = $request->getSession()->get('etudiants');
-        $parties = $request->getSession()->get('parties');
-        $tabPoints = []; //Tableau qui contiendra les entités point dont on doit saisir la valeur
-
-        //Création des points à saisir pour l'évaluation
-        foreach ($etudiants as $etudiant) {
-            foreach ($parties as $partie) {
-                $point = new Points();
-                $point->setEtudiant($etudiant);
-                $point->setPartie($partie);
-                $point->setValeur(0);
-                //L'ordre dans lequel les points sont ajoutés dans ce tableau est important pour la saisie des notes
-                //Si x est le nombre de parties de l'évaluation, les xèmes premieres entités Points dont on doit saisir la valeur correspondent à l'étudiant 1 et ainsi de suite
-                $tabPoints[] = $point;
-            }
-        }
-
+        $partiesASaisir = $repoPartie->findLowestPartiesByEvaluationIdWithGrades($evaluation->getId());
+        $notes = $repoPoints->findAllFromLowestParties($evaluation->getId());
         //Création du formulaire de saisie des points
-        $form = $this->createFormBuilder(['notes' => $tabPoints])
+        $form = $this->createFormBuilder(["notes" => $notes])
             ->add('notes', CollectionType::class , [
-                'entry_type' => PointsType::class //Utilisation d'une collection de formulaire pour saisir les valeurs des notes (les formulaires portent sur les entités points
+                'entry_type' => PointsType::class, //Utilisation d'une collection de formulaire pour saisir les valeurs des notes (les formulaires portent sur les entités points
                                                   //passées en paramètre du formulaire)
             ])
             ->getForm();
 
         $form->handleRequest($request);
 
-        if($form->isSubmitted()) {
+        if($form->isSubmitted() && $form->isValid()) {
+            $entityManager = $this->getDoctrine()->getManager();
             //récupération des données
             $data = $form->getData();
             $notes = $data['notes'];
-            $evaluation = $request->getSession()->get('evaluation');
-            $parties = $request->getSession()->get('parties');
-            $entityManager = $this->getDoctrine()->getManager();
-//            //Pour que le manager puisse les créer en base de données, on va devoir repréciser les liens entre les entités créées précédemment (parties, points, étudiants, évaluation, enseignant).
-//            //En l'état actuel le manager va penser que toutes les entités sont à persister. Par exemple evaluation->getEnseignant() : Le manager va essayer de persister un nouvel enseignant avec
-//            //cette entité ce qui va causer une erreur car elle exister déjà
-//            //Liens pour évaluation
-            $evaluation->setEnseignant($this->getUser());
-            $evaluation->setGroupe($repoGroupe->findOneById($evaluation->getGroupe()->getId()));
-            $entityManager->persist($evaluation);
-
-            //Persistence des parties
-            foreach ($parties as $partie) {
-                $partie->setEvaluation($evaluation);
-                $entityManager->persist($partie);
+            //Enregistrement des notes saisies
+            foreach ($notes as $note) {
+                $entityManager->persist($note);
             }
-
-            //On replace la partie représentant l'évaluation au début du tableau des parties
-            $partieEvaluation = array_pop($parties);
-            array_unshift($parties, $partieEvaluation);
-
-            //On va devoir recréer les liens entre les entités points et les parties et étudiant. On parcours alors les entités points avec un intervalle égal au nombre de parties.
-            //Si x est le nombre de parties, on sait que les xèmes premières correspondent à un étudiant, les x suivantes à un autre, et ainsi de suite
-            $intervalle =count($parties);
-            $nbEtudiants = count($evaluation->getGroupe()->getEtudiants());
-            //Initialisiation du parcours
-            $premierIndexaTraiter = 0;
-            $dernierIndexATraiter = $intervalle -1;
-            //Parcours
-            for($i = 0; $i < $nbEtudiants ; $i++ ) {
-                $partieCourante = 0;
-                for($j = $premierIndexaTraiter; $j <= $dernierIndexATraiter ; $j++ ) {
-                    $notes[$j]->setEtudiant($evaluation->getGroupe()->getEtudiants()[$i]);
-                    $notes[$j]->setPartie($parties[$partieCourante]);
-                    $entityManager->persist($notes[$j]);
-                    $partieCourante++;
+            //Calcul des notes supérieures
+            //On récupère les parties dont la note n'a pas été calculée (celles qui ont au moins une sous-partie). Les parties sont organisées des plus basses aux plus hautes
+            $partiesACalculer = $repoPartie->findHighestByEvaluation($evaluation->getId());
+            foreach ($evaluation->getGroupe()->getEtudiants() as $etudiant) {
+                foreach ($partiesACalculer as $partie) {
+                    $sommePtsSousPartie = 0;
+                    $sousParties = $partie->getChildren();
+                    //On fait la somme des notes obtenues aux sous parties
+                    foreach ($sousParties as $sousPartie ) {
+                        $point = $repoPoints->findByPartieAndByStudent($sousPartie->getId(), $etudiant->getId());
+                        //On ne prend pas en compte -1 dans le calcul total
+                        if ($point->getValeur() >= 0) {
+                            $sommePtsSousPartie += $point->getValeur();
+                        }
+                    }
+                    //On met à jour
+                    $point = $repoPoints->findByPartieAndByStudent($partie->getId(), $etudiant->getId());
+                    //Si la note est inférieure à 0 c'est que l'étudiant était absent, on met donc à jour
+                    if($sommePtsSousPartie < 0 ) {
+                        $point->setValeur(-1);
+                    }
+                    else {
+                        $point->setValeur($sommePtsSousPartie);
+                    }
+                    $entityManager->persist($point);
                 }
-                //Préparation du tout suivant
-                $premierIndexaTraiter = $dernierIndexATraiter + 1;
-                $dernierIndexATraiter = $dernierIndexATraiter + $intervalle;
             }
-            //Validation des modifications et libération de la place en mémoire des variables
             $entityManager->flush();
             return $this->redirectToRoute('evaluation_enseignant');
         }
-        return $this->render('evaluation/saisie_notes_parties.html.twig', [
-            'evaluation' => $eval,
+        return $this->render('evaluation_parties/saisie_notes_parties.html.twig', [
             'form' => $form->createView(),
-            'parties' => $parties,
-            'etudiants' => $etudiants
+            'evaluation' => $evaluation,
+            'parties' => $partiesASaisir,
+            'etudiants' => $evaluation->getGroupe()->getEtudiants(),
         ]);
     }
 
@@ -478,11 +460,10 @@ class EvaluationController extends AbstractController
           ->add('nom', TextType::class, [
             'data' => $evaluation->getNom(),
             'constraints' => [
-                new Regex(['pattern' => '/[a-zA-Z0-9]/', 'message' => 'Le nom donné ne correspond pas aux critères demandés']),
+                new Regex(['pattern' => '/[a-zA-Z0-9]/', 'message' => 'Le nom de l\'évaluation doit contenir au moins un chiffre ou une lettre']),
                 new NotBlank(),
                 new Length(['max' => 255]),
-            ],
-            'help' => 'Le nom de l\'évaluation doit contenir au moins un chiffre ou une lettre'
+            ]
           ])
           ->add('date', DateType::class, [
             'widget' => 'single_text',

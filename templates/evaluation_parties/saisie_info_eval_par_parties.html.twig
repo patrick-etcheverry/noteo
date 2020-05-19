@@ -1,13 +1,14 @@
 {% extends 'base.html.twig' %}
 
-{% block titrePage %}Créer une évaluation par parties{% endblock %}
+{% block titrePage %}Créer une évaluation avec des parties{% endblock %}
 
 {% block evaluations %}active{% endblock %}
 
 {% block show %}show{% endblock %}
 
+{% block mesEvaluations %}active{% endblock %}
+
 {% block contenu %}
-    <h1 class="h4 mb-0 text-gray-800">Saisir les informations de l'évaluation</h1> <br>
     {{ form_start(form) }}
         <div class="table-responsive">
             <table align="center" class="table">
@@ -24,7 +25,6 @@
             </table>
         </div>
         <div class='bouton' align=center>
-            <a href="{{ path('evaluation_enseignant') }}" class="d-sm-inline-block btn btn-sm btn-secondary shadow-sm">Annuler</a>
             <button class="d-sm-inline-block btn btn-sm btn-primary shadow-sm">Créer les parties</button>
         </div>
     {{ form_end(form) }}

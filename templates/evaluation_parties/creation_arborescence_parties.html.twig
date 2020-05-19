@@ -1,10 +1,12 @@
 {% extends 'base.html.twig' %}
 
-{% block titrePage %}Créer des parties pour {{ app.session.get('evaluation').nom }}{% endblock %}
+{% block titrePage %}Créer des parties pour {{ app.session.get('nomEval') }}{% endblock %}
 
 {% block evaluations %}active{% endblock %}
 
 {% block show %}show{% endblock %}
+
+{% block mesEvaluations %}active{% endblock %}
 
 {% block stylesheets %}
     <style>
@@ -35,14 +37,14 @@
         </div>
         <div class="col-lg-4">
             <div class='bouton' align=center>
-                <button class="btn btn-success" onclick="onCreerPartie()" title="Créer une sous-partie" data-toggle="tooltip"><i class="icon-plus"></i></button>
-                <button id="boutonModifier" class="btn btn-primary" onclick="onModifierPartie()" title="Modifier une partie" data-toggle="tooltip"><i class="icon-pencil-1"></i> </button>
-                <button id="boutonSupprimer" class="btn btn-danger" onclick="onSupprimerPartie()" title="Supprimer une partie" data-toggle="tooltip"><i class="icon-trash"></i> </button>
+                <button class="btn btn-success" onclick="onCreerPartie()" title="Créer une sous-partie pour la partie sélectionnée" data-toggle="tooltip"><i class="icon-plus"></i></button>
+                <button id="boutonModifier" class="btn btn-primary" onclick="onModifierPartie()" title="Modifier la partie sélectionnée" data-toggle="tooltip"><i class="icon-pencil-1"></i> </button>
+                <button id="boutonSupprimer" class="btn btn-danger" onclick="onSupprimerPartie()" title="Supprimer la partie sélectionnée" data-toggle="tooltip"><i class="icon-trash"></i> </button>
             </div>
             <div id="arbre_boot">
             </div>
             <div class='bouton' align=center>
-                <button onclick='$("#modaleValidationCreation").modal()' class="d-sm-inline-block btn btn-sm btn-primary shadow-sm">Saisir les notes</button>
+                <button onclick='onConfirmerCreation()' class="d-sm-inline-block btn btn-sm btn-primary shadow-sm">Saisir les notes</button>
             </div>
         </div>
         <div class="col-lg-4">
@@ -91,7 +93,7 @@
                     </button>
                 </div>
                 <div class="modal-body">
-                    <div style="text-align: center; font-weight: bold">Vous n'avez pas selectionné de partie !</div>
+                    <div style="text-align: center; font-weight: bold">Vous n'avez pas selectionné de partie</div>
                     <br>
                     <ul>
                         <li>Pour ajouter une nouvelle partie, veuillez cliquer sur une partie dans le tableau à laquelle vous voulez ajouter une sous-partie</li>
@@ -116,7 +118,11 @@
                     </button>
                 </div>
                 <div class="modal-body">
-                    Une fois l'évaluation créée, vous ne pourrez plus modifier ses parties. Êtes-vous sûr de vouloir créer ces parties ?
+                    <div class="red" id="erreur-pas-de-parties">
+                        <i class="icon-attention-circled"></i>Vous n'avez pas créé de parties pour l'évaluation.
+                        <br><br>
+                    </div>
+                    Une fois validé, vous ne pourrez plus modifier les parties de cette évaluation.
                 </div>
                 <div class="modal-footer">
                     {{ form_start(form) }}
@@ -139,6 +145,16 @@
         $("[name='form']").on('submit', function () {
             $("[name='form[arbre]']").val(encodeURIComponent(JSON.stringify(tree)))
         })
+
+        function onConfirmerCreation() {
+            $("#modaleValidationCreation").modal();
+
+            //On cache par défaut le message d'erreur si aucune partie n'a été créée pour ensuite le faire apparaitre si les conditions sont vérifiées (si l'évaluation n'a aucune partie
+            $("#erreur-pas-de-parties").css("display", "none")
+            if(tree[0].nodes == undefined) {
+                $("#erreur-pas-de-parties").css("display", "block")
+            }
+        }
 
         function onCreerPartie() {
             var partieSelectionnee = $('#arbre_boot').treeview('getSelected');

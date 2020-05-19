@@ -23,21 +23,18 @@ class PointsRepository extends ServiceEntityRepository
     * @return Points[] Returns an array of Points objects
     */
 
-    public function findByEvaluation($id)
+    public function findByPartieAndByStudent($idPartie, $idEtudiant)
     {
-        return $this->getEntityManager()->createQuery('
-            SELECT p.valeur
-            FROM App\Entity\Points p
-            JOIN p.etudiant et
-            JOIN p.partie pa
-            JOIN pa.evaluation ev
-            WHERE ev.id = :id
-            AND et.estDemissionaire = 0
-            AND p.valeur >= 0
-            ORDER BY p.valeur ASC
-        ')
-            ->setParameter('id', $id)
-            ->execute();
+        return $this->createQueryBuilder('n')
+            ->join('n.partie', 'p')
+            ->join('n.etudiant', 'e')
+            ->andWhere('p.id = :idPartie')
+            ->andWhere('e.id = :idEtudiant')
+            ->setParameter('idPartie', $idPartie)
+            ->setParameter('idEtudiant', $idEtudiant)
+            ->getQuery()
+            ->getSingleResult()
+            ;
     }
 
     public function findNotesAndEtudiantByEvaluation($evaluation)
@@ -60,19 +57,19 @@ class PointsRepository extends ServiceEntityRepository
     * @return Points[] Returns an array of Points objects
     */
 
-    public function findByPartie($id)
+    public function findAllFromLowestParties($idEvaluation)
     {
         return $this->getEntityManager()->createQuery('
-            SELECT p.valeur
+            SELECT p
             FROM App\Entity\Points p
             JOIN p.partie pa
+            JOIN pa.evaluation ev
             JOIN p.etudiant et
-            WHERE pa.id = :id
-            AND p.valeur >= 0
-            AND et.estDemissionnaire = 0
-            ORDER BY p.valeur ASC
+            WHERE ev.id = :idEvaluation
+            AND pa.rgt = pa.lft + 1
+            ORDER BY et.id ASC, pa.lft ASC
             ')
-            ->setParameter('id', $id)
+            ->setParameter('idEvaluation', $idEvaluation)
             ->execute();
     }
 
