@@ -33,17 +33,23 @@
             <thead>
             <th>Nom</th>
             <th>Prénom</th>
-            {% for partie in parties %}
+            {% if parties|length != 1 %}
+                {% for partie in parties %}
+                    <th>
+                        {% if partie.parent is not null and partie.lvl > 1 %}
+                            {{ partie.parent.intitule ~ " -" | nl2br }} {# Sortie : NomParent -\n #}
+                        {% endif %}
+                        {{ partie.intitule }} (/{{ partie.bareme }})
+                    </th>
+                {% endfor %}
+                    <th>
+                        Note finale (/20)
+                    </th>
+            {% else%}
                 <th>
-                    {% if partie.parent is not null and partie.lvl > 1 %}
-                        {{ partie.parent.intitule ~ " -" | nl2br }} {# Sortie : NomParent -\n #}
-                    {% endif %}
-                    {{ partie.intitule }} (/{{ partie.bareme }})
+                    Note finale (/20)
                 </th>
-            {% endfor %}
-            <th>
-                Note finale (/20)
-            </th>
+            {% endif %}
             </thead>
             <tbody>
             {% if form.vars.value.notes is not empty %}
@@ -53,13 +59,15 @@
                     <tr>
                         <td>{{ etudiant.nom }}</td>
                         <td>{{ etudiant.prenom }}</td>
-{#                         Pour chaque étudiant, on affiche x formulaires pour saisir les notes (x étant le nombre de parties)#}
+                        {# Pour chaque étudiant, on affiche x formulaires pour saisir les notes (x étant le nombre de parties) #}
                         {% for i in premierFormulaireAAfficher..dernierFormulaireAAfficher %}
                             <td>{{ form_errors(form.notes[i].valeur) }}{{form_widget(form.notes[i].valeur)}}</td>
                         {% endfor %}
                         {% set premierFormulaireAAfficher = premierFormulaireAAfficher + parties | length %}
                         {% set dernierFormulaireAAfficher = (dernierFormulaireAAfficher + parties|length) %}
+                        {% if parties|length != 1 %}
                         <td>0</td>
+                        {% endif %}
                     </tr>
                 {% endfor %}
             {% endif %}
@@ -75,10 +83,14 @@
 {% block datatables %}
     {#  Définition dynamique en fonction du nombre de parties d'un tableau qui permet à Datatables de déterminer si les colonnes sont triables ou non #}
     {% set tableauColonnes = [null,null] %}
-    {% for partie in parties %}
+    {% if parties|length != 1 %}
+        {% for partie in parties %}
+            {% set tableauColonnes = tableauColonnes |merge([{orderable: false}]) %}
+        {% endfor %}
         {% set tableauColonnes = tableauColonnes |merge([{orderable: false}]) %}
-    {% endfor %}
-    {% set tableauColonnes = tableauColonnes |merge([{orderable: false}]) %}
+    {% else%}
+        {% set tableauColonnes = [null,null, {orderable: false}] %}
+    {% endif %}
 
     <script type="text/javascript">
         //Activation de Datatables sur le tableau d'ajout des étudiants
@@ -110,34 +122,36 @@
 {% endblock %}
 
 {% block javascripts %}
-    <script>
-        //Cet écouteur d'évenement va attendre qu'un champ input text de la page soit changé.
-        //Quand ce sera le cas, il va mettre à jour le total de la ligne correspondante
-        $( "input[type='text']" ).change(function() {
-            elementsAEtudier = $(this).parent().parent().children(); //On récupère tous les td de la ligne
-            totalPts = 0;
+    {% if parties|length != 1 %}
+        <script>
+            //Cet écouteur d'évenement va attendre qu'un champ input text de la page soit changé.
+            //Quand ce sera le cas, il va mettre à jour le total de la ligne correspondante
+            $( "input[type='text']" ).change(function() {
+                elementsAEtudier = $(this).parent().parent().children(); //On récupère tous les td de la ligne
+                totalPts = 0;
 
-            //On étudie pas les deux premiers td (nom et prénom de l'étudiant) ni le dernier (qui contiendra la note mise à jour)
-            for (var i = 2; i <= elementsAEtudier.length - 2; i++) {
-                pointsARajouter = parseFloat(elementsAEtudier[i].children[elementsAEtudier[i].children.length - 1].value);
-                //On teste si la valeur rentrée n'est pas composée de caractères
-                if (!isNaN(pointsARajouter)) {
-                    if (pointsARajouter != -1) {
-                        totalPts += pointsARajouter;
+                //On étudie pas les deux premiers td (nom et prénom de l'étudiant) ni le dernier (qui contiendra la note mise à jour)
+                for (var i = 2; i <= elementsAEtudier.length - 2; i++) {
+                    pointsARajouter = parseFloat(elementsAEtudier[i].children[elementsAEtudier[i].children.length - 1].value);
+                    //On teste si la valeur rentrée n'est pas composée de caractères
+                    if (!isNaN(pointsARajouter)) {
+                        if (pointsARajouter != -1) {
+                            totalPts += pointsARajouter;
+                        }
                     }
                 }
-            }
-            //Mise à jour du total
-            if(totalPts > 20) {
-                $(elementsAEtudier[elementsAEtudier.length - 1]).html(totalPts)
-                $(elementsAEtudier[elementsAEtudier.length - 1]).css('color', 'red')
-                $(elementsAEtudier[elementsAEtudier.length - 1]).append("<i class='icon-attention-circled'></i>")
-            }
-            else {
-                $(elementsAEtudier[elementsAEtudier.length - 1]).html(totalPts)
-                $(elementsAEtudier[elementsAEtudier.length - 1]).css('color', '')
-            }
+                //Mise à jour du total
+                if(totalPts > 20) {
+                    $(elementsAEtudier[elementsAEtudier.length - 1]).html(totalPts)
+                    $(elementsAEtudier[elementsAEtudier.length - 1]).css('color', 'red')
+                    $(elementsAEtudier[elementsAEtudier.length - 1]).append("<i class='icon-attention-circled'></i>")
+                }
+                else {
+                    $(elementsAEtudier[elementsAEtudier.length - 1]).html(totalPts)
+                    $(elementsAEtudier[elementsAEtudier.length - 1]).css('color', '')
+                }
 
-        })
-    </script>
+            })
+        </script>
+    {% endif %}
 {% endblock %}
