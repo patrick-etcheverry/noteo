@@ -36,8 +36,6 @@ class PointsRepository extends ServiceEntityRepository
     public function findAllByEvaluation($idEvaluation)
     {
         return $this->createQueryBuilder('n')
-            ->addSelect('p')
-            ->addSelect('et')
             ->join('n.partie', 'p')
             ->join('n.etudiant', 'et')
             ->join('p.evaluation', 'ev')

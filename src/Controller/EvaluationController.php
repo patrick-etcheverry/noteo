@@ -150,7 +150,7 @@ class EvaluationController extends AbstractController
     /**
      * @Route("/nouvelle/{slug}", name="evaluation_new", methods={"GET","POST"})
      */
-    public function new(Request $request, GroupeEtudiant $groupeConcerne, ValidatorInterface $validator): Response
+    public function new(Request $request, GroupeEtudiant $groupeConcerne): Response
     {
         //Création d'une évaluation vide avec tous ses composants (partie, notes(définies à 0 par défaut))
         $evaluation = new Evaluation();
@@ -195,14 +195,8 @@ class EvaluationController extends AbstractController
             $evaluation->setNom($data["nom"]); // Définition du nom de l'évaluation
             $evaluation->setDate($data["date"]); // -------- de la date -----------
             $evaluation->setEnseignant($this->getUser());
-
-            //Validation de l'entité hydratée à partir des données du formulaire
-            $this->validerEntite($evaluation, $validator);
-            $this->validerEntite($partie, $validator);
-
             $entityManager->persist($evaluation);
             $entityManager->persist($partie);
-
             foreach ($partie->getNotes() as $note) {
 
               //Si la note dépasse le barême de la partie, on réduit la note à la valeur du barême
@@ -212,13 +206,9 @@ class EvaluationController extends AbstractController
               if ($note->getValeur() < -1) { // On teste si une valeur inférieure à -1 est rentrée pour ramener la note à 0. -1 est autorisé pour remarquer les absents
                   $note->setValeur(0);
               }
-              //On valide l'entité note hydratée avec la collection de formulaires
-              $this->validerEntite($note, $validator);
               $entityManager->persist($note);
             }
-
             $entityManager->flush();
-
             if($this->getUser()->getId() == $evaluation->getEnseignant()->getId()) {
                 return $this->redirectToRoute('evaluation_enseignant',['id' => $this->getUser()->getId()]);
             }
@@ -230,6 +220,8 @@ class EvaluationController extends AbstractController
         return $this->render('evaluation/new.html.twig', [
             'evaluation' => $evaluation,
             'form' => $form->createView(),
+            'parties' => $partie,
+            'etudiants' => $evaluation->getGroupe()->getEtudiants()
         ]);
     }
 
@@ -298,6 +290,7 @@ class EvaluationController extends AbstractController
             $entityManager->persist($evaluation);
             //récupération des objets Partie depuis l'arborescence créée dans le JSON et mise en base de données
             $this->definirPartiesDepuisTableauJS($evaluation, $arbrePartiesRecupere[0], $tableauParties);
+            $tableauParties[0]->setIntitule("Évaluation");
             foreach ($tableauParties as $partie) {
                 $entityManager->persist($partie);
             }
@@ -312,7 +305,7 @@ class EvaluationController extends AbstractController
                 }
             }
             $entityManager->flush();
-            return $this->redirectToRoute('saisie_notes_parties_eval', [
+            return $this->redirectToRoute('evaluation_edit', [
                 'slug' => $evaluation->getSlug()
             ]);
         }
@@ -321,85 +314,15 @@ class EvaluationController extends AbstractController
         ]);
     }
 
-    /**
-     * @Route("/saisie-notes-parties/{slug}", name="saisie_notes_parties_eval", methods={"GET","POST"})
-     */
-    public function saisieNotesParties(Request $request, Evaluation $evaluation, EvaluationRepository $repoEval, PartieRepository $repoPartie, PointsRepository $repoPoints): Response
-    {
-        //Récupération de l'évaluation créée au départ et des parties créées précédemment
-        $partiesASaisir = $repoPartie->findLowestPartiesByEvaluationIdWithGrades($evaluation->getId());
-        $notes = $repoPoints->findAllFromLowestParties($evaluation->getId());
-        //Création du formulaire de saisie des points
-        $form = $this->createFormBuilder(["notes" => $notes])
-            ->add('notes', CollectionType::class , [
-                'entry_type' => PointsType::class, //Utilisation d'une collection de formulaire pour saisir les valeurs des notes (les formulaires portent sur les entités points
-                                                  //passées en paramètre du formulaire)
-            ])
-            ->getForm();
-
-        $form->handleRequest($request);
-
-        if($form->isSubmitted() && $form->isValid()) {
-            $entityManager = $this->getDoctrine()->getManager();
-            //récupération des données
-            $data = $form->getData();
-            $notes = $data['notes'];
-            //Enregistrement des notes saisies
-            foreach ($notes as $note) {
-                $entityManager->persist($note);
-            }
-            //Calcul des notes supérieures
-            //On récupère les parties dont la note n'a pas été calculée (celles qui ont au moins une sous-partie). Les parties sont organisées des plus basses aux plus hautes
-            $partiesACalculer = $repoPartie->findHighestByEvaluation($evaluation->getId());
-            foreach ($evaluation->getGroupe()->getEtudiants() as $etudiant) {
-                foreach ($partiesACalculer as $partie) {
-                    $sommePtsSousPartie = 0;
-                    $sousParties = $partie->getChildren();
-                    //On fait la somme des notes obtenues aux sous parties
-                    foreach ($sousParties as $sousPartie ) {
-                        $point = $repoPoints->findByPartieAndByStudent($sousPartie->getId(), $etudiant->getId());
-                        //On ne prend pas en compte -1 dans le calcul total
-                        if ($point->getValeur() >= 0) {
-                            $sommePtsSousPartie += $point->getValeur();
-                        }
-                    }
-                    //On met à jour
-                    $point = $repoPoints->findByPartieAndByStudent($partie->getId(), $etudiant->getId());
-                    //Si la note est inférieure à 0 c'est que l'étudiant était absent, on met donc à jour
-                    if($sommePtsSousPartie < 0 ) {
-                        $point->setValeur(-1);
-                    }
-                    else {
-                        $point->setValeur($sommePtsSousPartie);
-                    }
-                    $entityManager->persist($point);
-                }
-            }
-            $entityManager->flush();
-            return $this->redirectToRoute('evaluation_enseignant');
-        }
-        return $this->render('evaluation_parties/saisie_notes_parties.html.twig', [
-            'form' => $form->createView(),
-            'evaluation' => $evaluation,
-            'parties' => $partiesASaisir,
-            'etudiants' => $evaluation->getGroupe()->getEtudiants(),
-        ]);
-    }
-
-    public function validerEntite ($entite, $validator) {
-      //Utilisation de la méthode validate du validator pour valider l'entité selon les regles définies dans celle ci
-      $errors = $validator->validate($entite);
-      //Si erreur, retour d'un objet Response qui affichera les erreurs
-      if (count($errors) > 0) {
-          $errorsString = (string) $errors;
-          return new Response($errorsString);
-      }
-    }
-
     //Cette fonction permet, à partir du tableau récupéré de la vue de création des parties, de remplir un tableau d'objets parties exploitable par la suite
     public function definirPartiesDepuisTableauJS($evaluation, $partieCourante, &$tableauARemplir, $partieParent = null) {
         $partie = new Partie();
-        $partie->setIntitule($partieCourante->nom);
+        if ($partie->getIntitule() == $evaluation->getNom()) {
+            $partie->setIntitule("Évaluation");
+        }
+        else {
+            $partie->setIntitule($partieCourante->nom);
+        }
         $partie->setBareme($partieCourante->bareme);
         $partie->setEvaluation($evaluation);
         $partie->setParent($partieParent);
@@ -426,16 +349,14 @@ class EvaluationController extends AbstractController
     /**
      * @Route("/modifier/{slug}", name="evaluation_edit", methods={"GET","POST"})
      */
-    public function edit(Request $request, Evaluation $evaluation, ValidatorInterface $validator): Response
+    public function edit(Request $request, Evaluation $evaluation, PartieRepository $repoPartie, PointsRepository $repoPoints): Response
     {
       $this->denyAccessUnlessGranted('EVALUATION_EDIT', $evaluation);
 
-      ////////////POUR COMMENTAIRES VOIR METHODE NEW////////////
-      foreach ($evaluation->getParties() as $partie) {
-        $tab = $partie->getNotes();
-      }
+      $partiesASaisir = $repoPartie->findLowestPartiesByEvaluationIdWithGrades($evaluation->getId());
+      $notes = $repoPoints->findAllFromLowestParties($evaluation->getId());
 
-      $form = $this->createFormBuilder(['notes' => $tab])
+      $form = $this->createFormBuilder(['notes' => $notes])
           ->add('nom', TextType::class, [
             'data' => $evaluation->getNom(),
             'constraints' => [
@@ -450,7 +371,8 @@ class EvaluationController extends AbstractController
             'constraints' => [new NotBlank, new Date]
           ])
           ->add('notes', CollectionType::class , [
-            'entry_type' => PointsType::class
+              'entry_type' => PointsType::class, //Utilisation d'une collection de formulaire pour saisir les valeurs des notes (les formulaires portent sur les entités points
+              //passées en paramètre du formulaire)
           ])
           ->getForm();
       $form->handleRequest($request);
@@ -459,27 +381,45 @@ class EvaluationController extends AbstractController
           $data = $form->getData();
           $evaluation->setNom($data["nom"]);
           $evaluation->setDate($data["date"]);
-          $this->validerEntite($evaluation, $validator);
           $entityManager->persist($evaluation);
-          $entityManager->persist($partie);
-          foreach ($partie->getNotes() as $note) {
-            if ($note->getValeur() > $partie->getBareme()) {
-              $note->setValeur($partie->getBareme());
-            }
-            if ($note->getValeur() < -1) {
-                $note->setValeur(0);
-            }
-            $this->validerEntite($note, $validator);
-            $entityManager->persist($note);
+          $notes = $data['notes'];
+          foreach ($notes as $note) {
+              $entityManager->persist($note);
+          }
+          //Calcul des notes supérieures
+          //On récupère les parties dont la note n'a pas été calculée (celles qui ont au moins une sous-partie). Les parties sont organisées des plus basses aux plus hautes
+          $partiesACalculer = $repoPartie->findHighestByEvaluation($evaluation->getId());
+          foreach ($evaluation->getGroupe()->getEtudiants() as $etudiant) {
+              foreach ($partiesACalculer as $partie) {
+                  $sommePtsSousPartie = 0;
+                  $sousParties = $partie->getChildren();
+                  //On fait la somme des notes obtenues aux sous parties
+                  foreach ($sousParties as $sousPartie ) {
+                      $point = $repoPoints->findByPartieAndByStudent($sousPartie->getId(), $etudiant->getId());
+                      //On ne prend pas en compte -1 dans le calcul total
+                      if ($point->getValeur() >= 0) {
+                          $sommePtsSousPartie += $point->getValeur();
+                      }
+                  }
+                  $point = $repoPoints->findByPartieAndByStudent($partie->getId(), $etudiant->getId());
+                  //Si la note est inférieure à 0 c'est que l'étudiant était absent
+                  if($sommePtsSousPartie < 0 ) {
+                      $point->setValeur(-1);
+                  }
+                  else {
+                      $point->setValeur($sommePtsSousPartie);
+                  }
+                  $entityManager->persist($point);
+              }
           }
           $entityManager->flush();
-          return $this->redirectToRoute('evaluation_show',[
-            'slug' => $evaluation->getSlug()
-          ]);
+          return $this->redirectToRoute('evaluation_enseignant');
       }
       return $this->render('evaluation/edit.html.twig', [
           'evaluation' => $evaluation,
-          'form' => $form->createView()
+          'form' => $form->createView(),
+          'parties' => $partiesASaisir,
+          'etudiants' => $evaluation->getGroupe()->getEtudiants(),
       ]);
     }
 

@@ -49,10 +49,10 @@
           <th>Prénom</th>
           {% if evaluation.parties|length != 1 %}
           {% for partie in evaluation.parties %}
-              <th>{{ partie.intitule }}</th>
+              <th>{{ partie.intitule }} (/{{ partie.bareme }})</th>
           {% endfor %}
           {% else %}
-              <th>Note</th>
+              <th>Note (/20)</th>
           {% endif %}
         </thead>
         <tbody>
