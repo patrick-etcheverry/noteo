@@ -294,7 +294,7 @@ class EvaluationController extends AbstractController
             $request->getSession()->set('arbre_json',$arbreInitial); // Pour récupérer le tableau lors du chargement de la vue de l'action suivante
             return $this->redirectToRoute("creation_parties_eval");
         }
-        return $this->render('evaluation/saisie_info_eval_par_parties.html.twig', [
+        return $this->render('evaluation_parties/saisie_info_eval_par_parties.html.twig', [
             'form' => $formEval->createView(),
         ]);
     }
@@ -339,7 +339,7 @@ class EvaluationController extends AbstractController
                 'slug' => $evaluation->getSlug()
             ]);
         }
-        return $this->render('evaluation/creation_arborescence_parties.html.twig', [
+        return $this->render('evaluation_parties/creation_arborescence_parties.html.twig', [
             'form' => $form->createView()
         ]);
     }
@@ -401,7 +401,7 @@ class EvaluationController extends AbstractController
             $entityManager->flush();
             return $this->redirectToRoute('evaluation_enseignant');
         }
-        return $this->render('evaluation/saisie_notes_parties.html.twig', [
+        return $this->render('evaluation_parties/saisie_notes_parties.html.twig', [
             'form' => $form->createView(),
             'evaluation' => $evaluation,
             'parties' => $partiesASaisir,
