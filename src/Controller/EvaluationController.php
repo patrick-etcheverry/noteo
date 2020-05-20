@@ -385,7 +385,6 @@ class EvaluationController extends AbstractController
               foreach ($partiesACalculer as $partie) {
                   $sommePtsSousPartie = 0;
                   $sousParties = $partie->getChildren();
-
                   $etudiantAbsent = true; //On suppose que l'étudiant est absent à cette partie sauf si on trouve une note supérieure à -1 dans les sous parties (il peut avoir manqué seulement une partie de l'évaluation ainsi)
                   //On fait la somme des notes obtenues aux sous parties
                   foreach ($sousParties as $sousPartie ) {
@@ -452,17 +451,18 @@ class EvaluationController extends AbstractController
       $form = $this->createFormBuilder()
           ->add('groupes', EntityType::class, [
             'constraints' => [new NotNull],
-            'class' => GroupeEtudiant::Class, //On veut choisir des groupes
-            'choice_label' => false, // On n'affichera pas d'attribut de l'entité à côté du bouton pour aider au choix car on liste les entités en utilisant les variables du champ
-            'label' => false, // On n'affiche pas le label du champ
-            'mapped' => false, // Pour que l'attribut ne soit pas immédiatement mis en BD mais soit récupérable après soumission du formulaire
-            'expanded' => true, // Pour avoir des boutons
-            'multiple' => false, // radios
+            'class' => GroupeEtudiant::Class,
+            'choice_label' => false,
+            'label' => false,
+            'mapped' => false,
+            'expanded' => true,
+            'multiple' => false,
             'choices' => $groupes
           ])
           ->getForm();
       $form->handleRequest($request);
       if ($form->isSubmitted()  && $form->isValid()) {
+        //En fonction du type d'évaluation correct on renvoie sur la bonne route avec le groupe choisi
         if (strcmp($typeEval, "simple") == 0 ) {
             return $this->redirectToRoute('evaluation_new',['slug' => $form->get("groupes")->getData()->getSlug()]);
         }
@@ -480,23 +480,29 @@ class EvaluationController extends AbstractController
      */
     public function chooseGroups(Request $request, $slugEval, $slugGroupe, StatutRepository $repoStatut, EvaluationRepository $repoEval, GroupeEtudiantRepository $repoGroupe, PointsRepository $repoPoints ): Response
     {
-        // Récupération de la session
         $session = $request->getSession();
-        //On récupere l'évaluation que l'on traite pour afficher ses informations générales dans les statistiques
         $evaluation = $repoEval->findOneBySlug($slugEval);
-        //On récupère le groupe concerné par l'évaluation
         $groupeConcerne = $repoGroupe->findOneBySlug($slugGroupe);
         //On récupère la liste de tous les enfants (directs et indirects) du groupe concerné pour choisir ceux sur lesquels on veut des statistiques
         $choixGroupe = $repoGroupe->findAllOrderedFromNode($groupeConcerne);
-        //Création du formulaire pour choisir les groupes / status sur lesquels on veut des statistiques
         $form = $this->createFormBuilder()
+            ->add('parties', EntityType::class, [
+                'class' => Partie::Class,
+                'choice_label' => false,
+                'label' => false,
+                'mapped' => false,
+                'expanded' => true,
+                'multiple' => true,
+                'required' => true,
+                'choices' => $evaluation->getParties() // On choisira parmis le groupe concerné et ses enfants
+            ])
             ->add('groupes', EntityType::class, [
-              'class' => GroupeEtudiant::Class, //On veut choisir des groupes
-              'choice_label' => false, // On n'affichera pas d'attribut de l'entité à côté du bouton pour aider au choix car on liste les entités en utilisant les variables du champ
-              'label' => false, // On n'affiche pas le label du champ
-              'mapped' => false, // Pour que l'attribut ne soit pas immédiatement mis en BD mais soit récupérable après soumission du formulaire
-              'expanded' => true, // Pour avoir des cases
-              'multiple' => true, // à cocher
+              'class' => GroupeEtudiant::Class,
+              'choice_label' => false,
+              'label' => false,
+              'mapped' => false,
+              'expanded' => true,
+              'multiple' => true,
               'choices' => $choixGroupe // On choisira parmis le groupe concerné et ses enfants
             ])
             ->add('statuts', EntityType::class, [
@@ -559,7 +565,7 @@ class EvaluationController extends AbstractController
                 'evaluation' => $evaluation
             ]);
         }
-        return $this->render('evaluation/choix_groupes.html.twig', [
+        return $this->render('evaluation/choix_groupes_et_parties.html.twig', [
             'form' => $form->createView(),
             'evaluation' => $evaluation
         ]);
