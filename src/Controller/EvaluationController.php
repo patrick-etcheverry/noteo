@@ -96,7 +96,6 @@ class EvaluationController extends AbstractController
     public function envoiMail(Request $request, EvaluationRepository $evaluationRepository, Evaluation $evaluation, PointsRepository $pointsRepository, \Swift_Mailer $mailer): Response
     {
         $this->denyAccessUnlessGranted('EVALUATION_ENVOI_MAIL', $evaluation);
-
         // Récupération de la session
         $session = $request->getSession();
         // Récupération des stats mises en session
@@ -112,7 +111,6 @@ class EvaluationController extends AbstractController
         for ($i=0; $i < count($notesEtudiants); $i++) {
           $noteEtudiant = $notesEtudiants[$i]->getValeur();
           $position = array_search($noteEtudiant, $copieTabRang) + 1;
-
           $message = (new \Swift_Message('Noteo - ' . $evaluation->getNom()))
           ->setFrom($_ENV['UTILISATEUR_SMTP'])
           ->setTo($notesEtudiants[$i]->getEtudiant()->getMail())
@@ -183,11 +181,8 @@ class EvaluationController extends AbstractController
                                                 //passées en paramètre du formulaire)
             ])
             ->getForm();
-
         $form->handleRequest($request);
-
         if ($form->isSubmitted() && $form->isValid()) {
-
             $entityManager = $this->getDoctrine()->getManager();
             $data = $form->getData(); //Récupération des données du formulaire
             $evaluation->setNom($data["nom"]); // Définition du nom de l'évaluation
@@ -350,10 +345,8 @@ class EvaluationController extends AbstractController
     public function edit(Request $request, Evaluation $evaluation, PartieRepository $repoPartie, PointsRepository $repoPoints): Response
     {
       $this->denyAccessUnlessGranted('EVALUATION_EDIT', $evaluation);
-
       $partiesASaisir = $repoPartie->findLowestPartiesByEvaluationIdWithGrades($evaluation->getId());
       $notes = $repoPoints->findAllFromLowestParties($evaluation->getId());
-
       $form = $this->createFormBuilder(['notes' => $notes])
           ->add('nom', TextType::class, [
             'data' => $evaluation->getNom(),
@@ -451,9 +444,9 @@ class EvaluationController extends AbstractController
     }
 
     /**
-     * @Route("/choisir-groupe", name="evaluation_choose_group")
+     * @Route("/{typeEval}/choisir-groupe/", name="evaluation_choose_group")
      */
-    public function chooseGroup(Request $request, GroupeEtudiantRepository $repoGroupe): Response
+    public function chooseGroup(Request $request, GroupeEtudiantRepository $repoGroupe, $typeEval): Response
     {
       $groupes = $repoGroupe->findAllWithoutNonEvaluableGroups();
       $form = $this->createFormBuilder()
@@ -470,7 +463,14 @@ class EvaluationController extends AbstractController
           ->getForm();
       $form->handleRequest($request);
       if ($form->isSubmitted()  && $form->isValid()) {
-        return $this->redirectToRoute('evaluation_new',['slug' => $form->get("groupes")->getData()->getSlug()]);
+        if (strcmp($typeEval, "simple") == 0 ) {
+            return $this->redirectToRoute('evaluation_new',['slug' => $form->get("groupes")->getData()->getSlug()]);
+        }
+        else {
+            if (strcmp($typeEval, "avec-parties") == 0 ) {
+                return $this->redirectToRoute('evaluation_avec_parties_new',['slug' => $form->get("groupes")->getData()->getSlug()]);
+            }
+        }
       }
       return $this->render('evaluation/choix_groupe.html.twig', ['groupes' => $groupes,'form' => $form->createView()]);
     }

@@ -20,7 +20,8 @@
 {% if evaluations is not empty %}
 {% if mine %}
 <div class='bouton' align=center>
-  <a class="d-sm-inline-block btn btn-sm btn-primary shadow-sm" href="{{ path('evaluation_choose_group') }}">Créer une évaluation</a>
+  <a class="d-sm-inline-block btn btn-sm btn-primary shadow-sm" href="{{ path('evaluation_choose_group', {'typeEval':'simple'}) }}">Créer une évaluation</a>
+  <a class="d-sm-inline-block btn btn-sm btn-primary shadow-sm" href="{{ path('evaluation_choose_group', {'typeEval':'avec-parties'}) }}">Créer une évaluation avec des parties</a>
 </div>
 {% endif %}
 <div class="table-responsive table-hover">
@@ -73,11 +74,12 @@
   <div class="info">
     <h1 class="h4 mb-0 text-gray-800">{% if mine %}Vous n'avez{% else %}Les autres enseignants n'ont{% endif %} aucune évaluation</h1>
   </div>
-  {% if mine %}
-<div class='bouton' align=center>
-    <a class="d-sm-inline-block btn btn-sm btn-primary shadow-sm" href="{{ path('evaluation_choose_group') }}">Créer une évaluation</a>
+{% if mine %}
+  <div class='bouton' align=center>
+    <a class="d-sm-inline-block btn btn-sm btn-primary shadow-sm" href="{{ path('evaluation_choose_group', {'typeEval':'simple'}) }}">Créer une évaluation</a>
+    <a class="d-sm-inline-block btn btn-sm btn-primary shadow-sm" href="{{ path('evaluation_choose_group', {'typeEval':'avec-parties'}) }}">Créer une évaluation avec des parties</a>
   </div>
-  {% endif %}
+{% endif %}
 
 {% endif %}
 
