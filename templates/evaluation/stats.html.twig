@@ -12,6 +12,7 @@
 {% block collapsed %}{% endblock %}
 
 {% block contenu %}
+  {{ dump(parties) }}
 <div class="table-responsive">
 <table align="center" class="table">
   <tbody>
@@ -21,7 +22,7 @@
     </tr>
     <tr>
       <th class="intitule"><label for="evaluation_date" >Date de l'évaluation</label></th>
-      <td >{{evaluation.date}}</td>
+      <td >{{evaluation.date | date("d/m/Y")}}</td>
     </tr>
     <tr>
       <th class="intitule"><label >Actions</label></th>
@@ -44,7 +45,7 @@
 <div class='bouton' align=center>
   <span style="font-size:15px" class="badge badge-pill badge-primary"><i class="icon-attention-circled"></i> Les statistiques ne prennent pas en compte les étudiants démissionaires ou absents</span>
 </div>
-{% if groupes is not empty %}
+{% if parties is not empty %}
 
 <ul class="nav nav-tabs">
     <li class="nav-item"><a class="nav-link active" data-toggle="tab" href="#Repartition_Histogramme">Répartition (Histogramme)</a></li>
@@ -106,7 +107,7 @@
     </div>
     <div class="card-body">
     {% set tabCounter = 0 %}
-    {% for groupe in groupes %}
+    {% for groupe in parties[0].stats %}
       <div class="form-check form-check-inline">
         <input class="form-check-input" type="checkbox" id="{{groupe.nom}}" onChange="changement(this.id, this.checked, 'histo')">
         <label class="form-check-label" for="inlineCheckbox1" id="label_{{groupe.nom}}_histo">{{groupe.nom}}</label>
@@ -133,7 +134,7 @@
     </div>
     <div class="card-body">
     {% set tabCounter = 0 %}
-    {% for groupe in groupes %}
+    {% for groupe in parties[0].stats %}
       <div class="form-check form-check-inline">
         <input class="form-check-input" type="checkbox" id="{{groupe.nom}}" onChange="changement(this.id, this.checked, 'bam')">
         <label class="form-check-label" for="inlineCheckbox1" id="label_{{groupe.nom}}_bam">{{groupe.nom}}</label>
@@ -160,7 +161,7 @@
     </div>
     <div class="card-body">
     {% set tabCounter = 0 %}
-    {% for groupe in groupes %}
+    {% for groupe in parties[0].stats %}
       <div class="form-check form-check-inline">
         <input class="form-check-input" type="checkbox" id="{{groupe.nom}}" onChange="changement(this.id, this.checked, 'moy')">
         <label class="form-check-label" for="inlineCheckbox1" id="label_{{groupe.nom}}_moy">{{groupe.nom}}</label>
@@ -230,7 +231,7 @@
   ];
 
   // passage de la liste groupes de twig à js
-  var groupes = "{{groupes|json_encode()}}";
+  var groupes = "{{parties[0].stats|json_encode()}}";
   groupes = groupes.replace(/&quot;/g, "\""); // remplacement de toutes les itérations de ' &quot; ' par ' " '
   groupes = JSON.parse(groupes);
 
@@ -535,179 +536,179 @@ function contains(array, element){
 
 </script>
 
-<!-- Patie dédié au la génération du pdf -->
-<script type="text/javascript">
+{#<!-- Patie dédié au la génération du pdf -->#}
+{#<script type="text/javascript">#}
 
-  var xStat = 200
-  var xLabelStat = 30
-  var xRepartition = 475
-  var xIntervalle = 330
-  var xTitre = 300
-  var yTitre = 50
-  var y = 100
-  var deltaY = 20
-  var numeroCarte = 1
-
-
-  function genPDF(){
-    var nomEval = "{{evaluation.nom}}"
-    var nomGroupe = "{{evaluation.groupe.nom}}"
-    var date = "{{evaluation.date}}"
-    var doc = new jsPDF('p','pt','a4');
-    var longueur = nomEval.length
-
-    //Définition du haut du PDF
-    if (longueur < 35) {
-      doc.setFontSize(35)
-    }
-    if (longueur < 50 && longueur > 34) {
-      doc.setFontSize(25)
-    }
-    if (longueur > 49 && longueur < 70) {
-      doc.setFontSize(20)
-    }
-    if (longueur > 69) {
-      doc.setFontSize(16)
-    }
-
-    doc.text(nomEval,300,200,(align = "center"))
-    doc.setFontSize(16)
-    doc.text("Groupe évalué :",70,300)
-    doc.text(nomGroupe,260,300)
-    doc.text("Date :",70,330)
-    doc.text(date,260,330)
-
-    {% for groupe in groupes %}
-
-    var effectifDuGroupe="{% set effectifTotal = 0 %}
-    {% for effectif in groupe.notes %}
-      {% set effectifTotal = effectifTotal + effectif %}
-    {% endfor %}
-    ({{ effectifTotal }} étudiants)".trim()
+{#  var xStat = 200#}
+{#  var xLabelStat = 30#}
+{#  var xRepartition = 475#}
+{#  var xIntervalle = 330#}
+{#  var xTitre = 300#}
+{#  var yTitre = 50#}
+{#  var y = 100#}
+{#  var deltaY = 20#}
+{#  var numeroCarte = 1#}
 
 
-    if (numeroCarte == 1) {
-      doc.addPage()
-      yTitre = 50
-      y = 100
-    }
-    if (numeroCarte == 2) {
-      yTitre = 300
-      y = 350
-    }
-    if (numeroCarte == 3) {
-      yTitre = 550
-      y = 600
-    }
-    doc.setFontSize(25)
-    var nomCarteGroupe = "{{groupe.nom}}" +" "+ effectifDuGroupe
-    doc.text(nomCarteGroupe,xTitre,yTitre,(align = "center"))
-    doc.setFontSize(12)
+{#  function genPDF(){#}
+{#    var nomEval = "{{evaluation.nom}}"#}
+{#    var nomGroupe = "{{evaluation.groupe.nom}}"#}
+{#    var date = "{{evaluation.date | date("d/m/Y")}}"#}
+{#    var doc = new jsPDF('p','pt','a4');#}
+{#    var longueur = nomEval.length#}
 
-    //traitement du nom du groupe
-    var phraseNomGroupe = "Statistiques"
-    doc.text(phraseNomGroupe,20,y)
-    y = y + deltaY
-    //traitement de la moyenne
-    var moyenne = "{{groupe.moyenne}}"
-    doc.text("Moyenne :",xLabelStat,y)
-    doc.text(moyenne,xStat,y)
-    y = y + deltaY
-    //traitement de l'écart type
-    var ecartType = "{{groupe.ecartType}}"
-    doc.text("Ecart-type :",xLabelStat,y)
-    doc.text(ecartType,xStat,y)
-    y = y + deltaY
-    //traitement de la note minimal
-    var min = "{{groupe.minimum}}"
-    doc.text("Note(s) minimale(s) :",xLabelStat,y)
-    doc.text(min,xStat,y)
-    y = y + deltaY
-    //traitement de la note maximal
-    var max = "{{groupe.maximum}}"
-    doc.text("Note(s) maximale(s) :",xLabelStat,y)
-    doc.text(max,xStat,y)
-    y = y + deltaY
-    //traitement de la mediane
-    var mediane = "{{groupe.mediane}}"
-    doc.text("Médiane :",xLabelStat,y)
-    doc.text(mediane,xStat,y)
+{#    //Définition du haut du PDF#}
+{#    if (longueur < 35) {#}
+{#      doc.setFontSize(35)#}
+{#    }#}
+{#    if (longueur < 50 && longueur > 34) {#}
+{#      doc.setFontSize(25)#}
+{#    }#}
+{#    if (longueur > 49 && longueur < 70) {#}
+{#      doc.setFontSize(20)#}
+{#    }#}
+{#    if (longueur > 69) {#}
+{#      doc.setFontSize(16)#}
+{#    }#}
 
-    //traitement de la répartition des notes
-    if (numeroCarte == 1) {
-      y = 100
-    }
-    if (numeroCarte == 2) {
-      y = 350
-    }
-    if (numeroCarte == 3) {
-      y = 600
-    }
-    doc.text("Répartition des notes", 320,y)
-    y = y + deltaY
-    doc.text("[0;4[ : ", xIntervalle,y);
-    var premierIntervalle = "{{groupe.notes[0]}} étudiant(s)"
-    doc.text(premierIntervalle,xRepartition, y)
-    y = y + deltaY
-    doc.text("[4;8[ : ", xIntervalle,y);
-    var deuxiemeIntervalle = "{{groupe.notes[1]}} étudiant(s)"
-    doc.text(deuxiemeIntervalle,xRepartition, y)
-    y = y + deltaY
-    doc.text("[8;12[ : ", xIntervalle,y);
-    var troisiemeIntervalle = "{{groupe.notes[2]}} étudiant(s)"
-    doc.text(troisiemeIntervalle,xRepartition, y)
-    y = y + deltaY
-    doc.text("[12;16[ : ", xIntervalle,y);
-    var quatriemeIntervalle = "{{groupe.notes[3]}} étudiant(s)"
-    doc.text(quatriemeIntervalle,xRepartition, y)
-    y = y + deltaY
-    doc.text("[16;20] : ", xIntervalle,y);
-    var cinquiemeIntervalle = "{{groupe.notes[4]}} étudiant(s)"
-    doc.text(cinquiemeIntervalle,xRepartition, y)
+{#    doc.text(nomEval,300,200,(align = "center"))#}
+{#    doc.setFontSize(16)#}
+{#    doc.text("Groupe évalué :",70,300)#}
+{#    doc.text(nomGroupe,260,300)#}
+{#    doc.text("Date :",70,330)#}
+{#    doc.text(date,260,330)#}
 
-    if (numeroCarte == 3) {
-      numeroCarte = 1
-    }
-    else {
-      numeroCarte = numeroCarte + 1
-    }
+{#    {% for groupe in groupes %}#}
 
-    {% endfor %}
-
-    doc.save(nomEval)
+{#    var effectifDuGroupe="{% set effectifTotal = 0 %}#}
+{#    {% for effectif in groupe.repartition %}#}
+{#      {% set effectifTotal = effectifTotal + effectif %}#}
+{#    {% endfor %}#}
+{#    ({{ effectifTotal }} étudiants)".trim()#}
 
 
-    //Piste de solution pour améliorer l'xport pdf
-    /*html2canvas($("#lesStats .cardhu-S1"),{
-      useCORS:true,
-      logging:true,
-      onrendered:function(canvas,capture){
-        capture = canvas.toDataURL('image/png',1.0);
-        document.body.insertAdjacentHTML('beforeend',"<img id='arthur' src='" + capture +"'>")
+{#    if (numeroCarte == 1) {#}
+{#      doc.addPage()#}
+{#      yTitre = 50#}
+{#      y = 100#}
+{#    }#}
+{#    if (numeroCarte == 2) {#}
+{#      yTitre = 300#}
+{#      y = 350#}
+{#    }#}
+{#    if (numeroCarte == 3) {#}
+{#      yTitre = 550#}
+{#      y = 600#}
+{#    }#}
+{#    doc.setFontSize(25)#}
+{#    var nomCarteGroupe = "{{groupe.nom}}" +" "+ effectifDuGroupe#}
+{#    doc.text(nomCarteGroupe,xTitre,yTitre,(align = "center"))#}
+{#    doc.setFontSize(12)#}
 
-      }
-    }).then(function(){
-      doc.addImage(document.getElementById("arthur").src,'PNG',20,110);
-      doc.addPage()
-      doc.save(nomEval)
-    });*/
+{#    //traitement du nom du groupe#}
+{#    var phraseNomGroupe = "Statistiques"#}
+{#    doc.text(phraseNomGroupe,20,y)#}
+{#    y = y + deltaY#}
+{#    //traitement de la moyenne#}
+{#    var moyenne = "{{groupe.moyenne}}"#}
+{#    doc.text("Moyenne :",xLabelStat,y)#}
+{#    doc.text(moyenne,xStat,y)#}
+{#    y = y + deltaY#}
+{#    //traitement de l'écart type#}
+{#    var ecartType = "{{groupe.ecartType}}"#}
+{#    doc.text("Ecart-type :",xLabelStat,y)#}
+{#    doc.text(ecartType,xStat,y)#}
+{#    y = y + deltaY#}
+{#    //traitement de la note minimal#}
+{#    var min = "{{groupe.minimum}}"#}
+{#    doc.text("Note(s) minimale(s) :",xLabelStat,y)#}
+{#    doc.text(min,xStat,y)#}
+{#    y = y + deltaY#}
+{#    //traitement de la note maximal#}
+{#    var max = "{{groupe.maximum}}"#}
+{#    doc.text("Note(s) maximale(s) :",xLabelStat,y)#}
+{#    doc.text(max,xStat,y)#}
+{#    y = y + deltaY#}
+{#    //traitement de la mediane#}
+{#    var mediane = "{{groupe.mediane}}"#}
+{#    doc.text("Médiane :",xLabelStat,y)#}
+{#    doc.text(mediane,xStat,y)#}
 
-  /*  html2canvas($("#lesStats .cardhu-S1"),{
-      useCORS:true,
-      logging:true,
-      onrendered:function(canvas,capture){
-        capture = canvas.toDataURL('image/png',1.0);
-        document.body.insertAdjacentHTML('beforeend',"<img id='arthur' src='" + capture +"'>")
+{#    //traitement de la répartition des notes#}
+{#    if (numeroCarte == 1) {#}
+{#      y = 100#}
+{#    }#}
+{#    if (numeroCarte == 2) {#}
+{#      y = 350#}
+{#    }#}
+{#    if (numeroCarte == 3) {#}
+{#      y = 600#}
+{#    }#}
+{#    doc.text("Répartition des notes", 320,y)#}
+{#    y = y + deltaY#}
+{#    doc.text("[0;4[ : ", xIntervalle,y);#}
+{#    var premierIntervalle = "{{groupe.notes[0]}} étudiant(s)"#}
+{#    doc.text(premierIntervalle,xRepartition, y)#}
+{#    y = y + deltaY#}
+{#    doc.text("[4;8[ : ", xIntervalle,y);#}
+{#    var deuxiemeIntervalle = "{{groupe.notes[1]}} étudiant(s)"#}
+{#    doc.text(deuxiemeIntervalle,xRepartition, y)#}
+{#    y = y + deltaY#}
+{#    doc.text("[8;12[ : ", xIntervalle,y);#}
+{#    var troisiemeIntervalle = "{{groupe.notes[2]}} étudiant(s)"#}
+{#    doc.text(troisiemeIntervalle,xRepartition, y)#}
+{#    y = y + deltaY#}
+{#    doc.text("[12;16[ : ", xIntervalle,y);#}
+{#    var quatriemeIntervalle = "{{groupe.notes[3]}} étudiant(s)"#}
+{#    doc.text(quatriemeIntervalle,xRepartition, y)#}
+{#    y = y + deltaY#}
+{#    doc.text("[16;20] : ", xIntervalle,y);#}
+{#    var cinquiemeIntervalle = "{{groupe.notes[4]}} étudiant(s)"#}
+{#    doc.text(cinquiemeIntervalle,xRepartition, y)#}
 
-      }
-    }).then(function(){
-      doc.addImage(document.getElementById("arthur").src,'PNG',20,110);
-      doc.addPage()
-      doc.save(nomEval)
-    });*/
+{#    if (numeroCarte == 3) {#}
+{#      numeroCarte = 1#}
+{#    }#}
+{#    else {#}
+{#      numeroCarte = numeroCarte + 1#}
+{#    }#}
+
+{#    {% endfor %}#}
+
+{#    doc.save(nomEval)#}
 
 
-  }
+{#    //Piste de solution pour améliorer l'xport pdf#}
+{#    /*html2canvas($("#lesStats .cardhu-S1"),{#}
+{#      useCORS:true,#}
+{#      logging:true,#}
+{#      onrendered:function(canvas,capture){#}
+{#        capture = canvas.toDataURL('image/png',1.0);#}
+{#        document.body.insertAdjacentHTML('beforeend',"<img id='arthur' src='" + capture +"'>")#}
+
+{#      }#}
+{#    }).then(function(){#}
+{#      doc.addImage(document.getElementById("arthur").src,'PNG',20,110);#}
+{#      doc.addPage()#}
+{#      doc.save(nomEval)#}
+{#    });*/#}
+
+{#  /*  html2canvas($("#lesStats .cardhu-S1"),{#}
+{#      useCORS:true,#}
+{#      logging:true,#}
+{#      onrendered:function(canvas,capture){#}
+{#        capture = canvas.toDataURL('image/png',1.0);#}
+{#        document.body.insertAdjacentHTML('beforeend',"<img id='arthur' src='" + capture +"'>")#}
+
+{#      }#}
+{#    }).then(function(){#}
+{#      doc.addImage(document.getElementById("arthur").src,'PNG',20,110);#}
+{#      doc.addPage()#}
+{#      doc.save(nomEval)#}
+{#    });*/#}
+
+
+{#  }#}
 
 
 </script>

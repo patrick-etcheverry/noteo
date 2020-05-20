@@ -84,7 +84,7 @@ class PointsRepository extends ServiceEntityRepository
             ->execute();
     }
 
-    public function findByGroupe($slugEval, $slugGroupe)
+    public function findByGroupeAndPartie($idEval, $idGroupe, $idPartie)
     {
         return $this->getEntityManager()->createQuery('
             SELECT p.valeur
@@ -93,14 +93,16 @@ class PointsRepository extends ServiceEntityRepository
             JOIN et.groupes g
             JOIN p.partie pa
             JOIN pa.evaluation ev
-            WHERE ev.slug = :slugE
-            AND g.slug = :slugG
+            WHERE ev.id = :idE
+            AND g.id = :idG
+            AND pa.id = :idP
             AND et.estDemissionaire = 0
             AND p.valeur >= 0
             ORDER BY p.valeur ASC
         ')
-            ->setParameter('slugG', $slugGroupe)
-            ->setParameter('slugE', $slugEval)
+            ->setParameter('idP', $idPartie)
+            ->setParameter('idE', $idEval)
+            ->setParameter('idG', $idGroupe)
             ->execute();
     }
 
@@ -124,7 +126,7 @@ class PointsRepository extends ServiceEntityRepository
             ->execute();
     }
 
-    public function findByStatut($slugEval, $slugStatut)
+    public function findByStatutAndPartie($idEval, $idStatut, $idPartie)
     {
         return $this->getEntityManager()->createQuery('
             SELECT p.valeur
@@ -133,14 +135,16 @@ class PointsRepository extends ServiceEntityRepository
             JOIN et.statuts s
             JOIN p.partie pa
             JOIN pa.evaluation ev
-            WHERE ev.slug = :slugE
-            AND s.slug = :slugS
+            WHERE ev.id = :idE
+            AND s.id = :idS
+            AND pa.id = :idP
             AND et.estDemissionaire = 0
             AND p.valeur >= 0
             ORDER BY p.valeur ASC
         ')
-            ->setParameter('slugS', $slugStatut)
-            ->setParameter('slugE', $slugEval)
+            ->setParameter('idS', $idStatut)
+            ->setParameter('idE', $idEval)
+            ->setParameter('idP', $idPartie)
             ->execute();
 
     }

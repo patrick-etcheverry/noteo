@@ -498,7 +498,6 @@ class EvaluationController extends AbstractController
                 'mapped' => false,
                 'expanded' => true,
                 'multiple' => true,
-                'required' => true,
                 'choices' => $evaluation->getParties() // On choisira parmis le groupe concerné et ses enfants
             ])
             ->add('groupes', EntityType::class, [
@@ -525,50 +524,109 @@ class EvaluationController extends AbstractController
         if ($form->isSubmitted()  && $form->isValid()) {
             $listeStatsParGroupe = array(); // On initialise un tableau vide qui contiendra les statistiques des groupes choisis
             $listeStatsParStatut = array(); // On initialise un tableau vide qui contiendra les statistiques des statuts choisis
-            //Pour tous les groupes sélectionnés
-            foreach ($form->get("groupes")->getData() as $groupe) {
-                //On récupère toutes les notes du groupe courant
-                $tabPoints = $repoPoints->findByGroupe($slugEval, $groupe->getSlug());
-                //On crée une copie de tabPoints qui contiendra les valeurs des notes pour simplifier le tableau renvoyé par la requete
-                $copieTabPoints = array();
-                foreach ($tabPoints as $element) {
-                    $copieTabPoints[] = $element["valeur"];
+            $groupesChoisis = $form->get("groupes")->getData();
+            $statutsChoisis = $form->get("statuts")->getData();
+            $partiesChoisies = $form->get("parties")->getData();
+            $toutesLesStats = [];
+            foreach($partiesChoisies as $partie) {
+                $statsDuGroupePourLaPartie = [];
+                foreach ($groupesChoisis as $groupe) {
+                    $notesGroupe = $repoPoints->findByGroupeAndPartie($evaluation->getId(), $groupe->getId(), $partie->getId());
+                    //On fait une copie du résultat de la requête pour simplifier le format de renvoi utilisé par doctrine
+                    $copieTabPoints = array();
+                    foreach ($notesGroupe as $element) {
+                        $copieTabPoints[] = $element["valeur"];
+                    }
+                    $statsDuGroupePourLaPartie[] = [
+                        "nom" => $groupe->getNom(),
+                        "repartition" => $this->repartition($copieTabPoints),
+                        "listeNotes" => $copieTabPoints,
+                        "moyenne" =>$this->moyenne($copieTabPoints),
+                        "ecartType" =>$this->ecartType($copieTabPoints),
+                        "minimum"=>$this->minimum($copieTabPoints),
+                        "maximum"=>$this->maximum($copieTabPoints),
+                        "mediane"=>$this->mediane($copieTabPoints),
+                    ] ;
                 }
-                //On remplit le tableau qui contiendra toutes les statistiques du groupe
-                $listeStatsParGroupe[] = array("nom" => $groupe->getNom(),
-                                             "notes" => $this->repartition($copieTabPoints),
-                                             "allNotes" => $copieTabPoints,
-                                             "moyenne" => $this->moyenne($copieTabPoints),
-                                             "ecartType" => $this->ecartType($copieTabPoints),
-                                             "minimum" => $this->minimum($copieTabPoints),
-                                             "maximum" => $this->maximum($copieTabPoints),
-                                             "mediane" => $this->mediane($copieTabPoints)
-                                             );
-            }
-            //Pour tous les statuts sélectionnés
-            foreach ($form->get("statuts")->getData() as $statut) {
-                $tabPoints = $repoPoints->findByStatut($slugEval, $statut->getSlug());
-                $copieTabPoints = array();
-                foreach ($tabPoints as $note) {
-                    $copieTabPoints[] = $note["valeur"];
+                $statsDuStatutPourLaPartie = [];
+                foreach ($statutsChoisis as $statut) {
+                    $notesStatut = $repoPoints->findByStatutAndPartie($evaluation->getId(), $statut->getId(), $partie->getId());
+                    //On fait une copie du résultat de la requête pour simplifier le format de renvoi utilisé par doctrine
+                    $copieTabPoints = array();
+                    foreach ($notesStatut as $element) {
+                        $copieTabPoints[] = $element["valeur"];
+                    }
+                    $statsDuStatutPourLaPartie[] = [
+                        "nom" => $statut->getNom(),
+                        "repartition" => $this->repartition($copieTabPoints),
+                        "listeNotes" => $copieTabPoints,
+                        "moyenne" =>$this->moyenne($copieTabPoints),
+                        "ecartType" =>$this->ecartType($copieTabPoints),
+                        "minimum"=>$this->minimum($copieTabPoints),
+                        "maximum"=>$this->maximum($copieTabPoints),
+                        "mediane"=>$this->mediane($copieTabPoints),
+                    ];
                 }
-                $listeStatsParStatut[] = array("nom" => $statut->getNom(),
-                                               "notes" => $this->repartition($copieTabPoints),
-                                               "allNotes" => $copieTabPoints,
-                                               "moyenne" => $this->moyenne($copieTabPoints),
-                                               "ecartType" => $this->ecartType($copieTabPoints),
-                                               "minimum" => $this->minimum($copieTabPoints),
-                                               "maximum" => $this->maximum($copieTabPoints),
-                                               "mediane" => $this->mediane($copieTabPoints)
-                                               );
+                //Ajout des stats de la partie (groupe + statut) dans le tableau général
+                $toutesLesStats[] = [
+                    "nom" => $partie->getIntitule(),
+                    "bareme" => $partie->getBareme(),
+                    "stats" => array_merge($statsDuGroupePourLaPartie, $statsDuStatutPourLaPartie)
+                ];
             }
-            $groupes = array_merge($listeStatsParGroupe, $listeStatsParStatut); // On fusionne les deux tableaux pour éviter le dédoublement des traitements dans la vue
-            // Mise en session des stats
-            $session->set('stats',$groupes);
+            //Mise en session des stats pour le mail
+            $session->set('stats',$toutesLesStats);
             return $this->render('evaluation/stats.html.twig', [
-                'groupes' => $groupes,
+                'parties' => $toutesLesStats,
                 'evaluation' => $evaluation
             ]);
+
+//            //Pour tous les groupes sélectionnés
+//            foreach ($partiesChoisies as $partie) {
+//                foreach ($groupesChoisis as $groupe) {
+//                    $statsPartie = []; //Contiendra les statistiques de tous les groupes pour une partie donnée
+//                    $tabPoints = $repoPoints->findByGroupe($slugEval, $groupe->getSlug());
+//                    //On crée une copie de tabPoints qui contiendra les valeurs des notes pour simplifier le tableau renvoyé par la requete
+//                    $copieTabPoints = array();
+//                    foreach ($tabPoints as $element) {
+//                        $copieTabPoints[] = $element["valeur"];
+//                    }
+//                    //On remplit le tableau qui contiendra toutes les statistiques du groupe
+//                    $listeStatsParGroupe[] = array("nom" => $groupe->getNom(),
+//                        "notes" => $this->repartition($copieTabPoints),
+//                        "allNotes" => $copieTabPoints,
+//                        "moyenne" => $this->moyenne($copieTabPoints),
+//                        "ecartType" => $this->ecartType($copieTabPoints),
+//                        "minimum" => $this->minimum($copieTabPoints),
+//                        "maximum" => $this->maximum($copieTabPoints),
+//                        "mediane" => $this->mediane($copieTabPoints)
+//                    );
+//                }
+//                //Pour tous les statuts sélectionnés
+//                foreach ($statutsChoisis as $statut) {
+//                    $tabPoints = $repoPoints->findByStatut($slugEval, $statut->getSlug());
+//                    $copieTabPoints = array();
+//                    foreach ($tabPoints as $note) {
+//                        $copieTabPoints[] = $note["valeur"];
+//                    }
+//                    $listeStatsParStatut[] = array("nom" => $statut->getNom(),
+//                        "notes" => $this->repartition($copieTabPoints),
+//                        "allNotes" => $copieTabPoints,
+//                        "moyenne" => $this->moyenne($copieTabPoints),
+//                        "ecartType" => $this->ecartType($copieTabPoints),
+//                        "minimum" => $this->minimum($copieTabPoints),
+//                        "maximum" => $this->maximum($copieTabPoints),
+//                        "mediane" => $this->mediane($copieTabPoints)
+//                    );
+//                }
+//            }
+//            $groupes = array_merge($listeStatsParGroupe, $listeStatsParStatut); // On fusionne les deux tableaux pour éviter le dédoublement des traitements dans la vue
+//            // Mise en session des stats
+//            $session->set('stats',$groupes);
+//            return $this->render('evaluation/stats.html.twig', [
+//                'groupes' => $groupes,
+//                'evaluation' => $evaluation
+//            ]);
         }
         return $this->render('evaluation/choix_groupes_et_parties.html.twig', [
             'form' => $form->createView(),
