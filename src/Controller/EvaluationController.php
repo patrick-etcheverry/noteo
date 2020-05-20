@@ -189,16 +189,14 @@ class EvaluationController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
 
             $entityManager = $this->getDoctrine()->getManager();
-
             $data = $form->getData(); //Récupération des données du formulaire
-
             $evaluation->setNom($data["nom"]); // Définition du nom de l'évaluation
             $evaluation->setDate($data["date"]); // -------- de la date -----------
             $evaluation->setEnseignant($this->getUser());
+            $evaluation->setNotesSaisies(true);
             $entityManager->persist($evaluation);
             $entityManager->persist($partie);
             foreach ($partie->getNotes() as $note) {
-
               //Si la note dépasse le barême de la partie, on réduit la note à la valeur du barême
               if ($note->getValeur() > $partie->getBareme()) {
                 $note->setValeur($partie->getBareme());
@@ -215,7 +213,6 @@ class EvaluationController extends AbstractController
             else {
                 return $this->redirectToRoute('evaluation_autres',['id' => $this->getUser()->getId()]);
             }
-
         }
         return $this->render('evaluation/new.html.twig', [
             'evaluation' => $evaluation,
@@ -287,6 +284,7 @@ class EvaluationController extends AbstractController
             $evaluation->setDate($request->getSession()->get("dateEval"));
             $evaluation->setGroupe($repo->findOneById($request->getSession()->get("idGroupeEval"))); //On refait le lien avec le groupe sinon le manager essaye de le persist lui aussi comme si c'était une nouvelle entité
             $evaluation->setEnseignant($this->getUser());
+            $evaluation->setNotesSaisies(false);
             $entityManager->persist($evaluation);
             //récupération des objets Partie depuis l'arborescence créée dans le JSON et mise en base de données
             $this->definirPartiesDepuisTableauJS($evaluation, $arbrePartiesRecupere[0], $tableauParties);
@@ -381,6 +379,7 @@ class EvaluationController extends AbstractController
           $data = $form->getData();
           $evaluation->setNom($data["nom"]);
           $evaluation->setDate($data["date"]);
+          $evaluation->setNotesSaisies(true);
           $entityManager->persist($evaluation);
           $notes = $data['notes'];
           foreach ($notes as $note) {

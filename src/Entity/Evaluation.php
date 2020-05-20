@@ -56,6 +56,11 @@ class Evaluation
      */
     private $slug;
 
+    /**
+     * @ORM\Column(type="boolean")
+     */
+    private $notesSaisies;
+
     public function getSlug(): ?string
     {
         return $this->slug;
@@ -160,6 +165,18 @@ class Evaluation
     public function setGroupe(?GroupeEtudiant $groupe): self
     {
         $this->groupe = $groupe;
+
+        return $this;
+    }
+
+    public function isNotesSaisies(): ?bool
+    {
+        return $this->notesSaisies;
+    }
+
+    public function setNotesSaisies(bool $notesSaisies): self
+    {
+        $this->notesSaisies = $notesSaisies;
 
         return $this;
     }

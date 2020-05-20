@@ -239,6 +239,7 @@ class AppFixtures extends Fixture
         $evalS4->setDate(new \DateTime('2020-02-24'));
         $evalS4->setEnseignant($marie);
         $evalS4->setGroupe($IPI);
+        $evalS4->setNotesSaisies(true);
         $manager->persist($evalS4);
 
         ////////////EVALUATION S2//////////////
@@ -247,6 +248,7 @@ class AppFixtures extends Fixture
         $evalS2->setDate(new \DateTime('2020-03-13'));
         $evalS2->setEnseignant($yann);
         $evalS2->setGroupe($S2);
+        $evalS2->setNotesSaisies(true);
         $manager->persist($evalS2);
 
         ////////////PARTIES//////////////
