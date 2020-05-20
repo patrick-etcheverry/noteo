@@ -174,6 +174,8 @@ class EvaluationController extends AbstractController
             ])
             ->add('date', DateType::class, [
               'widget' => 'choice',
+              'years' => range(date("Y")-5, date("Y")+1),
+              'data' => new \DateTime(),
               'constraints' => [new NotBlank, new Date]
             ])
             ->add('notes', CollectionType::class , [
@@ -233,6 +235,8 @@ class EvaluationController extends AbstractController
             ])
             ->add('date', DateType::class, [
                 'widget' => 'choice',
+                'years' => range(date("Y")-5, date("Y")+1),
+                'data' => new \DateTime(),
                 'constraints' => [new NotBlank, new Date]
             ])
             ->getForm()
@@ -358,7 +362,8 @@ class EvaluationController extends AbstractController
           ])
           ->add('date', DateType::class, [
             'widget' => 'choice',
-            'data' => $evaluation->getDateUnformatted(),
+            'years' => range(date("Y")-5, date("Y")+1),
+            'data' => $evaluation->getDate(),
             'constraints' => [new NotBlank, new Date]
           ])
           ->add('notes', CollectionType::class , [

@@ -97,14 +97,7 @@ class Evaluation
 
     public function getDate()
     {
-      if ($this->date != null) {
-          return $this->date->format('d/m/Y');
-      }
-
-    }
-    public function getDateUnformatted()
-    {
-      return $this->date;
+        return $this->date;
     }
 
     public function setDate($date): self
