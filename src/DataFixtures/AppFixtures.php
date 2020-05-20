@@ -253,7 +253,7 @@ class AppFixtures extends Fixture
 
         ////////////PARTIES//////////////
         $partieS4 = new Partie();
-        $partieS4->setIntitule("Evaluation");
+        $partieS4->setIntitule("Évaluation");
         $partieS4->setBareme(20);
         $partieS4->setEvaluation($evalS4);
         $manager->persist($partieS4);
@@ -273,7 +273,7 @@ class AppFixtures extends Fixture
         $manager->persist($souspartie2);
 
         $partieS2 = new Partie();
-        $partieS2->setIntitule("Evaluation");
+        $partieS2->setIntitule("Évaluation");
         $partieS2->setBareme(20);
         $partieS2->setEvaluation($evalS2);
         $manager->persist($partieS2);

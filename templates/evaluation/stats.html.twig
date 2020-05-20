@@ -52,44 +52,6 @@
     <li class="nav-item"><a class="nav-link" data-toggle="tab" href="#Moyenne_ecart">Moyenne & Écart-type</a></li>
 </ul>
 
-<!-- Card avec les stats
-{#  <a class="dropdown-item" data-toggle="tab" href="#histo{{tabCounter}}">{{groupe.nom}}</a>
-  <div align=center>
-    <li class="list-group-item">
-        <div class="card" style="width: 20em;">
-          <ul class="list-group list-group-flush" style="text-align:left;">
-            <li class="list-group-item">Statistiques {{groupe.nom}}</li>
-            <li class="list-group-item">
-              <ul>
-                <li>Moyenne : {{ groupe.moyenne }}</li>
-                <li>Écart-type : {{ groupe.ecartType }}</li>
-                <li>Note(s) minimale(s) : {{ groupe.minimum }}</li>
-                <li>Note(s) maximale(s) : {{ groupe.maximum }}</li>
-                <li>Médiane : {{ groupe.mediane }}</li>
-              </ul>
-            </li>
-          </ul>
-        </div>
-    </li>
-  </div>
-  <div class="card">
-    <ul class="list-group list-group-flush">
-      <li class="list-group-item text-white" style="background-color:#bdc3c7;">
-        {{groupe.nom}}
-        {% set effectifTotal = 0 %}
-        {% for effectif in groupe.notes %}
-          {% set effectifTotal = effectifTotal + effectif %}
-        {% endfor %}
-        ({{ effectifTotal }} étudiants)
-      </li>
-      <li class="list-group-item">
-        <h5 class="card-title">Répartition des notes</h5><br>
-        <canvas align=center id="{{groupe.nom}}"></canvas>
-      </li>
-    </ul>
-  </div>
-#}-->
-
 <div class="tab-content">
 <!-- Répartition (Histogramme) -->
 <div id="Repartition_Histogramme" class="tab-pane active">
