@@ -148,8 +148,6 @@ class PointsRepository extends ServiceEntityRepository
             ->execute();
 
     }
-
-
     // /**
     //  * @return Points[] Returns an array of Points objects
     //  */

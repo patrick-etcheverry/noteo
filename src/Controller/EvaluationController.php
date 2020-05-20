@@ -528,6 +528,7 @@ class EvaluationController extends AbstractController
             $statutsChoisis = $form->get("statuts")->getData();
             $partiesChoisies = $form->get("parties")->getData();
             $toutesLesStats = [];
+            //Calcul des stats pour toutes les parties
             foreach($partiesChoisies as $partie) {
                 $statsDuGroupePourLaPartie = [];
                 foreach ($groupesChoisis as $groupe) {
@@ -580,53 +581,6 @@ class EvaluationController extends AbstractController
                 'parties' => $toutesLesStats,
                 'evaluation' => $evaluation
             ]);
-
-//            //Pour tous les groupes sélectionnés
-//            foreach ($partiesChoisies as $partie) {
-//                foreach ($groupesChoisis as $groupe) {
-//                    $statsPartie = []; //Contiendra les statistiques de tous les groupes pour une partie donnée
-//                    $tabPoints = $repoPoints->findByGroupe($slugEval, $groupe->getSlug());
-//                    //On crée une copie de tabPoints qui contiendra les valeurs des notes pour simplifier le tableau renvoyé par la requete
-//                    $copieTabPoints = array();
-//                    foreach ($tabPoints as $element) {
-//                        $copieTabPoints[] = $element["valeur"];
-//                    }
-//                    //On remplit le tableau qui contiendra toutes les statistiques du groupe
-//                    $listeStatsParGroupe[] = array("nom" => $groupe->getNom(),
-//                        "notes" => $this->repartition($copieTabPoints),
-//                        "allNotes" => $copieTabPoints,
-//                        "moyenne" => $this->moyenne($copieTabPoints),
-//                        "ecartType" => $this->ecartType($copieTabPoints),
-//                        "minimum" => $this->minimum($copieTabPoints),
-//                        "maximum" => $this->maximum($copieTabPoints),
-//                        "mediane" => $this->mediane($copieTabPoints)
-//                    );
-//                }
-//                //Pour tous les statuts sélectionnés
-//                foreach ($statutsChoisis as $statut) {
-//                    $tabPoints = $repoPoints->findByStatut($slugEval, $statut->getSlug());
-//                    $copieTabPoints = array();
-//                    foreach ($tabPoints as $note) {
-//                        $copieTabPoints[] = $note["valeur"];
-//                    }
-//                    $listeStatsParStatut[] = array("nom" => $statut->getNom(),
-//                        "notes" => $this->repartition($copieTabPoints),
-//                        "allNotes" => $copieTabPoints,
-//                        "moyenne" => $this->moyenne($copieTabPoints),
-//                        "ecartType" => $this->ecartType($copieTabPoints),
-//                        "minimum" => $this->minimum($copieTabPoints),
-//                        "maximum" => $this->maximum($copieTabPoints),
-//                        "mediane" => $this->mediane($copieTabPoints)
-//                    );
-//                }
-//            }
-//            $groupes = array_merge($listeStatsParGroupe, $listeStatsParStatut); // On fusionne les deux tableaux pour éviter le dédoublement des traitements dans la vue
-//            // Mise en session des stats
-//            $session->set('stats',$groupes);
-//            return $this->render('evaluation/stats.html.twig', [
-//                'groupes' => $groupes,
-//                'evaluation' => $evaluation
-//            ]);
         }
         return $this->render('evaluation/choix_groupes_et_parties.html.twig', [
             'form' => $form->createView(),
