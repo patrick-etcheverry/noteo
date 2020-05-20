@@ -25,7 +25,7 @@ class GroupeEtudiant
      * @ORM\Column(type="string", length=255)
      * @Assert\Length(max=255)
      * @Assert\NotBlank
-     * @Assert\Regex(pattern="/[a-zA-Z0-9]/", message="Le nom donné ne correspond pas aux critères demandés")
+     * @Assert\Regex(pattern="/[a-zA-Z0-9]/", message="Le nom du groupe doit contenir au moins un chiffre ou une lettre")
      */
     private $nom;
 

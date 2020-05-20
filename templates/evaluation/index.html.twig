@@ -41,15 +41,13 @@
         <td>{{ evaluation.nom }}</td>
         <td>{{ evaluation.date }}</td>
         <td>
-          {# Calcul de la moyenne de chaque évaluation #}
+          {# Calcul de la moyenne de chaque évaluation (calcul effectué sur la note globale à l'évaluation) #}
           {% set nbNotes = 0 %}
           {% set cumulNotes = 0 %}
           {% set resultat = 0 %}
-          {%  for partie in evaluation.parties %}
-            {% for note in partie.notes %}
-              {% set nbNotes = nbNotes + 1 %}
-              {% set cumulNotes = cumulNotes + note.valeur %}
-            {% endfor %}
+          {% for note in evaluation.parties[0].notes %}
+            {% set nbNotes = nbNotes + 1 %}
+            {% set cumulNotes = cumulNotes + note.valeur %}
           {% endfor %}
           {% if nbNotes != 0 %}
             {% set resultat = cumulNotes / nbNotes %}
@@ -132,7 +130,7 @@ d'une évaluation dans la fenetre modale, afin de s'adapter a l'évaluation que 
       },
       columns: [null, null, null, null, null, {"orderable": false}],
       order: [
-        [0, "asc"]
+        [1, "desc"]
       ],
       lengthMenu: [
         [15, 30, 45, -1],
