@@ -124,11 +124,13 @@ function checkBaremesArbre(partieCourante) {
             partieCourante.icon = 'icon-attention-circled red';
             partieCourante.text = partieCourante.nom + ' - Somme des points incorrecte'
             partieCourante.color = '#FF0000';
+            $('#boutonConfirmation').prop('disabled', true)
         }
         else if (totalBareme === partieCourante.bareme) {
             partieCourante.icon = undefined;
             partieCourante.text = partieCourante.nom;
             partieCourante.color = undefined;
+            $('#boutonConfirmation').prop('disabled', false)
         }
         for (var i = 0; i< partieCourante.nodes.length; i++) {
             checkBaremesArbre(partieCourante.nodes[i]);

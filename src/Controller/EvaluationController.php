@@ -175,7 +175,7 @@ class EvaluationController extends AbstractController
               ]
             ])
             ->add('date', DateType::class, [
-              'widget' => 'single_text',
+              'widget' => 'choice',
               'constraints' => [new NotBlank, new Date]
             ])
             ->add('notes', CollectionType::class , [
@@ -240,7 +240,7 @@ class EvaluationController extends AbstractController
                 ],
             ])
             ->add('date', DateType::class, [
-                'widget' => 'single_text',
+                'widget' => 'choice',
                 'constraints' => [new NotBlank, new Date]
             ])
             ->getForm()
@@ -366,7 +366,7 @@ class EvaluationController extends AbstractController
             ]
           ])
           ->add('date', DateType::class, [
-            'widget' => 'single_text',
+            'widget' => 'choice',
             'data' => $evaluation->getDateUnformatted(),
             'constraints' => [new NotBlank, new Date]
           ])
@@ -393,17 +393,20 @@ class EvaluationController extends AbstractController
               foreach ($partiesACalculer as $partie) {
                   $sommePtsSousPartie = 0;
                   $sousParties = $partie->getChildren();
+
+                  $etudiantAbsent = true; //On suppose que l'étudiant est absent à cette partie sauf si on trouve une note supérieure à -1 dans les sous parties (il peut avoir manqué seulement une partie de l'évaluation ainsi)
                   //On fait la somme des notes obtenues aux sous parties
                   foreach ($sousParties as $sousPartie ) {
                       $point = $repoPoints->findByPartieAndByStudent($sousPartie->getId(), $etudiant->getId());
                       //On ne prend pas en compte -1 dans le calcul total
                       if ($point->getValeur() >= 0) {
                           $sommePtsSousPartie += $point->getValeur();
+                          $etudiantAbsent = false;
                       }
                   }
                   $point = $repoPoints->findByPartieAndByStudent($partie->getId(), $etudiant->getId());
                   //Si la note est inférieure à 0 c'est que l'étudiant était absent
-                  if($sommePtsSousPartie < 0 ) {
+                  if($etudiantAbsent) {
                       $point->setValeur(-1);
                   }
                   else {

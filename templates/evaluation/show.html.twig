@@ -65,7 +65,13 @@
                     <td>{{ etudiant.prenom }}</td>
                     {# Pour chaque étudiant, on affiche les x notes suivantes du tableau de notes passé (x étant le nombre de parties) #}
                     {% for i in premiereNoteAAfficher..derniereNoteAAfficher %}
-                        <td>{{ notes[i].valeur }}</td>
+                        <td>
+                            {% if notes[i].valeur == -1 %}
+                                Absent
+                            {% else %}
+                                {{ notes[i].valeur }}
+                            {% endif %}
+                        </td>
                     {% endfor %}
                     {% set premiereNoteAAfficher = premiereNoteAAfficher + evaluation.parties|length %}
                     {% set derniereNoteAAfficher = (derniereNoteAAfficher + evaluation.parties|length) %}

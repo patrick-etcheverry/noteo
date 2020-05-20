@@ -44,7 +44,7 @@
             <div id="arbre_boot">
             </div>
             <div class='bouton' align=center>
-                <button onclick='onConfirmerCreation()' class="d-sm-inline-block btn btn-sm btn-primary shadow-sm">Saisir les notes</button>
+                <button id="boutonConfirmation" onclick='onConfirmerCreation()' class="d-sm-inline-block btn btn-sm btn-primary shadow-sm">Saisir les notes</button>
             </div>
         </div>
         <div class="col-lg-4">
@@ -122,6 +122,10 @@
                         <i class="icon-attention-circled"></i>Vous n'avez pas créé de parties pour l'évaluation.
                         <br><br>
                     </div>
+                    <div class="red" id="erreur-une-seule-partie">
+                        <i class="icon-attention-circled"></i>L'évaluation ne possède qu'une seule sous-partie
+                        <br><br>
+                    </div>
                     Une fois validé, vous ne pourrez plus modifier les parties de cette évaluation.
                 </div>
                 <div class="modal-footer">
@@ -148,12 +152,18 @@
 
         function onConfirmerCreation() {
             $("#modaleValidationCreation").modal();
-
             //On cache par défaut le message d'erreur si aucune partie n'a été créée pour ensuite le faire apparaitre si les conditions sont vérifiées (si l'évaluation n'a aucune partie
             $("#erreur-pas-de-parties").css("display", "none")
+            $("#erreur-une-seule-partie").css("display", "none")
             if(tree[0].nodes == undefined) {
                 $("#erreur-pas-de-parties").css("display", "block")
             }
+            else {
+                if(tree[0].nodes.length == 1) {
+                    $("#erreur-une-seule-partie").css("display", "block")
+                }
+            }
+
         }
 
         function onCreerPartie() {
