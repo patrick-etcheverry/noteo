@@ -571,7 +571,6 @@ class EvaluationController extends AbstractController
                 //Ajout des stats de la partie (groupe + statut) dans le tableau général
                 $toutesLesStats[] = [
                     "nom" => $partie->getIntitule(),
-                    "niveau" => $partie->getLvl(),
                     "bareme" => $partie->getBareme(),
                     "stats" => array_merge($statsDuGroupePourLaPartie, $statsDuStatutPourLaPartie)
                 ];

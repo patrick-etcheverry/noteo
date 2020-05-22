@@ -66,7 +66,7 @@
           {% set tabCounter = 0 %}
           {% for partie in parties %}
             <div class="form-check form-check-inline">
-              <input class="form-check-input" type="checkbox" id="{{partie.nom}}" {% if partie.niveau == 0 %}checked{% endif%} onChange="changement(this.id, this.checked, 'partie', 'histo')">
+              <input class="form-check-input" type="checkbox" id="{{partie.nom}}" {% if loop.index == 1 %}checked{% endif%} onChange="changement(this.id, this.checked, 'partie', 'histo')">
               <label class="form-check-label" for="inlineCheckbox1" id="label_{{partie.nom}}_histo">{{partie.nom}} (/{{ partie.bareme }})</label>
             </div>
             {% set tabCounter = tabCounter + 1 %}
@@ -110,7 +110,7 @@
           {% set tabCounter = 0 %}
           {% for partie in parties %}
             <div class="form-check form-check-inline">
-              <input class="form-check-input" type="checkbox" id="{{partie.nom}}" {% if partie.niveau == 0 %}checked{% endif%} onChange="changement(this.id, this.checked, 'partie', 'bam')">
+              <input class="form-check-input" type="checkbox" id="{{partie.nom}}" {% if loop.index == 1 %}checked{% endif%} onChange="changement(this.id, this.checked, 'partie', 'bam')">
               <label class="form-check-label" for="inlineCheckbox1" id="label_{{partie.nom}}_histo">{{partie.nom}} (/{{ partie.bareme }})</label>
             </div>
             {% set tabCounter = tabCounter + 1 %}
@@ -154,7 +154,7 @@
         {% set tabCounter = 0 %}
         {% for partie in parties %}
           <div class="form-check form-check-inline">
-            <input class="form-check-input" type="checkbox" id="{{partie.nom}}" {% if partie.niveau == 0 %}checked{% endif%} onChange="changement(this.id, this.checked, 'partie', 'moy')">
+            <input class="form-check-input" type="checkbox" id="{{partie.nom}}" {% if loop.index == 1 %}checked{% endif%} onChange="changement(this.id, this.checked, 'partie', 'moy')">
             <label class="form-check-label" for="inlineCheckbox1" id="label_{{partie.nom}}_histo">{{partie.nom}} (/{{ partie.bareme }})</label>
           </div>
           {% set tabCounter = tabCounter + 1 %}
@@ -241,7 +241,11 @@
   parties = JSON.parse(parties);
 
   // Récupération de la liste des groupes de twig à js (on récupère la liste des groupes de la premiere partie car ce sont tous les memes pour chacune)
-  var groupes = "{{parties[0].stats|json_encode()}}";
+  {% if parties is not empty %}
+    var groupes = "{{parties[0].stats|json_encode()}}";
+  {% else %}
+    var groupes = {};
+  {% endif %}
   groupes = groupes.replace(/&quot;/g, "\""); // remplacement de toutes les itérations de ' &quot; ' par ' " '
   groupes = JSON.parse(groupes);
 
@@ -342,9 +346,11 @@
     formatageCasesACocher();
 
     //Pour que la partie évaluation soit cochée par défaut
-    changement("{{ parties[0].nom }}", true, 'partie', 'histo');
-    changement("{{ parties[0].nom }}", true, 'partie', 'bam');
-    changement("{{ parties[0].nom }}", true, 'partie', 'moy');
+    {% if parties is not empty %}
+      changement("{{ parties[0].nom }}", true, 'partie', 'histo');
+      changement("{{ parties[0].nom }}", true, 'partie', 'bam');
+      changement("{{ parties[0].nom }}", true, 'partie', 'moy');
+    {% endif %}
   }
 
 //------ FONCTIONS -----
