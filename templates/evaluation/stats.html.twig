@@ -57,21 +57,23 @@
 <div id="Repartition_Histogramme" class="tab-pane active">
   <div class="container-fluid">
     <br>
-    <div class="card-md-auto">
-      <div class="card-header">
-        Parties
+    {% if parties |length > 1 %}
+      <div class="card-md-auto">
+        <div class="card-header">
+          Parties
+        </div>
+        <div class="card-body">
+          {% set tabCounter = 0 %}
+          {% for partie in parties %}
+            <div class="form-check form-check-inline">
+              <input class="form-check-input" type="checkbox" id="{{partie.nom}}" {% if partie.niveau == 0 %}checked{% endif%} onChange="changement(this.id, this.checked, 'partie', 'histo')">
+              <label class="form-check-label" for="inlineCheckbox1" id="label_{{partie.nom}}_histo">{{partie.nom}} (/{{ partie.bareme }})</label>
+            </div>
+            {% set tabCounter = tabCounter + 1 %}
+          {% endfor %}
+        </div>
       </div>
-      <div class="card-body">
-        {% set tabCounter = 0 %}
-        {% for partie in parties %}
-          <div class="form-check form-check-inline">
-            <input class="form-check-input" type="checkbox" id="{{partie.nom}}" onChange="changement(this.id, this.checked, 'partie', 'histo')">
-            <label class="form-check-label" for="inlineCheckbox1" id="label_{{partie.nom}}_histo">{{partie.nom}} (/{{ partie.bareme }})</label>
-          </div>
-          {% set tabCounter = tabCounter + 1 %}
-        {% endfor %}
-      </div>
-    </div>
+    {% endif %}
     <div class="card-md-auto">
       <div class="card-header">
         Groupes
@@ -99,21 +101,23 @@
 <div id="Repartition_Boites" class="tab-pane fade">
   <div class="container-fluid">
   <br>
-  <div class="card-md-auto">
-    <div class="card-header">
-      Parties
-    </div>
-    <div class="card-body">
-      {% set tabCounter = 0 %}
-      {% for partie in parties %}
-        <div class="form-check form-check-inline">
-          <input class="form-check-input" type="checkbox" id="{{partie.nom}}" onChange="changement(this.id, this.checked, 'partie', 'bam')">
-          <label class="form-check-label" for="inlineCheckbox1" id="label_{{partie.nom}}_histo">{{partie.nom}} (/{{ partie.bareme }})</label>
+    {% if parties |length > 1 %}
+      <div class="card-md-auto">
+        <div class="card-header">
+          Parties
         </div>
-        {% set tabCounter = tabCounter + 1 %}
-      {% endfor %}
-    </div>
-  </div>
+        <div class="card-body">
+          {% set tabCounter = 0 %}
+          {% for partie in parties %}
+            <div class="form-check form-check-inline">
+              <input class="form-check-input" type="checkbox" id="{{partie.nom}}" {% if partie.niveau == 0 %}checked{% endif%} onChange="changement(this.id, this.checked, 'partie', 'bam')">
+              <label class="form-check-label" for="inlineCheckbox1" id="label_{{partie.nom}}_histo">{{partie.nom}} (/{{ partie.bareme }})</label>
+            </div>
+            {% set tabCounter = tabCounter + 1 %}
+          {% endfor %}
+        </div>
+      </div>
+    {% endif %}
   <div class="card-md-auto">
     <div class="card-header">
       Groupes
@@ -122,7 +126,7 @@
     {% set tabCounter = 0 %}
     {% for groupe in parties[0].stats %}
       <div class="form-check form-check-inline">
-        <input class="form-check-input" type="checkbox" id="{{groupe.nom}}" onChange="changement(this.id, this.checked, 'groupe', 'bam')">
+        <input class="form-check-input" type="checkbox" id="{{groupe.nom}}"  onChange="changement(this.id, this.checked, 'groupe', 'bam')">
         <label class="form-check-label" for="inlineCheckbox1" id="label_{{groupe.nom}}_bam">{{groupe.nom}}</label>
       </div>
      {% set tabCounter = tabCounter + 1 %}
@@ -141,21 +145,23 @@
 <div id="Moyenne_ecart" class="tab-pane fade">
   <div class="container-fluid">
   <br>
-  <div class="card-md-auto">
-    <div class="card-header">
-      Parties
+  {% if parties |length > 1 %}
+    <div class="card-md-auto">
+      <div class="card-header">
+        Parties
+      </div>
+      <div class="card-body">
+        {% set tabCounter = 0 %}
+        {% for partie in parties %}
+          <div class="form-check form-check-inline">
+            <input class="form-check-input" type="checkbox" id="{{partie.nom}}" {% if partie.niveau == 0 %}checked{% endif%} onChange="changement(this.id, this.checked, 'partie', 'moy')">
+            <label class="form-check-label" for="inlineCheckbox1" id="label_{{partie.nom}}_histo">{{partie.nom}} (/{{ partie.bareme }})</label>
+          </div>
+          {% set tabCounter = tabCounter + 1 %}
+        {% endfor %}
+      </div>
     </div>
-    <div class="card-body">
-      {% set tabCounter = 0 %}
-      {% for partie in parties %}
-        <div class="form-check form-check-inline">
-          <input class="form-check-input" type="checkbox" id="{{partie.nom}}" onChange="changement(this.id, this.checked, 'partie', 'moy')">
-          <label class="form-check-label" for="inlineCheckbox1" id="label_{{partie.nom}}_histo">{{partie.nom}} (/{{ partie.bareme }})</label>
-        </div>
-        {% set tabCounter = tabCounter + 1 %}
-      {% endfor %}
-    </div>
-  </div>
+  {% endif %}
   <div class="card-md-auto">
     <div class="card-header">
       Groupes
@@ -334,6 +340,11 @@
     });
     // Mise en forme du texte des cases à cocher
     formatageCasesACocher();
+
+    //Pour que la partie évaluation soit cochée par défaut
+    changement("{{ parties[0].nom }}", true, 'partie', 'histo');
+    changement("{{ parties[0].nom }}", true, 'partie', 'bam');
+    changement("{{ parties[0].nom }}", true, 'partie', 'moy');
   }
 
 //------ FONCTIONS -----
