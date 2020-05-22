@@ -65,7 +65,7 @@
         {% set tabCounter = 0 %}
         {% for partie in parties %}
           <div class="form-check form-check-inline">
-            <input class="form-check-input" type="checkbox" id="{{partie.nom}}" onChange="changement(this.id, this.checked, 'histo')">
+            <input class="form-check-input" type="checkbox" id="{{partie.nom}}" onChange="changement(this.id, this.checked, 'partie', 'histo')">
             <label class="form-check-label" for="inlineCheckbox1" id="label_{{partie.nom}}_histo">{{partie.nom}} (/{{ partie.bareme }})</label>
           </div>
           {% set tabCounter = tabCounter + 1 %}
@@ -80,7 +80,7 @@
       {% set tabCounter = 0 %}
       {% for groupe in parties[0].stats %}
         <div class="form-check form-check-inline">
-          <input class="form-check-input" type="checkbox" id="{{groupe.nom}}" onChange="changement(this.id, this.checked, 'histo')">
+          <input class="form-check-input" type="checkbox" id="{{groupe.nom}}" onChange="changement(this.id, this.checked, 'groupe', 'histo')">
           <label class="form-check-label" for="inlineCheckbox1" id="label_{{groupe.nom}}_histo">{{groupe.nom}}</label>
         </div>
        {% set tabCounter = tabCounter + 1 %}
@@ -107,7 +107,7 @@
       {% set tabCounter = 0 %}
       {% for partie in parties %}
         <div class="form-check form-check-inline">
-          <input class="form-check-input" type="checkbox" id="{{partie.nom}}" onChange="changement(this.id, this.checked, 'histo')">
+          <input class="form-check-input" type="checkbox" id="{{partie.nom}}" onChange="changement(this.id, this.checked, 'partie', 'bam')">
           <label class="form-check-label" for="inlineCheckbox1" id="label_{{partie.nom}}_histo">{{partie.nom}} (/{{ partie.bareme }})</label>
         </div>
         {% set tabCounter = tabCounter + 1 %}
@@ -122,7 +122,7 @@
     {% set tabCounter = 0 %}
     {% for groupe in parties[0].stats %}
       <div class="form-check form-check-inline">
-        <input class="form-check-input" type="checkbox" id="{{groupe.nom}}" onChange="changement(this.id, this.checked, 'bam')">
+        <input class="form-check-input" type="checkbox" id="{{groupe.nom}}" onChange="changement(this.id, this.checked, 'groupe', 'bam')">
         <label class="form-check-label" for="inlineCheckbox1" id="label_{{groupe.nom}}_bam">{{groupe.nom}}</label>
       </div>
      {% set tabCounter = tabCounter + 1 %}
@@ -149,7 +149,7 @@
       {% set tabCounter = 0 %}
       {% for partie in parties %}
         <div class="form-check form-check-inline">
-          <input class="form-check-input" type="checkbox" id="{{partie.nom}}" onChange="changement(this.id, this.checked, 'histo')">
+          <input class="form-check-input" type="checkbox" id="{{partie.nom}}" onChange="changement(this.id, this.checked, 'partie', 'moy')">
           <label class="form-check-label" for="inlineCheckbox1" id="label_{{partie.nom}}_histo">{{partie.nom}} (/{{ partie.bareme }})</label>
         </div>
         {% set tabCounter = tabCounter + 1 %}
@@ -164,7 +164,7 @@
     {% set tabCounter = 0 %}
     {% for groupe in parties[0].stats %}
       <div class="form-check form-check-inline">
-        <input class="form-check-input" type="checkbox" id="{{groupe.nom}}" onChange="changement(this.id, this.checked, 'moy')">
+        <input class="form-check-input" type="checkbox" id="{{groupe.nom}}" onChange="changement(this.id, this.checked, 'groupe', 'moy')">
         <label class="form-check-label" for="inlineCheckbox1" id="label_{{groupe.nom}}_moy">{{groupe.nom}}</label>
       </div>
      {% set tabCounter = tabCounter + 1 %}
@@ -186,7 +186,6 @@
 <div class="info">
   <h2 class="h4 mb-0 text-gray-800">Veuillez sélectionner des groupes ou des statuts sur lesquels voir des statistiques </h2>
 </div>
-
 {% endif %}
 
 {% endblock %}
@@ -201,7 +200,6 @@
 <script type="text/javascript">
 
   // ----- VARIABLES GLOBALES ---------
-
   var nomEvaluation = "{{evaluation.nom}}";
   var fontSize = 16;
 
@@ -231,7 +229,12 @@
     [52, 73, 94],
   ];
 
-  // passage de la liste groupes de twig à js
+  // passage de la liste des parties de twig à js
+  var parties = "{{parties|json_encode()}}";
+  parties = parties.replace(/&quot;/g, "\""); // remplacement de toutes les itérations de ' &quot; ' par ' " '
+  parties = JSON.parse(parties);
+
+  // Récupération de la liste des groupes de twig à js (on récupère la liste des groupes de la premiere partie car ce sont tous les memes pour chacune)
   var groupes = "{{parties[0].stats|json_encode()}}";
   groupes = groupes.replace(/&quot;/g, "\""); // remplacement de toutes les itérations de ' &quot; ' par ' " '
   groupes = JSON.parse(groupes);
@@ -242,14 +245,20 @@
   groupesChecked['bam'] = [];
   groupesChecked['moy'] = [];
 
+  // Parties sélectionées (avec les cases à cocher) par graphique
+  var partiesChecked = [];
+  partiesChecked['histo'] = [];
+  partiesChecked['bam'] = [];
+  partiesChecked['moy'] = [];
+
   // Objet données du graphique
-  const chartDATA = {
+  var chartDATA = {
     labels: [],
     datasets: undefined,
   };
 
   // Objet options du graphique
-  const options = {
+  var options = {
     scales: {
       xAxes: [{
         gridLines: {
@@ -273,11 +282,11 @@
       }],
     },
     legend: {
-					position: 'top',
-          labels: {
-            fontSize: fontSize,
-          },
-		},
+      position: 'top',
+      labels: {
+        fontSize: fontSize,
+        },
+	  },
     aspectRatio: 3,
     maintainAspectRatio: true,
     responsive: true,
@@ -304,9 +313,6 @@
 
  // --------- CODE -------------
 
-  // Mise en forme du etexte des cases à cocher
-  formatageCasesACocher();
-
   // Création des graphiques au chargement de la fenètre
   window.onload = function(){
     window.chartBar = new Chart(document.getElementById("graphHisto").getContext('2d'), {
@@ -326,9 +332,11 @@
       data: chartDATA,
       options: options,
     });
+    // Mise en forme du texte des cases à cocher
+    formatageCasesACocher();
   }
 
-// ------ FONCTIONS -----
+//------ FONCTIONS -----
 
 // Coloration du texte des cases à cocher avec les bonnes couleurs + réajustement de la taille de la police
 // Chaque label de case à cocher à comme id : label_nomGroupe_nomGraphe
@@ -355,50 +363,54 @@ function formatageCasesACocher(){
   }
 }
 
-// Renvoie la valeur max de l'axe Y pour l'histogramme
-function getMax(){
-  var max = 0;
-  for(var i = 0; i < groupes.length; i++){
-    for(var j = 0; j < groupes[i].notes.length; j++){
-      if(groupes[i].notes[j] > max){
-        max = groupes[i].notes[j];
-      }
-    }
-  }
-  return max;
-}
-
 // Met à jour le graphique en fonction des cases qui sont cochées
-function changement(nom, value, type){
+function changement(nom, value, typeCoche, typeStat){
   // Gère l'addition et la suppression des groupes à afficher dans le graphe
   if(value){ // la case à été cochée
-    groupesChecked[type].push(nom); // Ajout dans la liste cochée
-  } else { // la case à été décochée
-    var index = contains(groupesChecked[type], nom); // index au quel se trouve le groupe dans le tableau groupes s'il existe
-    if(index != -1){
-      groupesChecked[type].splice(index, 1); // Suppression de la liste cochée
+    switch(typeCoche) {
+      case 'groupe':
+        groupesChecked[typeStat].push(nom); // Ajout dans la liste cochée
+        break;
+      case 'partie':
+        partiesChecked[typeStat].push(nom);
+        break;
+    }
+  }
+  else { // la case à été décochée
+    switch(typeCoche) {
+      case 'groupe':
+        var index = contains(groupesChecked[typeStat], nom); // index au quel se trouve le groupe dans le tableau groupes s'il existe
+        if(index != -1){
+          groupesChecked[typeStat].splice(index, 1); // Suppression de la liste cochée
+        }
+        break;
+      case 'partie':
+        var index = contains(partiesChecked[typeStat], nom); // index au quel se trouve le groupe dans le tableau groupes s'il existe
+        if(index != -1){
+          partiesChecked[typeStat].splice(index, 1); // Suppression de la liste cochée
+        }
     }
   }
 
-
   var chartOptions = options; // Récupération de la template des options
-  var chartDonnees = chartDATA; // Récupération de la template des données du graphique
+  var chartDonnees = {};
+  // Récupération de la template des données du graphique
   // Génération des labels & cacul du max
-  switch (type) {
+  switch (typeStat) {
     case 'histo':
       // Changement des labels + de l'échelle de l'axe Y
       chartDonnees.labels = ['[0;4[', '[4;8[', '[8;12[', '[12;16[', '[16;20]'];
       chartOptions.scales.yAxes[0].ticks.min = 0;
-      chartOptions.scales.yAxes[0].ticks.max = getMax();
+      chartOptions.scales.yAxes[0].ticks.max = undefined;
       break;
     case 'bam': // Boîte à moustache
       // Changement des labels + de l'échelle de l'axe Y
       chartDonnees.labels = [nomEvaluation];
       chartOptions.scales.yAxes[0].ticks.min = 0;
-      chartOptions.scales.yAxes[0].ticks.max = 20;
+      chartOptions.scales.yAxes[0].ticks.max = undefined;
       break;
     case 'moy':
-      chartDonnees.labels = groupesChecked[type];
+      chartDonnees.labels = groupesChecked[typeStat];
       chartOptions.scales.yAxes[0].ticks.min = undefined;
       chartOptions.scales.yAxes[0].ticks.max = undefined;
       break;
@@ -408,10 +420,10 @@ function changement(nom, value, type){
 
   // Génération des datasets des groupes sélectionés pour chartJS en fonction du graphique sélectioné
   // Remplacement des données du graphe par les nouvelles données générées
-  switch(type){
+  switch(typeStat){
     case 'histo':
     case 'bam':
-      chartDonnees.datasets = genDataRepartition(type);
+      chartDonnees.datasets = genDataRepartition(typeStat);
       break;
     case 'moy':
       chartDonnees.datasets = genDataMoyenneEcart();
@@ -419,7 +431,7 @@ function changement(nom, value, type){
   }
 
   //  MaJ du graphique + MaJ des options
-  switch (type) {
+  switch (typeStat) {
     case 'histo':
       window.chartBar.options = chartOptions;
       window.chartBar.data = chartDonnees;
@@ -442,32 +454,40 @@ function changement(nom, value, type){
 
 function genDataRepartition(type){
   var data = [];
-  for(var i = 0; i < groupesChecked[type].length; i++){
-    var set = {};
-    var index = -1;
-    for(var j = 0; j < groupes.length; j++){
-      if(groupes[j].nom == groupesChecked[type][i]){
-        index = j;
+  for(var i =0; i< partiesChecked[type].length; i++) {
+    for(var j = 0; j < groupesChecked[type].length; j++){
+      var set = {};
+      var indexPartie = -1;
+      var indexGroupe = -1;
+      for(var k = 0; k < parties.length; k++){
+        if(parties[k].nom == partiesChecked[type][i]){
+          indexPartie = k;
+          for(var l = 0; l < parties[k].stats.length; l++) {
+            if(groupes[l].nom == groupesChecked[type][j]) {
+              indexGroupe = l;
+            }
+          }
+        }
       }
-    }
-    if(index != -1){
-      set.label = groupes[index].nom;
-      switch (type) {
-        case 'histo': // Histogramme
-          set.data = groupes[index].notes;
-          set.borderColor = gris;
-          break;
-        case 'bam': // Boîte à moustaches
-          set.data = [groupes[index].allNotes];
-          set.borderColor = noir;
-          break;
-        default:
-          break;
+      if(indexGroupe != -1 && indexPartie != -1){
+        set.label = groupes[indexGroupe].nom;
+        switch (type) {
+          case 'histo': // Histogramme
+            set.data = parties[indexPartie].stats[indexGroupe].repartition;
+            set.borderColor = gris;
+            break;
+          case 'bam': // Boîte à moustaches
+            set.data = [parties[indexPartie].stats[indexGroupe].listeNotes];
+            set.borderColor = noir;
+            break;
+          default:
+            break;
+        }
+        var rgb = "rgb("+couleurs[indexGroupe][0]+","+couleurs[indexGroupe][1]+","+couleurs[indexGroupe][2]+")";
+        set.backgroundColor = rgb;
+        set.hoverBackgroundColor = rgb;
+        data.push(set);
       }
-      var rgb = "rgb("+couleurs[index][0]+","+couleurs[index][1]+","+couleurs[index][2]+")";
-      set.backgroundColor = rgb;
-      set.hoverBackgroundColor = rgb;
-      data.push(set);
     }
   }
   return data;
@@ -475,7 +495,7 @@ function genDataRepartition(type){
 
 // Génère les données requises par Chart.js pour le graphique 'Moyenne & écart-type'
 function genDataMoyenneEcart(){
-  var liste = getGroupesData(groupesChecked['moy']); // Récupération des données
+  var liste = getGroupesData(groupesChecked['moy'], partiesChecked['moy']); // Récupération des données
   var moyenne = [];
   var ecartType = [];
   for(var i = 0; i < liste.length; i++){ // Choix des informations requises
@@ -504,13 +524,18 @@ function genDataMoyenneEcart(){
 }
 
 // Retourne un tableau d'objets groupe avec leurs données en fonction d'une liste de noms de groupes
-function getGroupesData(liste){
+function getGroupesData(listeGroupes, listeParties){
   groupesAvecDonnees = [];
-  for(var i = 0; i < liste.length; i++){
-    for(var j = 0; j < groupes.length; j++){
-      if(groupes[j].nom == liste[i]){
-        groupesAvecDonnees[i] = groupes[j];
-        break;
+  for(var i = 0; i < listeParties.length; i++) {
+    for(var j = 0; j < listeGroupes.length; j++){
+      for(var k = 0; k < parties.length; k++){
+        if(parties[k].nom == listeParties[i]){
+          for(var l = 0; l < parties[k].stats.length; l++)
+          if(parties[k].stats[l].nom == listeGroupes[j]) {
+            groupesAvecDonnees.push(parties[k].stats[l])
+            break;
+          }
+        }
       }
     }
   }
@@ -533,8 +558,6 @@ function contains(array, element){
   }
   return -1;
 }
-
-
 </script>
 
 {#<!-- Patie dédié au la génération du pdf -->#}
