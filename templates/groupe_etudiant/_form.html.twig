@@ -21,10 +21,11 @@
 <div class="table-responsive">
 <table class="table table-hover" id="tableAjouter">
   <thead>
+    <th></th>
     <th>Nom</th>
     <th>Prénom</th>
     <th>Mail</th>
-    <th></th>
+
   </thead>
 
   <tbody>
@@ -36,10 +37,10 @@
     {# get entity object from its index in the Categories Field #}
     {% set entity = form.etudiantsAAjouter.vars.choices[index].data %}
     <tr>
+      <td>{{form_widget(form.etudiantsAAjouter[index])}}</td>
       <td>{{entity.nom}}</td>
       <td>{{entity.prenom}}</td>
       <td>{{entity.mail}}</td>
-      <td>{{form_widget(form.etudiantsAAjouter[index])}}</td>
     </tr>
     {% endfor %}
   </tbody>
@@ -50,10 +51,10 @@
 <div class="table-responsive">
 <table class="table table-hover" id="tableSupprimer">
   <thead>
+    <th></th>
     <th>Nom</th>
     <th>Prénom</th>
     <th>Mail</th>
-    <th></th>
   </thead>
 
   <tbody>
@@ -65,10 +66,10 @@
     {# get entity object from its index in the Categories Field #}
     {% set entity = form.etudiantsASupprimer.vars.choices[index].data %}
     <tr>
+      <td>{{form_widget(form.etudiantsASupprimer[index])}}</td>
       <td>{{entity.nom}}</td>
       <td>{{entity.prenom}}</td>
       <td>{{entity.mail}}</td>
-      <td>{{form_widget(form.etudiantsASupprimer[index])}}</td>
     </tr>
     {% endfor %}
   </tbody>

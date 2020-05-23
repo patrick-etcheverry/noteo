@@ -43,6 +43,7 @@ class SousGroupeEtudiantType extends AbstractType
             'mapped' => false, // Pour que l'attribut ne soit pas immédiatement mis en BD mais soit récupérable après validation
             'expanded' => true, // Pour avoir des cases
             'multiple' => true, // à cocher
+            'attr' => ['class' => 'custom-control custom-checkbox checkbox-lgc'], //application de CSS sur les cases a cocher
             'choices' => $options['parent']->getEtudiants() // On restreint le choix à la liste des étudiants du groupe passé en parametre
           ])
         ;

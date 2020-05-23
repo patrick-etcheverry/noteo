@@ -1,0 +1,125 @@
+{% extends 'base.html.twig' %}
+
+{% block titrePage %}Créer des parties{% endblock %}
+
+{% block evaluations %}active{% endblock %}
+
+{% block contenu %}
+    <div class="row">
+        <div class="col-lg-4">
+            <div id="arbre_boot"></div>
+            <button>Ajouter une partie</button>
+        </div>
+        <div class="col-lg-4">
+            <div id="arbre_js"></div>
+            <button>Ajouter une partie</button>
+        </div>
+        <div class="col-lg-4">
+            <table class="table table-hover">
+                <thead>
+                    <th>Intitulé</th>
+                    <th>Barème</th>
+                    <th></th>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Evaluation</td>
+                        <td>20</td>
+                        <td><a href="#"><i class="icon-plus"></i></a></td>
+                    </tr>
+                    <tr>
+                        <td>&emsp;Exercice 1</td>
+                        <td>10</td>
+                        <td><a href="#"><i class="icon-plus"></i></a></td>
+                    </tr>
+                    <tr>
+                        <td>&emsp;Exercice 2</td>
+                        <td>10</td>
+                        <td><a href="#" data-toggle="modal" onclick="modale()"><i class="icon-plus"></i></a></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <div class="modal fade" id="modalePartie" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Créer une partie</h5>
+                    <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">x</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    {{include('partie/_form.html.twig')}}
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block javascripts %}
+    <script>
+        function getArbre() {
+            var tree = [
+                {
+                    text: "Evaluation (/20)",
+                    nom: 'Evaluation',
+                    bareme: 20,
+                    nodes: [
+                        {
+                            text: "Exercice 1",
+                            nom : "Exercice 1",
+                            bareme: 10,
+                            tags: ['<span class="badge badge-pill badge-primary">/ 10</span>'],
+                        },
+                        {
+                            text: "Exercice 2",
+                            nom : "Exercice 2",
+                            bareme: 10,
+                            tags: ['<span class="badge badge-pill badge-primary">/ 10</span>'],
+                        }
+                    ]
+                }
+            ];
+            return tree;
+        }
+
+        $('#arbre_boot').treeview({data: getArbre(), showTags : true});
+        $('#arbre_js').jstree({ 'core' : {
+            'data' : [
+                {
+                    'text' : 'Evaluation (/20)',
+                    'nom' : 'Evaluation',
+                    'bareme' : 20,
+                    'state' : {
+                        'opened' : true
+                    },
+                    'children' : [
+                        {
+                            'text' : 'Exercice 1 (/10)',
+                            'nom' : 'Evaluation',
+                            'bareme' : 10,
+                            'state' : {
+                                'opened': true
+                            }
+                        },
+                        {
+                            'text' : 'Exercice 2 (/10)',
+                            'nom' : 'Evaluation',
+                            'bareme' : 10,
+                            'state' : {
+                                'opened': true
+                            }
+                        }
+                    ]
+                }
+            ]
+            }});
+
+        function modale() {
+            $('#modalePartie').modal();
+        }
+    </script>
+{% endblock %}

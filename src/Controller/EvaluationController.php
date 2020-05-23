@@ -38,7 +38,7 @@ class EvaluationController extends AbstractController
     /**
      * @Route("/mes-evaluations", name="evaluation_enseignant", methods={"GET"})
      */
-    public function indexEnseignant(EvaluationRepository $evaluationRepository): Response
+    public function indexEnseignantConnecte(EvaluationRepository $evaluationRepository): Response
     {
         return $this->render('evaluation/index.html.twig', [
             'evaluations' => $evaluationRepository->findMyEvaluationsWithGradesAndCreatorAndGroup($this->getUser()),
@@ -478,6 +478,7 @@ class EvaluationController extends AbstractController
                 //On remplit le tableau qui contiendra toutes les statistiques du groupe
                 $listeStatsParGroupe[] = array("nom" => $groupe->getNom(),
                                              "notes" => $this->repartition($copieTabPoints),
+                                             "allNotes" => $copieTabPoints,
                                              "moyenne" => $this->moyenne($copieTabPoints),
                                              "ecartType" => $this->ecartType($copieTabPoints),
                                              "minimum" => $this->minimum($copieTabPoints),
@@ -498,6 +499,7 @@ class EvaluationController extends AbstractController
 
                 $listeStatsParStatut[] = array("nom" => $statut->getNom(),
                                                "notes" => $this->repartition($copieTabPoints),
+                                               "allNotes" => $copieTabPoints,
                                                "moyenne" => $this->moyenne($copieTabPoints),
                                                "ecartType" => $this->ecartType($copieTabPoints),
                                                "minimum" => $this->minimum($copieTabPoints),

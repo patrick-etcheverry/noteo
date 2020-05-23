@@ -1,12 +1,51 @@
 {% extends 'base.html.twig' %}
 
-{% block titrePage %}Créer une partie{% endblock %}
+{% block titrePage %}Définir des parties{% endblock %}
 
 {% block evaluations %}active{% endblock %}
+
+{% block show %}show{% endblock %}
+
+{% block mesEvaluations %}active{% endblock %}
+
+{% block collapsed %}{% endblock %}
 
 {% block contenu %}
 
     {{ include('partie/_form.html.twig') }}
 
-    <a href="{{ path('partie_index') }}">back to list</a>
+{% endblock %}
+
+{% block javascripts %}
+    <script>
+        $(document).ready(function() {
+            var $wrapper = $('.js-partie-wrapper'); // Cet élément désigne le div contenant tous les formulaire des parties
+
+            //Cette fonction sert à ajouter un formulaire de partie à la liste
+            $wrapper.on('click', '.js-partie-add', function(e) {
+                e.preventDefault();
+                // Get the data-prototype explained earlier
+                var prototype = $wrapper.data('prototype');
+                // get the new index
+                var index = $wrapper.data('index');
+                // Replace '__name__' in the prototype's HTML to
+                // instead be a number based on how many items we have
+                var newForm = prototype.replace(/__name__/g, index);
+                // increase the index with one for the next item
+                $wrapper.data('index', index + 1);
+                // Display the form in the page before the "new" link
+                $(this).before(newForm);
+            });
+
+            //Cette fonction sert à enlever un formulaire de partie à la liste
+            $wrapper.on('click', '.js-partie-remove', function(e) {
+                e.preventDefault();
+
+                $(this).closest('.js-partie-item')
+                    .fadeOut()
+                    .remove();
+
+            });
+        });
+    </script>
 {% endblock %}
