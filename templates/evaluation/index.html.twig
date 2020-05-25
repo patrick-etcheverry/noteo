@@ -40,7 +40,7 @@
     {% for evaluation in evaluations %}
       <tr>
         <td>{{ evaluation.nom }}</td>
-        <td>{{ evaluation.date }}</td>
+        <td>{{ evaluation.date | date("d/m/Y") }}</td>
         <td>
           {# Calcul de la moyenne de chaque évaluation (calcul effectué sur la note globale à l'évaluation) #}
           {% set nbNotes = 0 %}

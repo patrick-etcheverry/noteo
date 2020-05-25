@@ -174,6 +174,8 @@ class EvaluationController extends AbstractController
             ])
             ->add('date', DateType::class, [
               'widget' => 'choice',
+              'years' => range(date("Y")-5, date("Y")+1),
+              'data' => new \DateTime(),
               'constraints' => [new NotBlank, new Date]
             ])
             ->add('notes', CollectionType::class , [
@@ -233,6 +235,8 @@ class EvaluationController extends AbstractController
             ])
             ->add('date', DateType::class, [
                 'widget' => 'choice',
+                'years' => range(date("Y")-5, date("Y")+1),
+                'data' => new \DateTime(),
                 'constraints' => [new NotBlank, new Date]
             ])
             ->getForm()
@@ -358,7 +362,8 @@ class EvaluationController extends AbstractController
           ])
           ->add('date', DateType::class, [
             'widget' => 'choice',
-            'data' => $evaluation->getDateUnformatted(),
+            'years' => range(date("Y")-5, date("Y")+1),
+            'data' => $evaluation->getDate(),
             'constraints' => [new NotBlank, new Date]
           ])
           ->add('notes', CollectionType::class , [
@@ -385,7 +390,6 @@ class EvaluationController extends AbstractController
               foreach ($partiesACalculer as $partie) {
                   $sommePtsSousPartie = 0;
                   $sousParties = $partie->getChildren();
-
                   $etudiantAbsent = true; //On suppose que l'étudiant est absent à cette partie sauf si on trouve une note supérieure à -1 dans les sous parties (il peut avoir manqué seulement une partie de l'évaluation ainsi)
                   //On fait la somme des notes obtenues aux sous parties
                   foreach ($sousParties as $sousPartie ) {
@@ -452,17 +456,18 @@ class EvaluationController extends AbstractController
       $form = $this->createFormBuilder()
           ->add('groupes', EntityType::class, [
             'constraints' => [new NotNull],
-            'class' => GroupeEtudiant::Class, //On veut choisir des groupes
-            'choice_label' => false, // On n'affichera pas d'attribut de l'entité à côté du bouton pour aider au choix car on liste les entités en utilisant les variables du champ
-            'label' => false, // On n'affiche pas le label du champ
-            'mapped' => false, // Pour que l'attribut ne soit pas immédiatement mis en BD mais soit récupérable après soumission du formulaire
-            'expanded' => true, // Pour avoir des boutons
-            'multiple' => false, // radios
+            'class' => GroupeEtudiant::Class,
+            'choice_label' => false,
+            'label' => false,
+            'mapped' => false,
+            'expanded' => true,
+            'multiple' => false,
             'choices' => $groupes
           ])
           ->getForm();
       $form->handleRequest($request);
       if ($form->isSubmitted()  && $form->isValid()) {
+        //En fonction du type d'évaluation correct on renvoie sur la bonne route avec le groupe choisi
         if (strcmp($typeEval, "simple") == 0 ) {
             return $this->redirectToRoute('evaluation_new',['slug' => $form->get("groupes")->getData()->getSlug()]);
         }
@@ -480,23 +485,28 @@ class EvaluationController extends AbstractController
      */
     public function chooseGroups(Request $request, $slugEval, $slugGroupe, StatutRepository $repoStatut, EvaluationRepository $repoEval, GroupeEtudiantRepository $repoGroupe, PointsRepository $repoPoints ): Response
     {
-        // Récupération de la session
         $session = $request->getSession();
-        //On récupere l'évaluation que l'on traite pour afficher ses informations générales dans les statistiques
         $evaluation = $repoEval->findOneBySlug($slugEval);
-        //On récupère le groupe concerné par l'évaluation
         $groupeConcerne = $repoGroupe->findOneBySlug($slugGroupe);
         //On récupère la liste de tous les enfants (directs et indirects) du groupe concerné pour choisir ceux sur lesquels on veut des statistiques
         $choixGroupe = $repoGroupe->findAllOrderedFromNode($groupeConcerne);
-        //Création du formulaire pour choisir les groupes / status sur lesquels on veut des statistiques
         $form = $this->createFormBuilder()
+            ->add('parties', EntityType::class, [
+                'class' => Partie::Class,
+                'choice_label' => false,
+                'label' => false,
+                'mapped' => false,
+                'expanded' => true,
+                'multiple' => true,
+                'choices' => $evaluation->getParties() // On choisira parmis le groupe concerné et ses enfants
+            ])
             ->add('groupes', EntityType::class, [
-              'class' => GroupeEtudiant::Class, //On veut choisir des groupes
-              'choice_label' => false, // On n'affichera pas d'attribut de l'entité à côté du bouton pour aider au choix car on liste les entités en utilisant les variables du champ
-              'label' => false, // On n'affiche pas le label du champ
-              'mapped' => false, // Pour que l'attribut ne soit pas immédiatement mis en BD mais soit récupérable après soumission du formulaire
-              'expanded' => true, // Pour avoir des cases
-              'multiple' => true, // à cocher
+              'class' => GroupeEtudiant::Class,
+              'choice_label' => false,
+              'label' => false,
+              'mapped' => false,
+              'expanded' => true,
+              'multiple' => true,
               'choices' => $choixGroupe // On choisira parmis le groupe concerné et ses enfants
             ])
             ->add('statuts', EntityType::class, [
@@ -514,52 +524,65 @@ class EvaluationController extends AbstractController
         if ($form->isSubmitted()  && $form->isValid()) {
             $listeStatsParGroupe = array(); // On initialise un tableau vide qui contiendra les statistiques des groupes choisis
             $listeStatsParStatut = array(); // On initialise un tableau vide qui contiendra les statistiques des statuts choisis
-            //Pour tous les groupes sélectionnés
-            foreach ($form->get("groupes")->getData() as $groupe) {
-                //On récupère toutes les notes du groupe courant
-                $tabPoints = $repoPoints->findByGroupe($slugEval, $groupe->getSlug());
-                //On crée une copie de tabPoints qui contiendra les valeurs des notes pour simplifier le tableau renvoyé par la requete
-                $copieTabPoints = array();
-                foreach ($tabPoints as $element) {
-                    $copieTabPoints[] = $element["valeur"];
+            $groupesChoisis = $form->get("groupes")->getData();
+            $statutsChoisis = $form->get("statuts")->getData();
+            $partiesChoisies = $form->get("parties")->getData();
+            $toutesLesStats = [];
+            //Calcul des stats pour toutes les parties
+            foreach($partiesChoisies as $partie) {
+                $statsDuGroupePourLaPartie = [];
+                foreach ($groupesChoisis as $groupe) {
+                    $notesGroupe = $repoPoints->findByGroupeAndPartie($evaluation->getId(), $groupe->getId(), $partie->getId());
+                    //On fait une copie du résultat de la requête pour simplifier le format de renvoi utilisé par doctrine
+                    $copieTabPoints = array();
+                    foreach ($notesGroupe as $element) {
+                        $copieTabPoints[] = $element["valeur"];
+                    }
+                    $statsDuGroupePourLaPartie[] = [
+                        "nom" => $groupe->getNom(),
+                        "repartition" => $this->repartition($copieTabPoints),
+                        "listeNotes" => $copieTabPoints,
+                        "moyenne" =>$this->moyenne($copieTabPoints),
+                        "ecartType" =>$this->ecartType($copieTabPoints),
+                        "minimum"=>$this->minimum($copieTabPoints),
+                        "maximum"=>$this->maximum($copieTabPoints),
+                        "mediane"=>$this->mediane($copieTabPoints),
+                    ] ;
                 }
-                //On remplit le tableau qui contiendra toutes les statistiques du groupe
-                $listeStatsParGroupe[] = array("nom" => $groupe->getNom(),
-                                             "notes" => $this->repartition($copieTabPoints),
-                                             "allNotes" => $copieTabPoints,
-                                             "moyenne" => $this->moyenne($copieTabPoints),
-                                             "ecartType" => $this->ecartType($copieTabPoints),
-                                             "minimum" => $this->minimum($copieTabPoints),
-                                             "maximum" => $this->maximum($copieTabPoints),
-                                             "mediane" => $this->mediane($copieTabPoints)
-                                             );
-            }
-            //Pour tous les statuts sélectionnés
-            foreach ($form->get("statuts")->getData() as $statut) {
-                $tabPoints = $repoPoints->findByStatut($slugEval, $statut->getSlug());
-                $copieTabPoints = array();
-                foreach ($tabPoints as $note) {
-                    $copieTabPoints[] = $note["valeur"];
+                $statsDuStatutPourLaPartie = [];
+                foreach ($statutsChoisis as $statut) {
+                    $notesStatut = $repoPoints->findByStatutAndPartie($evaluation->getId(), $statut->getId(), $partie->getId());
+                    //On fait une copie du résultat de la requête pour simplifier le format de renvoi utilisé par doctrine
+                    $copieTabPoints = array();
+                    foreach ($notesStatut as $element) {
+                        $copieTabPoints[] = $element["valeur"];
+                    }
+                    $statsDuStatutPourLaPartie[] = [
+                        "nom" => $statut->getNom(),
+                        "repartition" => $this->repartition($copieTabPoints),
+                        "listeNotes" => $copieTabPoints,
+                        "moyenne" =>$this->moyenne($copieTabPoints),
+                        "ecartType" =>$this->ecartType($copieTabPoints),
+                        "minimum"=>$this->minimum($copieTabPoints),
+                        "maximum"=>$this->maximum($copieTabPoints),
+                        "mediane"=>$this->mediane($copieTabPoints),
+                    ];
                 }
-                $listeStatsParStatut[] = array("nom" => $statut->getNom(),
-                                               "notes" => $this->repartition($copieTabPoints),
-                                               "allNotes" => $copieTabPoints,
-                                               "moyenne" => $this->moyenne($copieTabPoints),
-                                               "ecartType" => $this->ecartType($copieTabPoints),
-                                               "minimum" => $this->minimum($copieTabPoints),
-                                               "maximum" => $this->maximum($copieTabPoints),
-                                               "mediane" => $this->mediane($copieTabPoints)
-                                               );
+                //Ajout des stats de la partie (groupe + statut) dans le tableau général
+                $toutesLesStats[] = [
+                    "nom" => $partie->getIntitule(),
+                    "bareme" => $partie->getBareme(),
+                    "stats" => array_merge($statsDuGroupePourLaPartie, $statsDuStatutPourLaPartie)
+                ];
             }
-            $groupes = array_merge($listeStatsParGroupe, $listeStatsParStatut); // On fusionne les deux tableaux pour éviter le dédoublement des traitements dans la vue
-            // Mise en session des stats
-            $session->set('stats',$groupes);
+            //Mise en session des stats pour le mail
+            $session->set('stats',$toutesLesStats);
             return $this->render('evaluation/stats.html.twig', [
-                'groupes' => $groupes,
+                'parties' => $toutesLesStats,
                 'evaluation' => $evaluation
             ]);
         }
-        return $this->render('evaluation/choix_groupes.html.twig', [
+        return $this->render('evaluation/choix_groupes_et_parties.html.twig', [
             'form' => $form->createView(),
             'evaluation' => $evaluation
         ]);

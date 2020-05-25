@@ -10,13 +10,12 @@
 {% block autresEvaluations %}{% if evaluation.enseignant != app.user %}active{% endif %}{% endblock %}
 
 {% block contenu %}
-{{ include('evaluation/_choose_groups_form.html.twig') }}
+{{ include('evaluation/_choose_groups_and_parts_form.html.twig') }}
 {% endblock %}
 
 {% block datatables %}
 <script type="text/javascript">
 
-  //Activation de Datatables sur le tableau d'ajout des étudiants
   var tableGroupes = $('#groupes').DataTable({
     language: {
       // Suppression du label Rechercher et ajout du placeholder
@@ -34,7 +33,6 @@
     info: false,
   });
 
-  //Activation de Datatables sur le tableau de suppression des étudiants
   var tableStatuts = $('#statuts').DataTable({
     language: {
       // Suppression du label Rechercher et ajout du placeholder
@@ -43,9 +41,9 @@
       "url": "{{asset('tradfr.json')}}"
     },
     order: [
-      [0, "asc"]
+      [1, "asc"]
     ],
-    columns: [{"orderable": false}, null, null, null,{"orderable": false}],
+    columns: [{"orderable": false}, null, null, null],
     lengthMenu: [
       [15, 30, 45, -1],
       [15, 30, 45, "Tout"]
