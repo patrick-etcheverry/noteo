@@ -23,7 +23,7 @@
         <tbody>
             <tr>
                 <th class="intitule">Date de l'évaluation</th>
-                <td >{{ evaluation.date }}</td>
+                <td >{{ evaluation.date | date("d/m/Y") }}</td>
             </tr>
             <tr>
                 <th class="intitule">Groupe évalué</th>

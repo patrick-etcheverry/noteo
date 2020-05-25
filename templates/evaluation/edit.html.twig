@@ -58,10 +58,22 @@
 {% block javascripts %}
   {% if parties|length != 1 %}
     <script>
+
+      window.onload = function () {
+        //Pour que les totaux s'affichent au chargement de la page
+        truc = $("#etudiants :input");
+        for (var i =0; i < truc.length ; i++) {
+          totalLigne(truc[i])
+        }
+      }
       //Cet écouteur d'évenement va attendre qu'un champ input text de la page soit changé.
       //Quand ce sera le cas, il va mettre à jour le total de la ligne correspondante
       $("input[type='text']").change(function() {
-        elementsAEtudier = $(this).parent().parent().children(); //On récupère tous les td de la ligne
+        totalLigne(this)
+      })
+
+      function totalLigne(element) {
+        elementsAEtudier = $(element).parent().parent().children(); //On récupère tous les td de la ligne
         //Si le premier élement n'est pas un th (car ici il y a également le tableau dans la partie supérieure de la page, qu'on ne veut pas traiter
         if(!($(elementsAEtudier[0]).is("th"))) {
           totalPts = 0;
@@ -86,7 +98,7 @@
             $(elementsAEtudier[elementsAEtudier.length - 1]).css('color', '')
           }
         }
-      })
+      }
     </script>
   {% endif %}
 {% endblock %}
