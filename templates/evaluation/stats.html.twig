@@ -12,7 +12,6 @@
 {% block collapsed %}{% endblock %}
 
 {% block contenu %}
-  {{ dump(parties) }}
 <div class="table-responsive">
 <table align="center" class="table">
   <tbody>
@@ -54,13 +53,13 @@
         </li>
         <li class="list-group-item">
           <ul class="nav nav-tabs">
-            <li class="nav-item"><a class="nav-link active" data-toggle="tab" href="#Repartition_Histogramme">Répartition (Histogramme)</a></li>
-            <li class="nav-item"><a class="nav-link" data-toggle="tab" href="#Repartition_Boites">Répartition (Boîte à moustaches)</a></li>
-            <li class="nav-item"><a class="nav-link" data-toggle="tab" href="#Moyenne_ecart">Moyenne & Écart-type</a></li>
+            <li class="nav-item"><a class="nav-link active" data-toggle="tab" href="#Repartition_Histogramme_{{ partie.nom }}">Répartition (Histogramme)</a></li>
+            <li class="nav-item"><a class="nav-link" data-toggle="tab" href="#Repartition_Boites_{{ partie.nom }}">Répartition (Boîte à moustaches)</a></li>
+            <li class="nav-item"><a class="nav-link" data-toggle="tab" href="#Moyenne_ecart_{{ partie.nom }}">Moyenne & Écart-type</a></li>
           </ul>
           <div class="tab-content">
             <!-- Répartition (Histogramme) -->
-            <div id="Repartition_Histogramme" class="tab-pane active">
+            <div id="Repartition_Histogramme_{{ partie.nom }}" class="tab-pane active">
               <div class="container-fluid">
                 <br>
                 <div class="card-md-auto">
@@ -81,12 +80,12 @@
               </div>
               <br>
               <div class="container-fluid">
-                <canvas align=center id="graphHisto"></canvas>
+                <canvas align=center id="graphHisto_{{ loop.index -1 }}"></canvas>
               </div>
             </div>
             <!-- fin Répartition (Histogramme) -->
             <!-- Répartition (Boîte à moustache) -->
-            <div id="Repartition_Boites" class="tab-pane fade">
+            <div id="Repartition_Boites_{{ partie.nom }}" class="tab-pane fade">
               <div class="container-fluid">
                 <br>
                 <div class="card-md-auto">
@@ -107,12 +106,12 @@
               </div>
               <br>
               <div class="container-fluid">
-                <canvas align=center id="graphBoites"></canvas>
+                <canvas align=center id="graphBoites_{{ loop.index -1 }}"></canvas>
               </div>
             </div>
             <!-- fin Répartition (Boîtes à moustache) -->
             <!-- Moyenne & Ecart-type -->
-            <div id="Moyenne_ecart" class="tab-pane fade">
+            <div id="Moyenne_ecart_{{ partie.nom }}" class="tab-pane fade">
               <div class="container-fluid">
                 <br>
                 <div class="card-md-auto">
@@ -133,7 +132,7 @@
               </div>
               <br>
               <div class="container-fluid">
-                <canvas align=center id="grapheMoyenne"></canvas>
+                <canvas align=center id="grapheMoyenne_{{ loop.index -1 }}"></canvas>
               </div>
             </div>
             <!-- fin Moyenne & Ecart-type -->
@@ -143,13 +142,11 @@
     </div>
     <br>
   {% endfor %}
-
 {% else %}
 <div class="info">
-  <h2 class="h4 mb-0 text-gray-800">Veuillez sélectionner des groupes ou des statuts sur lesquels voir des statistiques </h2>
+  <h2 class="h4 mb-0 text-gray-800">Veuillez sélectionner des parties de l'évaluations sur lesquelles voir des statistiques </h2>
 </div>
 {% endif %}
-
 {% endblock %}
 
 {% block javascripts %}
@@ -207,15 +204,23 @@
 
   // Groupes sélectionés (avec les cases à cocher) par graphique
   var groupesChecked = [];
-  groupesChecked['histo'] = [];
-  groupesChecked['bam'] = [];
-  groupesChecked['moy'] = [];
+  {% for partie in parties %}
+  groupesCheckedParPartie = [];
+  groupesCheckedParPartie['histo']= [];
+  groupesCheckedParPartie['bam'] = [];
+  groupesCheckedParPartie['moy'] = [];
+  groupesChecked.push(groupesCheckedParPartie)
+  {% endfor %}
+
 
   // Objet données du graphique
   var chartDATA = {
     labels: [],
     datasets: undefined,
   };
+
+  //Contiendra les variables des graphiques pour les mettre à jour
+  var graphiques = [];
 
   // Objet options du graphique
   var options = {
@@ -271,29 +276,38 @@
     }
   }
 
- // --------- CODE -------------
+ // --------- CODE ------------
 
   // Création des graphiques au chargement de la fenètre
   window.onload = function(){
-    window.chartBar = new Chart(document.getElementById("graphHisto").getContext('2d'), {
-      type: 'bar',
-      data: chartDATA,
-      options: options
-    });
+  {% for partie in parties %}
+      var graphiquesPartieCourante =  [];
 
-    window.chartBoite = new Chart(document.getElementById("graphBoites").getContext('2d'), {
-      type: 'boxplot',
-      data: chartDATA,
-      options: options,
-    });
+      var chartBar = new Chart(document.getElementById("graphHisto_{{ loop.index -1 }}").getContext('2d'), {
+        type: 'bar',
+        data: chartDATA,
+        options: options
+      });
+      graphiquesPartieCourante.push(chartBar);
 
-    window.chartMoy = new Chart(document.getElementById("grapheMoyenne").getContext('2d'), {
-      type: 'bar',
-      data: chartDATA,
-      options: options,
-    });
-    // Mise en forme du texte des cases à cocher
-    formatageCasesACocher();
+      var chartBoite = new Chart(document.getElementById("graphBoites_{{ loop.index -1 }}").getContext('2d'), {
+        type: 'boxplot',
+        data: chartDATA,
+        options: options,
+      });
+      graphiquesPartieCourante.push(chartBoite);
+
+      var chartMoy = new Chart(document.getElementById("grapheMoyenne_{{ loop.index -1 }}").getContext('2d'), {
+        type: 'bar',
+        data: chartDATA,
+        options: options,
+      });
+      graphiquesPartieCourante.push(chartMoy)
+      graphiques.push(graphiquesPartieCourante)
+  {% endfor %}
+
+      // Mise en forme du texte des cases à cocher
+      formatageCasesACocher();
   }
 
 //------ FONCTIONS -----
@@ -327,12 +341,12 @@ function formatageCasesACocher(){
 function changement(nom, value, partieConcernee, typeStat){
   // Gère l'addition et la suppression des groupes à afficher dans le graphe
   if(value){ // la case à été cochée
-    groupesChecked[typeStat].push(nom); // Ajout dans la liste cochée
+    groupesChecked[partieConcernee][typeStat].push(nom); // Ajout dans la liste cochée
   }
   else { // la case à été décochée
-      var index = contains(groupesChecked[typeStat], nom); // index au quel se trouve le groupe dans le tableau groupes s'il existe
+      var index = contains(groupesChecked[partieConcernee][typeStat], nom); // index au quel se trouve le groupe dans le tableau groupes s'il existe
       if(index != -1){
-        groupesChecked[typeStat].splice(index, 1); // Suppression de la liste cochée
+        groupesChecked[partieConcernee][typeStat].splice(index, 1); // Suppression de la liste cochée
       }
   }
 
@@ -354,7 +368,7 @@ function changement(nom, value, partieConcernee, typeStat){
       chartOptions.scales.yAxes[0].ticks.max = undefined;
       break;
     case 'moy':
-      chartDonnees.labels = groupesChecked[typeStat];
+      chartDonnees.labels = groupesChecked[partieConcernee][typeStat];
       chartOptions.scales.yAxes[0].ticks.min = undefined;
       chartOptions.scales.yAxes[0].ticks.max = undefined;
       break;
@@ -377,19 +391,19 @@ function changement(nom, value, partieConcernee, typeStat){
   //  MaJ du graphique + MaJ des options
   switch (typeStat) {
     case 'histo':
-      window.chartBar.options = chartOptions;
-      window.chartBar.data = chartDonnees;
-      window.chartBar.update();
+      graphiques[partieConcernee][0].options = chartOptions;
+      graphiques[partieConcernee][0].data = chartDonnees;
+      graphiques[partieConcernee][0].update();
       break;
     case 'bam': // Boîte à moustaches
-      window.chartBoite.options = chartOptions;
-      window.chartBoite.data = chartDonnees;
-      window.chartBoite.update();
+      graphiques[partieConcernee][1].options = chartOptions;
+      graphiques[partieConcernee][1].data = chartDonnees;
+      graphiques[partieConcernee][1].update();
       break;
     case 'moy' : // Moyenne & écart-type
-      window.chartMoy.options = chartOptions;
-      window.chartMoy.data = chartDonnees;
-      window.chartMoy.update();
+      graphiques[partieConcernee][2].options = chartOptions;
+      graphiques[partieConcernee][2].data = chartDonnees;
+      graphiques[partieConcernee][2].update();
       break;
     default:
       break;
@@ -398,11 +412,11 @@ function changement(nom, value, partieConcernee, typeStat){
 
 function genDataRepartition(type, partieConcernee){
   var data = [];
-  for(var j = 0; j < groupesChecked[type].length; j++){
+  for(var j = 0; j < groupesChecked[partieConcernee][type].length; j++){
     var set = {};
     var indexGroupe = -1;
     for(var l = 0; l < parties[partieConcernee].stats.length; l++) {
-      if(groupes[l].nom == groupesChecked[type][j]) {
+      if(groupes[l].nom == groupesChecked[partieConcernee][type][j]) {
         indexGroupe = l;
       }
     }
@@ -432,7 +446,7 @@ function genDataRepartition(type, partieConcernee){
 
 // Génère les données requises par Chart.js pour le graphique 'Moyenne & écart-type'
 function genDataMoyenneEcart(partieConcernee){
-  var liste = getGroupesData(groupesChecked['moy'], partieConcernee); // Récupération des données
+  var liste = getGroupesData(groupesChecked[partieConcernee]['moy'], partieConcernee); // Récupération des données
   var moyenne = [];
   var ecartType = [];
   for(var i = 0; i < liste.length; i++){ // Choix des informations requises
