@@ -12,6 +12,7 @@
 {% block collapsed %}{% endblock %}
 
 {% block contenu %}
+  {{ dump(parties) }}
 <div class="table-responsive">
 <table align="center" class="table">
   <tbody>
@@ -45,148 +46,103 @@
   <span style="font-size:15px" class="badge badge-pill badge-primary"><i class="icon-attention-circled"></i> Les statistiques ne prennent pas en compte les étudiants démissionaires ou absents</span>
 </div>
 {% if parties is not empty %}
-
-<ul class="nav nav-tabs">
-    <li class="nav-item"><a class="nav-link active" data-toggle="tab" href="#Repartition_Histogramme">Répartition (Histogramme)</a></li>
-    <li class="nav-item"><a class="nav-link" data-toggle="tab" href="#Repartition_Boites">Répartition (Boîte à moustaches)</a></li>
-    <li class="nav-item"><a class="nav-link" data-toggle="tab" href="#Moyenne_ecart">Moyenne & Écart-type</a></li>
-</ul>
-
-<div class="tab-content">
-<!-- Répartition (Histogramme) -->
-<div id="Repartition_Histogramme" class="tab-pane active">
-  <div class="container-fluid">
-    <br>
-    {% if parties |length > 1 %}
-      <div class="card-md-auto">
-        <div class="card-header">
-          Parties
-        </div>
-        <div class="card-body">
-          {% set tabCounter = 0 %}
-          {% for partie in parties %}
-            <div class="form-check form-check-inline">
-              <input class="form-check-input" type="checkbox" id="{{partie.nom}}" {% if loop.index == 1 %}checked{% endif%} onChange="changement(this.id, this.checked, 'partie', 'histo')">
-              <label class="form-check-label" for="inlineCheckbox1" id="label_{{partie.nom}}_histo">{{partie.nom}} (/{{ partie.bareme }})</label>
+  {% for partie in parties %}
+    <div class="card">
+      <ul class="list-group list-group-flush">
+        <li class="list-group-item text-white" style="background-color:#bdc3c7;">
+          {{ partie.nom }} (/{{ partie.bareme }})
+        </li>
+        <li class="list-group-item">
+          <ul class="nav nav-tabs">
+            <li class="nav-item"><a class="nav-link active" data-toggle="tab" href="#Repartition_Histogramme">Répartition (Histogramme)</a></li>
+            <li class="nav-item"><a class="nav-link" data-toggle="tab" href="#Repartition_Boites">Répartition (Boîte à moustaches)</a></li>
+            <li class="nav-item"><a class="nav-link" data-toggle="tab" href="#Moyenne_ecart">Moyenne & Écart-type</a></li>
+          </ul>
+          <div class="tab-content">
+            <!-- Répartition (Histogramme) -->
+            <div id="Repartition_Histogramme" class="tab-pane active">
+              <div class="container-fluid">
+                <br>
+                <div class="card-md-auto">
+                  <div class="card-header" style="background-color: transparent">
+                    Groupes
+                  </div>
+                  <div class="card-body">
+                    {% set tabCounter = 0 %}
+                    {% for groupe in parties[0].stats %}
+                      <div class="form-check form-check-inline">
+                        <input class="form-check-input" type="checkbox" id="{{groupe.nom}}" onChange="changement(this.id, this.checked, '{{ loop.parent.loop.index -1 }}', 'histo')">
+                        <label class="form-check-label" for="inlineCheckbox1" id="label_{{groupe.nom}}_histo">{{groupe.nom}}</label>
+                      </div>
+                      {% set tabCounter = tabCounter + 1 %}
+                    {% endfor %}
+                  </div>
+                </div>
+              </div>
+              <br>
+              <div class="container-fluid">
+                <canvas align=center id="graphHisto"></canvas>
+              </div>
             </div>
-            {% set tabCounter = tabCounter + 1 %}
-          {% endfor %}
-        </div>
-      </div>
-    {% endif %}
-    <div class="card-md-auto">
-      <div class="card-header">
-        Groupes
-      </div>
-      <div class="card-body">
-      {% set tabCounter = 0 %}
-      {% for groupe in parties[0].stats %}
-        <div class="form-check form-check-inline">
-          <input class="form-check-input" type="checkbox" id="{{groupe.nom}}" onChange="changement(this.id, this.checked, 'groupe', 'histo')">
-          <label class="form-check-label" for="inlineCheckbox1" id="label_{{groupe.nom}}_histo">{{groupe.nom}}</label>
-        </div>
-       {% set tabCounter = tabCounter + 1 %}
-     {% endfor %}
-     </div>
-    </div>
-  </div>
-  <br>
-  <div class="container-fluid">
-     <canvas align=center id="graphHisto"></canvas>
-  </div>
-</div>
-<!-- fin Répartition (Histogramme) -->
-
-<!-- Répartition (Boîte à moustache) -->
-<div id="Repartition_Boites" class="tab-pane fade">
-  <div class="container-fluid">
-  <br>
-    {% if parties |length > 1 %}
-      <div class="card-md-auto">
-        <div class="card-header">
-          Parties
-        </div>
-        <div class="card-body">
-          {% set tabCounter = 0 %}
-          {% for partie in parties %}
-            <div class="form-check form-check-inline">
-              <input class="form-check-input" type="checkbox" id="{{partie.nom}}" {% if loop.index == 1 %}checked{% endif%} onChange="changement(this.id, this.checked, 'partie', 'bam')">
-              <label class="form-check-label" for="inlineCheckbox1" id="label_{{partie.nom}}_histo">{{partie.nom}} (/{{ partie.bareme }})</label>
+            <!-- fin Répartition (Histogramme) -->
+            <!-- Répartition (Boîte à moustache) -->
+            <div id="Repartition_Boites" class="tab-pane fade">
+              <div class="container-fluid">
+                <br>
+                <div class="card-md-auto">
+                  <div class="card-header" style="background-color: transparent">
+                    Groupes
+                  </div>
+                  <div class="card-body">
+                    {% set tabCounter = 0 %}
+                    {% for groupe in parties[0].stats %}
+                      <div class="form-check form-check-inline">
+                        <input class="form-check-input" type="checkbox" id="{{groupe.nom}}"  onChange="changement(this.id, this.checked, '{{ loop.parent.loop.index -1 }}', 'bam')">
+                        <label class="form-check-label" for="inlineCheckbox1" id="label_{{groupe.nom}}_bam">{{groupe.nom}}</label>
+                      </div>
+                      {% set tabCounter = tabCounter + 1 %}
+                    {% endfor %}
+                  </div>
+                </div>
+              </div>
+              <br>
+              <div class="container-fluid">
+                <canvas align=center id="graphBoites"></canvas>
+              </div>
             </div>
-            {% set tabCounter = tabCounter + 1 %}
-          {% endfor %}
-        </div>
-      </div>
-    {% endif %}
-  <div class="card-md-auto">
-    <div class="card-header">
-      Groupes
-    </div>
-    <div class="card-body">
-    {% set tabCounter = 0 %}
-    {% for groupe in parties[0].stats %}
-      <div class="form-check form-check-inline">
-        <input class="form-check-input" type="checkbox" id="{{groupe.nom}}"  onChange="changement(this.id, this.checked, 'groupe', 'bam')">
-        <label class="form-check-label" for="inlineCheckbox1" id="label_{{groupe.nom}}_bam">{{groupe.nom}}</label>
-      </div>
-     {% set tabCounter = tabCounter + 1 %}
-   {% endfor %}
-   </div>
-  </div>
-   </div>
-   <br>
-   <div class="container-fluid">
-      <canvas align=center id="graphBoites"></canvas>
-   </div>
-</div>
-<!-- fin Répartition (Boîtes à moustache) -->
-
-<!-- Moyenne & Ecart-type -->
-<div id="Moyenne_ecart" class="tab-pane fade">
-  <div class="container-fluid">
-  <br>
-  {% if parties |length > 1 %}
-    <div class="card-md-auto">
-      <div class="card-header">
-        Parties
-      </div>
-      <div class="card-body">
-        {% set tabCounter = 0 %}
-        {% for partie in parties %}
-          <div class="form-check form-check-inline">
-            <input class="form-check-input" type="checkbox" id="{{partie.nom}}" {% if loop.index == 1 %}checked{% endif%} onChange="changement(this.id, this.checked, 'partie', 'moy')">
-            <label class="form-check-label" for="inlineCheckbox1" id="label_{{partie.nom}}_histo">{{partie.nom}} (/{{ partie.bareme }})</label>
+            <!-- fin Répartition (Boîtes à moustache) -->
+            <!-- Moyenne & Ecart-type -->
+            <div id="Moyenne_ecart" class="tab-pane fade">
+              <div class="container-fluid">
+                <br>
+                <div class="card-md-auto">
+                  <div class="card-header" style="background-color: transparent">
+                    Groupes
+                  </div>
+                  <div class="card-body">
+                    {% set tabCounter = 0 %}
+                    {% for groupe in parties[0].stats %}
+                      <div class="form-check form-check-inline">
+                        <input class="form-check-input" type="checkbox" id="{{groupe.nom}}" onChange="changement(this.id, this.checked, '{{ loop.parent.loop.index -1 }}', 'moy')">
+                        <label class="form-check-label" for="inlineCheckbox1" id="label_{{groupe.nom}}_moy">{{groupe.nom}}</label>
+                      </div>
+                      {% set tabCounter = tabCounter + 1 %}
+                    {% endfor %}
+                  </div>
+                </div>
+              </div>
+              <br>
+              <div class="container-fluid">
+                <canvas align=center id="grapheMoyenne"></canvas>
+              </div>
+            </div>
+            <!-- fin Moyenne & Ecart-type -->
           </div>
-          {% set tabCounter = tabCounter + 1 %}
-        {% endfor %}
-      </div>
+        </li>
+      </ul>
     </div>
-  {% endif %}
-  <div class="card-md-auto">
-    <div class="card-header">
-      Groupes
-    </div>
-    <div class="card-body">
-    {% set tabCounter = 0 %}
-    {% for groupe in parties[0].stats %}
-      <div class="form-check form-check-inline">
-        <input class="form-check-input" type="checkbox" id="{{groupe.nom}}" onChange="changement(this.id, this.checked, 'groupe', 'moy')">
-        <label class="form-check-label" for="inlineCheckbox1" id="label_{{groupe.nom}}_moy">{{groupe.nom}}</label>
-      </div>
-     {% set tabCounter = tabCounter + 1 %}
-   {% endfor %}
-   </div>
-  </div>
-   </div>
-   <br>
-   <div class="container-fluid">
-      <canvas align=center id="grapheMoyenne"></canvas>
-   </div>
-</div>
-<!-- fin Moyenne & Ecart-type -->
-
-</div>
-
+    <br>
+  {% endfor %}
 
 {% else %}
 <div class="info">
@@ -243,23 +199,17 @@
   // Récupération de la liste des groupes de twig à js (on récupère la liste des groupes de la premiere partie car ce sont tous les memes pour chacune)
   {% if parties is not empty %}
     var groupes = "{{parties[0].stats|json_encode()}}";
+    groupes = groupes.replace(/&quot;/g, "\""); // remplacement de toutes les itérations de ' &quot; ' par ' " '
+    groupes = JSON.parse(groupes);
   {% else %}
     var groupes = {};
   {% endif %}
-  groupes = groupes.replace(/&quot;/g, "\""); // remplacement de toutes les itérations de ' &quot; ' par ' " '
-  groupes = JSON.parse(groupes);
 
   // Groupes sélectionés (avec les cases à cocher) par graphique
   var groupesChecked = [];
   groupesChecked['histo'] = [];
   groupesChecked['bam'] = [];
   groupesChecked['moy'] = [];
-
-  // Parties sélectionées (avec les cases à cocher) par graphique
-  var partiesChecked = [];
-  partiesChecked['histo'] = [];
-  partiesChecked['bam'] = [];
-  partiesChecked['moy'] = [];
 
   // Objet données du graphique
   var chartDATA = {
@@ -344,13 +294,6 @@
     });
     // Mise en forme du texte des cases à cocher
     formatageCasesACocher();
-
-    //Pour que la partie évaluation soit cochée par défaut
-    {% if parties is not empty %}
-      changement("{{ parties[0].nom }}", true, 'partie', 'histo');
-      changement("{{ parties[0].nom }}", true, 'partie', 'bam');
-      changement("{{ parties[0].nom }}", true, 'partie', 'moy');
-    {% endif %}
   }
 
 //------ FONCTIONS -----
@@ -381,32 +324,16 @@ function formatageCasesACocher(){
 }
 
 // Met à jour le graphique en fonction des cases qui sont cochées
-function changement(nom, value, typeCoche, typeStat){
+function changement(nom, value, partieConcernee, typeStat){
   // Gère l'addition et la suppression des groupes à afficher dans le graphe
   if(value){ // la case à été cochée
-    switch(typeCoche) {
-      case 'groupe':
-        groupesChecked[typeStat].push(nom); // Ajout dans la liste cochée
-        break;
-      case 'partie':
-        partiesChecked[typeStat].push(nom);
-        break;
-    }
+    groupesChecked[typeStat].push(nom); // Ajout dans la liste cochée
   }
   else { // la case à été décochée
-    switch(typeCoche) {
-      case 'groupe':
-        var index = contains(groupesChecked[typeStat], nom); // index au quel se trouve le groupe dans le tableau groupes s'il existe
-        if(index != -1){
-          groupesChecked[typeStat].splice(index, 1); // Suppression de la liste cochée
-        }
-        break;
-      case 'partie':
-        var index = contains(partiesChecked[typeStat], nom); // index au quel se trouve le groupe dans le tableau groupes s'il existe
-        if(index != -1){
-          partiesChecked[typeStat].splice(index, 1); // Suppression de la liste cochée
-        }
-    }
+      var index = contains(groupesChecked[typeStat], nom); // index au quel se trouve le groupe dans le tableau groupes s'il existe
+      if(index != -1){
+        groupesChecked[typeStat].splice(index, 1); // Suppression de la liste cochée
+      }
   }
 
   var chartOptions = options; // Récupération de la template des options
@@ -440,10 +367,10 @@ function changement(nom, value, typeCoche, typeStat){
   switch(typeStat){
     case 'histo':
     case 'bam':
-      chartDonnees.datasets = genDataRepartition(typeStat);
+      chartDonnees.datasets = genDataRepartition(typeStat, partieConcernee);
       break;
     case 'moy':
-      chartDonnees.datasets = genDataMoyenneEcart();
+      chartDonnees.datasets = genDataMoyenneEcart(partieConcernee);
       break;
   }
 
@@ -469,50 +396,43 @@ function changement(nom, value, typeCoche, typeStat){
   }
 }
 
-function genDataRepartition(type){
+function genDataRepartition(type, partieConcernee){
   var data = [];
-  for(var i =0; i< partiesChecked[type].length; i++) {
-    for(var j = 0; j < groupesChecked[type].length; j++){
-      var set = {};
-      var indexPartie = -1;
-      var indexGroupe = -1;
-      for(var k = 0; k < parties.length; k++){
-        if(parties[k].nom == partiesChecked[type][i]){
-          indexPartie = k;
-          for(var l = 0; l < parties[k].stats.length; l++) {
-            if(groupes[l].nom == groupesChecked[type][j]) {
-              indexGroupe = l;
-            }
-          }
-        }
-      }
-      if(indexGroupe != -1 && indexPartie != -1){
-        set.label = groupes[indexGroupe].nom;
-        switch (type) {
-          case 'histo': // Histogramme
-            set.data = parties[indexPartie].stats[indexGroupe].repartition;
-            set.borderColor = gris;
-            break;
-          case 'bam': // Boîte à moustaches
-            set.data = [parties[indexPartie].stats[indexGroupe].listeNotes];
-            set.borderColor = noir;
-            break;
-          default:
-            break;
-        }
-        var rgb = "rgb("+couleurs[indexGroupe][0]+","+couleurs[indexGroupe][1]+","+couleurs[indexGroupe][2]+")";
-        set.backgroundColor = rgb;
-        set.hoverBackgroundColor = rgb;
-        data.push(set);
+  for(var j = 0; j < groupesChecked[type].length; j++){
+    var set = {};
+    var indexGroupe = -1;
+    for(var l = 0; l < parties[partieConcernee].stats.length; l++) {
+      if(groupes[l].nom == groupesChecked[type][j]) {
+        indexGroupe = l;
       }
     }
+    if(indexGroupe != -1){
+      set.label = groupes[indexGroupe].nom;
+      switch (type) {
+        case 'histo': // Histogramme
+          set.data = parties[partieConcernee].stats[indexGroupe].repartition;
+          set.borderColor = gris;
+          break;
+        case 'bam': // Boîte à moustaches
+          set.data = [parties[partieConcernee].stats[indexGroupe].listeNotes];
+          set.borderColor = noir;
+          break;
+        default:
+          break;
+      }
+      var rgb = "rgb("+couleurs[indexGroupe][0]+","+couleurs[indexGroupe][1]+","+couleurs[indexGroupe][2]+")";
+      set.backgroundColor = rgb;
+      set.hoverBackgroundColor = rgb;
+      data.push(set);
+    }
   }
+
   return data;
 }
 
 // Génère les données requises par Chart.js pour le graphique 'Moyenne & écart-type'
-function genDataMoyenneEcart(){
-  var liste = getGroupesData(groupesChecked['moy'], partiesChecked['moy']); // Récupération des données
+function genDataMoyenneEcart(partieConcernee){
+  var liste = getGroupesData(groupesChecked['moy'], partieConcernee); // Récupération des données
   var moyenne = [];
   var ecartType = [];
   for(var i = 0; i < liste.length; i++){ // Choix des informations requises
@@ -541,18 +461,12 @@ function genDataMoyenneEcart(){
 }
 
 // Retourne un tableau d'objets groupe avec leurs données en fonction d'une liste de noms de groupes
-function getGroupesData(listeGroupes, listeParties){
+function getGroupesData(listeGroupes, partieConcernee){
   groupesAvecDonnees = [];
-  for(var i = 0; i < listeParties.length; i++) {
-    for(var j = 0; j < listeGroupes.length; j++){
-      for(var k = 0; k < parties.length; k++){
-        if(parties[k].nom == listeParties[i]){
-          for(var l = 0; l < parties[k].stats.length; l++)
-          if(parties[k].stats[l].nom == listeGroupes[j]) {
-            groupesAvecDonnees.push(parties[k].stats[l])
-            break;
-          }
-        }
+  for(var i = 0; i < listeGroupes.length; i++){
+    for (var j = 0; j < parties[partieConcernee].stats.length ; j++) {
+      if(parties[partieConcernee].stats[j].nom == listeGroupes[i]) {
+        groupesAvecDonnees.push(parties[partieConcernee].stats[j])
       }
     }
   }
