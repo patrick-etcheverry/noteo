@@ -53,13 +53,13 @@
         </li>
         <li class="list-group-item">
           <ul class="nav nav-tabs">
-            <li class="nav-item"><a class="nav-link active" data-toggle="tab" href="#Repartition_Histogramme_{{ partie.nom }}">Répartition (Histogramme)</a></li>
-            <li class="nav-item"><a class="nav-link" data-toggle="tab" href="#Repartition_Boites_{{ partie.nom }}">Répartition (Boîte à moustaches)</a></li>
-            <li class="nav-item"><a class="nav-link" data-toggle="tab" href="#Moyenne_ecart_{{ partie.nom }}">Moyenne & Écart-type</a></li>
+            <li class="nav-item"><a class="nav-link active" data-toggle="tab" href="#Repartition_Histogramme_{{ partie.nom | replace({' ': '_'}) }}">Répartition (Histogramme)</a></li>
+            <li class="nav-item"><a class="nav-link" data-toggle="tab" href="#Repartition_Boites_{{ partie.nom | replace({' ': '_'}) }}">Répartition (Boîte à moustaches)</a></li>
+            <li class="nav-item"><a class="nav-link" data-toggle="tab" href="#Moyenne_ecart_{{ partie.nom | replace({' ': '_'}) }}">Moyenne & Écart-type</a></li>
           </ul>
           <div class="tab-content">
             <!-- Répartition (Histogramme) -->
-            <div id="Repartition_Histogramme_{{ partie.nom }}" class="tab-pane active">
+            <div id="Repartition_Histogramme_{{ partie.nom | replace({' ': '_'}) }}" class="tab-pane active">
               <div class="container-fluid">
                 <br>
                 <div class="card-md-auto">
@@ -71,7 +71,7 @@
                     {% for groupe in parties[0].stats %}
                       <div class="form-check form-check-inline">
                         <input class="form-check-input" type="checkbox" id="{{groupe.nom}}" onChange="changement(this.id, this.checked, '{{ loop.parent.loop.index -1 }}', 'histo')">
-                        <label class="form-check-label" for="inlineCheckbox1" id="label_{{groupe.nom}}_histo">{{groupe.nom}}</label>
+                        <label class="form-check-label" for="inlineCheckbox1" name="label_{{groupe.nom}}_histo">{{groupe.nom}}</label>
                       </div>
                       {% set tabCounter = tabCounter + 1 %}
                     {% endfor %}
@@ -85,7 +85,7 @@
             </div>
             <!-- fin Répartition (Histogramme) -->
             <!-- Répartition (Boîte à moustache) -->
-            <div id="Repartition_Boites_{{ partie.nom }}" class="tab-pane fade">
+            <div id="Repartition_Boites_{{ partie.nom | replace({' ': '_'}) }}" class="tab-pane fade">
               <div class="container-fluid">
                 <br>
                 <div class="card-md-auto">
@@ -97,7 +97,7 @@
                     {% for groupe in parties[0].stats %}
                       <div class="form-check form-check-inline">
                         <input class="form-check-input" type="checkbox" id="{{groupe.nom}}"  onChange="changement(this.id, this.checked, '{{ loop.parent.loop.index -1 }}', 'bam')">
-                        <label class="form-check-label" for="inlineCheckbox1" id="label_{{groupe.nom}}_bam">{{groupe.nom}}</label>
+                        <label class="form-check-label" for="inlineCheckbox1" name="label_{{groupe.nom}}_bam">{{groupe.nom}}</label>
                       </div>
                       {% set tabCounter = tabCounter + 1 %}
                     {% endfor %}
@@ -111,7 +111,7 @@
             </div>
             <!-- fin Répartition (Boîtes à moustache) -->
             <!-- Moyenne & Ecart-type -->
-            <div id="Moyenne_ecart_{{ partie.nom }}" class="tab-pane fade">
+            <div id="Moyenne_ecart_{{ partie.nom | replace({' ': '_'}) }}" class="tab-pane fade">
               <div class="container-fluid">
                 <br>
                 <div class="card-md-auto">
@@ -123,7 +123,7 @@
                     {% for groupe in parties[0].stats %}
                       <div class="form-check form-check-inline">
                         <input class="form-check-input" type="checkbox" id="{{groupe.nom}}" onChange="changement(this.id, this.checked, '{{ loop.parent.loop.index -1 }}', 'moy')">
-                        <label class="form-check-label" for="inlineCheckbox1" id="label_{{groupe.nom}}_moy">{{groupe.nom}}</label>
+                        <label class="form-check-label" for="inlineCheckbox1" name="label_{{groupe.nom}}_moy">{{groupe.nom}}</label>
                       </div>
                       {% set tabCounter = tabCounter + 1 %}
                     {% endfor %}
@@ -212,7 +212,6 @@
   groupesChecked.push(groupesCheckedParPartie)
   {% endfor %}
 
-
   // Objet données du graphique
   var chartDATA = {
     labels: [],
@@ -221,7 +220,6 @@
 
   //Contiendra les variables des graphiques pour les mettre à jour
   var graphiques = [];
-
   // Objet options du graphique
   var options = {
     scales: {
@@ -280,34 +278,33 @@
 
   // Création des graphiques au chargement de la fenètre
   window.onload = function(){
-  {% for partie in parties %}
-      var graphiquesPartieCourante =  [];
+    {% for partie in parties %}
+        var graphiquesPartieCourante =  [];
 
-      var chartBar = new Chart(document.getElementById("graphHisto_{{ loop.index -1 }}").getContext('2d'), {
-        type: 'bar',
-        data: chartDATA,
-        options: options
-      });
-      graphiquesPartieCourante.push(chartBar);
+        var chartBar = new Chart(document.getElementById("graphHisto_{{ loop.index -1 }}").getContext('2d'), {
+          type: 'bar',
+          data: chartDATA,
+          options: options
+        });
+        graphiquesPartieCourante.push(chartBar);
 
-      var chartBoite = new Chart(document.getElementById("graphBoites_{{ loop.index -1 }}").getContext('2d'), {
-        type: 'boxplot',
-        data: chartDATA,
-        options: options,
-      });
-      graphiquesPartieCourante.push(chartBoite);
+        var chartBoite = new Chart(document.getElementById("graphBoites_{{ loop.index -1 }}").getContext('2d'), {
+          type: 'boxplot',
+          data: chartDATA,
+          options: options,
+        });
+        graphiquesPartieCourante.push(chartBoite);
 
-      var chartMoy = new Chart(document.getElementById("grapheMoyenne_{{ loop.index -1 }}").getContext('2d'), {
-        type: 'bar',
-        data: chartDATA,
-        options: options,
-      });
-      graphiquesPartieCourante.push(chartMoy)
-      graphiques.push(graphiquesPartieCourante)
-  {% endfor %}
-
-      // Mise en forme du texte des cases à cocher
-      formatageCasesACocher();
+        var chartMoy = new Chart(document.getElementById("grapheMoyenne_{{ loop.index -1 }}").getContext('2d'), {
+          type: 'bar',
+          data: chartDATA,
+          options: options,
+        });
+        graphiquesPartieCourante.push(chartMoy)
+        graphiques.push(graphiquesPartieCourante)
+    {% endfor %}
+    // Mise en forme du texte des cases à cocher
+    formatageCasesACocher();
   }
 
 //------ FONCTIONS -----
@@ -323,16 +320,19 @@ function formatageCasesACocher(){
       couleurs.push([(coul[0] + 60) % 255, (coul[1] - 60) % 255, coul[2]]);
     }
   }
-  // Coloration + Ajustement de la taille de la police des labels des cases à cocher
-  for(var i = 0; i < groupes.length; i++){
-    for(var clef in groupesChecked){
-      if(clef == 'moy'){ // Pas de coloration pour le graphique de la moyenne et l'écart-type
-        break;
-      }
-      var nom = groupes[i].nom;
+  for(var i = 0; i < groupes.length; i++) {
+    labelsHistogramme = document.getElementsByName("label_" + groupes[i].nom +"_histo");
+    for(var j =0; j < labelsHistogramme.length ; j++ ) {
       var rgb = "rgb("+couleurs[i][0]+","+couleurs[i][1]+","+couleurs[i][2]+")";
-      document.getElementById("label_"+nom+"_"+clef).style.color = rgb;
-      document.getElementById("label_"+nom+"_"+clef).style.fontSize = (fontSize+"px");
+      labelsHistogramme[j].style.color = rgb;
+      labelsHistogramme[j].style.fontSize = (fontSize+"px");
+    }
+
+    labelsBAM = document.getElementsByName("label_" + groupes[i].nom +"_bam");
+    for(var j =0; j < labelsBAM.length ; j++ ) {
+      var rgb = "rgb("+couleurs[i][0]+","+couleurs[i][1]+","+couleurs[i][2]+")";
+      labelsBAM[j].style.color = rgb;
+      labelsBAM[j].style.fontSize = (fontSize+"px");
     }
   }
 }
