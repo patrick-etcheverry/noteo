@@ -10,6 +10,7 @@
 {% block autresEvaluations %}{% if evaluation.enseignant != app.user %}active{% endif %}{% endblock %}
 
 {% block contenu %}
+  {{ form_start(form)}}
   <h1 class="h4 mb-0 text-gray-800">Sélectionner les parties de l'évaluation pour lesquelles vous souhaitez voir les statistiques</h1> <br>
   <div class="row">
     <div class="col-lg-4">
@@ -119,6 +120,7 @@
     <a href="{{path('evaluation_enseignant', {'id': app.user.id })}}" class="d-sm-inline-block btn btn-sm btn-secondary shadow-sm">Annuler</a>
     <button class="d-sm-inline-block btn btn-sm btn-primary shadow-sm">Consulter les statistiques</button>
   </div>
+  {{ form_end(form) }}
 {% endblock %}
 
 {% block datatables %}
