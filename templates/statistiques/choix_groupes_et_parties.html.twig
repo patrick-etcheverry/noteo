@@ -1,13 +1,8 @@
 {% extends 'base.html.twig' %}
 
-{% block titrePage %}Consulter les statistiques{% endblock %}
+{% block titrePage %}Statistiques classiques{% endblock %}
 
-{% block evaluations %}active{% endblock %}
-
-{% block show %}show{% endblock %}
-
-{% block mesEvaluations %}{% if evaluation.enseignant == app.user %}active{% endif %}{% endblock %}
-{% block autresEvaluations %}{% if evaluation.enseignant != app.user %}active{% endif %}{% endblock %}
+{% block statistiques %}active{% endblock %}
 
 {% block contenu %}
   {{ form_start(form)}}

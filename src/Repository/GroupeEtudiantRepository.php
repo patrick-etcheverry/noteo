@@ -98,6 +98,17 @@ class GroupeEtudiantRepository extends NestedTreeRepository
             ;
     }
 
+    public function findHighestEvaluableWith1Eval() {
+        return $this->createQueryBuilder('g')
+            ->addSelect('ev')
+            ->join('g.evaluations', 'ev')
+            ->leftJoin('g.etudiants', 'et')
+            ->where('g.estEvaluable = 1 ')
+            ->getQuery()
+            ->getResult()
+            ;
+    }
+
     // /**
     //  * @return GroupeEtudiant[] Returns an array of GroupeEtudiant objects
     //  */

@@ -1,49 +1,19 @@
 {% extends 'base.html.twig' %}
 
-{% block titrePage %}Choisir l'évaluation pour laquelle vous désirez consulter les statistiques{% endblock %}
+{% block titrePage %}Statistiques classiques{% endblock %}
 
 {% block statistiques %}active{% endblock %}
 
 {% block contenu %}
-    {{ form_start(form) }}
-    {{form_errors(form.evaluations)}}
-    <div class="table-responsive table-hover">
-        <table class="table" id= "groupes">
-            <thead>
-            <th></th>
-            <th>Nom</th>
-            <th>Date</th>
-            <th>Groupe</th>
-            <th>Créateur</th>
-            </thead>
-            <tbody>
-            {% for evaluation in form.evaluations %}
-                {#store index of the category in a variable#}
-                {% set index = evaluation.vars.value %}
-                {#get entity object from its index in the Categories Field#}
-                {% set entity = form.evaluations.vars.choices[index].data %}
-                <tr>
-                    <td>{{form_widget(form.evaluations[index])}}</td>
-                    <td>{{entity.nom}}</td>
-                    <td>{{ entity.date|date("d/m/Y") }}</td>
-                    <td>{{entity.groupe.nom}}</td>
-                    <td>{{entity.enseignant.prenom}} {{entity.enseignant.nom}}</td>
-                </tr>
-            {% endfor %}
-            </tbody>
-        </table>
-    </div>
-    <div class='bouton' align=center>
-        <button class="d-sm-inline-block btn btn-sm btn-primary shadow-sm">Personnaliser les statistiques</button>
-    </div>
-    {{ form_end(form) }}
+    <h1 class="h4 mb-0 text-gray-800">Choisir l'évaluation pour laquelle vous désirez consulter les statistiques</h1> <br>
+    {{ include('statistiques/_choix_evals_form.html.twig') }}
 {% endblock %}
 
 {% block datatables %}
 
     <script type="text/javascript">
 
-        var table = $('#groupes').DataTable({
+        var table = $('#evaluations').DataTable({
             language: {
                 // Suppression du label Rechercher et ajout du placeholder
                 search: "_INPUT_",

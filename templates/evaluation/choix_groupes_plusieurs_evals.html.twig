@@ -1,8 +1,36 @@
 {% extends 'base.html.twig' %}
 
-{% block titrePage %}Statistiques par groupe et sous groupes{% endblock %}
+{% block titrePage %}Statistiques par groupes et sous-groupes{% endblock %}
+
+{% block statistiques %}active{% endblock %}
 
 {% block contenu %}
-{{ include('evaluation/_choose_groups_multiple_evals_form.html.twig') }}
+    <h1 class="h4 mb-0 text-gray-800">Groupe pour lequel vous souhaitez voir des statistiques</h1> <br>
+    {{ include('evaluation/_choix_groupes_form.html.twig') }}
+{% endblock %}
+
+{% block datatables %}
+    <script type="text/javascript">
+
+        var tableGroupes = $('#groupes').DataTable({
+            language: {
+                // Suppression du label Rechercher et ajout du placeholder
+                search: "_INPUT_",
+                searchPlaceholder: "Rechercher...",
+                "url": "{{asset('tradfr.json')}}"
+            },
+            aaSorting : [],
+            columns: [{"orderable": false}, null, null,null,{"orderable": false}],
+            lengthMenu: [
+                [15, 30, 45, -1],
+                [15, 30, 45, "Tout"]
+            ],
+            pageLength : {{ app.user.preferenceNbElementsTableaux }}, <!-- Pour que le nombre d'éléments affichés par défaut soit celui de la préference de l'utilisateur -->
+            info: false,
+        });
+        $("[name='form']").on('submit', function () {
+            tableGroupes.rows().nodes().page.len(-1).draw(); // Cette fonction permet, avant la soumission du formulaire, d'afficher dans le DOM toutes les lignes du tableau pour qu'aucune ne soit ignorée
+        });
+    </script>
 {% endblock %}
 

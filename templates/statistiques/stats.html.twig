@@ -1,34 +1,52 @@
 {% extends 'base.html.twig' %}
 
-{% block titrePage %}Consulter les statistiques pour {{evaluation.nom}} {% endblock %}
+{% block titrePage %}{{ titre }}{% endblock %}
 
-{% block evaluations %}active{% endblock %}
-
-{% block show %}show{% endblock %}
-
-{% block mesEvaluations %}{% if evaluation.enseignant == app.user %}active{% endif %}{% endblock %}
-{% block autresEvaluations %}{% if evaluation.enseignant != app.user %}active{% endif %}{% endblock %}
-
-{% block collapsed %}{% endblock %}
+{% block statistiques %}active{% endblock %}
 
 {% block contenu %}
 <div class="table-responsive">
 <table align="center" class="table">
   <tbody>
-    <tr>
-      <th class="intitule"><label for="evaluation_groupe" >Groupe évalué</label></th>
-      <td >{{evaluation.groupe.nom}}</td>
-    </tr>
-    <tr>
-      <th class="intitule"><label for="evaluation_date" >Date de l'évaluation</label></th>
-      <td >{{evaluation.date | date("d/m/Y")}}</td>
-    </tr>
+    {% if plusieursEvals %}
+      <tr>
+        <th>Évaluations concernées</th>
+        <td>
+          <ul>
+            {% for evaluation in evaluations %}
+              <li>{{ evaluation.nom }} ({{ evaluation.date|date("d/m/Y") }})</li>
+            {% endfor %}
+          </ul>
+        </td>
+      </tr>
+      <tr>
+        <th>Groupes sélectionnés</th>
+        <td>
+          <ul>
+            {% for groupe in groupes %}
+              <li>{{ groupe.nom }} ({{ groupe.etudiants|length }} étudiants)</li>
+            {% endfor %}
+          </ul>
+        </td>
+      </tr>
+    {% else %}
+      <tr>
+        <th class="intitule"><label for="evaluation_groupe" >Groupe évalué</label></th>
+        <td >{{evaluation.groupe.nom}}</td>
+      </tr>
+      <tr>
+        <th class="intitule"><label for="evaluation_date" >Date de l'évaluation</label></th>
+        <td >{{evaluation.date | date("d/m/Y")}}</td>
+      </tr>
+    {% endif %}
     <tr>
       <th class="intitule"><label >Actions</label></th>
       <td>
         <a href="#"><i style="font-size: 25px;" data-toggle='tooltip' title="Exporter les statistiques au format PDF" class="icon-file-pdf" onclick="genPDF()"></i></a>
-        {% if evaluation.enseignant.id == app.user.id or is_granted('ROLE_ADMIN') %}
-        <a href="{{path("previsualisation_mail", {slug:evaluation.slug})}}"><i style="font-size: 25px;"  data-toggle='tooltip' title="Envoyer les statistiques aux étudiants"  class="icon-mail"></i></a>
+        {% if not plusieursEvals %}
+          {% if (evaluation.enseignant.id == app.user.id or is_granted('ROLE_ADMIN')) %}
+            <a href="{{path("previsualisation_mail", {slug:evaluation.slug})}}"><i style="font-size: 25px;"  data-toggle='tooltip' title="Envoyer les statistiques aux étudiants"  class="icon-mail"></i></a>
+          {% endif %}
         {% endif %}
       </td>
     </tr>
@@ -162,7 +180,12 @@
 <script type="text/javascript">
 
   // ----- VARIABLES GLOBALES ---------
-  var nomEvaluation = "{{evaluation.nom}}";
+  {% if plusieursEvals %}
+    var nomEvaluation = "Synthèse des {{evaluations.count}} evaluation(s)"
+  {% else %}
+    var nomEvaluation = "{{evaluation.nom}}";
+  {% endif %}
+
   var fontSize = 16;
 
   // Liste de couleurs communes
