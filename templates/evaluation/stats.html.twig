@@ -21,7 +21,7 @@
     </tr>
     <tr>
       <th class="intitule"><label for="evaluation_date" >Date de l'évaluation</label></th>
-      <td >{{evaluation.date}}</td>
+      <td >{{evaluation.date | date("d/m/Y")}}</td>
     </tr>
     <tr>
       <th class="intitule"><label >Actions</label></th>
@@ -44,149 +44,112 @@
 <div class='bouton' align=center>
   <span style="font-size:15px" class="badge badge-pill badge-primary"><i class="icon-attention-circled"></i> Les statistiques ne prennent pas en compte les étudiants démissionaires ou absents</span>
 </div>
-{% if groupes is not empty %}
-
-<ul class="nav nav-tabs">
-    <li class="nav-item"><a class="nav-link active" data-toggle="tab" href="#Repartition_Histogramme">Répartition (Histogramme)</a></li>
-    <li class="nav-item"><a class="nav-link" data-toggle="tab" href="#Repartition_Boites">Répartition (Boîte à moustaches)</a></li>
-    <li class="nav-item"><a class="nav-link" data-toggle="tab" href="#Moyenne_ecart">Moyenne & Écart-type</a></li>
-</ul>
-
-<!-- Card avec les stats
-
-{#  <a class="dropdown-item" data-toggle="tab" href="#histo{{tabCounter}}">{{groupe.nom}}</a>
-
-  <div align=center>
-    <li class="list-group-item">
-        <div class="card" style="width: 20em;">
-          <ul class="list-group list-group-flush" style="text-align:left;">
-            <li class="list-group-item">Statistiques {{groupe.nom}}</li>
-            <li class="list-group-item">
-              <ul>
-                <li>Moyenne : {{ groupe.moyenne }}</li>
-                <li>Écart-type : {{ groupe.ecartType }}</li>
-                <li>Note(s) minimale(s) : {{ groupe.minimum }}</li>
-                <li>Note(s) maximale(s) : {{ groupe.maximum }}</li>
-                <li>Médiane : {{ groupe.mediane }}</li>
-              </ul>
-            </li>
+{% if parties is not empty %}
+  {% for partie in parties %}
+    <div class="card">
+      <ul class="list-group list-group-flush">
+        <li class="list-group-item text-white" style="background-color:#bdc3c7;">
+          {{ partie.nom }} (/{{ partie.bareme }})
+        </li>
+        <li class="list-group-item">
+          <ul class="nav nav-tabs">
+            <li class="nav-item"><a class="nav-link active" data-toggle="tab" href="#Repartition_Histogramme_{{ partie.nom | replace({' ': '_'}) }}">Répartition (Histogramme)</a></li>
+            <li class="nav-item"><a class="nav-link" data-toggle="tab" href="#Repartition_Boites_{{ partie.nom | replace({' ': '_'}) }}">Répartition (Boîte à moustaches)</a></li>
+            <li class="nav-item"><a class="nav-link" data-toggle="tab" href="#Moyenne_ecart_{{ partie.nom | replace({' ': '_'}) }}">Moyenne & Écart-type</a></li>
           </ul>
-        </div>
-    </li>
-  </div>
-
-  <div class="card">
-    <ul class="list-group list-group-flush">
-      <li class="list-group-item text-white" style="background-color:#bdc3c7;">
-        {{groupe.nom}}
-        {% set effectifTotal = 0 %}
-        {% for effectif in groupe.notes %}
-          {% set effectifTotal = effectifTotal + effectif %}
-        {% endfor %}
-        ({{ effectifTotal }} étudiants)
-      </li>
-      <li class="list-group-item">
-        <h5 class="card-title">Répartition des notes</h5><br>
-        <canvas align=center id="{{groupe.nom}}"></canvas>
-      </li>
-    </ul>
-  </div>
-
-
-#}-->
-
-<div class="tab-content">
-<!-- Répartition (Histogramme) -->
-<div id="Repartition_Histogramme" class="tab-pane active">
-  <div class="container-fluid">
-  <br>
-  <div class="card-md-auto">
-    <div class="card-header">
-      Groupes
+          <div class="tab-content">
+            <!-- Répartition (Histogramme) -->
+            <div id="Repartition_Histogramme_{{ partie.nom | replace({' ': '_'}) }}" class="tab-pane active">
+              <div class="container-fluid">
+                <br>
+                <div class="card-md-auto">
+                  <div class="card-header" style="background-color: transparent">
+                    Groupes
+                  </div>
+                  <div class="card-body">
+                    {% set tabCounter = 0 %}
+                    {% for groupe in parties[0].stats %}
+                      <div class="form-check form-check-inline">
+                        <input class="form-check-input" type="checkbox" id="{{groupe.nom}}" checked onChange="changement(this.id, this.checked, '{{ loop.parent.loop.index -1 }}', 'histo')">
+                        <label class="form-check-label" for="inlineCheckbox1" name="label_{{groupe.nom}}_histo">{{groupe.nom}}</label>
+                      </div>
+                      {% set tabCounter = tabCounter + 1 %}
+                    {% endfor %}
+                  </div>
+                </div>
+              </div>
+              <br>
+              <div class="container-fluid">
+                <span style="font-size:15px"><i class="icon-attention-circled"></i>Survolez le graphique pour plus d'informations</span>
+                <canvas align=center id="graphHisto_{{ loop.index -1 }}"></canvas>
+              </div>
+            </div>
+            <!-- fin Répartition (Histogramme) -->
+            <!-- Répartition (Boîte à moustache) -->
+            <div id="Repartition_Boites_{{ partie.nom | replace({' ': '_'}) }}" class="tab-pane fade">
+              <div class="container-fluid">
+                <br>
+                <div class="card-md-auto">
+                  <div class="card-header" style="background-color: transparent">
+                    Groupes
+                  </div>
+                  <div class="card-body">
+                    {% set tabCounter = 0 %}
+                    {% for groupe in parties[0].stats %}
+                      <div class="form-check form-check-inline">
+                        <input class="form-check-input" type="checkbox" id="{{groupe.nom}}" checked onChange="changement(this.id, this.checked, '{{ loop.parent.loop.index -1 }}', 'bam')">
+                        <label class="form-check-label" for="inlineCheckbox1" name="label_{{groupe.nom}}_bam">{{groupe.nom}}</label>
+                      </div>
+                      {% set tabCounter = tabCounter + 1 %}
+                    {% endfor %}
+                  </div>
+                </div>
+              </div>
+              <br>
+              <div class="container-fluid">
+                <span style="font-size:15px"><i class="icon-attention-circled"></i>Survolez le graphique pour plus d'informations</span>
+                <canvas align=center id="graphBoites_{{ loop.index -1 }}"></canvas>
+              </div>
+            </div>
+            <!-- fin Répartition (Boîtes à moustache) -->
+            <!-- Moyenne & Ecart-type -->
+            <div id="Moyenne_ecart_{{ partie.nom | replace({' ': '_'}) }}" class="tab-pane fade">
+              <div class="container-fluid">
+                <br>
+                <div class="card-md-auto">
+                  <div class="card-header" style="background-color: transparent">
+                    Groupes
+                  </div>
+                  <div class="card-body">
+                    {% set tabCounter = 0 %}
+                    {% for groupe in parties[0].stats %}
+                      <div class="form-check form-check-inline">
+                        <input class="form-check-input" type="checkbox" id="{{groupe.nom}}" checked onChange="changement(this.id, this.checked, '{{ loop.parent.loop.index -1 }}', 'moy')">
+                        <label class="form-check-label" for="inlineCheckbox1" name="label_{{groupe.nom}}_moy">{{groupe.nom}}</label>
+                      </div>
+                      {% set tabCounter = tabCounter + 1 %}
+                    {% endfor %}
+                  </div>
+                </div>
+              </div>
+              <br>
+              <div class="container-fluid">
+                <span style="font-size:15px"><i class="icon-attention-circled"></i>Survolez le graphique pour plus d'informations</span>
+                <canvas align=center id="grapheMoyenne_{{ loop.index -1 }}"></canvas>
+              </div>
+            </div>
+            <!-- fin Moyenne & Ecart-type -->
+          </div>
+        </li>
+      </ul>
     </div>
-    <div class="card-body">
-    {% set tabCounter = 0 %}
-    {% for groupe in groupes %}
-      <div class="form-check form-check-inline">
-        <input class="form-check-input" type="checkbox" id="{{groupe.nom}}" onChange="changement(this.id, this.checked, 'histo')">
-        <label class="form-check-label" for="inlineCheckbox1" id="label_{{groupe.nom}}_histo">{{groupe.nom}}</label>
-      </div>
-     {% set tabCounter = tabCounter + 1 %}
-   {% endfor %}
-   </div>
-  </div>
-   </div>
-   <br>
-   <div class="container-fluid">
-      <canvas align=center id="graphHisto"></canvas>
-   </div>
-</div>
-<!-- fin Répartition (Histogramme) -->
-
-<!-- Répartition (Boîte à moustache) -->
-<div id="Repartition_Boites" class="tab-pane fade">
-  <div class="container-fluid">
-  <br>
-  <div class="card-md-auto">
-    <div class="card-header">
-      Groupes
-    </div>
-    <div class="card-body">
-    {% set tabCounter = 0 %}
-    {% for groupe in groupes %}
-      <div class="form-check form-check-inline">
-        <input class="form-check-input" type="checkbox" id="{{groupe.nom}}" onChange="changement(this.id, this.checked, 'bam')">
-        <label class="form-check-label" for="inlineCheckbox1" id="label_{{groupe.nom}}_bam">{{groupe.nom}}</label>
-      </div>
-     {% set tabCounter = tabCounter + 1 %}
-   {% endfor %}
-   </div>
-  </div>
-   </div>
-   <br>
-   <div class="container-fluid">
-      <canvas align=center id="graphBoites"></canvas>
-   </div>
-</div>
-<!-- fin Répartition (Boîtes à moustache) -->
-
-<!-- Moyenne & Ecart-type -->
-<div id="Moyenne_ecart" class="tab-pane fade">
-  <div class="container-fluid">
-  <br>
-  <div class="card-md-auto">
-    <div class="card-header">
-      Groupes
-    </div>
-    <div class="card-body">
-    {% set tabCounter = 0 %}
-    {% for groupe in groupes %}
-      <div class="form-check form-check-inline">
-        <input class="form-check-input" type="checkbox" id="{{groupe.nom}}" onChange="changement(this.id, this.checked, 'moy')">
-        <label class="form-check-label" for="inlineCheckbox1" id="label_{{groupe.nom}}_moy">{{groupe.nom}}</label>
-      </div>
-     {% set tabCounter = tabCounter + 1 %}
-   {% endfor %}
-   </div>
-  </div>
-   </div>
-   <br>
-   <div class="container-fluid">
-      <canvas align=center id="grapheMoyenne"></canvas>
-   </div>
-</div>
-<!-- fin Moyenne & Ecart-type -->
-
-</div>
-
-
+    <br>
+  {% endfor %}
 {% else %}
 <div class="info">
-  <h2 class="h4 mb-0 text-gray-800">Veuillez sélectionner des groupes ou des statuts sur lesquels voir des statistiques </h2>
+  <h2 class="h4 mb-0 text-gray-800">Veuillez sélectionner des parties de l'évaluations sur lesquelles voir des statistiques </h2>
 </div>
-
 {% endif %}
-
 {% endblock %}
 
 {% block javascripts %}
@@ -199,7 +162,6 @@
 <script type="text/javascript">
 
   // ----- VARIABLES GLOBALES ---------
-
   var nomEvaluation = "{{evaluation.nom}}";
   var fontSize = 16;
 
@@ -229,25 +191,40 @@
     [52, 73, 94],
   ];
 
-  // passage de la liste groupes de twig à js
-  var groupes = "{{groupes|json_encode()}}";
-  groupes = groupes.replace(/&quot;/g, "\""); // remplacement de toutes les itérations de ' &quot; ' par ' " '
-  groupes = JSON.parse(groupes);
+  // passage de la liste des parties de twig à js
+  var parties = "{{parties|json_encode()}}";
+  parties = parties.replace(/&quot;/g, "\""); // remplacement de toutes les itérations de ' &quot; ' par ' " '
+  parties = JSON.parse(parties);
+
+  // Récupération de la liste des groupes de twig à js (on récupère la liste des groupes de la premiere partie car ce sont tous les memes pour chacune)
+  {% if parties is not empty %}
+    var groupes = "{{parties[0].stats|json_encode()}}";
+    groupes = groupes.replace(/&quot;/g, "\""); // remplacement de toutes les itérations de ' &quot; ' par ' " '
+    groupes = JSON.parse(groupes);
+  {% else %}
+    var groupes = {};
+  {% endif %}
 
   // Groupes sélectionés (avec les cases à cocher) par graphique
   var groupesChecked = [];
-  groupesChecked['histo'] = [];
-  groupesChecked['bam'] = [];
-  groupesChecked['moy'] = [];
+  {% for partie in parties %}
+  groupesCheckedParPartie = [];
+  groupesCheckedParPartie['histo']= [];
+  groupesCheckedParPartie['bam'] = [];
+  groupesCheckedParPartie['moy'] = [];
+  groupesChecked.push(groupesCheckedParPartie)
+  {% endfor %}
 
   // Objet données du graphique
-  const chartDATA = {
+  var chartDATA = {
     labels: [],
     datasets: undefined,
   };
 
+  //Contiendra les variables des graphiques pour les mettre à jour
+  var graphiques = [];
   // Objet options du graphique
-  const options = {
+  var options = {
     scales: {
       xAxes: [{
         gridLines: {
@@ -271,11 +248,11 @@
       }],
     },
     legend: {
-					position: 'top',
-          labels: {
-            fontSize: fontSize,
-          },
-		},
+      position: 'top',
+      labels: {
+        fontSize: fontSize,
+        },
+	  },
     aspectRatio: 3,
     maintainAspectRatio: true,
     responsive: true,
@@ -300,33 +277,49 @@
     }
   }
 
- // --------- CODE -------------
-
-  // Mise en forme du etexte des cases à cocher
-  formatageCasesACocher();
+ // --------- CODE ------------
 
   // Création des graphiques au chargement de la fenètre
   window.onload = function(){
-    window.chartBar = new Chart(document.getElementById("graphHisto").getContext('2d'), {
-      type: 'bar',
-      data: chartDATA,
-      options: options
-    });
+    {% for partie in parties %}
+        var graphiquesPartieCourante =  [];
 
-    window.chartBoite = new Chart(document.getElementById("graphBoites").getContext('2d'), {
-      type: 'boxplot',
-      data: chartDATA,
-      options: options,
-    });
+        var chartBar = new Chart(document.getElementById("graphHisto_{{ loop.index -1 }}").getContext('2d'), {
+          type: 'bar',
+          data: chartDATA,
+          options: options
+        });
+        graphiquesPartieCourante.push(chartBar);
 
-    window.chartMoy = new Chart(document.getElementById("grapheMoyenne").getContext('2d'), {
-      type: 'bar',
-      data: chartDATA,
-      options: options,
-    });
+        var chartBoite = new Chart(document.getElementById("graphBoites_{{ loop.index -1 }}").getContext('2d'), {
+          type: 'boxplot',
+          data: chartDATA,
+          options: options,
+        });
+        graphiquesPartieCourante.push(chartBoite);
+
+        var chartMoy = new Chart(document.getElementById("grapheMoyenne_{{ loop.index -1 }}").getContext('2d'), {
+          type: 'bar',
+          data: chartDATA,
+          options: options,
+        });
+        graphiquesPartieCourante.push(chartMoy)
+        graphiques.push(graphiquesPartieCourante)
+    {% endfor %}
+
+    {# Pour que toutes les cases soient cochées par défaut #}
+    {% for partie in parties %}
+      {% for groupe in partie.stats %}
+        changement("{{ groupe.nom }}", true, {{ loop.parent.loop.index -1 }}, "histo" )
+    changement("{{ groupe.nom }}", true, {{ loop.parent.loop.index -1 }}, "bam" )
+    changement("{{ groupe.nom }}", true, {{ loop.parent.loop.index -1 }}, "moy" )
+      {% endfor %}
+    {% endfor %}
+    // Mise en forme du texte des cases à cocher
+    formatageCasesACocher();
   }
 
-// ------ FONCTIONS -----
+//------ FONCTIONS -----
 
 // Coloration du texte des cases à cocher avec les bonnes couleurs + réajustement de la taille de la police
 // Chaque label de case à cocher à comme id : label_nomGroupe_nomGraphe
@@ -339,64 +332,55 @@ function formatageCasesACocher(){
       couleurs.push([(coul[0] + 60) % 255, (coul[1] - 60) % 255, coul[2]]);
     }
   }
-  // Coloration + Ajustement de la taille de la police des labels des cases à cocher
-  for(var i = 0; i < groupes.length; i++){
-    for(var clef in groupesChecked){
-      if(clef == 'moy'){ // Pas de coloration pour le graphique de la moyenne et l'écart-type
-        break;
-      }
-      var nom = groupes[i].nom;
+  for(var i = 0; i < groupes.length; i++) {
+    labelsHistogramme = document.getElementsByName("label_" + groupes[i].nom +"_histo");
+    for(var j =0; j < labelsHistogramme.length ; j++ ) {
       var rgb = "rgb("+couleurs[i][0]+","+couleurs[i][1]+","+couleurs[i][2]+")";
-      document.getElementById("label_"+nom+"_"+clef).style.color = rgb;
-      document.getElementById("label_"+nom+"_"+clef).style.fontSize = (fontSize+"px");
+      labelsHistogramme[j].style.color = rgb;
+      labelsHistogramme[j].style.fontSize = (fontSize+"px");
     }
-  }
-}
 
-// Renvoie la valeur max de l'axe Y pour l'histogramme
-function getMax(){
-  var max = 0;
-  for(var i = 0; i < groupes.length; i++){
-    for(var j = 0; j < groupes[i].notes.length; j++){
-      if(groupes[i].notes[j] > max){
-        max = groupes[i].notes[j];
-      }
+    labelsBAM = document.getElementsByName("label_" + groupes[i].nom +"_bam");
+    for(var j =0; j < labelsBAM.length ; j++ ) {
+      var rgb = "rgb("+couleurs[i][0]+","+couleurs[i][1]+","+couleurs[i][2]+")";
+      labelsBAM[j].style.color = rgb;
+      labelsBAM[j].style.fontSize = (fontSize+"px");
     }
   }
-  return max;
 }
 
 // Met à jour le graphique en fonction des cases qui sont cochées
-function changement(nom, value, type){
+function changement(nom, value, partieConcernee, typeStat){
   // Gère l'addition et la suppression des groupes à afficher dans le graphe
   if(value){ // la case à été cochée
-    groupesChecked[type].push(nom); // Ajout dans la liste cochée
-  } else { // la case à été décochée
-    var index = contains(groupesChecked[type], nom); // index au quel se trouve le groupe dans le tableau groupes s'il existe
-    if(index != -1){
-      groupesChecked[type].splice(index, 1); // Suppression de la liste cochée
-    }
+    groupesChecked[partieConcernee][typeStat].push(nom); // Ajout dans la liste cochée
+  }
+  else { // la case à été décochée
+      var index = contains(groupesChecked[partieConcernee][typeStat], nom); // index au quel se trouve le groupe dans le tableau groupes s'il existe
+      if(index != -1){
+        groupesChecked[partieConcernee][typeStat].splice(index, 1); // Suppression de la liste cochée
+      }
   }
 
-
   var chartOptions = options; // Récupération de la template des options
-  var chartDonnees = chartDATA; // Récupération de la template des données du graphique
+  var chartDonnees = {};
+  // Récupération de la template des données du graphique
   // Génération des labels & cacul du max
-  switch (type) {
+  switch (typeStat) {
     case 'histo':
       // Changement des labels + de l'échelle de l'axe Y
       chartDonnees.labels = ['[0;4[', '[4;8[', '[8;12[', '[12;16[', '[16;20]'];
       chartOptions.scales.yAxes[0].ticks.min = 0;
-      chartOptions.scales.yAxes[0].ticks.max = getMax();
+      chartOptions.scales.yAxes[0].ticks.max = undefined;
       break;
     case 'bam': // Boîte à moustache
       // Changement des labels + de l'échelle de l'axe Y
       chartDonnees.labels = [nomEvaluation];
       chartOptions.scales.yAxes[0].ticks.min = 0;
-      chartOptions.scales.yAxes[0].ticks.max = 20;
+      chartOptions.scales.yAxes[0].ticks.max = undefined;
       break;
     case 'moy':
-      chartDonnees.labels = groupesChecked[type];
+      chartDonnees.labels = groupesChecked[partieConcernee][typeStat];
       chartOptions.scales.yAxes[0].ticks.min = undefined;
       chartOptions.scales.yAxes[0].ticks.max = undefined;
       break;
@@ -406,74 +390,75 @@ function changement(nom, value, type){
 
   // Génération des datasets des groupes sélectionés pour chartJS en fonction du graphique sélectioné
   // Remplacement des données du graphe par les nouvelles données générées
-  switch(type){
+  switch(typeStat){
     case 'histo':
     case 'bam':
-      chartDonnees.datasets = genDataRepartition(type);
+      chartDonnees.datasets = genDataRepartition(typeStat, partieConcernee);
       break;
     case 'moy':
-      chartDonnees.datasets = genDataMoyenneEcart();
+      chartDonnees.datasets = genDataMoyenneEcart(partieConcernee);
       break;
   }
 
   //  MaJ du graphique + MaJ des options
-  switch (type) {
+  switch (typeStat) {
     case 'histo':
-      window.chartBar.options = chartOptions;
-      window.chartBar.data = chartDonnees;
-      window.chartBar.update();
+      graphiques[partieConcernee][0].options = chartOptions;
+      graphiques[partieConcernee][0].data = chartDonnees;
+      graphiques[partieConcernee][0].update();
       break;
     case 'bam': // Boîte à moustaches
-      window.chartBoite.options = chartOptions;
-      window.chartBoite.data = chartDonnees;
-      window.chartBoite.update();
+      graphiques[partieConcernee][1].options = chartOptions;
+      graphiques[partieConcernee][1].data = chartDonnees;
+      graphiques[partieConcernee][1].update();
       break;
     case 'moy' : // Moyenne & écart-type
-      window.chartMoy.options = chartOptions;
-      window.chartMoy.data = chartDonnees;
-      window.chartMoy.update();
+      graphiques[partieConcernee][2].options = chartOptions;
+      graphiques[partieConcernee][2].data = chartDonnees;
+      graphiques[partieConcernee][2].update();
       break;
     default:
       break;
   }
 }
 
-function genDataRepartition(type){
+function genDataRepartition(type, partieConcernee){
   var data = [];
-  for(var i = 0; i < groupesChecked[type].length; i++){
+  for(var j = 0; j < groupesChecked[partieConcernee][type].length; j++){
     var set = {};
-    var index = -1;
-    for(var j = 0; j < groupes.length; j++){
-      if(groupes[j].nom == groupesChecked[type][i]){
-        index = j;
+    var indexGroupe = -1;
+    for(var l = 0; l < parties[partieConcernee].stats.length; l++) {
+      if(groupes[l].nom == groupesChecked[partieConcernee][type][j]) {
+        indexGroupe = l;
       }
     }
-    if(index != -1){
-      set.label = groupes[index].nom;
+    if(indexGroupe != -1){
+      set.label = groupes[indexGroupe].nom;
       switch (type) {
         case 'histo': // Histogramme
-          set.data = groupes[index].notes;
+          set.data = parties[partieConcernee].stats[indexGroupe].repartition;
           set.borderColor = gris;
           break;
         case 'bam': // Boîte à moustaches
-          set.data = [groupes[index].allNotes];
+          set.data = [parties[partieConcernee].stats[indexGroupe].listeNotes];
           set.borderColor = noir;
           break;
         default:
           break;
       }
-      var rgb = "rgb("+couleurs[index][0]+","+couleurs[index][1]+","+couleurs[index][2]+")";
+      var rgb = "rgb("+couleurs[indexGroupe][0]+","+couleurs[indexGroupe][1]+","+couleurs[indexGroupe][2]+")";
       set.backgroundColor = rgb;
       set.hoverBackgroundColor = rgb;
       data.push(set);
     }
   }
+
   return data;
 }
 
 // Génère les données requises par Chart.js pour le graphique 'Moyenne & écart-type'
-function genDataMoyenneEcart(){
-  var liste = getGroupesData(groupesChecked['moy']); // Récupération des données
+function genDataMoyenneEcart(partieConcernee){
+  var liste = getGroupesData(groupesChecked[partieConcernee]['moy'], partieConcernee); // Récupération des données
   var moyenne = [];
   var ecartType = [];
   for(var i = 0; i < liste.length; i++){ // Choix des informations requises
@@ -502,13 +487,12 @@ function genDataMoyenneEcart(){
 }
 
 // Retourne un tableau d'objets groupe avec leurs données en fonction d'une liste de noms de groupes
-function getGroupesData(liste){
+function getGroupesData(listeGroupes, partieConcernee){
   groupesAvecDonnees = [];
-  for(var i = 0; i < liste.length; i++){
-    for(var j = 0; j < groupes.length; j++){
-      if(groupes[j].nom == liste[i]){
-        groupesAvecDonnees[i] = groupes[j];
-        break;
+  for(var i = 0; i < listeGroupes.length; i++){
+    for (var j = 0; j < parties[partieConcernee].stats.length ; j++) {
+      if(parties[partieConcernee].stats[j].nom == listeGroupes[i]) {
+        groupesAvecDonnees.push(parties[partieConcernee].stats[j])
       }
     }
   }
@@ -531,183 +515,181 @@ function contains(array, element){
   }
   return -1;
 }
-
-
 </script>
 
-<!-- Patie dédié au la génération du pdf -->
-<script type="text/javascript">
+{#<!-- Patie dédié au la génération du pdf -->#}
+{#<script type="text/javascript">#}
 
-  var xStat = 200
-  var xLabelStat = 30
-  var xRepartition = 475
-  var xIntervalle = 330
-  var xTitre = 300
-  var yTitre = 50
-  var y = 100
-  var deltaY = 20
-  var numeroCarte = 1
-
-
-  function genPDF(){
-    var nomEval = "{{evaluation.nom}}"
-    var nomGroupe = "{{evaluation.groupe.nom}}"
-    var date = "{{evaluation.date}}"
-    var doc = new jsPDF('p','pt','a4');
-    var longueur = nomEval.length
-
-    //Définition du haut du PDF
-    if (longueur < 35) {
-      doc.setFontSize(35)
-    }
-    if (longueur < 50 && longueur > 34) {
-      doc.setFontSize(25)
-    }
-    if (longueur > 49 && longueur < 70) {
-      doc.setFontSize(20)
-    }
-    if (longueur > 69) {
-      doc.setFontSize(16)
-    }
-
-    doc.text(nomEval,300,200,(align = "center"))
-    doc.setFontSize(16)
-    doc.text("Groupe évalué :",70,300)
-    doc.text(nomGroupe,260,300)
-    doc.text("Date :",70,330)
-    doc.text(date,260,330)
-
-    {% for groupe in groupes %}
-
-    var effectifDuGroupe="{% set effectifTotal = 0 %}
-    {% for effectif in groupe.notes %}
-      {% set effectifTotal = effectifTotal + effectif %}
-    {% endfor %}
-    ({{ effectifTotal }} étudiants)".trim()
+{#  var xStat = 200#}
+{#  var xLabelStat = 30#}
+{#  var xRepartition = 475#}
+{#  var xIntervalle = 330#}
+{#  var xTitre = 300#}
+{#  var yTitre = 50#}
+{#  var y = 100#}
+{#  var deltaY = 20#}
+{#  var numeroCarte = 1#}
 
 
-    if (numeroCarte == 1) {
-      doc.addPage()
-      yTitre = 50
-      y = 100
-    }
-    if (numeroCarte == 2) {
-      yTitre = 300
-      y = 350
-    }
-    if (numeroCarte == 3) {
-      yTitre = 550
-      y = 600
-    }
-    doc.setFontSize(25)
-    var nomCarteGroupe = "{{groupe.nom}}" +" "+ effectifDuGroupe
-    doc.text(nomCarteGroupe,xTitre,yTitre,(align = "center"))
-    doc.setFontSize(12)
+{#  function genPDF(){#}
+{#    var nomEval = "{{evaluation.nom}}"#}
+{#    var nomGroupe = "{{evaluation.groupe.nom}}"#}
+{#    var date = "{{evaluation.date | date("d/m/Y")}}"#}
+{#    var doc = new jsPDF('p','pt','a4');#}
+{#    var longueur = nomEval.length#}
 
-    //traitement du nom du groupe
-    var phraseNomGroupe = "Statistiques"
-    doc.text(phraseNomGroupe,20,y)
-    y = y + deltaY
-    //traitement de la moyenne
-    var moyenne = "{{groupe.moyenne}}"
-    doc.text("Moyenne :",xLabelStat,y)
-    doc.text(moyenne,xStat,y)
-    y = y + deltaY
-    //traitement de l'écart type
-    var ecartType = "{{groupe.ecartType}}"
-    doc.text("Ecart-type :",xLabelStat,y)
-    doc.text(ecartType,xStat,y)
-    y = y + deltaY
-    //traitement de la note minimal
-    var min = "{{groupe.minimum}}"
-    doc.text("Note(s) minimale(s) :",xLabelStat,y)
-    doc.text(min,xStat,y)
-    y = y + deltaY
-    //traitement de la note maximal
-    var max = "{{groupe.maximum}}"
-    doc.text("Note(s) maximale(s) :",xLabelStat,y)
-    doc.text(max,xStat,y)
-    y = y + deltaY
-    //traitement de la mediane
-    var mediane = "{{groupe.mediane}}"
-    doc.text("Médiane :",xLabelStat,y)
-    doc.text(mediane,xStat,y)
+{#    //Définition du haut du PDF#}
+{#    if (longueur < 35) {#}
+{#      doc.setFontSize(35)#}
+{#    }#}
+{#    if (longueur < 50 && longueur > 34) {#}
+{#      doc.setFontSize(25)#}
+{#    }#}
+{#    if (longueur > 49 && longueur < 70) {#}
+{#      doc.setFontSize(20)#}
+{#    }#}
+{#    if (longueur > 69) {#}
+{#      doc.setFontSize(16)#}
+{#    }#}
 
-    //traitement de la répartition des notes
-    if (numeroCarte == 1) {
-      y = 100
-    }
-    if (numeroCarte == 2) {
-      y = 350
-    }
-    if (numeroCarte == 3) {
-      y = 600
-    }
-    doc.text("Répartition des notes", 320,y)
-    y = y + deltaY
-    doc.text("[0;4[ : ", xIntervalle,y);
-    var premierIntervalle = "{{groupe.notes[0]}} étudiant(s)"
-    doc.text(premierIntervalle,xRepartition, y)
-    y = y + deltaY
-    doc.text("[4;8[ : ", xIntervalle,y);
-    var deuxiemeIntervalle = "{{groupe.notes[1]}} étudiant(s)"
-    doc.text(deuxiemeIntervalle,xRepartition, y)
-    y = y + deltaY
-    doc.text("[8;12[ : ", xIntervalle,y);
-    var troisiemeIntervalle = "{{groupe.notes[2]}} étudiant(s)"
-    doc.text(troisiemeIntervalle,xRepartition, y)
-    y = y + deltaY
-    doc.text("[12;16[ : ", xIntervalle,y);
-    var quatriemeIntervalle = "{{groupe.notes[3]}} étudiant(s)"
-    doc.text(quatriemeIntervalle,xRepartition, y)
-    y = y + deltaY
-    doc.text("[16;20] : ", xIntervalle,y);
-    var cinquiemeIntervalle = "{{groupe.notes[4]}} étudiant(s)"
-    doc.text(cinquiemeIntervalle,xRepartition, y)
+{#    doc.text(nomEval,300,200,(align = "center"))#}
+{#    doc.setFontSize(16)#}
+{#    doc.text("Groupe évalué :",70,300)#}
+{#    doc.text(nomGroupe,260,300)#}
+{#    doc.text("Date :",70,330)#}
+{#    doc.text(date,260,330)#}
 
-    if (numeroCarte == 3) {
-      numeroCarte = 1
-    }
-    else {
-      numeroCarte = numeroCarte + 1
-    }
+{#    {% for groupe in groupes %}#}
 
-    {% endfor %}
-
-    doc.save(nomEval)
+{#    var effectifDuGroupe="{% set effectifTotal = 0 %}#}
+{#    {% for effectif in groupe.repartition %}#}
+{#      {% set effectifTotal = effectifTotal + effectif %}#}
+{#    {% endfor %}#}
+{#    ({{ effectifTotal }} étudiants)".trim()#}
 
 
-    //Piste de solution pour améliorer l'xport pdf
-    /*html2canvas($("#lesStats .cardhu-S1"),{
-      useCORS:true,
-      logging:true,
-      onrendered:function(canvas,capture){
-        capture = canvas.toDataURL('image/png',1.0);
-        document.body.insertAdjacentHTML('beforeend',"<img id='arthur' src='" + capture +"'>")
+{#    if (numeroCarte == 1) {#}
+{#      doc.addPage()#}
+{#      yTitre = 50#}
+{#      y = 100#}
+{#    }#}
+{#    if (numeroCarte == 2) {#}
+{#      yTitre = 300#}
+{#      y = 350#}
+{#    }#}
+{#    if (numeroCarte == 3) {#}
+{#      yTitre = 550#}
+{#      y = 600#}
+{#    }#}
+{#    doc.setFontSize(25)#}
+{#    var nomCarteGroupe = "{{groupe.nom}}" +" "+ effectifDuGroupe#}
+{#    doc.text(nomCarteGroupe,xTitre,yTitre,(align = "center"))#}
+{#    doc.setFontSize(12)#}
 
-      }
-    }).then(function(){
-      doc.addImage(document.getElementById("arthur").src,'PNG',20,110);
-      doc.addPage()
-      doc.save(nomEval)
-    });*/
+{#    //traitement du nom du groupe#}
+{#    var phraseNomGroupe = "Statistiques"#}
+{#    doc.text(phraseNomGroupe,20,y)#}
+{#    y = y + deltaY#}
+{#    //traitement de la moyenne#}
+{#    var moyenne = "{{groupe.moyenne}}"#}
+{#    doc.text("Moyenne :",xLabelStat,y)#}
+{#    doc.text(moyenne,xStat,y)#}
+{#    y = y + deltaY#}
+{#    //traitement de l'écart type#}
+{#    var ecartType = "{{groupe.ecartType}}"#}
+{#    doc.text("Ecart-type :",xLabelStat,y)#}
+{#    doc.text(ecartType,xStat,y)#}
+{#    y = y + deltaY#}
+{#    //traitement de la note minimal#}
+{#    var min = "{{groupe.minimum}}"#}
+{#    doc.text("Note(s) minimale(s) :",xLabelStat,y)#}
+{#    doc.text(min,xStat,y)#}
+{#    y = y + deltaY#}
+{#    //traitement de la note maximal#}
+{#    var max = "{{groupe.maximum}}"#}
+{#    doc.text("Note(s) maximale(s) :",xLabelStat,y)#}
+{#    doc.text(max,xStat,y)#}
+{#    y = y + deltaY#}
+{#    //traitement de la mediane#}
+{#    var mediane = "{{groupe.mediane}}"#}
+{#    doc.text("Médiane :",xLabelStat,y)#}
+{#    doc.text(mediane,xStat,y)#}
 
-  /*  html2canvas($("#lesStats .cardhu-S1"),{
-      useCORS:true,
-      logging:true,
-      onrendered:function(canvas,capture){
-        capture = canvas.toDataURL('image/png',1.0);
-        document.body.insertAdjacentHTML('beforeend',"<img id='arthur' src='" + capture +"'>")
+{#    //traitement de la répartition des notes#}
+{#    if (numeroCarte == 1) {#}
+{#      y = 100#}
+{#    }#}
+{#    if (numeroCarte == 2) {#}
+{#      y = 350#}
+{#    }#}
+{#    if (numeroCarte == 3) {#}
+{#      y = 600#}
+{#    }#}
+{#    doc.text("Répartition des notes", 320,y)#}
+{#    y = y + deltaY#}
+{#    doc.text("[0;4[ : ", xIntervalle,y);#}
+{#    var premierIntervalle = "{{groupe.notes[0]}} étudiant(s)"#}
+{#    doc.text(premierIntervalle,xRepartition, y)#}
+{#    y = y + deltaY#}
+{#    doc.text("[4;8[ : ", xIntervalle,y);#}
+{#    var deuxiemeIntervalle = "{{groupe.notes[1]}} étudiant(s)"#}
+{#    doc.text(deuxiemeIntervalle,xRepartition, y)#}
+{#    y = y + deltaY#}
+{#    doc.text("[8;12[ : ", xIntervalle,y);#}
+{#    var troisiemeIntervalle = "{{groupe.notes[2]}} étudiant(s)"#}
+{#    doc.text(troisiemeIntervalle,xRepartition, y)#}
+{#    y = y + deltaY#}
+{#    doc.text("[12;16[ : ", xIntervalle,y);#}
+{#    var quatriemeIntervalle = "{{groupe.notes[3]}} étudiant(s)"#}
+{#    doc.text(quatriemeIntervalle,xRepartition, y)#}
+{#    y = y + deltaY#}
+{#    doc.text("[16;20] : ", xIntervalle,y);#}
+{#    var cinquiemeIntervalle = "{{groupe.notes[4]}} étudiant(s)"#}
+{#    doc.text(cinquiemeIntervalle,xRepartition, y)#}
 
-      }
-    }).then(function(){
-      doc.addImage(document.getElementById("arthur").src,'PNG',20,110);
-      doc.addPage()
-      doc.save(nomEval)
-    });*/
+{#    if (numeroCarte == 3) {#}
+{#      numeroCarte = 1#}
+{#    }#}
+{#    else {#}
+{#      numeroCarte = numeroCarte + 1#}
+{#    }#}
+
+{#    {% endfor %}#}
+
+{#    doc.save(nomEval)#}
 
 
-  }
+{#    //Piste de solution pour améliorer l'xport pdf#}
+{#    /*html2canvas($("#lesStats .cardhu-S1"),{#}
+{#      useCORS:true,#}
+{#      logging:true,#}
+{#      onrendered:function(canvas,capture){#}
+{#        capture = canvas.toDataURL('image/png',1.0);#}
+{#        document.body.insertAdjacentHTML('beforeend',"<img id='arthur' src='" + capture +"'>")#}
+
+{#      }#}
+{#    }).then(function(){#}
+{#      doc.addImage(document.getElementById("arthur").src,'PNG',20,110);#}
+{#      doc.addPage()#}
+{#      doc.save(nomEval)#}
+{#    });*/#}
+
+{#  /*  html2canvas($("#lesStats .cardhu-S1"),{#}
+{#      useCORS:true,#}
+{#      logging:true,#}
+{#      onrendered:function(canvas,capture){#}
+{#        capture = canvas.toDataURL('image/png',1.0);#}
+{#        document.body.insertAdjacentHTML('beforeend',"<img id='arthur' src='" + capture +"'>")#}
+
+{#      }#}
+{#    }).then(function(){#}
+{#      doc.addImage(document.getElementById("arthur").src,'PNG',20,110);#}
+{#      doc.addPage()#}
+{#      doc.save(nomEval)#}
+{#    });*/#}
+
+
+{#  }#}
 
 
 </script>
