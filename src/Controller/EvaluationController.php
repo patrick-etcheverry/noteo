@@ -51,7 +51,7 @@ class EvaluationController extends AbstractController
      */
     public function previsualisationMail(Evaluation $evaluation, PointsRepository $pointsRepository): Response
     {
-      $nbEtudiants = count($pointsRepository->findNotesAndEtudiantByEvaluation($evaluation));
+      $nbEtudiants = count($evaluation->getGroupe()->getEtudiants());
       $nomGroupe = $evaluation->getGroupe()->getNom();
       $this->denyAccessUnlessGranted('EVALUATION_PREVISUALISATION_MAIL', $evaluation);
       return $this->render('evaluation/previsualisationMail.html.twig',[
@@ -72,7 +72,7 @@ class EvaluationController extends AbstractController
          // Récupération des stats mises en session
          $stats = $session->get('stats');
          $notesEtudiants = $pointsRepository->findNotesAndEtudiantByEvaluation($evaluation);
-         $tabRang = $pointsRepository->findUniqueByGroupe($evaluation->getId(),$evaluation->getGroupe()->getId());
+         $tabRang = $pointsRepository->findAllNotesByGroupe($evaluation->getId(),$evaluation->getGroupe()->getId());
          $copieTabRang = array();
          foreach ($tabRang as $element) {
              $copieTabRang[] = $element["valeur"];
@@ -101,7 +101,7 @@ class EvaluationController extends AbstractController
         // Récupération des stats mises en session
         $stats = $session->get('stats');
         $notesEtudiants = $pointsRepository->findNotesAndEtudiantByEvaluation($evaluation);
-        $tabRang = $pointsRepository->findUniqueByGroupe($evaluation->getId(),$evaluation->getGroupe()->getId());
+        $tabRang = $pointsRepository->findAllNotesByGroupe($evaluation->getId(),$evaluation->getGroupe()->getId());
         $copieTabRang = array();
         foreach ($tabRang as $element) {
             $copieTabRang[] = $element["valeur"];
@@ -129,7 +129,7 @@ class EvaluationController extends AbstractController
           'L\'envoi des mails a été effectué avec succès.'
         );
         return $this->render('evaluation/stats.html.twig', [
-            'groupes' => $stats,
+            'parties' => $stats,
             'evaluation' => $evaluation
           ]);
     }
@@ -575,11 +575,11 @@ class EvaluationController extends AbstractController
                     "stats" => array_merge($statsDuGroupePourLaPartie, $statsDuStatutPourLaPartie)
                 ];
             }
-            //Mise en session des stats pour le mail
+            //Mise en session des stats pour le mail et la page de visualisation
             $session->set('stats',$toutesLesStats);
             return $this->render('evaluation/stats.html.twig', [
-                'parties' => $toutesLesStats,
-                'evaluation' => $evaluation
+                'evaluation' => $evaluation,
+                'parties' => $toutesLesStats
             ]);
         }
         return $this->render('evaluation/choix_groupes_et_parties.html.twig', [

@@ -58,6 +58,7 @@ class PointsRepository extends ServiceEntityRepository
             JOIN pa.evaluation ev
             WHERE ev = :param
             AND p.valeur >= 0
+            AND pa.lvl = 0
             AND et.estDemissionaire = 0
         ')
             ->setParameter('param', $evaluation)
@@ -106,10 +107,10 @@ class PointsRepository extends ServiceEntityRepository
             ->execute();
     }
 
-    public function findUniqueByGroupe($idEval, $idGroupe)
+    public function findAllNotesByGroupe($idEval, $idGroupe)
     {
         return $this->getEntityManager()->createQuery('
-            SELECT DISTINCT p.valeur
+            SELECT p.valeur
             FROM App\Entity\Points p
             JOIN p.etudiant et
             JOIN et.groupes g
@@ -118,6 +119,7 @@ class PointsRepository extends ServiceEntityRepository
             WHERE ev.id = :idE
             AND g.id = :idG
             AND et.estDemissionaire = 0
+            AND pa.lvl = 0
             AND p.valeur >= 0
             ORDER BY p.valeur DESC
         ')
