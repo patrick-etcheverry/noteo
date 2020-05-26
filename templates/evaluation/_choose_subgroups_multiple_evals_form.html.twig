@@ -1,0 +1,37 @@
+{{form_start(form)}}
+
+<h1 class="h4 mb-0 text-gray-800">Sélectionner les sous-groupes pour lesquels vous souhaitez voir les statistiques</h1> <br>
+
+<h6 class="h6 mb-0 text-gray-800">Il est possible de ne sélectionner aucun sous groupe de {{groupe.nom}}. 
+Ainsi, uniquement des statistiques du groupe {{groupe.nom}} seront générées</h6><br>
+<div class="table-responsive table-hover">
+<table class="table" id= "sousGroupes">
+<thead>
+  <th></th>
+  <th>Nom</th>
+  <th>Effectif</th>
+  <th>Description</th>
+</thead>
+<tbody>
+{% for sousGroupe in form.sousGroupes %}
+
+{# store index of the category in a variable #}
+{% set index = sousGroupe.vars.value %}
+
+{# get entity object from its index in the Categories Field #}
+{% set entity = form.sousGroupes.vars.choices[index].data %}
+
+<tr>
+        <td>{{form_widget(form.sousGroupes[index])}}</td>
+        <td>{{entity.nom}}</td>
+        <td>{{entity.etudiants.count}}</td>
+        <td>{{entity.description}}</td>
+</tr>
+{% endfor %}
+</tbody>
+</table>
+<div class='bouton' align=center>
+  <button class="d-sm-inline-block btn btn-sm btn-primary shadow-sm">Choisir les évaluations</button>
+</div>
+
+{{form_end(form)}}

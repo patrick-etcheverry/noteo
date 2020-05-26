@@ -1,0 +1,7 @@
+{% extends 'base.html.twig' %}
+
+{% block titrePage %}Statistiques par groupe et sous groupes{% endblock %}
+
+{% block contenu %}
+{{ include('evaluation/_choose_subgroups_multiple_evals_form.html.twig') }}
+{% endblock %}

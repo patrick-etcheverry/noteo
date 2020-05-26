@@ -81,6 +81,9 @@
           <div class="bg-white py-2 collapse-inner rounded">
             <a class="collapse-item {% block mesEvaluations %}{% endblock %}" href="{{path('evaluation_enseignant')}}">Mes évaluations</a>
             <a class="collapse-item {% block autresEvaluations %}{% endblock %}" href="{{path('evaluation_autres')}}">Autres évaluations</a>
+            <hr class="solid">
+            <a class="collapse-item" href="{{ path('evaluations_choose_groups') }}">Statistiques sur les groupes</a>
+            <a class="collapse-item" href="{{ path('evaluations_choose_statut') }}">Statistiques sur les statuts</a>
           </div>
         </div>
       </li>
