@@ -22,7 +22,6 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Validator\Constraints\Regex;
-use Symfony\Component\Validator\Validator\ValidatorInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Validator\Constraints\NotNull;
 use Symfony\Component\Validator\Constraints\NotBlank;
@@ -59,14 +58,6 @@ class EvaluationController extends AbstractController
         'nbEtudiants' => $nbEtudiants,
         'nomGroupe' => $nomGroupe
       ]);
-    }
-
-    /**
-     * @Route("/choix-statistiques", name="choix_statistiques", methods={"GET"})
-     */
-    public function choixStatistiques(): Response
-    {
-        return $this->render('evaluation/choix_statistiques.html.twig');
     }
 
     /**
@@ -458,7 +449,7 @@ class EvaluationController extends AbstractController
     /**
      * @Route("/{typeEval}/choisir-groupe/", name="evaluation_choose_group")
      */
-    public function chooseGroup(Request $request, GroupeEtudiantRepository $repoGroupe, $typeEval): Response
+    public function choixGroupeEval(Request $request, GroupeEtudiantRepository $repoGroupe, $typeEval): Response
     {
       $groupes = $repoGroupe->findAllWithoutNonEvaluableGroups();
       $form = $this->createFormBuilder()
