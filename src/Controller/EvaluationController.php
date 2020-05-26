@@ -711,7 +711,9 @@ class EvaluationController extends AbstractController
     {
       $groupePrincipal = $repoGroupe->findOneBySlug($slug);
 
-      $sousGroupes = $groupePrincipal->getChildren();
+      $sousGroupes = $repoGroupe->findAllOrderedFromNode($groupePrincipal);
+
+      unset($sousGroupes[0]); // Pour eviter de réafficher le groupe principal
 
       $form = $this->createFormBuilder()
       ->add('sousGroupes', EntityType::class, [
