@@ -70,7 +70,7 @@
                     {% set tabCounter = 0 %}
                     {% for groupe in parties[0].stats %}
                       <div class="form-check form-check-inline">
-                        <input class="form-check-input" type="checkbox" id="{{groupe.nom}}" onChange="changement(this.id, this.checked, '{{ loop.parent.loop.index -1 }}', 'histo')">
+                        <input class="form-check-input" type="checkbox" id="{{groupe.nom}}" checked onChange="changement(this.id, this.checked, '{{ loop.parent.loop.index -1 }}', 'histo')">
                         <label class="form-check-label" for="inlineCheckbox1" name="label_{{groupe.nom}}_histo">{{groupe.nom}}</label>
                       </div>
                       {% set tabCounter = tabCounter + 1 %}
@@ -96,7 +96,7 @@
                     {% set tabCounter = 0 %}
                     {% for groupe in parties[0].stats %}
                       <div class="form-check form-check-inline">
-                        <input class="form-check-input" type="checkbox" id="{{groupe.nom}}"  onChange="changement(this.id, this.checked, '{{ loop.parent.loop.index -1 }}', 'bam')">
+                        <input class="form-check-input" type="checkbox" id="{{groupe.nom}}" checked onChange="changement(this.id, this.checked, '{{ loop.parent.loop.index -1 }}', 'bam')">
                         <label class="form-check-label" for="inlineCheckbox1" name="label_{{groupe.nom}}_bam">{{groupe.nom}}</label>
                       </div>
                       {% set tabCounter = tabCounter + 1 %}
@@ -122,7 +122,7 @@
                     {% set tabCounter = 0 %}
                     {% for groupe in parties[0].stats %}
                       <div class="form-check form-check-inline">
-                        <input class="form-check-input" type="checkbox" id="{{groupe.nom}}" onChange="changement(this.id, this.checked, '{{ loop.parent.loop.index -1 }}', 'moy')">
+                        <input class="form-check-input" type="checkbox" id="{{groupe.nom}}" checked onChange="changement(this.id, this.checked, '{{ loop.parent.loop.index -1 }}', 'moy')">
                         <label class="form-check-label" for="inlineCheckbox1" name="label_{{groupe.nom}}_moy">{{groupe.nom}}</label>
                       </div>
                       {% set tabCounter = tabCounter + 1 %}
@@ -302,6 +302,15 @@
         });
         graphiquesPartieCourante.push(chartMoy)
         graphiques.push(graphiquesPartieCourante)
+    {% endfor %}
+
+    {# Pour que toutes les cases soient cochées par défaut #}
+    {% for partie in parties %}
+      {% for groupe in partie.stats %}
+        changement("{{ groupe.nom }}", true, {{ loop.parent.loop.index -1 }}, "histo" )
+    changement("{{ groupe.nom }}", true, {{ loop.parent.loop.index -1 }}, "bam" )
+    changement("{{ groupe.nom }}", true, {{ loop.parent.loop.index -1 }}, "moy" )
+      {% endfor %}
     {% endfor %}
     // Mise en forme du texte des cases à cocher
     formatageCasesACocher();
