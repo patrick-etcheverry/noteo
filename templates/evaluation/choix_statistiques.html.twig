@@ -6,11 +6,6 @@
 
 {% block stylesheets %}
     <style>
-        .container{
-            margin-top: 8%;
-            margin-left: 8%;
-        }
-
         .card:hover{
             -webkit-box-shadow: -1px 9px 40px -12px rgba(0,0,0,0.75);
             -moz-box-shadow: -1px 9px 40px -12px rgba(0,0,0,0.75);
@@ -23,10 +18,10 @@
     <div class="card">
         <ul class="list-group list-group-flush">
             <li class="list-group-item text-white" style="background-color:#bdc3c7;">
-                Statistiques classiques
+                Statistiques classiques sur une évaluation
             </li>
             <div class="card-body">
-                GRAPHIQUE
+                <canvas id="graph_stats_classiques"></canvas>
                 <hr>
                 <p class="card-text">
                     Statistiques pour comparer les résultats d'un groupe ou d'un statut à ses évaluations passées
@@ -39,10 +34,10 @@
     <div class="card">
         <ul class="list-group list-group-flush">
             <li class="list-group-item text-white" style="background-color:#bdc3c7;">
-                Statistiques sur plusieurs évaluations
+                Statistiques classiques sur une évaluation avec des parties
             </li>
             <div class="card-body">
-                GRAPHIQUE
+                <canvas id="graph_stats_parties"></canvas>
                 <hr>
                 <p class="card-text">
                     Statistiques pour comparer les résultats d'un groupe ou d'un statut à ses évaluations passées
@@ -55,10 +50,10 @@
     <div class="card">
         <ul class="list-group list-group-flush">
             <li class="list-group-item text-white" style="background-color:#bdc3c7;">
-                Statistiques sur groupes ou statuts
+                Statistiques classiques sur plusieurs évaluations
             </li>
             <div class="card-body">
-                GRAPHIQUE
+                <canvas id="graph_stats_plusieurs_evals_groupe_statut"></canvas>
                 <hr>
                 <p class="card-text">
                     Statistiques pour comparer les résultats d'un groupe ou d'un statut à ses évaluations passées
@@ -71,10 +66,10 @@
     <div class="card">
         <ul class="list-group list-group-flush">
             <li class="list-group-item text-white" style="background-color:#bdc3c7;">
-                Statistiques sur groupes ou statuts
+                Évolution d'un groupe ou d'un statut sur plusieurs évaluations
             </li>
             <div class="card-body">
-                GRAPHIQUE
+                <canvas id="graph_stats_plusieurs_evals"></canvas>
                 <hr>
                 <p class="card-text">
                     Statistiques pour comparer les résultats d'un groupe ou d'un statut à ses évaluations passées
@@ -83,4 +78,190 @@
             </div>
         </ul>
     </div>
+{% endblock %}
+
+{% block javascripts %}
+
+    <script>
+        // Objet options des graphiques
+        var options = {
+            scales: {
+                xAxes: [{
+                    gridLines: {
+                        display: false
+                    },
+                    ticks: {
+                        fontSize: 16,
+                    },
+                    maxBarThickness: 100,
+                    stacked: false,
+                }],
+                yAxes: [{
+                    labelString: 'Intervalle de note',
+                    ticks: {
+                        beginAtZero: true,
+                        max: 10,
+                        min: 0,
+                        fontSize: 16,
+                    },
+                    stacked: false,
+                }],
+            },
+            legend: {
+                position: 'top',
+                labels: {
+                    fontSize: 16,
+                },
+            },
+            aspectRatio: 3,
+            maintainAspectRatio: true,
+            responsive: true,
+            tooltips: {
+                intersect: false,
+                titleMarginBottom: 10,
+                titleFontColor: '#6e707e',
+                titleFontSize: 16,
+                backgroundColor: "#FFFFFF",
+                bodyFontColor: "#858796",
+                borderColor: '#dddfeb',
+                borderWidth: 1,
+                xPadding: 15,
+                yPadding: 15,
+                displayColors: true,
+                caretPadding: 10
+            },
+            plugins : {
+                labels: {
+                    render: 'value'
+                }
+            }
+        }
+
+        //Données des graphiques
+        var dataClassique = {
+            labels: ['[0;4[', '[4;8[', '[8;12[', '[12;16[', '[16;20]'],
+            datasets: [
+                {
+                    label: 'Groupe 1',
+                    data: [4,2,7,6,5],
+                    borderColor: "#808080",
+                    labelColor: [
+                        'rgba(155, 89, 182)',
+                    ],
+                    backgroundColor: [
+                        'rgba(155, 89, 182)',
+                        'rgba(155, 89, 182)',
+                        'rgba(155, 89, 182)',
+                        'rgba(155, 89, 182)',
+                        'rgba(155, 89, 182)'
+                    ],
+                    hoverBackgroundColor : [
+                        'rgba(155, 89, 182)',
+                        'rgba(155, 89, 182)',
+                        'rgba(155, 89, 182)',
+                        'rgba(155, 89, 182)',
+                        'rgba(155, 89, 182)'
+                    ]
+                },
+                {
+                    label: 'Groupe 2',
+                    data: [8,1,5,3,4],
+                    borderColor: "#808080",
+                    labelColor: [
+                        'rgba(192, 57, 43)',
+                    ],
+                    backgroundColor: [
+                        'rgba(192, 57, 43)',
+                        'rgba(192, 57, 43)',
+                        'rgba(192, 57, 43)',
+                        'rgba(192, 57, 43)',
+                        'rgba(192, 57, 43)'
+                    ],
+                    hoverBackgroundColor : [
+                        'rgba(192, 57, 43)',
+                        'rgba(192, 57, 43)',
+                        'rgba(192, 57, 43)',
+                        'rgba(192, 57, 43)',
+                        'rgba(192, 57, 43)'
+                    ]
+                }
+            ],
+        };
+
+        //Données des graphiques
+        var dataPlusieursParties = {
+            labels: ['[0;4[', '[4;8[', '[8;12[', '[12;16[', '[16;20]'],
+            datasets: [
+                {
+                    label: 'TP1',
+                    data: [4,2,7,6,5],
+                    borderColor: "#808080",
+                    labelColor: [
+                        'rgba(155, 89, 182)',
+                    ],
+                    backgroundColor: [
+                        'rgba(155, 89, 182)',
+                        'rgba(155, 89, 182)',
+                        'rgba(155, 89, 182)',
+                        'rgba(155, 89, 182)',
+                        'rgba(155, 89, 182)'
+                    ],
+                    hoverBackgroundColor : [
+                        'rgba(155, 89, 182)',
+                        'rgba(155, 89, 182)',
+                        'rgba(155, 89, 182)',
+                        'rgba(155, 89, 182)',
+                        'rgba(155, 89, 182)'
+                    ]
+                },
+                {
+                    label: 'TP2',
+                    data: [8,1,5,3,4],
+                    borderColor: "#808080",
+                    labelColor: [
+                        'rgba(192, 57, 43)',
+                    ],
+                    backgroundColor: [
+                        'rgba(192, 57, 43)',
+                        'rgba(192, 57, 43)',
+                        'rgba(192, 57, 43)',
+                        'rgba(192, 57, 43)',
+                        'rgba(192, 57, 43)'
+                    ],
+                    hoverBackgroundColor : [
+                        'rgba(192, 57, 43)',
+                        'rgba(192, 57, 43)',
+                        'rgba(192, 57, 43)',
+                        'rgba(192, 57, 43)',
+                        'rgba(192, 57, 43)'
+                    ]
+                }
+            ],
+        };
+
+
+        //Affichage des graphiques
+        var chartClassique = new Chart(document.getElementById("graph_stats_classiques").getContext('2d'), {
+            type: 'bar',
+            data: dataClassique,
+            options: options,
+        });
+        var chartParties = new Chart(document.getElementById("graph_stats_parties").getContext('2d'), {
+            type: 'bar',
+            data: dataClassique,
+            options: options,
+        });
+        var chartPlusieursEvals = new Chart(document.getElementById("graph_stats_plusieurs_evals").getContext('2d'), {
+            type: 'bar',
+            data: dataClassique,
+            options: options,
+        });
+        var chartEvolution = new Chart(document.getElementById("graph_stats_plusieurs_evals_groupe_statut").getContext('2d'), {
+            type: 'bar',
+            data: dataClassique,
+            options: options,
+        });
+    </script>
+
+
 {% endblock %}

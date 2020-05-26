@@ -311,8 +311,8 @@
     {% for partie in parties %}
       {% for groupe in partie.stats %}
         changement("{{ groupe.nom }}", true, {{ loop.parent.loop.index -1 }}, "histo" )
-    changement("{{ groupe.nom }}", true, {{ loop.parent.loop.index -1 }}, "bam" )
-    changement("{{ groupe.nom }}", true, {{ loop.parent.loop.index -1 }}, "moy" )
+        changement("{{ groupe.nom }}", true, {{ loop.parent.loop.index -1 }}, "bam" )
+        changement("{{ groupe.nom }}", true, {{ loop.parent.loop.index -1 }}, "moy" )
       {% endfor %}
     {% endfor %}
     // Mise en forme du texte des cases à cocher
@@ -452,7 +452,6 @@ function genDataRepartition(type, partieConcernee){
       data.push(set);
     }
   }
-
   return data;
 }
 
