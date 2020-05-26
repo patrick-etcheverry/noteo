@@ -10,7 +10,115 @@
 {% block autresEvaluations %}{% if evaluation.enseignant != app.user %}active{% endif %}{% endblock %}
 
 {% block contenu %}
-{{ include('evaluation/_choose_groups_and_parts_form.html.twig') }}
+  <h1 class="h4 mb-0 text-gray-800">Sélectionner les parties de l'évaluation pour lesquelles vous souhaitez voir les statistiques</h1> <br>
+  <div class="row">
+    <div class="col-lg-4">
+    </div>
+    <div class="col-lg-4">
+      <div class="table-responsive table-hover">
+        <table class="table" id="parties">
+          <thead>
+          <th></th>
+          <th>Intitulé</th>
+          <th>Barème</th>
+          </thead>
+          <tbody>
+          {% for partie in form.parties %}
+            {# store index of the category in a variable #}
+            {% set index = partie.vars.value %}
+            {# get entity object from its index in the Categories Field #}
+            {% set entity = form.parties.vars.choices[index].data %}
+            <tr>
+              <td>{{form_widget(form.parties[index])}}</td>
+              <td>
+                {# Indentation du groupe en fonction de son niveau pour avoir une décomposition #}
+                {% if entity.lvl > 0 %}
+                  {% for i in 1.. entity.lvl %}
+                    &emsp;
+                  {% endfor %}
+                {% endif %}
+                {{entity.intitule}}
+              </td>
+              <td>{{entity.bareme}}</td>
+            </tr>
+          {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+    <div class="col-lg-4">
+    </div>
+  </div>
+  <h1 class="h4 mb-0 text-gray-800">Sélectionner les groupes pour lesquels vous souhaitez voir les statistiques</h1> <br>
+  <div class="table-responsive table-hover">
+    <table class="table" id= "groupes">
+      <thead>
+      <th></th>
+      <th>Nom</th>
+      <th>Effectif</th>
+      <th>Description</th>
+      <th>Créateur</th>
+      </thead>
+      <tbody>
+      {% for groupe in form.groupes %}
+        {# store index of the category in a variable #}
+        {% set index = groupe.vars.value %}
+        {# get entity object from its index in the Categories Field #}
+        {% set entity = form.groupes.vars.choices[index].data %}
+        <tr>
+          <td>{{form_widget(form.groupes[index])}}</td>
+          <td>
+            {# Indentation du groupe en fonction de son niveau pour avoir une décomposition #}
+            {% if entity.lvl > 0 %}
+              {% for i in 1.. entity.lvl %}
+                &emsp;
+              {% endfor %}
+            {% endif %}
+            {{entity.nom}}
+          </td>
+          <td>{{ entity.etudiants|length }}</td>
+          <td>{{entity.description}}</td>
+          <td>{{entity.enseignant.prenom}} {{entity.enseignant.nom}}</td>
+        </tr>
+      {% endfor %}
+      </tbody>
+    </table>
+  </div>
+  <br><h1 class="h4 mb-0 text-gray-800">Sélectionner les groupes d'étudiants ayant un statut particulier pour lesquels vous souhaitez voir les statistiques</h1> <br>
+  {% if form.statuts is not empty %}
+    <div class="table-responsive table-hover">
+      <table class="table" id= "statuts">
+        <thead>
+        <th></th>
+        <th>Nom</th>
+        <th>Description</th>
+        <th>Créateur</th>
+        </thead>
+        <tbody>
+        {% for statut in form.statuts %}
+          {# store index of the category in a variable #}
+          {% set index = statut.vars.value %}
+          {# get entity object from its index in the Categories Field #}
+          {% set entity = form.statuts.vars.choices[index].data %}
+          <tr>
+            <td>{{form_widget(form.statuts[index])}}</td>
+            <td>{{entity.nom}}</td>
+            <td>{{entity.description}}</td>
+            <td>{{entity.enseignant.prenom}} {{entity.enseignant.nom}}</td>
+          </tr>
+        {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  {% else %}
+    <div class="info">
+      <h5 class="h5 mb-0 text-gray-800">Il est possible d'obtenir des statistiques sur des groupes d'étudiants ayant un statut particulier (boursiers, redoublants, ...). Vous pouvez créer de tels groupes <a href="{{ path('statut_new') }}">ici</a>.</h5>
+    </div>
+  {% endif %}
+  <div class='bouton' align=center>
+    <a href="{{path('evaluation_enseignant', {'id': app.user.id })}}" class="d-sm-inline-block btn btn-sm btn-secondary shadow-sm">Annuler</a>
+    <button class="d-sm-inline-block btn btn-sm btn-primary shadow-sm">Consulter les statistiques</button>
+  </div>
 {% endblock %}
 
 {% block datatables %}
