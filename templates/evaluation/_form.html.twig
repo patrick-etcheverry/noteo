@@ -18,27 +18,50 @@
 </div>
 <br> <h1 class="h4 mb-0 text-gray-800">Modifier les notes des étudiants</h1> <br>
 <div class="table-responsive">
-<table class="table table-hover" id="etudiants">
-<thead>
-  <th>Nom</th>
-  <th>Prénom</th>
-  <th>Note / 20</th>
-</thead>
-<tbody>
-
-{% if form.vars.value.notes is not empty %}
-{# Le tableau form.vars.value.notes contient la liste des entités notes passées en paramètre du formulaire dans le
-   controlleur. On boucle dans ces valeurs pour afficher un étudiant et le formulaire de saisie de note qui lui correspond #}
-{% for i in 0..(form.vars.value.notes|length-1) %}
-<tr>
-  <td>{{form.vars.value.notes[i].etudiant.nom}}</td>
-  <td>{{form.vars.value.notes[i].etudiant.prenom}}</td>
-  <td>{{ form_errors(form.notes[i].valeur) }}{{form_widget(form.notes[i].valeur)}}</td>
-</tr>
-{% endfor %}
-{% endif %}
-</tbody>
-</table>
+  <table class="table table-hover" id="etudiants">
+    <thead>
+    <th>Nom</th>
+    <th>Prénom</th>
+    {% if parties|length != 1 %}
+      {% for partie in parties %}
+        <th>
+          {% if partie.parent is not null and partie.lvl > 1 %}
+            {{ partie.parent.intitule ~ " -" | nl2br }} {# Sortie : NomParent -\n #}
+          {% endif %}
+          {{ partie.intitule }} (/{{ partie.bareme }})
+        </th>
+      {% endfor %}
+      <th>
+        Note finale (/20)
+      </th>
+    {% else%}
+      <th>
+        Note finale (/20)
+      </th>
+    {% endif %}
+    </thead>
+    <tbody>
+    {% if form.vars.value.notes is not empty %}
+      {% set premierFormulaireAAfficher = 0 %}
+      {% set dernierFormulaireAAfficher = (premierFormulaireAAfficher + parties|length) -1  %}
+      {% for etudiant in etudiants %}
+        <tr>
+          <td>{{ etudiant.nom }}</td>
+          <td>{{ etudiant.prenom }}</td>
+          {# Pour chaque étudiant, on affiche x formulaires pour saisir les notes (x étant le nombre de parties) #}
+          {% for i in premierFormulaireAAfficher..dernierFormulaireAAfficher %}
+            <td>{{ form_errors(form.notes[i].valeur) }}{{form_widget(form.notes[i].valeur)}}</td>
+          {% endfor %}
+          {% set premierFormulaireAAfficher = premierFormulaireAAfficher + parties | length %}
+          {% set dernierFormulaireAAfficher = (dernierFormulaireAAfficher + parties|length) %}
+          {% if parties|length != 1 %}
+            <td>0</td>
+          {% endif %}
+        </tr>
+      {% endfor %}
+    {% endif %}
+    </tbody>
+  </table>
 </div>
 <div class='bouton' align=center>
   <a href="{{ path('evaluation_enseignant') }}" class="d-sm-inline-block btn btn-sm btn-secondary shadow-sm">Annuler</a>

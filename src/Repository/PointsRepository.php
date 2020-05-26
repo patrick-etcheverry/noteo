@@ -19,25 +19,33 @@ class PointsRepository extends ServiceEntityRepository
         parent::__construct($registry, Points::class);
     }
 
-    /**
-    * @return Points[] Returns an array of Points objects
-    */
-
-    public function findByEvaluation($id)
+    public function findByPartieAndByStudent($idPartie, $idEtudiant)
     {
-        return $this->getEntityManager()->createQuery('
-            SELECT p.valeur
-            FROM App\Entity\Points p
-            JOIN p.etudiant et
-            JOIN p.partie pa
-            JOIN pa.evaluation ev
-            WHERE ev.id = :id
-            AND et.estDemissionaire = 0
-            AND p.valeur >= 0
-            ORDER BY p.valeur ASC
-        ')
-            ->setParameter('id', $id)
-            ->execute();
+        return $this->createQueryBuilder('n')
+            ->join('n.partie', 'p')
+            ->join('n.etudiant', 'e')
+            ->andWhere('p.id = :idPartie')
+            ->andWhere('e.id = :idEtudiant')
+            ->setParameter('idPartie', $idPartie)
+            ->setParameter('idEtudiant', $idEtudiant)
+            ->getQuery()
+            ->getSingleResult()
+            ;
+    }
+
+    public function findAllByEvaluation($idEvaluation)
+    {
+        return $this->createQueryBuilder('n')
+            ->join('n.partie', 'p')
+            ->join('n.etudiant', 'et')
+            ->join('p.evaluation', 'ev')
+            ->andWhere('ev.id = :idEval')
+            ->setParameter('idEval', $idEvaluation)
+            ->addOrderBy('et.id', 'ASC')
+            ->addOrderBy('p.id', 'ASC')
+            ->getQuery()
+            ->getResult()
+            ;
     }
 
     public function findNotesAndEtudiantByEvaluation($evaluation)
@@ -50,6 +58,7 @@ class PointsRepository extends ServiceEntityRepository
             JOIN pa.evaluation ev
             WHERE ev = :param
             AND p.valeur >= 0
+            AND pa.lvl = 0
             AND et.estDemissionaire = 0
         ')
             ->setParameter('param', $evaluation)
@@ -60,23 +69,23 @@ class PointsRepository extends ServiceEntityRepository
     * @return Points[] Returns an array of Points objects
     */
 
-    public function findByPartie($id)
+    public function findAllFromLowestParties($idEvaluation)
     {
         return $this->getEntityManager()->createQuery('
-            SELECT p.valeur
+            SELECT p
             FROM App\Entity\Points p
             JOIN p.partie pa
+            JOIN pa.evaluation ev
             JOIN p.etudiant et
-            WHERE pa.id = :id
-            AND p.valeur >= 0
-            AND et.estDemissionnaire = 0
-            ORDER BY p.valeur ASC
+            WHERE ev.id = :idEvaluation
+            AND pa.rgt = pa.lft + 1
+            ORDER BY et.id ASC, pa.lft ASC
             ')
-            ->setParameter('id', $id)
+            ->setParameter('idEvaluation', $idEvaluation)
             ->execute();
     }
 
-    public function findByGroupe($slugEval, $slugGroupe)
+    public function findByGroupeAndPartie($idEval, $idGroupe, $idPartie)
     {
         return $this->getEntityManager()->createQuery('
             SELECT p.valeur
@@ -85,21 +94,23 @@ class PointsRepository extends ServiceEntityRepository
             JOIN et.groupes g
             JOIN p.partie pa
             JOIN pa.evaluation ev
-            WHERE ev.slug = :slugE
-            AND g.slug = :slugG
+            WHERE ev.id = :idE
+            AND g.id = :idG
+            AND pa.id = :idP
             AND et.estDemissionaire = 0
             AND p.valeur >= 0
             ORDER BY p.valeur ASC
         ')
-            ->setParameter('slugG', $slugGroupe)
-            ->setParameter('slugE', $slugEval)
+            ->setParameter('idP', $idPartie)
+            ->setParameter('idE', $idEval)
+            ->setParameter('idG', $idGroupe)
             ->execute();
     }
 
-    public function findUniqueByGroupe($idEval, $idGroupe)
+    public function findAllNotesByGroupe($idEval, $idGroupe)
     {
         return $this->getEntityManager()->createQuery('
-            SELECT DISTINCT p.valeur
+            SELECT p.valeur
             FROM App\Entity\Points p
             JOIN p.etudiant et
             JOIN et.groupes g
@@ -108,6 +119,7 @@ class PointsRepository extends ServiceEntityRepository
             WHERE ev.id = :idE
             AND g.id = :idG
             AND et.estDemissionaire = 0
+            AND pa.lvl = 0
             AND p.valeur >= 0
             ORDER BY p.valeur DESC
         ')
@@ -116,7 +128,7 @@ class PointsRepository extends ServiceEntityRepository
             ->execute();
     }
 
-    public function findByStatut($slugEval, $slugStatut)
+    public function findByStatutAndPartie($idEval, $idStatut, $idPartie)
     {
         return $this->getEntityManager()->createQuery('
             SELECT p.valeur
@@ -125,19 +137,19 @@ class PointsRepository extends ServiceEntityRepository
             JOIN et.statuts s
             JOIN p.partie pa
             JOIN pa.evaluation ev
-            WHERE ev.slug = :slugE
-            AND s.slug = :slugS
+            WHERE ev.id = :idE
+            AND s.id = :idS
+            AND pa.id = :idP
             AND et.estDemissionaire = 0
             AND p.valeur >= 0
             ORDER BY p.valeur ASC
         ')
-            ->setParameter('slugS', $slugStatut)
-            ->setParameter('slugE', $slugEval)
+            ->setParameter('idS', $idStatut)
+            ->setParameter('idE', $idEval)
+            ->setParameter('idP', $idPartie)
             ->execute();
 
     }
-
-
     // /**
     //  * @return Points[] Returns an array of Points objects
     //  */

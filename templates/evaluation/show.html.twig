@@ -23,7 +23,7 @@
         <tbody>
             <tr>
                 <th class="intitule">Date de l'évaluation</th>
-                <td >{{ evaluation.date }}</td>
+                <td >{{ evaluation.date | date("d/m/Y") }}</td>
             </tr>
             <tr>
                 <th class="intitule">Groupe évalué</th>
@@ -42,29 +42,42 @@
     </table>
 </div>
 <br><h1 class="h4 mb-0 text-gray-800">Notes des étudiants</h1> <br>
-<div class="table-responsive">
+<div class="table-responsive table-hover">
       <table data-cols-width="25,25, 10" class="table" id="etud">
         <thead>
           <th>Nom</th>
           <th>Prénom</th>
-          <th>Note</th>
+          {% if evaluation.parties|length != 1 %}
+          {% for partie in evaluation.parties %}
+              <th>{{ partie.intitule }} (/{{ partie.bareme }})</th>
+          {% endfor %}
+          {% else %}
+              <th>Note (/20)</th>
+          {% endif %}
         </thead>
         <tbody>
-          {% for partie in evaluation.parties %}
-          {% for note in partie.notes %}
-          <tr>
-            <td>{{note.etudiant.nom}}</td>
-            <td>{{note.etudiant.prenom}}</td>
-            <td>
-                {% if note.valeur == -1 %}
-                    Absent
-                {% else %}
-                    {{note.valeur}}
-                {% endif %}
-            </td>
-          </tr>
-          {% endfor %}
-          {% endfor %}
+        {% if notes is not empty %}
+            {% set premiereNoteAAfficher = 0 %}
+            {% set derniereNoteAAfficher = (premiereNoteAAfficher +  evaluation.parties|length) -1  %}
+            {% for etudiant in evaluation.groupe.etudiants %}
+                <tr>
+                    <td>{{ etudiant.nom }}</td>
+                    <td>{{ etudiant.prenom }}</td>
+                    {# Pour chaque étudiant, on affiche les x notes suivantes du tableau de notes passé (x étant le nombre de parties) #}
+                    {% for i in premiereNoteAAfficher..derniereNoteAAfficher %}
+                        <td>
+                            {% if notes[i].valeur == -1 %}
+                                Absent
+                            {% else %}
+                                {{ notes[i].valeur }}
+                            {% endif %}
+                        </td>
+                    {% endfor %}
+                    {% set premiereNoteAAfficher = premiereNoteAAfficher + evaluation.parties|length %}
+                    {% set derniereNoteAAfficher = (derniereNoteAAfficher + evaluation.parties|length) %}
+                </tr>
+            {% endfor %}
+        {% endif %}
         </tbody>
       </table>
 </div>
@@ -73,6 +86,16 @@
 {% block datatables %}
 
 <script type="text/javascript">
+
+    {#  Définition dynamique en fonction du nombre de parties d'un tableau qui permet à Datatables de déterminer si les colonnes sont triables ou non #}
+    {% set tableauColonnes = [null,null] %}
+    {% if evaluation.parties|length != 1 %}
+        {% for partie in evaluation.parties %}
+            {% set tableauColonnes = tableauColonnes |merge([{orderable: false}]) %}
+        {% endfor %}
+    {% else%}
+    {% set tableauColonnes = [null,null, {orderable: false}] %}
+    {% endif %}
 
 var table = $('#etud').DataTable({
                 language: {
@@ -84,6 +107,7 @@ var table = $('#etud').DataTable({
                 order: [
                   [0, "asc"]
                 ],
+                columns: {{ tableauColonnes | json_encode | raw }},
                 lengthMenu: [
                     [15, 30, 45, -1],
                     [15, 30, 45, "Tout"]
