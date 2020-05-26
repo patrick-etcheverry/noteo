@@ -62,6 +62,14 @@ class EvaluationController extends AbstractController
     }
 
     /**
+     * @Route("/choix-statistiques", name="choix_statistiques", methods={"GET"})
+     */
+    public function choixStatistiques(): Response
+    {
+        return $this->render('evaluation/choix_statistiques.html.twig');
+    }
+
+    /**
      * @Route("/exemple-mail/{id}", name="exemple_mail", methods={"GET"})
      */
      public function exempleMail(Request $request, EvaluationRepository $evaluationRepository, Evaluation $evaluation, PointsRepository $pointsRepository): Response
