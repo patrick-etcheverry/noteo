@@ -1,6 +1,6 @@
 {% extends 'base.html.twig' %}
 
-{% block titrePage %}Choix des statistiques que vous désirez consulter{% endblock %}
+{% block titrePage %}Choisir les statistiques que vous désirez consulter{% endblock %}
 
 {% block statistiques %}active{% endblock %}
 
@@ -26,7 +26,7 @@
                 <p class="card-text">
                     Statistiques pour comparer les résultats d'un groupe ou d'un statut à ses évaluations passées
                 </p>
-                <a href="{{ path('choix_evaluation', {'typeStat':'classique'}) }}" class="btn btn-primary">Consulter</a>
+                <a href="{{ path('statistiques_choix_evaluation', {'typeStat':'classique'}) }}" class="btn btn-primary">Consulter</a>
             </div>
         </ul>
     </div>
@@ -42,7 +42,7 @@
                 <p class="card-text">
                     Statistiques pour comparer les résultats d'un groupe ou d'un statut à ses évaluations passées
                 </p>
-                <a href="{{ path('choix_evaluation', {'typeStat':'classique-avec-parties'}) }}" class="btn btn-primary">Consulter</a>
+                <a href="{{ path('statistiques_choix_evaluation', {'typeStat':'classique-avec-parties'}) }}" class="btn btn-primary">Consulter</a>
             </div>
         </ul>
     </div>
@@ -58,7 +58,8 @@
                 <p class="card-text">
                     Statistiques pour comparer les résultats d'un groupe ou d'un statut à ses évaluations passées
                 </p>
-                <a href="#" class="btn btn-primary">Consulter</a>
+                <a href="{{ path('stats_choisir_groupe_haut_niveau_evaluable') }}" class="btn btn-primary">Consulter par GROUPES</a>
+                <a href="{{ path('stats_choisir_statut') }}" class="btn btn-primary">Consulter par STATUT</a>
             </div>
         </ul>
     </div>

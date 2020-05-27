@@ -128,6 +128,27 @@ class PointsRepository extends ServiceEntityRepository
             ->execute();
     }
 
+    public function findAllNotesByStatut($idEval, $idStatut)
+    {
+        return $this->getEntityManager()->createQuery('
+            SELECT p.valeur
+            FROM App\Entity\Points p
+            JOIN p.etudiant et
+            JOIN p.partie pa
+            JOIN pa.evaluation ev
+            JOIN et.statuts s
+            WHERE s.id = :idStatut
+            AND et.estDemissionaire = 0
+            AND p.valeur >= 0
+            AND ev.id = :idEval
+            AND pa.lvl = 0
+            ORDER BY p.valeur DESC
+        ')
+            ->setParameter('idEval', $idEval)
+            ->setParameter('idStatut', $idStatut)
+            ->execute();
+    }
+
     public function findByStatutAndPartie($idEval, $idStatut, $idPartie)
     {
         return $this->getEntityManager()->createQuery('

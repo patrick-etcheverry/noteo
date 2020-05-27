@@ -90,6 +90,19 @@ class EvaluationRepository extends ServiceEntityRepository
             ->execute();
     }
 
+    public function findAllByStatut($idStatut) {
+        return $this->getEntityManager()->createQuery('
+            SELECT e
+            FROM App\Entity\Evaluation e
+            JOIN e.groupe g
+            JOIN g.etudiants et
+            JOIN et.statuts s
+            WHERE s.id = :idStatut
+        ')
+            ->setParameter('idStatut', $idStatut)
+            ->execute();
+    }
+
 
     // /**
     //  * @return Stage[] Returns an array of Stage objects

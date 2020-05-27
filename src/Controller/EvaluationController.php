@@ -6,9 +6,11 @@ use App\Form\PointsType;
 use App\Entity\Evaluation;
 use App\Entity\Partie;
 use App\Entity\Points;
+use App\Entity\Statut;
 use App\Entity\GroupeEtudiant;
 use App\Repository\PartieRepository;
 use App\Repository\PointsRepository;
+use App\Repository\StatutRepository;
 use App\Repository\EvaluationRepository;
 use App\Repository\GroupeEtudiantRepository;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
@@ -16,6 +18,7 @@ use Symfony\Component\Form\Extension\Core\Type\HiddenType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\Extension\Core\Type\DateType;
 use Symfony\Component\Form\Extension\Core\Type\CollectionType;
+use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -377,14 +380,14 @@ class EvaluationController extends AbstractController
       $form->handleRequest($request);
       if ($form->isSubmitted()  && $form->isValid()) {
         //En fonction du type d'évaluation correct on renvoie sur la bonne route avec le groupe choisi
-        if (strcmp($typeEval, "simple") == 0 ) {
-            return $this->redirectToRoute('evaluation_new',['slug' => $form->get("groupes")->getData()->getSlug()]);
-        }
-        else {
-            if (strcmp($typeEval, "avec-parties") == 0 ) {
-                return $this->redirectToRoute('evaluation_avec_parties_new',['slug' => $form->get("groupes")->getData()->getSlug()]);
-            }
-        }
+          switch($typeEval) {
+              case 'simple' :
+                  return $this->redirectToRoute('evaluation_new',['slug' => $form->get("groupes")->getData()->getSlug()]);
+                  break;
+              case 'avec-parties' :
+                  return $this->redirectToRoute('evaluation_avec_parties_new',['slug' => $form->get("groupes")->getData()->getSlug()]);
+                  break;
+          }
       }
       return $this->render('evaluation/choix_groupe.html.twig', ['groupes' => $groupes,'form' => $form->createView()]);
     }
