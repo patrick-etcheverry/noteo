@@ -17,10 +17,12 @@
             <tr>
                 <td>{{form_widget(form.groupes[index])}}</td>
                 <td>
-                    {% if entity.lvl > 0 and not pasDIntentation %}
-                        {% for i in 1.. entity.lvl %}
-                            &emsp;
-                        {% endfor %}
+                    {% if not pasDIndentation %}
+                        {% if entity.lvl > 0 %}
+                            {% for i in 1.. entity.lvl %}
+                                &emsp;
+                            {% endfor %}
+                        {% endif %}
                     {% endif %}
                     {{entity.nom}}
                 </td>
@@ -32,7 +34,7 @@
         </tbody>
     </table>
     <div class='bouton' align=center>
-        <button class="d-sm-inline-block btn btn-sm btn-primary shadow-sm">Choisir les sous groupes</button>
+        <button class="d-sm-inline-block btn btn-sm btn-primary shadow-sm">{{ titre | default("Choisir les sous groupes") }}</button>
     </div>
 </div>
 {{form_end(form)}}

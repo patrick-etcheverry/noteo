@@ -52,6 +52,18 @@ class StatutRepository extends ServiceEntityRepository
             ->execute();
     }
 
+    public function findAllWith1EvalOrMore() {
+
+        return $this->getEntityManager()->createQuery('
+            SELECT s
+            FROM App\Entity\Statut s
+            JOIN s.etudiants et
+            JOIN et.groupes ge
+            JOIN ge.evaluations ev
+        ')
+            ->execute();
+    }
+
     // /**
     //  * @return Statut[] Returns an array of Statut objects
     //  */

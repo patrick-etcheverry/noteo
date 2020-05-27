@@ -98,7 +98,7 @@ class GroupeEtudiantRepository extends NestedTreeRepository
             ;
     }
 
-    public function findHighestEvaluableWith1Eval() {
+    public function findHighestEvaluableWith1EvalOrMore() {
         return $this->createQueryBuilder('g')
             ->addSelect('ev')
             ->join('g.evaluations', 'ev')
