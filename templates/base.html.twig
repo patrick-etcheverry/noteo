@@ -92,6 +92,16 @@
           <i class="icon-logo-noteo"></i>
           <span>Statistiques</span></a>
       </li>
+      {% if is_granted("ROLE_ADMIN") %}
+        <!-- Divider -->
+        <hr class="sidebar-divider my-0">
+        <!-- Nav Item - Enseignants -->
+        <li class="nav-item {% block optionsAppli %}{% endblock %}">
+          <a class="nav-link" href="{{path('noteo_options')}}">
+            <i class="fas fa-cog"></i>
+            <span>Options de l'application</span></a>
+        </li>
+      {% endif %}
       <!-- Divider -->
       <hr class="sidebar-divider d-none d-md-block">
       <!-- Sidebar Toggler (Sidebar) -->
