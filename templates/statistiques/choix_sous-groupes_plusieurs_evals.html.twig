@@ -5,7 +5,7 @@
 {% block contenu %}
     <h1 class="h4 mb-0 text-gray-800">Sélectionner les sous-groupes pour lesquels vous souhaitez voir des statistiques</h1> <br>
     <h6 class="h6 mb-0 text-gray-800">Si vous ne sélectionnez aucun sous-groupe, des statistiques sur le groupe {{groupe.nom}} uniquement seront générées</h6><br>
-    {{ include('statistiques/_choix_groupes_form.html.twig') }}
+    {{ include('statistiques/_choix_groupes_form.html.twig', {'titre': 'Choisir les évaluations'}) }}
 {% endblock %}
 
 {% block datatables %}

@@ -27,6 +27,6 @@
     </table>
 </div>
 <div class='bouton' align=center>
-    <button class="d-sm-inline-block btn btn-sm btn-primary shadow-sm">Personnaliser les statistiques</button>
+    <button class="d-sm-inline-block btn btn-sm btn-primary shadow-sm"> {{ titre |default('Personnaliser les statistiques') }}</button>
 </div>
 {{ form_end(form) }}
