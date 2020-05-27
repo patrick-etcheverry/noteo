@@ -33,9 +33,9 @@
         <th>Groupes sélectionnés</th>
         <td>
           <ul>
-            {% for groupe in parties[0].stats %}
-              <li>{{ groupe.nom }} ({{ groupe.listeNotes|length }} notes étudiées)</li>
-            {% endfor %}
+{#            {% for groupe in parties[0].stats %}#}
+{#              <li>{{ groupe.nom }} ({{ groupe.listeNotes|length }} notes étudiées)</li>#}
+{#            {% endfor %}#}
           </ul>
         </td>
       </tr>
@@ -72,6 +72,7 @@
 <div class='bouton' align=center>
   <span style="font-size:15px" class="badge badge-pill badge-primary"><i class="icon-attention-circled"></i> Les statistiques ne prennent pas en compte les étudiants démissionaires ou absents</span>
 </div>
+  {{ dump(stat) }}
 {% if parties is not empty %}
   {% for partie in parties %}
     <div class="card">

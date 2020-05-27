@@ -70,8 +70,8 @@ class StatsController extends AbstractController
             switch ($typeStat) {
                 case 'classique':
                 case 'classique-avec-parties' :
-                    return $this->redirectToRoute('statistiques_choisir_groupes_parties_statuts', [
-                        'slugEval' => $form->get('evaluations')->getData()->getSlug(),
+                    return $this->redirectToRoute('statistiques_classiques_choisir_groupes_parties_statuts', [
+                        'slug' => $form->get('evaluations')->getData()->getSlug(),
                     ]);
                     break;
                 case 'evolution' :
@@ -128,14 +128,14 @@ class StatsController extends AbstractController
         return $this->render('statistiques/choix_groupes_et_parties.html.twig', [
             'form' => $form->createView(),
             'evaluation' => $evaluation,
-            ''
+            'pasDeChoixParties' => true
         ]);
     }
 
     /**
      * @Route("/evolution/{slug}/choisir-autres-evals", name="statistiques_evolution_choisir_autres_evals", methods={"GET","POST"})
      */
-    public function choisirEvalsEvolutions(Request $request, Evaluation $evalCourante, EvaluationRepository $repoEval ): Response
+    public function choisirEvalsEvolutions(Request $request, Evaluation $evaluation, EvaluationRepository $repoEval, PointsRepository $repoPoints ): Response
     {
         $form = $this->createFormBuilder()
             ->add('evaluations', EntityType::class, [
@@ -146,11 +146,95 @@ class StatsController extends AbstractController
                 'mapped' => false,
                 'expanded' => true,
                 'multiple' => true,
-                'choices' => $repoEval->findAllOverAGroupExceptCurrentOne($evalCourante->getId(), $evalCourante->getGroupe()->getId())
+                'choices' => $repoEval->findAllOverAGroupExceptCurrentOne($evaluation->getId(), $evaluation->getGroupe()->getId())
             ])
             ->getForm();
 
         $form->handleRequest($request);
+
+        if($form->isSubmitted() && $form->isValid()) {
+            $session = $request->getSession();
+            $tabStatsComparaison = array();
+            $evaluations =  $form->get('evaluations')->getData();
+            $groupes = $session->get('groupesChoisis');
+            $statuts = $session->get('statutsChoisis');
+
+            foreach ($groupes as $groupe) {
+                // déterminer la moyenne du groupe courant à l'évaluation que l'on veut comparer aux autres
+                $pointsEvaluationGroupe = $repoPoints->findAllNotesByGroupe($evaluation->getId(), $groupe->getId());
+                $moyenneEvaluationCouranteGroupe = array();
+                foreach ($pointsEvaluationGroupe as $note) {
+                    $moyenneEvaluationGroupe[] = $note["valeur"];
+                }
+                $moyenneEvaluationCouranteGroupe = $this->moyenne($moyenneEvaluationGroupe);
+
+                //déterminer la moyenne des moyennes aux évaluations
+                $moyennesGroupeTmp = array();
+                foreach ($evaluations as $evaluationCourante) { // pour chaque évaluation, on détermine sa moyenne pour le groupe courant
+                    //determiner la moyenne de l'évaluation courante
+                    $tabPoints = $repoPoints->findAllNotesByGroupe($evaluationCourante->getId(), $groupe->getId()); // on récupère les notes
+                    //on crée un tableau temporaire ou on stoque séparement chaque note
+                    $copieTab = array();
+                    foreach ($tabPoints as $note) {
+                        $copieTab[] = $note["valeur"];
+                    }
+                    $moyenneEvaluationCourante = $this->moyenne($copieTab); // on determine la moyenne du controle courant
+                    array_push($moyennesGroupeTmp, $moyenneEvaluationCourante);
+                }
+                //on détermine la moyenne des moyennes
+                $moyenneDesMoyennesEvaluations = $this->moyenne($moyennesGroupeTmp);
+                $tabStatsComparaison[] = [
+                    "nom" => $groupe->getNom(),
+                    "moyenneControleCourant" => $moyenneEvaluationCouranteGroupe,
+                    "moyenneAutresControles" => $moyenneDesMoyennesEvaluations,
+                ];
+            }
+
+            ///on traite les statistiques pour tous les statuts
+            foreach ($statuts as $statut) {
+                /// déterminer la moyenne du groupe courant à l'évaluation
+                $pointsEvaluationStatut = $repoPoints->findAllNotesByStatut($evaluation->getId(), $statut->getId());
+                $moyenneEvaluationCouranteStatut = array();
+                foreach ($pointsEvaluationStatut as $note) {
+                    $moyenneEvaluationCouranteStatut[] = $note["valeur"];
+                }
+                $moyenneEvaluationCouranteStatut = $this->moyenne($moyenneEvaluationCouranteStatut);
+                /// déterminer la moyenne des moyennes aux évaluations
+                $moyennesTmp = array();
+                foreach ($evaluations as $evaluationCourante) { // pour chaque évaluation, on détermine sa moyenne pour le groupe courant
+                    //determiner la moyenne de l'évaluation courante
+                    $tabPoints = $repoPoints->findAllNotesByStatut($evaluationCourante->getId(), $statut->getId()); // on récupère les notes
+                    //on crée un tableau temporaire ou on stoque séparement chaque note
+                    $copieTab = array();
+                    foreach ($tabPoints as $note) {
+                        $copieTab[] = $note["valeur"];
+                    }
+                    $moyenneEvaluationCourante = $this->moyenne($copieTab); // on determine la moyenne du controle courant
+                    array_push($moyennesTmp, $moyenneEvaluationCourante);
+                }
+                //on détermine la moyenne des moyennes
+                $moyenneDesMoyennesEvaluations = $this->moyenne($moyennesTmp);
+                $moyenneDesMoyennesEvaluations = $this->moyenne($moyennesGroupeTmp);
+                $tabStatsComparaison[] = [
+                    "nom" => $groupe->getNom(),
+                    "moyenneControleCourant" => $moyenneEvaluationCouranteStatut,
+                    "moyenneAutresControles" => $moyenneDesMoyennesEvaluations,
+                ];
+            }
+            $formatAdapteALaVue = [
+                "nom" => "Évaluations",
+                "bareme" => 20,
+                "stats" => $tabStatsComparaison
+            ];
+            return $this->render('statistiques/stats.html.twig', [
+                'evaluations' => $evaluations,
+                'groupes' => $groupes,
+                'stat' => $formatAdapteALaVue,
+                "parties" => null,
+                'titre' => "Consulter l'évolution sur " . count($evaluations) . ' évaluation(s)',
+                'plusieursEvals' => true,
+            ]);
+        }
 
         return $this->render('statistiques/choix_evaluation.html.twig', [
             'form' => $form->createView(),
@@ -160,9 +244,9 @@ class StatsController extends AbstractController
     }
 
     /**
-     * @Route("/classique/{slug}/choisir-groupes-et-statuts", name="statistiques_choisir_groupes_parties_statuts", methods={"GET","POST"})
+     * @Route("/classique/{slug}/choisir-groupes-et-statuts", name="statistiques_classiques_choisir_groupes_parties_statuts", methods={"GET","POST"})
      */
-    public function choisirGroupesPartiesEtStatuts(Request $request, Evaluation $evaluation, StatutRepository $repoStatut, EvaluationRepository $repoEval, GroupeEtudiantRepository $repoGroupe, PointsRepository $repoPoints ): Response
+    public function choisirGroupesPartiesEtStatuts(Request $request, Evaluation $evaluation, StatutRepository $repoStatut, GroupeEtudiantRepository $repoGroupe, PointsRepository $repoPoints ): Response
     {
         $session = $request->getSession();
         $groupeConcerne = $evaluation->getGroupe();
@@ -269,7 +353,8 @@ class StatsController extends AbstractController
         }
         return $this->render('statistiques/choix_groupes_et_parties.html.twig', [
             'form' => $form->createView(),
-            'evaluation' => $evaluation
+            'evaluation' => $evaluation,
+            'pasDeChoixParties' => false
         ]);
     }
 
