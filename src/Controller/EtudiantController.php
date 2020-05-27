@@ -4,10 +4,15 @@ namespace App\Controller;
 
 use App\Entity\Etudiant;
 use App\Entity\GroupeEtudiant;
+use App\Entity\Statut;
+use App\Entity\enseignant;
+use App\Form\StatutType;
 use App\Form\EtudiantType;
 use App\Form\EtudiantEditType;
 use App\Repository\EtudiantRepository;
 use App\Repository\GroupeEtudiantRepository;
+use App\Repository\StatutRepository;
+use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -31,31 +36,51 @@ class EtudiantController extends AbstractController
     /**
      * @Route("/nouveau", name="etudiant_new", methods={"GET","POST"})
      */
-    public function new(Request $request): Response
-    {
-        $groupeRepository = $this->getDoctrine()->getRepository(GroupeEtudiant::class);
-        $groupeEtudiantsNonAffectes = $groupeRepository->findOneBySlug('etudiants-non-affectes');
+     public function new(Request $request, StatutRepository $repository): Response
+     {
+         $groupeRepository = $this->getDoctrine()->getRepository(GroupeEtudiant::class);
+         $groupeEtudiantsNonAffectes = $groupeRepository->findOneBySlug('etudiants-non-affectes');
+         $statuts = $repository->findAll();
 
-        $etudiant = new Etudiant();
-        $form = $this->createForm(EtudiantType::class, $etudiant);
-        $form->handleRequest($request);
+         $etudiant = new Etudiant();
+         $form = $this->createForm(EtudiantType::class, $etudiant);
+         $form->handleRequest($request);
 
-        if ($form->isSubmitted() && $form->isValid()) {
-            $etudiant->addGroupe($groupeEtudiantsNonAffectes);
-            $etudiant->setEstDemissionaire(false);
-            $entityManager = $this->getDoctrine()->getManager();
-            $entityManager->persist($etudiant);
-            $entityManager->flush();
+         $formStatut = $this->createFormBuilder()
+             ->add('statuts', EntityType::class, [
+               'class' => Statut::Class, //On veut choisir des groupes
+               'choice_label' => false, // On n'affichera pas d'attribut de l'entité à côté du bouton pour aider au choix car on liste les entités en utilisant les variables du champ
+               'label' => false, // On n'affiche pas le label du champ
+               'mapped' => false, // Pour que l'attribut ne soit pas immédiatement mis en BD mais soit récupérable après soumission du formulaire
+               'expanded' => true, // Pour avoir des cases
+               'multiple' => true, // à cocher
+               'choices' => $statuts // On choisira parmis le groupe concerné et ses enfants
+             ])
+             ->getForm();
+             $formStatut->handleRequest($request);
 
-            return $this->redirectToRoute('etudiant_index');
-        }
+         if ($form->isSubmitted() && $form->isValid()) {
+           if ($formStatut->get('statuts')->getData() != null) {
+             foreach ($formStatut->get('statuts')->getData() as $statut) {
+               $statut->addEtudiant($etudiant);
+             }
+           }
+             $etudiant->addGroupe($groupeEtudiantsNonAffectes);
+             $etudiant->setEstDemissionaire(false);
+             $entityManager = $this->getDoctrine()->getManager();
+             $entityManager->persist($etudiant);
+             $entityManager->flush();
 
-        return $this->render('etudiant/new.html.twig', [
-            'etudiant' => $etudiant,
-            'form' => $form->createView(),
-            'edit'=> false
-        ]);
-    }
+             return $this->redirectToRoute('etudiant_index');
+         }
+
+         return $this->render('etudiant/new.html.twig', [
+             'etudiant' => $etudiant,
+             'form' => $form->createView(),
+             'formStatut' => $formStatut->createView(),
+             'edit'=> false
+         ]);
+     }
 
     /**
      * @Route("/consulter/{id}", name="etudiant_show", methods={"GET"})
