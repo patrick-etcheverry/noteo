@@ -62,18 +62,45 @@ class EvaluationRepository extends ServiceEntityRepository
             ;
     }
 
-    public function findEvaluationWithGroupAndStudents($idEval)
+    public function findAllWithOnePart()
     {
-        return $this->createQueryBuilder('e')
-            ->addSelect('g')
-            ->addSelect('et')
-            ->join('e.groupe', 'g')
-            ->join('g.etudiants', 'et')
-            ->andWhere('e.id = :idEval')
-            ->setParameter('idEval', $idEval)
-            ->getQuery()
-            ->getSingleResult()
-            ;
+        return $this->getEntityManager()->createQuery('
+            SELECT e, g, en
+            FROM App\Entity\Evaluation e
+            JOIN e.groupe g
+            JOIN e.enseignant en
+            JOIN e.parties pa
+            GROUP BY e,g, en
+            HAVING count(pa.id) = 1
+        ')
+        ->execute();
+    }
+
+    public function findAllWithSeveralParts()
+    {
+        return $this->getEntityManager()->createQuery('
+            SELECT e, g, en
+            FROM App\Entity\Evaluation e
+            JOIN e.groupe g
+            JOIN e.enseignant en
+            JOIN e.parties pa
+            GROUP BY e,g, en
+            HAVING count(pa.id) > 1
+        ')
+            ->execute();
+    }
+
+    public function findAllByStatut($idStatut) {
+        return $this->getEntityManager()->createQuery('
+            SELECT e
+            FROM App\Entity\Evaluation e
+            JOIN e.groupe g
+            JOIN g.etudiants et
+            JOIN et.statuts s
+            WHERE s.id = :idStatut
+        ')
+            ->setParameter('idStatut', $idStatut)
+            ->execute();
     }
 
 

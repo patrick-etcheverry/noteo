@@ -1,0 +1,37 @@
+{% extends 'base.html.twig' %}
+
+{% block titrePage %}Statistiques par groupes et sous groupes{% endblock %}
+
+{% block contenu %}
+    <h1 class="h4 mb-0 text-gray-800">Évaluations pour lesquelles vous souhaitez voir des statistiques</h1> <br>
+    {{ include('statistiques/_choix_evals_form.html.twig', {'titre' : 'Consulter les statistiques'}) }}
+{% endblock %}
+
+{% block datatables %}
+
+    <script type="text/javascript">
+
+        var table = $('#evaluations').DataTable({
+            language: {
+                // Suppression du label Rechercher et ajout du placeholder
+                search: "_INPUT_",
+                searchPlaceholder: "Rechercher...",
+                "url": "{{asset('tradfr.json')}}"
+            },
+            order: [2, 'asc'],
+            columns: [{"orderable": false}, null, null, {"orderable": false}, null],
+            lengthMenu: [
+                [15, 30, 45, -1],
+                [15, 30, 45, "Tout"]
+            ],
+            pageLength : {{ app.user.preferenceNbElementsTableaux }}, <!-- Pour que le nombre d'éléments affichés par défaut soit celui de la préference de l'utilisateur -->
+            info: false,
+        });
+
+        $("[name='form']").on('submit', function () {
+            table.rows().nodes().page.len(-1).draw(); // Cette fonction permet, avant la soumission du formulaire, d'afficher dans le DOM toutes les lignes du tableau pour qu'aucune ne soit ignorée
+        });
+    </script>
+
+{% endblock %}
+
