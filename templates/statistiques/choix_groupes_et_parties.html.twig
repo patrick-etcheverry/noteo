@@ -6,7 +6,7 @@
 
 {% block contenu %}
   {{ form_start(form)}}
-  {% if evaluation.parties |length > 1 %}
+  {% if evaluation.parties |length > 1 and not pasDeChoixParties %}
     <h1 class="h4 mb-0 text-gray-800">Sélectionner les parties de l'évaluation pour lesquelles vous souhaitez voir les statistiques</h1> <br>
     <div class="row">
       <div class="col-lg-4">

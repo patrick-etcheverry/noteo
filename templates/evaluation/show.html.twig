@@ -16,7 +16,7 @@
 {% if evaluation.enseignant == app.user or is_granted('ROLE_ADMIN') %}
   <a class="d-sm-inline-block btn btn-sm btn-primary shadow-sm" href="{{ path('evaluation_edit', {'slug': evaluation.slug}) }}">Modifier {{ evaluation.nom }}</a>
 {% endif %}
-<a class="d-sm-inline-block btn btn-sm btn-primary shadow-sm" href="{{path('statistiques_choisir_groupes_parties_statuts', {'slugEval' : evaluation.slug})}}">Consulter les statistiques pour {{ evaluation.nom }}</a>
+<a class="d-sm-inline-block btn btn-sm btn-primary shadow-sm" href="{{path('statistiques_classiques_choisir_groupes_parties_statuts', {'slug' : evaluation.slug})}}">Consulter les statistiques pour {{ evaluation.nom }}</a>
 </div>
 <div class="table-responsive">
     <table class="table">
