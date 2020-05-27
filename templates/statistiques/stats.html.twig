@@ -10,7 +10,7 @@
   <tbody>
     {% if plusieursEvals %}
       <tr>
-        <th>Évaluations concernées</th>
+        <th>Évaluations sélectionnées</th>
         <td>
           <ul>
             {% for evaluation in evaluations %}
@@ -23,8 +23,8 @@
         <th>Groupes sélectionnés</th>
         <td>
           <ul>
-            {% for groupe in groupes %}
-              <li>{{ groupe.nom }} ({{ groupe.etudiants|length }} étudiants)</li>
+            {% for groupe in parties[0].stats %}
+              <li>{{ groupe.nom }} ({{ groupe.listeNotes|length }} notes étudiées)</li>
             {% endfor %}
           </ul>
         </td>

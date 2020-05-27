@@ -173,6 +173,8 @@ class StatsController extends AbstractController
             //Mise en session des stats pour le mail et la page de visualisation
             $session->set('stats',$toutesLesStats);
             return $this->render('statistiques/stats.html.twig', [
+                'titre' => 'Consulter les statistiques pour ' . $evaluation->getNom(),
+                'plusieursEvals' => false,
                 'evaluation' => $evaluation,
                 'parties' => $toutesLesStats
             ]);
@@ -266,6 +268,8 @@ class StatsController extends AbstractController
             'L\'envoi des mails a été effectué avec succès.'
         );
         return $this->render('statistiques/stats.html.twig', [
+            'titre' => 'Consulter les statistiques pour' . $evaluation->getNom(),
+            'plusieursEvals' => false,
             'parties' => $stats,
             'evaluation' => $evaluation
         ]);
@@ -405,14 +409,19 @@ class StatsController extends AbstractController
         {
             return $this->redirectToRoute('statistiques_choisir_sous_groupes', ['slug' => $form->get('groupes')->getData()->getSlug()]);
         }
-        return $this->render('evaluation/choix_groupes_plusieurs_evals.html.twig', ['form' => $form->createView()]);
+        return $this->render('evaluation/choix_groupes_plusieurs_evals.html.twig', [
+            'form' => $form->createView(),
+            'pasDIntentation' => true,
+        ]);
     }
 
     /**
      * @Route("/plusieurs-eval/groupes/{slug}/choisir-sous-groupes", name="statistiques_choisir_sous_groupes")
      */
-    public function choisirSousGroupesStatsPlusieursEvals(Request $request, GroupeEtudiant $groupe): Response
+    public function choisirSousGroupesStatsPlusieursEvals(Request $request, GroupeEtudiant $groupe, GroupeEtudiantRepository $repoGroupe): Response
     {
+        $groupesAChoisir = $repoGroupe->findAllOrderedFromNode($groupe);
+        array_shift($groupesAChoisir); //On ne veut pas avoir le groupe choisi dans le choix
         $form = $this->createFormBuilder()
             ->add('groupes', EntityType::class, [
                 'class' => GroupeEtudiant::Class,
@@ -420,7 +429,7 @@ class StatsController extends AbstractController
                 'label' => false,
                 'expanded' => true,
                 'multiple' => true,
-                'choices' => $groupe->getChildren() // On choisira parmis les sous groupes du groupe choisi au préalable
+                'choices' => $groupesAChoisir // On choisira parmis les sous groupes du groupe choisi au préalable
             ])
             ->getForm();
 
@@ -434,6 +443,7 @@ class StatsController extends AbstractController
         }
         return $this->render('evaluation/choix_sous-groupes_plusieurs_evals.html.twig', [
             'groupe' => $groupe,
+            'pasDIntentation' => false,
             'form' => $form->createView()]);
     }
 
@@ -492,7 +502,7 @@ class StatsController extends AbstractController
                 //On remplit le tableau qui contiendra toutes les statistiques du groupe
                 $listeStatsParGroupe[] = array("nom" => $groupe->getNom(),
                     "repartition" => $this->repartition($copieTabPoints),
-                    "lisetNotes" => $copieTabPoints,
+                    "listeNotes" => $copieTabPoints,
                     "moyenne" => $this->moyenne($copieTabPoints),
                     "ecartType" => $this->ecartType($copieTabPoints),
                     "minimum" => $this->minimum($copieTabPoints),
@@ -501,8 +511,6 @@ class StatsController extends AbstractController
                 );
             }
             $formatStatsPourLaVue = [["nom" => "Évaluations", "bareme" => 20, "stats" => $listeStatsParGroupe]];
-            // Mise en session des stats
-            $_SESSION['stats'] = $listeStatsParGroupe;
             return $this->render('statistiques/stats.html.twig', [
                     'parties' => $formatStatsPourLaVue,
                     'evaluations' => $evaluations,
