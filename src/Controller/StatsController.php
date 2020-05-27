@@ -160,14 +160,12 @@ class StatsController extends AbstractController
             $statuts = $session->get('statutsChoisis');
 
             foreach ($groupes as $groupe) {
-                $listeNotes = [];
                 // déterminer la moyenne du groupe courant à l'évaluation que l'on veut comparer aux autres
                 $pointsEvaluationGroupe = $repoPoints->findAllNotesByGroupe($evaluationConcernee->getId(), $groupe->getId());
                 $moyenneEvaluationCouranteGroupe = array();
                 foreach ($pointsEvaluationGroupe as $note) {
                     $moyenneEvaluationGroupe[] = $note["valeur"];
                 }
-                $listeNotes = array_merge($listeNotes,$moyenneEvaluationGroupe );
                 $moyenneEvaluationCouranteGroupe = $this->moyenne($moyenneEvaluationGroupe);
 
                 //déterminer la moyenne des moyennes aux évaluations
@@ -181,7 +179,6 @@ class StatsController extends AbstractController
                     foreach ($tabPoints as $note) {
                         $copieTab[] = $note["valeur"];
                     }
-                    $listeNotes = array_merge($listeNotes,$copieTab );
                     $moyenneEvaluationCourante = $this->moyenne($copieTab); // on determine la moyenne du controle courant
                     array_push($moyennesGroupeTmp, $moyenneEvaluationCourante);
                 }
@@ -189,7 +186,6 @@ class StatsController extends AbstractController
                 $moyenneDesMoyennesEvaluations = $this->moyenne($moyennesGroupeTmp);
                 $tabStatsComparaison[] = [
                     "nom" => $groupe->getNom(),
-                    "listeNotes" => $listeNotes,
                     "moyenneControleCourant" => $moyenneEvaluationCouranteGroupe,
                     "moyenneAutresControles" => $moyenneDesMoyennesEvaluations,
                 ];
@@ -197,14 +193,12 @@ class StatsController extends AbstractController
 
             ///on traite les statistiques pour tous les statuts
             foreach ($statuts as $statut) {
-                $listeNotes = [];
                 /// déterminer la moyenne du groupe courant à l'évaluation
                 $pointsEvaluationStatut = $repoPoints->findAllNotesByStatut($evaluationConcernee->getId(), $statut->getId());
                 $moyenneEvaluationCouranteStatut = array();
                 foreach ($pointsEvaluationStatut as $note) {
                     $moyenneEvaluationCouranteStatut[] = $note["valeur"];
                 }
-                $listeNotes = array_merge($listeNotes,$moyenneEvaluationCouranteStatut );
                 $moyenneEvaluationCouranteStatut = $this->moyenne($moyenneEvaluationCouranteStatut);
                 /// déterminer la moyenne des moyennes aux évaluations
                 $moyennesTmp = array();
@@ -217,7 +211,6 @@ class StatsController extends AbstractController
                     foreach ($tabPoints as $note) {
                         $copieTab[] = $note["valeur"];
                     }
-                    $listeNotes = array_merge($listeNotes,$copieTab );
                     $moyenneEvaluationCourante = $this->moyenne($copieTab); // on determine la moyenne du controle courant
                     array_push($moyennesTmp, $moyenneEvaluationCourante);
                 }
@@ -225,7 +218,6 @@ class StatsController extends AbstractController
                 $moyenneDesMoyennesEvaluations = $this->moyenne($moyennesTmp);
                 $tabStatsComparaison[] = [
                     "nom" => $statut->getNom(),
-                    "listeNotes" => $listeNotes,
                     "moyenneControleCourant" => $moyenneEvaluationCouranteStatut,
                     "moyenneAutresControles" => $moyenneDesMoyennesEvaluations,
                 ];
