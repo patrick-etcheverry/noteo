@@ -1,10 +1,12 @@
 {% extends 'base.html.twig' %}
 
-{% block titrePage %}Statistiques par statuts{% endblock %}
+{% block titrePage %}Statistiques par groupes et sous-groupes{% endblock %}
+
+{% block statistiques %}active{% endblock %}
 
 {% block contenu %}
-    <h1 class="h4 mb-0 text-gray-800">Statut pour lequel vous souhaitez voir des statistiques</h1> <br>
-    {{ include('evaluation/_choix_groupes_form.html.twig', {'titre':'Choisir les évaluations'}) }}
+    <h1 class="h4 mb-0 text-gray-800">Groupe pour lequel vous souhaitez voir des statistiques</h1> <br>
+    {{ include('statistiques/_choix_groupes_form.html.twig') }}
 {% endblock %}
 
 {% block datatables %}
@@ -31,3 +33,4 @@
         });
     </script>
 {% endblock %}
+

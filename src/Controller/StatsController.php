@@ -296,7 +296,7 @@ class StatsController extends AbstractController
         {
             return $this->redirectToRoute('statistiques_choisir_sous_groupes', ['slug' => $form->get('groupes')->getData()->getSlug()]);
         }
-        return $this->render('evaluation/choix_groupes_plusieurs_evals.html.twig', [
+        return $this->render('statistiques/choix_groupes_plusieurs_evals.html.twig', [
             'form' => $form->createView(),
             'pasDIndentation' => true,
         ]);
@@ -331,7 +331,7 @@ class StatsController extends AbstractController
             $request->getSession()->set('sousGroupes', $sousGroupes);
             return $this->redirectToRoute('statistiques_groupes_choisir_plusieurs_evaluations', ['slug' => $groupe->getSlug()]);
         }
-        return $this->render('evaluation/choix_sous-groupes_plusieurs_evals.html.twig', [
+        return $this->render('statistiques/choix_sous-groupes_plusieurs_evals.html.twig', [
             'groupe' => $groupe,
             'pasDIndentation' => false,
             'form' => $form->createView()]);
@@ -410,7 +410,7 @@ class StatsController extends AbstractController
             ]);
         }
 
-        return $this->render('evaluation/choix_evals_plusieurs_evals_groupes.html.twig', ['form' => $form->createView()]);
+        return $this->render('statistiques/choix_evals_plusieurs_evals_groupes.html.twig', ['form' => $form->createView()]);
     }
 
     /**
@@ -438,7 +438,7 @@ class StatsController extends AbstractController
             ]);
         }
 
-        return $this->render('evaluation/choix_statut_plusieurs_evals.html.twig', [
+        return $this->render('statistiques/choix_statut_plusieurs_evals.html.twig', [
             'form' => $form->createView(),
             'pasDIndentation' => true
         ]);
@@ -507,7 +507,7 @@ class StatsController extends AbstractController
             ]);
         }
 
-        return $this->render('evaluation/choix_evals_plusieurs_evals_statut.html.twig', [
+        return $this->render('statistiques/choix_evals_plusieurs_evals_statut.html.twig', [
             'form' => $form->createView()
         ]);
     }
