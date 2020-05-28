@@ -23,7 +23,6 @@
   </tbody>
 </table>
 </div>
-
 {% if edit %}
   <div class="info">
     <h5 class="h5 mb-0 text-gray-800">Pour modifier les groupes auxquels appartient cet étudiant, rendez-vous <a href="{{ path('groupe_etudiant_index') }}">ici</a>. <br>
@@ -31,9 +30,76 @@
   </div>
 {% endif %}
 
+
+{% if formStatut.statuts is defined %}
+{% if formStatut.statuts is not empty %}
+<br><h1 class="h4 mb-0 text-gray-800">Ajouter l'étudiant à un groupe d'étudiants ayant un statut particulier (facultatif)</h1> <br>
+<div class="table-responsive table-hover">
+<table class="table" id= "statuts">
+<thead>
+  <th></th>
+  <th>Nom</th>
+  <th>Description</th>
+  <th>Créateur</th>
+</thead>
+<tbody>
+
+  {% for statut in formStatut.statuts %}
+
+    {# store index of the category in a variable #}
+    {% set index = statut.vars.value %}
+
+    {# get entity object from its index in the Categories Field #}
+    {% set entity = formStatut.statuts.vars.choices[index].data %}
+      <tr>
+          <td>{{form_widget(formStatut.statuts[index])}}</td>
+          <td>{{entity.nom}}</td>
+          <td>{{entity.description}}</td>
+          <td>{{entity.enseignant.prenom}} {{entity.enseignant.nom}}</td>
+      </tr>
+  {% endfor %}
+</tbody>
+</table>
+</div>
+{% else %}
+    <div class="info">
+        <h5 class="h5 mb-0 text-gray-800">Il est possible d'obtenir des statistiques sur des groupes d'étudiants ayant un statut particulier (boursiers, redoublants, ...). Vous pouvez créer de tels groupes <a href="{{ path('statut_new') }}">ici</a>.</h5>
+    </div>
+{% endif %}
+{% endif %}
+
 <div class='bouton' align=center>
   <a href="{{ path('etudiant_index') }}" class="d-sm-inline-block btn btn-sm btn-secondary shadow-sm">Annuler</a>
   <button class="d-sm-inline-block btn btn-sm btn-primary shadow-sm">{{ button_label|default('Enregistrer') }}</button>
 </div>
 
+
 {{ form_end(form) }}
+
+{% block datatables %}
+
+  <script type="text/javascript">
+
+    var table = $('#statuts').DataTable({
+      language: {
+        // Suppression du label Rechercher et ajout du placeholder
+        search: "_INPUT_",
+        searchPlaceholder: "Rechercher...",
+        "url": "{{asset('tradfr.json')}}"
+      },
+  order : [1, 'asc'],
+      columns: [{"orderable": false}, null, null, null],
+      lengthMenu: [
+        [15, 30, 45, -1],
+        [15, 30, 45, "Tout"]
+      ],
+      pageLength : {{ app.user.preferenceNbElementsTableaux }}, <!-- Pour que le nombre d'éléments affichés par défaut soit celui de la préference de l'utilisateur -->
+      info: false,
+    });
+
+    $("[name='form']").on('submit', function () {
+      table.rows().nodes().page.len(-1).draw(); // Cette fonction permet, avant la soumission du formulaire, d'afficher dans le DOM toutes les lignes du tableau pour qu'aucune ne soit ignorée
+    });
+  </script>
+
+{% endblock %}
