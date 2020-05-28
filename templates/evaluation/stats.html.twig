@@ -150,8 +150,8 @@
 {% block javascripts %}
 
 <!-- Import de pdfmake -->
-<script type="text/javascript" src='https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.62/pdfmake.min.js'></script>
-<script type="text/javascript" src='https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.62/vfs_fonts.js'></script>
+<script type="text/javascript" src="{{asset("js/pdfmake.min.js")}}"></script>
+<script type="text/javascript" src="{{asset("js/vfs_fonts.js")}}"></script>
 <!-- Script pour les graphiques de type 'Boîte à moustache' -->
 <script type="text/javascript" src="{{asset("js/boxplot.js")}}"></script>
 
