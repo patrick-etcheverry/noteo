@@ -50,50 +50,8 @@
     <li class="nav-item"><a class="nav-link active" data-toggle="tab" href="#Repartition_Histogramme">Répartition (Histogramme)</a></li>
     <li class="nav-item"><a class="nav-link" data-toggle="tab" href="#Repartition_Boites">Répartition (Boîte à moustaches)</a></li>
     <li class="nav-item"><a class="nav-link" data-toggle="tab" href="#Moyenne_ecart">Moyenne & Écart-type</a></li>
+    <li class="nav-item"><a class="nav-link" onclick="getImages()">Get images</a></li>
 </ul>
-
-<!-- Card avec les stats
-
-{#  <a class="dropdown-item" data-toggle="tab" href="#histo{{tabCounter}}">{{groupe.nom}}</a>
-
-  <div align=center>
-    <li class="list-group-item">
-        <div class="card" style="width: 20em;">
-          <ul class="list-group list-group-flush" style="text-align:left;">
-            <li class="list-group-item">Statistiques {{groupe.nom}}</li>
-            <li class="list-group-item">
-              <ul>
-                <li>Moyenne : {{ groupe.moyenne }}</li>
-                <li>Écart-type : {{ groupe.ecartType }}</li>
-                <li>Note(s) minimale(s) : {{ groupe.minimum }}</li>
-                <li>Note(s) maximale(s) : {{ groupe.maximum }}</li>
-                <li>Médiane : {{ groupe.mediane }}</li>
-              </ul>
-            </li>
-          </ul>
-        </div>
-    </li>
-  </div>
-
-  <div class="card">
-    <ul class="list-group list-group-flush">
-      <li class="list-group-item text-white" style="background-color:#bdc3c7;">
-        {{groupe.nom}}
-        {% set effectifTotal = 0 %}
-        {% for effectif in groupe.notes %}
-          {% set effectifTotal = effectifTotal + effectif %}
-        {% endfor %}
-        ({{ effectifTotal }} étudiants)
-      </li>
-      <li class="list-group-item">
-        <h5 class="card-title">Répartition des notes</h5><br>
-        <canvas align=center id="{{groupe.nom}}"></canvas>
-      </li>
-    </ul>
-  </div>
-
-
-#}-->
 
 <div class="tab-content">
 <!-- Répartition (Histogramme) -->
@@ -108,7 +66,7 @@
     {% set tabCounter = 0 %}
     {% for groupe in groupes %}
       <div class="form-check form-check-inline">
-        <input class="form-check-input" type="checkbox" id="{{groupe.nom}}" onChange="changement(this.id, this.checked, 'histo')">
+        <input class="form-check-input" type="checkbox" id="{{groupe.nom}}" onChange="changement(this.id, this.checked, 'histo', false)">
         <label class="form-check-label" for="inlineCheckbox1" id="label_{{groupe.nom}}_histo">{{groupe.nom}}</label>
       </div>
      {% set tabCounter = tabCounter + 1 %}
@@ -135,7 +93,7 @@
     {% set tabCounter = 0 %}
     {% for groupe in groupes %}
       <div class="form-check form-check-inline">
-        <input class="form-check-input" type="checkbox" id="{{groupe.nom}}" onChange="changement(this.id, this.checked, 'bam')">
+        <input class="form-check-input" type="checkbox" id="{{groupe.nom}}" onChange="changement(this.id, this.checked, 'bam', false)">
         <label class="form-check-label" for="inlineCheckbox1" id="label_{{groupe.nom}}_bam">{{groupe.nom}}</label>
       </div>
      {% set tabCounter = tabCounter + 1 %}
@@ -162,7 +120,7 @@
     {% set tabCounter = 0 %}
     {% for groupe in groupes %}
       <div class="form-check form-check-inline">
-        <input class="form-check-input" type="checkbox" id="{{groupe.nom}}" onChange="changement(this.id, this.checked, 'moy')">
+        <input class="form-check-input" type="checkbox" id="{{groupe.nom}}" onChange="changement(this.id, this.checked, 'moy', false)">
         <label class="form-check-label" for="inlineCheckbox1" id="label_{{groupe.nom}}_moy">{{groupe.nom}}</label>
       </div>
      {% set tabCounter = tabCounter + 1 %}
@@ -191,8 +149,10 @@
 
 {% block javascripts %}
 
-<script type="text/javascript" src="{{asset("js/jspdf.min.js")}}"></script>
-<script type="text/javascript" src="{{asset("js/html2canvas.min.js")}}"></script>
+<!-- Import de pdfmake -->
+<script type="text/javascript" src='https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.62/pdfmake.min.js'></script>
+<script type="text/javascript" src='https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.62/vfs_fonts.js'></script>
+<!-- Script pour les graphiques de type 'Boîte à moustache' -->
 <script type="text/javascript" src="{{asset("js/boxplot.js")}}"></script>
 
 <!-- Script pour la génération des graphiques -->
@@ -208,24 +168,8 @@
 
   // Pallette de couleurs (valeurs rgb)
   var couleurs = [
-    [192, 57, 43],
-    [155, 89, 182],
-    [41, 128, 185],
-    [22, 160, 133],
-    [46, 204, 113],
-    [243, 156, 18],
-    [211, 84, 0],
-    [189, 195, 199],
-    [127, 140, 141],
-    [44, 62, 80],
-    [231, 76, 60],
-    [142, 68, 173],
-    [26, 188, 156],
-    [39, 174, 96],
-    [241, 196, 15],
-    [230, 126, 34],
-    [236, 240, 241],
-    [149, 165, 166],
+    [192, 57, 43], [155, 89, 182], [41, 128, 185], [22, 160, 133], [46, 204, 113], [243, 156, 18], [211, 84, 0], [189, 195, 199], [127, 140, 141],
+    [44, 62, 80], [231, 76, 60], [142, 68, 173], [26, 188, 156], [39, 174, 96], [241, 196, 15], [230, 126, 34], [236, 240, 241], [149, 165, 166],
     [52, 73, 94],
   ];
 
@@ -245,6 +189,11 @@
     labels: [],
     datasets: undefined,
   };
+
+  const pdfChartFontSize = 16;
+
+  // Tableau des images pour le pdf.
+  var images = undefined;
 
   // Objet options du graphique
   const options = {
@@ -367,20 +316,21 @@ function getMax(){
 }
 
 // Met à jour le graphique en fonction des cases qui sont cochées
-function changement(nom, value, type){
-  // Gère l'addition et la suppression des groupes à afficher dans le graphe
-  if(value){ // la case à été cochée
-    groupesChecked[type].push(nom); // Ajout dans la liste cochée
-  } else { // la case à été décochée
-    var index = contains(groupesChecked[type], nom); // index au quel se trouve le groupe dans le tableau groupes s'il existe
-    if(index != -1){
-      groupesChecked[type].splice(index, 1); // Suppression de la liste cochée
+function changement(nom, value, type, pdf){
+  if((nom != undefined && value != undefined) && !pdf){
+    // Gère l'addition et la suppression des groupes à afficher dans le graphe
+    if(value){ // la case à été cochée
+      groupesChecked[type].push(nom); // Ajout dans la liste cochée
+    } else { // la case à été décochée
+      var index = contains(groupesChecked[type], nom); // index au quel se trouve le groupe dans le tableau groupes s'il existe
+      if(index != -1){
+        groupesChecked[type].splice(index, 1); // Suppression de la liste cochée
+      }
     }
   }
 
-
-  var chartOptions = options; // Récupération de la template des options
-  var chartDonnees = chartDATA; // Récupération de la template des données du graphique
+  var chartOptions = (pdf ? window.hiddenGraph.options : options); // Récupération de la template des options
+  var chartDonnees = {};
   // Génération des labels & cacul du max
   switch (type) {
     case 'histo':
@@ -397,7 +347,7 @@ function changement(nom, value, type){
       break;
     case 'moy':
       chartDonnees.labels = groupesChecked[type];
-      chartOptions.scales.yAxes[0].ticks.min = undefined;
+      chartOptions.scales.yAxes[0].ticks.min = 0;
       chartOptions.scales.yAxes[0].ticks.max = undefined;
       break;
     default:
@@ -417,25 +367,44 @@ function changement(nom, value, type){
   }
 
   //  MaJ du graphique + MaJ des options
-  switch (type) {
-    case 'histo':
-      window.chartBar.options = chartOptions;
-      window.chartBar.data = chartDonnees;
-      window.chartBar.update();
-      break;
-    case 'bam': // Boîte à moustaches
-      window.chartBoite.options = chartOptions;
-      window.chartBoite.data = chartDonnees;
-      window.chartBoite.update();
-      break;
-    case 'moy' : // Moyenne & écart-type
-      window.chartMoy.options = chartOptions;
-      window.chartMoy.data = chartDonnees;
-      window.chartMoy.update();
-      break;
-    default:
-      break;
+  if(!pdf){
+    switch (type) {
+      case 'histo':
+        window.chartBar.options = chartOptions;
+        window.chartBar.data = chartDonnees;
+        window.chartBar.update();
+        break;
+      case 'bam': // Boîte à moustaches
+        window.chartBoite.options = chartOptions;
+        window.chartBoite.data = chartDonnees;
+        window.chartBoite.update();
+        break;
+      case 'moy' : // Moyenne & écart-type
+        window.chartMoy.options = chartOptions;
+        window.chartMoy.data = chartDonnees;
+        window.chartMoy.update();
+        break;
+      default:
+        break;
+    }
+  } else {
+    window.hiddenGraph.type = (type == 'bam' ? 'boxplot' : 'bar');
+    console.log("type: " + type + " => " + window.hiddenGraph.type);
+    window.hiddenGraph.options = chartOptions;
+    window.hiddenGraph.data = chartDonnees;
+    window.hiddenGraph.update();
   }
+
+}
+
+function dl(type, data){
+  var element = document.createElement('a');
+    element.setAttribute('href', data);
+    element.setAttribute('download', type);
+    element.style.display = 'none';
+    document.body.appendChild(element);
+    element.click();
+    document.body.removeChild(element);
 }
 
 function genDataRepartition(type){
@@ -532,183 +501,123 @@ function contains(array, element){
   return -1;
 }
 
+//----------------- PARTIE GENERATION DE PDF --------------
 
-</script>
+function getImages(largeur, longueur){
 
-<!-- Patie dédié au la génération du pdf -->
-<script type="text/javascript">
+  // options du graphique pour la génération de graphiques pour le pdf.
+  const pdfChartOptions = {animation:{
+  duration: false, },scales:{xAxes:[{gridLines:{display:!1},ticks:{fontSize:fontSize,},maxBarThickness:100,stacked:!1,}],yAxes:[{ticks:{beginAtZero:!0,max:undefined,min:0,fontSize:pdfChartFontSize},stacked:!1,}],},legend:{position:'top',labels:{fontSize:fontSize,},},aspectRatio:3,maintainAspectRatio:!0,responsive:!1,tooltips:{intersect:!1,titleMarginBottom:10,titleFontColor:'#6e707e',titleFontSize:fontSize,backgroundColor:"#FFFFFF",bodyFontColor:"#858796",borderColor:'#dddfeb',borderWidth:1,xPadding:15,yPadding:15,displayColors:!0,caretPadding:10,},plugins:{labels:{render:'value'}}};
 
-  var xStat = 200
-  var xLabelStat = 30
-  var xRepartition = 475
-  var xIntervalle = 330
-  var xTitre = 300
-  var yTitre = 50
-  var y = 100
-  var deltaY = 20
-  var numeroCarte = 1
+  images = [];
 
+  for(var clef in groupesChecked){
+    // Création du canvas caché
+    var canvas = document.createElement("canvas");
+    canvas.setAttribute('id', 'hiddenGraph');
+    canvas.style.display = 'none'; // N'affiche pas l'élément
+    canvas.style.width = largeur+'px';
+    canvas.style.height = longueur+'px';
+    document.body.appendChild(canvas);
 
-  function genPDF(){
-    var nomEval = "{{evaluation.nom}}"
-    var nomGroupe = "{{evaluation.groupe.nom}}"
-    var date = "{{evaluation.date}}"
-    var doc = new jsPDF('p','pt','a4');
-    var longueur = nomEval.length
-
-    //Définition du haut du PDF
-    if (longueur < 35) {
-      doc.setFontSize(35)
-    }
-    if (longueur < 50 && longueur > 34) {
-      doc.setFontSize(25)
-    }
-    if (longueur > 49 && longueur < 70) {
-      doc.setFontSize(20)
-    }
-    if (longueur > 69) {
-      doc.setFontSize(16)
-    }
-
-    doc.text(nomEval,300,200,(align = "center"))
-    doc.setFontSize(16)
-    doc.text("Groupe évalué :",70,300)
-    doc.text(nomGroupe,260,300)
-    doc.text("Date :",70,330)
-    doc.text(date,260,330)
-
-    {% for groupe in groupes %}
-
-    var effectifDuGroupe="{% set effectifTotal = 0 %}
-    {% for effectif in groupe.notes %}
-      {% set effectifTotal = effectifTotal + effectif %}
-    {% endfor %}
-    ({{ effectifTotal }} étudiants)".trim()
-
-
-    if (numeroCarte == 1) {
-      doc.addPage()
-      yTitre = 50
-      y = 100
-    }
-    if (numeroCarte == 2) {
-      yTitre = 300
-      y = 350
-    }
-    if (numeroCarte == 3) {
-      yTitre = 550
-      y = 600
-    }
-    doc.setFontSize(25)
-    var nomCarteGroupe = "{{groupe.nom}}" +" "+ effectifDuGroupe
-    doc.text(nomCarteGroupe,xTitre,yTitre,(align = "center"))
-    doc.setFontSize(12)
-
-    //traitement du nom du groupe
-    var phraseNomGroupe = "Statistiques"
-    doc.text(phraseNomGroupe,20,y)
-    y = y + deltaY
-    //traitement de la moyenne
-    var moyenne = "{{groupe.moyenne}}"
-    doc.text("Moyenne :",xLabelStat,y)
-    doc.text(moyenne,xStat,y)
-    y = y + deltaY
-    //traitement de l'écart type
-    var ecartType = "{{groupe.ecartType}}"
-    doc.text("Ecart-type :",xLabelStat,y)
-    doc.text(ecartType,xStat,y)
-    y = y + deltaY
-    //traitement de la note minimal
-    var min = "{{groupe.minimum}}"
-    doc.text("Note(s) minimale(s) :",xLabelStat,y)
-    doc.text(min,xStat,y)
-    y = y + deltaY
-    //traitement de la note maximal
-    var max = "{{groupe.maximum}}"
-    doc.text("Note(s) maximale(s) :",xLabelStat,y)
-    doc.text(max,xStat,y)
-    y = y + deltaY
-    //traitement de la mediane
-    var mediane = "{{groupe.mediane}}"
-    doc.text("Médiane :",xLabelStat,y)
-    doc.text(mediane,xStat,y)
-
-    //traitement de la répartition des notes
-    if (numeroCarte == 1) {
-      y = 100
-    }
-    if (numeroCarte == 2) {
-      y = 350
-    }
-    if (numeroCarte == 3) {
-      y = 600
-    }
-    doc.text("Répartition des notes", 320,y)
-    y = y + deltaY
-    doc.text("[0;4[ : ", xIntervalle,y);
-    var premierIntervalle = "{{groupe.notes[0]}} étudiant(s)"
-    doc.text(premierIntervalle,xRepartition, y)
-    y = y + deltaY
-    doc.text("[4;8[ : ", xIntervalle,y);
-    var deuxiemeIntervalle = "{{groupe.notes[1]}} étudiant(s)"
-    doc.text(deuxiemeIntervalle,xRepartition, y)
-    y = y + deltaY
-    doc.text("[8;12[ : ", xIntervalle,y);
-    var troisiemeIntervalle = "{{groupe.notes[2]}} étudiant(s)"
-    doc.text(troisiemeIntervalle,xRepartition, y)
-    y = y + deltaY
-    doc.text("[12;16[ : ", xIntervalle,y);
-    var quatriemeIntervalle = "{{groupe.notes[3]}} étudiant(s)"
-    doc.text(quatriemeIntervalle,xRepartition, y)
-    y = y + deltaY
-    doc.text("[16;20] : ", xIntervalle,y);
-    var cinquiemeIntervalle = "{{groupe.notes[4]}} étudiant(s)"
-    doc.text(cinquiemeIntervalle,xRepartition, y)
-
-    if (numeroCarte == 3) {
-      numeroCarte = 1
-    }
-    else {
-      numeroCarte = numeroCarte + 1
+    var chartDonnees = {};
+    var options = pdfChartOptions;
+    switch (clef) {
+      case 'histo':
+        chartDonnees.labels = ['[0;4[', '[4;8[', '[8;12[', '[12;16[', '[16;20]'];
+        options.scales.yAxes[0].ticks.min = 0;
+        options.scales.yAxes[0].ticks.max = getMax();
+        break;
+      case 'bam': // Boîte à moustache
+        chartDonnees.labels = [nomEvaluation];
+        options.scales.yAxes[0].ticks.min = 0;
+        options.scales.yAxes[0].ticks.max = 20;
+        break;
+      case 'moy':
+        chartDonnees.labels = groupesChecked[clef];
+        options.scales.yAxes[0].ticks.min = 0;
+        options.scales.yAxes[0].ticks.max = undefined;
+        break;
+      default:
+        break;
     }
 
-    {% endfor %}
+    chartDonnees.datasets = (clef == 'moy' ? genDataMoyenneEcart() : genDataRepartition(clef));
 
-    doc.save(nomEval)
+    // Création du chart dans le canvas caché
+    window.hiddenGraph = new Chart(document.getElementById("hiddenGraph").getContext('2d'), {
+      type: (clef == 'bam' ? 'boxplot' : 'bar'),
+      data: chartDonnees,
+      options: options,
+    });
 
+    sleep(50);
+    images.push(window.hiddenGraph.toBase64Image());
 
-    //Piste de solution pour améliorer l'xport pdf
-    /*html2canvas($("#lesStats .cardhu-S1"),{
-      useCORS:true,
-      logging:true,
-      onrendered:function(canvas,capture){
-        capture = canvas.toDataURL('image/png',1.0);
-        document.body.insertAdjacentHTML('beforeend',"<img id='arthur' src='" + capture +"'>")
+    // Supression de l'instance du graphique
+    window.hiddenGraph.destroy();
 
-      }
-    }).then(function(){
-      doc.addImage(document.getElementById("arthur").src,'PNG',20,110);
-      doc.addPage()
-      doc.save(nomEval)
-    });*/
-
-  /*  html2canvas($("#lesStats .cardhu-S1"),{
-      useCORS:true,
-      logging:true,
-      onrendered:function(canvas,capture){
-        capture = canvas.toDataURL('image/png',1.0);
-        document.body.insertAdjacentHTML('beforeend',"<img id='arthur' src='" + capture +"'>")
-
-      }
-    }).then(function(){
-      doc.addImage(document.getElementById("arthur").src,'PNG',20,110);
-      doc.addPage()
-      doc.save(nomEval)
-    });*/
-
-
+    // Suppression du canvas caché de l'arborescence de la page
+    document.body.removeChild(canvas);
   }
+}
 
+function sleep(ms) {
+  return new Promise(resolve => setTimeout(resolve, ms));
+}
+
+function genPDF(){
+
+  // CONSTANTES
+  const imageWidth = 500;
+  const largeurCanvas = 1000;
+  const longueurCanvas = 400;
+
+  getImages(largeurCanvas, longueurCanvas);
+
+  // Contenu du pdf à générer
+  var docDefinition = {
+    content: [
+      {
+      },
+      { // HEADER
+  			text: '{{evaluation.nom}}',
+  			style: 'header'
+  		},
+      {
+        image: 'chartBar',
+        width: imageWidth,
+        pageBreak: 'after'
+      },
+      {
+        image: 'boxplot',
+        width: imageWidth,
+        pageBreak: 'after',
+      },
+      {
+        image: 'chartMoy',
+        width: imageWidth,
+        pageBreak: 'after',
+      },
+    ],
+    images : {
+      chartBar : images[0],
+      boxplot : images[1],
+      chartMoy : images[2],
+    },
+  };
+
+  // Génération du pdf en fonction de docDefinition et téléchargement de ce dernier
+  pdfMake.createPdf(docDefinition).download();
+
+}
+
+// Template de page du document pdf
+function genPagePDF(imgName, data){
+  var page = {};
+  page.image = imgName;
+  return page;
+}
 
 </script>
 
