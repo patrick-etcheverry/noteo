@@ -21,7 +21,7 @@
 <div class="table-responsive">
 <table class="table table-hover" id="tableAjouter">
   <thead>
-    <th></th>
+    <th><input type="checkbox" onclick= "cocherToutesLesCases('groupe_etudiant_edit[etudiantsAAjouter][]', this.checked)" id="checkbox" title="Tout cocher"/> </th>
     <th>Nom</th>
     <th>Prénom</th>
     <th>Mail</th>
@@ -51,7 +51,7 @@
 <div class="table-responsive">
 <table class="table table-hover" id="tableSupprimer">
   <thead>
-    <th></th>
+    <th><input type="checkbox" onclick= "cocherToutesLesCases('groupe_etudiant_edit[etudiantsASupprimer][]', this.checked)" id="checkbox" title="Tout cocher"/></th>
     <th>Nom</th>
     <th>Prénom</th>
     <th>Mail</th>
@@ -83,4 +83,8 @@
   <a href="{{ path('groupe_etudiant_index') }}" class="d-sm-inline-block btn btn-sm btn-secondary shadow-sm">Annuler</a>
   <button class="d-sm-inline-block btn btn-sm btn-primary shadow-sm">{{ button_label|default('Enregistrer') }}</button>
 </div>
+
+
+
+
 {{ form_end(form) }}

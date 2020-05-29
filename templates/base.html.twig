@@ -196,6 +196,25 @@
   <script src="{{ asset('vendor/BoostrapTreeView/js/manipulationTreeView.js') }}"></script>
 
   {% block javascripts %}
+
+  <script type="text/javascript">
+  function cocherToutesLesCases(nameCases, caseCochee)
+  {
+    $("input[name='"+ nameCases +"']").each(
+      function()
+      {
+        this.checked = caseCochee;
+      })
+  }
+
+  $(document).on('page.dt', function(){
+    $("#checkbox").each(function(){
+        this.check = false;
+    })
+  })
+
+  </script>
+
   {% endblock %}
 
   {% block datatables %}
