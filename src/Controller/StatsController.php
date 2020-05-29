@@ -28,9 +28,22 @@ class StatsController extends AbstractController
     /**
      * @Route("/choix-statistiques", name="choix_statistiques", methods={"GET"})
      */
-    public function choixStatistiques(): Response
+    public function choixStatistiques(EvaluationRepository $repoEval, StatutRepository $repoStatut, GroupeEtudiantRepository $repoGroupe): Response
     {
-        return $this->render('statistiques/choix_statistiques.html.twig');
+        //On définit quelles fonctionnalités seront disponibles à l'utilisateur
+        $statsClassiquesDispo = count($repoEval->findAllWithOnePart()) >= 1;
+        $statsClassiquesParPartiesDispo = count($repoEval->findAllWithSeveralParts()) >= 1;
+        $statsPlusieursEvalsGroupeDispo = count($repoGroupe->findAll()) >=1 && count($repoEval->findAll()) >= 2;
+        $statsPlusieursEvalsStatutDispo = count($repoStatut->findAll()) >=1 && count($repoEval->findAll()) >= 2;
+        $statsComparaisonDispo = count($repoEval->findAll()) >= 2;
+
+        return $this->render('statistiques/choix_statistiques.html.twig', [
+            'statsClassiquesDispo' => $statsClassiquesDispo,
+            'statsClassiquesParPartiesDispo' => $statsClassiquesParPartiesDispo,
+            'statsPlusieursEvalsGroupeDispo' => $statsPlusieursEvalsGroupeDispo,
+            'statsPlusieursEvalsStatutDispo' => $statsPlusieursEvalsStatutDispo,
+            'statsComparaisonDispo' => $statsComparaisonDispo
+        ]);
     }
 
     /**

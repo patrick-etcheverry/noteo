@@ -82,155 +82,172 @@
 {% endblock %}
 
 {% block contenu %}
-    <!-- STATS CLASSIQUES -->
-    <div class="card-deck">
-        <div class="card">
-            <img class="card-img-top imageAAgrandir" src="{{ asset('img/statistiques/classiques/histo.png') }}" alt="Card image cap">
-            <div class="card-body">
-                <hr>
-                <h5 class="card-title">Statistiques classiques sur une évaluation (répartition des notes)</h5>
-                <p class="card-text">Génération de statistiques triviales : Répartition des notes, moyenne, médiane, écart-type, note minimale et maximale. <br>
-                    Ces statistiques sont générées pour des évaluations avec une seule note par étudiant.</p>
-                <a href="{{ path('statistiques_choix_evaluation', {'typeStat' : 'classique', 'typeGraph' : 'histogramme'}) }}" class="btn btn-primary">Consulter ce type de statistiques</a>
+    {% if statsClassiquesDispo %}
+        <!-- STATS CLASSIQUES -->
+        <div class="card-deck">
+            <div class="card">
+                <img class="card-img-top imageAAgrandir" src="{{ asset('img/statistiques/classiques/histo.png') }}" alt="Card image cap">
+                <div class="card-body">
+                    <hr>
+                    <h5 class="card-title">Statistiques classiques sur une évaluation (répartition des notes)</h5>
+                    <p class="card-text">Génération de statistiques triviales : Répartition des notes, moyenne, médiane, écart-type, note minimale et maximale. <br>
+                        Ces statistiques sont générées pour des évaluations avec une seule note par étudiant.</p>
+                    <a href="{{ path('statistiques_choix_evaluation', {'typeStat' : 'classique', 'typeGraph' : 'histogramme'}) }}" class="btn btn-primary">Consulter ce type de statistiques</a>
+                </div>
+            </div>
+            <div class="card">
+                <img class="card-img-top imageAAgrandir" id="myImg" src="{{ asset('img/statistiques/classiques/bam.png') }}" alt="Card image cap">
+                <div class="card-body">
+                    <hr>
+                    <h5 class="card-title">Statistiques classiques sur une évaluation (boîte à moustache)</h5>
+                    <p class="card-text">Génération de statistiques triviales : Répartition des notes, moyenne, médiane, écart-type, note minimale et maximale. <br>
+                        Ces statistiques sont générées pour des évaluations avec une seule note par étudiant.</p>
+                    <a href="{{ path('statistiques_choix_evaluation', {'typeStat' : 'classique', 'typeGraph' : 'boite-moustache'}) }}" class="btn btn-primary">Consulter ce type de statistiques</a>
+                </div>
+            </div>
+            <div class="card">
+                <img class="card-img-top imageAAgrandir" src="{{ asset('img/statistiques/classiques/moy.png') }}" alt="Card image cap">
+                <div class="card-body">
+                    <hr>
+                    <h5 class="card-title">Statistiques classiques sur une évaluation (moyenne et écart-type)</h5>
+                    <p class="card-text">Génération de statistiques triviales : Répartition des notes, moyenne, médiane, écart-type, note minimale et maximale. <br>
+                        Ces statistiques sont générées pour des évaluations avec une seule note par étudiant.</p>
+                    <a href="{{ path('statistiques_choix_evaluation', {'typeStat' : 'classique', 'typeGraph' : 'moyenne'}) }}" class="btn btn-primary">Consulter ce type de statistiques</a>
+                </div>
             </div>
         </div>
-        <div class="card">
-            <img class="card-img-top imageAAgrandir" id="myImg" src="{{ asset('img/statistiques/classiques/bam.png') }}" alt="Card image cap">
-            <div class="card-body">
-                <hr>
-                <h5 class="card-title">Statistiques classiques sur une évaluation (boîte à moustache)</h5>
-                <p class="card-text">Génération de statistiques triviales : Répartition des notes, moyenne, médiane, écart-type, note minimale et maximale. <br>
-                    Ces statistiques sont générées pour des évaluations avec une seule note par étudiant.</p>
-                <a href="{{ path('statistiques_choix_evaluation', {'typeStat' : 'classique', 'typeGraph' : 'boite-moustache'}) }}" class="btn btn-primary">Consulter ce type de statistiques</a>
+        <br>
+    {% endif %}
+    {% if statsClassiquesParPartiesDispo %}
+        <!-- STATS CLASSIQUES AVEC PARTIES -->
+        <div class="card-deck">
+            <div class="card">
+                <img class="card-img-top imageAAgrandir" src="{{ asset('img/statistiques/classiques-avec-parties/histo.png') }}" alt="Card image cap">
+                <div class="card-body">
+                    <hr>
+                    <h5 class="card-title">Statistiques classiques sur une évaluation avec parties (répartition des notes)</h5>
+                    <p class="card-text">Génération de statistiques triviales : Répartition des notes, moyenne, médiane, écart-type, note minimale et maximale. <br>
+                        Ces statistiques sont générées pour des évaluations avec une seule note par étudiant.</p>
+                    <a href="{{ path('statistiques_choix_evaluation', {'typeStat' : 'classique-avec-parties', 'typeGraph' : 'histogramme'}) }}" class="btn btn-primary">Consulter ce type de statistiques</a>
+                </div>
+            </div>
+            <div class="card">
+                <img class="card-img-top imageAAgrandir" id="myImg" src="{{ asset('img/statistiques/classiques-avec-parties/bam.png') }}" alt="Card image cap">
+                <div class="card-body">
+                    <hr>
+                    <h5 class="card-title">Statistiques classiques sur une évaluation avec parties (boîte à moustache)</h5>
+                    <p class="card-text">Génération de statistiques triviales : Répartition des notes, moyenne, médiane, écart-type, note minimale et maximale. <br>
+                        Ces statistiques sont générées pour des évaluations avec une seule note par étudiant.</p>
+                    <a href="{{ path('statistiques_choix_evaluation', {'typeStat' : 'classique-avec-parties', 'typeGraph' : 'boite-moustache'}) }}" class="btn btn-primary">Consulter ce type de statistiques</a>
+                </div>
+            </div>
+            <div class="card">
+                <img class="card-img-top imageAAgrandir" src="{{ asset('img/statistiques/classiques-avec-parties/moy.png') }}" alt="Card image cap">
+                <div class="card-body">
+                    <hr>
+                    <h5 class="card-title">Statistiques classiques sur une évaluation avec parties (moyenne et écart-type)</h5>
+                    <p class="card-text">Génération de statistiques triviales : Répartition des notes, moyenne, médiane, écart-type, note minimale et maximale. <br>
+                        Ces statistiques sont générées pour des évaluations avec une seule note par étudiant.</p>
+                    <a href="{{ path('statistiques_choix_evaluation', {'typeStat' : 'classique-avec-parties', 'typeGraph' : 'moyenne'}) }}" class="btn btn-primary">Consulter ce type de statistiques</a>
+                </div>
             </div>
         </div>
-        <div class="card">
-            <img class="card-img-top imageAAgrandir" src="{{ asset('img/statistiques/classiques/moy.png') }}" alt="Card image cap">
-            <div class="card-body">
-                <hr>
-                <h5 class="card-title">Statistiques classiques sur une évaluation (moyenne et écart-type)</h5>
-                <p class="card-text">Génération de statistiques triviales : Répartition des notes, moyenne, médiane, écart-type, note minimale et maximale. <br>
-                    Ces statistiques sont générées pour des évaluations avec une seule note par étudiant.</p>
-                <a href="{{ path('statistiques_choix_evaluation', {'typeStat' : 'classique', 'typeGraph' : 'moyenne'}) }}" class="btn btn-primary">Consulter ce type de statistiques</a>
+        <br>
+    {% endif %}
+    {% if statsPlusieursEvalsGroupeDispo %}
+        <!--  STATS PLUSIEURS EVALS, GROUPE  -->
+        <div class="card-deck">
+            <div class="card">
+                <img class="card-img-top imageAAgrandir" src="{{ asset('img/statistiques/plusieurs-evals-groupe/histo.png') }}" alt="Card image cap">
+                <div class="card-body">
+                    <hr>
+                    <h5 class="card-title">Statistiques classiques sur plusieurs évaluations par groupe (répartition des notes)</h5>
+                    <p class="card-text">Générations de statistiques triviales : répartition des notes, moyenne, médiane, écart-type, note minimale et maximale. <br>
+                        Le calcul est effectué sur la note finale de chaque évaluation.</p>
+                    <a href="{{ path('stats_choisir_groupe_haut_niveau_evaluable', {'typeGraph': 'histogramme'}) }}" class="btn btn-primary">Consulter ce type de statistiques</a>
+                </div>
+            </div>
+            <div class="card">
+                <img class="card-img-top imageAAgrandir" id="myImg" src="{{ asset('img/statistiques/plusieurs-evals-groupe/bam.png') }}" alt="Card image cap">
+                <div class="card-body">
+                    <hr>
+                    <h5 class="card-title">Statistiques classiques sur plusieurs évaluations par groupe (boîte à moustache)</h5>
+                    <p class="card-text">Générations de statistiques triviales : répartition des notes, moyenne, médiane, écart-type, note minimale et maximale. <br>
+                        Le calcul est effectué sur la note finale de chaque évaluation.</p>
+                    <a href="{{ path('stats_choisir_groupe_haut_niveau_evaluable', {'typeGraph': 'boite-moustache'}) }}" class="btn btn-primary">Consulter ce type de statistiques</a>
+                </div>
+            </div>
+            <div class="card">
+                <img class="card-img-top imageAAgrandir" src="{{ asset('img/statistiques/plusieurs-evals-groupe/moy.png') }}" alt="Card image cap">
+                <div class="card-body">
+                    <hr>
+                    <h5 class="card-title">Statistiques classiques sur plusieurs évaluations par groupe (moyenne et écart-type)</h5>
+                    <p class="card-text">Générations de statistiques triviales : répartition des notes, moyenne, médiane, écart-type, note minimale et maximale. <br>
+                        Le calcul est effectué sur la note finale de chaque évaluation.</p>
+                    <a href="{{ path('stats_choisir_groupe_haut_niveau_evaluable', {'typeGraph': 'moyenne'}) }}" class="btn btn-primary">Consulter ce type de statistiques</a>
+                </div>
             </div>
         </div>
-    </div>
-    <br>
-    <!-- STATS CLASSIQUES AVEC PARTIES -->
-    <div class="card-deck">
-        <div class="card">
-            <img class="card-img-top imageAAgrandir" src="{{ asset('img/statistiques/classiques-avec-parties/histo.png') }}" alt="Card image cap">
-            <div class="card-body">
-                <hr>
-                <h5 class="card-title">Statistiques classiques sur une évaluation avec parties (répartition des notes)</h5>
-                <p class="card-text">Génération de statistiques triviales : Répartition des notes, moyenne, médiane, écart-type, note minimale et maximale. <br>
-                    Ces statistiques sont générées pour des évaluations avec une seule note par étudiant.</p>
-                <a href="{{ path('statistiques_choix_evaluation', {'typeStat' : 'classique-avec-parties', 'typeGraph' : 'histogramme'}) }}" class="btn btn-primary">Consulter ce type de statistiques</a>
+        <br>
+    {% endif %}
+    {% if statsPlusieursEvalsStatutDispo %}
+        <!-- STATS PLUSIEURS EVALS, STATUT -->
+        <div class="card-deck">
+            <div class="card">
+                <img class="card-img-top imageAAgrandir" src="{{ asset('img/statistiques/plusieurs-evals-statut/histo.png') }}" alt="Card image cap">
+                <div class="card-body">
+                    <hr>
+                    <h5 class="card-title">Statistiques classiques sur plusieurs évaluations par statut (répartition des notes)</h5>
+                    <p class="card-text">Générations de statistiques triviales : répartition des notes, moyenne, médiane, écart-type, note minimale et maximale. <br>
+                        Le calcul est effectué sur la note finale de chaque évaluation.</p>
+                    <a href="{{ path('stats_choisir_statut', {'typeGraph': 'histogramme'}) }}" class="btn btn-primary">Consulter ce type de statistiques</a>
+                </div>
+            </div>
+            <div class="card">
+                <img class="card-img-top imageAAgrandir" id="myImg" src="{{ asset('img/statistiques/plusieurs-evals-statut/bam.png') }}" alt="Card image cap">
+                <div class="card-body">
+                    <hr>
+                    <h5 class="card-title">Statistiques classiques sur plusieurs évaluations par statut (boîte à moustache)</h5>
+                    <p class="card-text">Générations de statistiques triviales : répartition des notes, moyenne, médiane, écart-type, note minimale et maximale. <br>
+                        Le calcul est effectué sur la note finale de chaque évaluation.</p>
+                    <a href="{{ path('stats_choisir_statut', {'typeGraph': 'boite-moustache'}) }}" class="btn btn-primary">Consulter ce type de statistiques</a>
+                </div>
+            </div>
+            <div class="card">
+                <img class="card-img-top imageAAgrandir" src="{{ asset('img/statistiques/plusieurs-evals-statut/moy.png') }}" alt="Card image cap">
+                <div class="card-body">
+                    <hr>
+                    <h5 class="card-title">Statistiques classiques sur plusieurs évaluations par statut (moyenne et écart-type)</h5>
+                    <p class="card-text">Générations de statistiques triviales : répartition des notes, moyenne, médiane, écart-type, note minimale et maximale. <br>
+                        Le calcul est effectué sur la note finale de chaque évaluation.</p>
+                    <a href="{{ path('stats_choisir_statut', {'typeGraph': 'moyenne'}) }}" class="btn btn-primary">Consulter ce type de statistiques</a>
+                </div>
             </div>
         </div>
-        <div class="card">
-            <img class="card-img-top imageAAgrandir" id="myImg" src="{{ asset('img/statistiques/classiques-avec-parties/bam.png') }}" alt="Card image cap">
-            <div class="card-body">
-                <hr>
-                <h5 class="card-title">Statistiques classiques sur une évaluation avec parties (boîte à moustache)</h5>
-                <p class="card-text">Génération de statistiques triviales : Répartition des notes, moyenne, médiane, écart-type, note minimale et maximale. <br>
-                    Ces statistiques sont générées pour des évaluations avec une seule note par étudiant.</p>
-                <a href="{{ path('statistiques_choix_evaluation', {'typeStat' : 'classique-avec-parties', 'typeGraph' : 'boite-moustache'}) }}" class="btn btn-primary">Consulter ce type de statistiques</a>
+        <br>
+    {% endif %}
+    {% if statsComparaisonDispo %}
+        <!-- STATS COMPARAISON -->
+        <div class="card-deck">
+            <div class="card">
+                <img class="card-img-top imageAAgrandir" src="{{ asset('img/statistiques/comparaison/moy.png') }}" alt="Card image cap">
+                <div class="card-body">
+                    <hr>
+                    <h5 class="card-title">Évolution d'un groupe ou d'un groupe d'étudiants ayant un statut particulier sur plusieurs évaluations</h5>
+                    <p class="card-text">Génération de statistiques de comparaison de résultats : Comparaison de la moyenne d'un groupe ou d'un groupe d'étudiants <br>
+                        ayant un statut particulier à une évaluation avec la moyenne d'un ensemble d'autres évaluations passées par ces mêmes groupes.</p>
+                    <a href="{{ path('statistiques_choix_evaluation', {'typeStat' : 'comparaison', 'typeGraph' : 'moyenne'}) }}" class="btn btn-primary">Consulter ce type de statistiques</a>
+                </div>
             </div>
         </div>
-        <div class="card">
-            <img class="card-img-top imageAAgrandir" src="{{ asset('img/statistiques/classiques-avec-parties/moy.png') }}" alt="Card image cap">
-            <div class="card-body">
-                <hr>
-                <h5 class="card-title">Statistiques classiques sur une évaluation avec parties (moyenne et écart-type)</h5>
-                <p class="card-text">Génération de statistiques triviales : Répartition des notes, moyenne, médiane, écart-type, note minimale et maximale. <br>
-                    Ces statistiques sont générées pour des évaluations avec une seule note par étudiant.</p>
-                <a href="{{ path('statistiques_choix_evaluation', {'typeStat' : 'classique-avec-parties', 'typeGraph' : 'moyenne'}) }}" class="btn btn-primary">Consulter ce type de statistiques</a>
-            </div>
+    {% endif %}
+    {# Pas très beau et pratique à utiliser, à faire évoluer si possible #}
+    {% if not statsClassiquesDispo and not statsClassiquesParPartiesDispo and not statsPlusieursEvalsGroupeDispo and not statsPlusieursEvalsStatutDispo and not statsComparaisonDispo %}
+        <div class="info">
+            <h1 class="h4 mb-0 text-gray-800">Vous ne pouvez consulter aucun type de statistiques pour le moment.</h1>
+            <h1 class="h4 mb-0 text-gray-800">Créez des groupes, des groupes d'étudiants ayant un statut particulier et des évaluations pour consulter les statistiques.</h1>
         </div>
-    </div>
-    <br>
-    <!--  STATS PLUSIEURS EVALS, GROUPE  -->
-    <div class="card-deck">
-        <div class="card">
-            <img class="card-img-top imageAAgrandir" src="{{ asset('img/statistiques/plusieurs-evals-groupe/histo.png') }}" alt="Card image cap">
-            <div class="card-body">
-                <hr>
-                <h5 class="card-title">Statistiques classiques sur plusieurs évaluations par groupes (répartition des notes)</h5>
-                <p class="card-text">Générations de statistiques triviales : répartition des notes, moyenne, médiane, écart-type, note minimale et maximale. <br>
-                    Le calcul est effectué sur la note finale de chaque évaluation.</p>
-                <a href="{{ path('stats_choisir_groupe_haut_niveau_evaluable', {'typeGraph': 'histogramme'}) }}" class="btn btn-primary">Consulter ce type de statistiques</a>
-            </div>
-        </div>
-        <div class="card">
-            <img class="card-img-top imageAAgrandir" id="myImg" src="{{ asset('img/statistiques/plusieurs-evals-groupe/bam.png') }}" alt="Card image cap">
-            <div class="card-body">
-                <hr>
-                <h5 class="card-title">Statistiques classiques sur plusieurs évaluations par groupes (boîte à moustache)</h5>
-                <p class="card-text">Générations de statistiques triviales : répartition des notes, moyenne, médiane, écart-type, note minimale et maximale. <br>
-                    Le calcul est effectué sur la note finale de chaque évaluation.</p>
-                <a href="{{ path('stats_choisir_groupe_haut_niveau_evaluable', {'typeGraph': 'boite-moustache'}) }}" class="btn btn-primary">Consulter ce type de statistiques</a>
-            </div>
-        </div>
-        <div class="card">
-            <img class="card-img-top imageAAgrandir" src="{{ asset('img/statistiques/plusieurs-evals-groupe/moy.png') }}" alt="Card image cap">
-            <div class="card-body">
-                <hr>
-                <h5 class="card-title">Statistiques classiques sur plusieurs évaluations par groupes (moyenne et écart-type)</h5>
-                <p class="card-text">Générations de statistiques triviales : répartition des notes, moyenne, médiane, écart-type, note minimale et maximale. <br>
-                    Le calcul est effectué sur la note finale de chaque évaluation.</p>
-                <a href="{{ path('stats_choisir_groupe_haut_niveau_evaluable', {'typeGraph': 'moyenne'}) }}" class="btn btn-primary">Consulter ce type de statistiques</a>
-            </div>
-        </div>
-    </div>
-    <br>
-    <!-- STATS PLUSIEURS EVALS, STATUT -->
-    <div class="card-deck">
-        <div class="card">
-            <img class="card-img-top imageAAgrandir" src="{{ asset('img/statistiques/plusieurs-evals-statut/histo.png') }}" alt="Card image cap">
-            <div class="card-body">
-                <hr>
-                <h5 class="card-title">Statistiques classiques sur plusieurs évaluations par statut (répartition des notes)</h5>
-                <p class="card-text">Générations de statistiques triviales : répartition des notes, moyenne, médiane, écart-type, note minimale et maximale. <br>
-                    Le calcul est effectué sur la note finale de chaque évaluation.</p>
-                <a href="{{ path('stats_choisir_statut', {'typeGraph': 'histogramme'}) }}" class="btn btn-primary">Consulter ce type de statistiques</a>
-            </div>
-        </div>
-        <div class="card">
-            <img class="card-img-top imageAAgrandir" id="myImg" src="{{ asset('img/statistiques/plusieurs-evals-statut/bam.png') }}" alt="Card image cap">
-            <div class="card-body">
-                <hr>
-                <h5 class="card-title">Statistiques classiques sur plusieurs évaluations par statut (boîte à moustache)</h5>
-                <p class="card-text">Générations de statistiques triviales : répartition des notes, moyenne, médiane, écart-type, note minimale et maximale. <br>
-                    Le calcul est effectué sur la note finale de chaque évaluation.</p>
-                <a href="{{ path('stats_choisir_statut', {'typeGraph': 'boite-moustache'}) }}" class="btn btn-primary">Consulter ce type de statistiques</a>
-            </div>
-        </div>
-        <div class="card">
-            <img class="card-img-top imageAAgrandir" src="{{ asset('img/statistiques/plusieurs-evals-statut/moy.png') }}" alt="Card image cap">
-            <div class="card-body">
-                <hr>
-                <h5 class="card-title">Statistiques classiques sur plusieurs évaluations par statut (moyenne et écart-type)</h5>
-                <p class="card-text">Générations de statistiques triviales : répartition des notes, moyenne, médiane, écart-type, note minimale et maximale. <br>
-                    Le calcul est effectué sur la note finale de chaque évaluation.</p>
-                <a href="{{ path('stats_choisir_statut', {'typeGraph': 'moyenne'}) }}" class="btn btn-primary">Consulter ce type de statistiques</a>
-            </div>
-        </div>
-    </div>
-    <br>
-    <!-- STATS COMPARAISON -->
-    <div class="card-deck">
-        <div class="card">
-            <img class="card-img-top imageAAgrandir" src="{{ asset('img/statistiques/comparaison/moy.png') }}" alt="Card image cap">
-            <div class="card-body">
-                <hr>
-                <h5 class="card-title">Évolution d'un groupe ou d'un groupe d'étudiants ayant un statut particulier sur plusieurs évaluations</h5>
-                <p class="card-text">Génération de statistiques de comparaison de résultats : Comparaison de la moyenne d'un groupe ou d'un groupe d'étudiants <br>
-                    ayant un statut particulier à une évaluation avec la moyenne d'un ensemble d'autres évaluations passées par ces mêmes groupes.</p>
-                <a href="{{ path('statistiques_choix_evaluation', {'typeStat' : 'comparaison', 'typeGraph' : 'moyenne'}) }}" class="btn btn-primary">Consulter ce type de statistiques</a>
-            </div>
-        </div>
-    </div>
+    {% endif %}
     <!-- Modale dans laquelle les photos agrandies sont affichées -->
     <div id="modale-images" class="modal">
         <span class="close">&times;</span>
