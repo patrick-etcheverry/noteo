@@ -10,7 +10,7 @@ class NoteoVoter extends Voter
 {
     protected function supports($attribute, $subject)
     {
-        return in_array($attribute, ['OPTIONS_APPLICATION'])
+        return in_array($attribute, ['RESET_APPLICATION'])
             && $subject instanceof \App\Entity\Enseignant;
     }
 
@@ -25,7 +25,7 @@ class NoteoVoter extends Voter
         $accesAutorise = false;
 
         switch ($attribute) {
-            case 'OPTIONS_APPLICATION' :
+            case 'RESET_APPLICATION' :
                 //Il faut être admin pour pouvoir modifier l'application
                 $accesAutorise = in_array("ROLE_ADMIN", $user->getRoles());
                 break;

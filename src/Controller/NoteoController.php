@@ -19,20 +19,11 @@ class NoteoController extends AbstractController
   }
 
     /**
-     * @Route("/options", name="noteo_options")
+     * @Route("/reinitialiser", name="app_reset")
      */
-    public function optionsApplication()
+    public function reinitialiserApplication(GroupeEtudiantRepository $repoGroupe, StatutRepository $repoStatut, EtudiantRepository $repoEtudiant)
     {
-        $this->denyAccessUnlessGranted('OPTIONS_APPLICATION', $this->getUser());
-        return $this->render("app/optionsApplication.html.twig");
-
-    }
-
-    /**
-     * @Route("/preparation-annee-suivante", name="preparer_annee_suivante")
-     */
-    public function preparerAnneeSuivante(GroupeEtudiantRepository $repoGroupe, StatutRepository $repoStatut, EtudiantRepository $repoEtudiant)
-    {
+        $this->denyAccessUnlessGranted("RESET_APPLICATION", $this->getUser());
         $entityManager = $this->getDoctrine()->getManager();
         foreach ($repoGroupe->findAll() as $groupe) {
             foreach ($groupe->getEvaluations() as $evaluation) {
@@ -53,6 +44,6 @@ class NoteoController extends AbstractController
             $entityManager->remove($etudiant);
         }
         $entityManager->flush();
-        return $this->redirectToRoute("noteo_options");
+        return $this->redirectToRoute("groupe_etudiant_index");
     }
 }
