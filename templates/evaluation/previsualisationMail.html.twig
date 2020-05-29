@@ -2,14 +2,7 @@
 
 {% block titrePage %}Envoyer les statistiques aux étudiants{% endblock %}
 
-{% block evaluations %}active{% endblock %}
-
-{% block show %}show{% endblock %}
-
-{% block mesEvaluations %}{% if evaluation.enseignant == app.user %}active{% endif %}{% endblock %}
-{% block autresEvaluations %}{% if evaluation.enseignant != app.user %}active{% endif %}{% endblock %}
-
-{% block collapsed %}{% endblock %}
+{% block statistiques %}active{% endblock %}
 
 {% block contenu %}
 <h1 class="h4 mb-0 text-gray-800">Aperçu du mail que les étudiants du groupe {{ nomGroupe }} recevront</h1> <br>
