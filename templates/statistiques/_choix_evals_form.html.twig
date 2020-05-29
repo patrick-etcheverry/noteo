@@ -1,9 +1,15 @@
 {{ form_start(form) }}
     {{form_errors(form.evaluations)}}
+    {% set route = app.request.attributes.get('_route') %}
+    {{dump(route)}}
 <div class="table-responsive table-hover">
     <table class="table" id= "evaluations">
         <thead>
-        <th></th>
+        <th>
+        {% if route == "statistiques_statuts_choisir_plusieurs_evaluations" or route == "statistiques_groupes_choisir_plusieurs_evaluations" %}
+            <input type="checkbox" onclick= "cocherToutesLesCases('form[evaluations][]', this.checked)" id="checkbox" title="Tout cocher"/>
+        {% endif %}
+        </th>
         <th>Nom</th>
         <th>Date</th>
         <th>Groupe</th>
