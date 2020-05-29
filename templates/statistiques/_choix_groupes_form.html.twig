@@ -1,8 +1,13 @@
 {{form_start(form)}}
+{% set route = app.request.attributes.get('_route') %}
 <div class="table-responsive table-hover">
     <table class="table" id= "groupes">
         <thead>
-        <th><input type="checkbox" onclick= "cocherToutesLesCases('form[groupes][]', this.checked)" id="checkbox" title="Tout cocher"/></th>
+        <th>
+          {% if route != "stats_choisir_groupe_haut_niveau_evaluable" and route != "stats_choisir_statut" %}
+            <input type="checkbox" onclick= "cocherToutesLesCases('form[groupes][]', this.checked)" id="checkbox" title="Tout cocher"/>
+          {% endif %}
+        </th>
         <th>Nom</th>
         <th>Effectif</th>
         <th>Description</th>
