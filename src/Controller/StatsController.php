@@ -34,10 +34,12 @@ class StatsController extends AbstractController
     }
 
     /**
-     * @Route("/{typeStat}/choix-evaluation", name="statistiques_choix_evaluation", methods={"GET", "POST"})
+     * @Route("/{typeStat}/{typeGraph}/choix-evaluation", name="statistiques_choix_evaluation", methods={"GET", "POST"})
      */
-    public function choixEvaluation($typeStat, EvaluationRepository $repoEval, Request $request): Response
+    public function choixEvaluation($typeStat, EvaluationRepository $repoEval, Request $request, $typeGraph): Response
     {
+        //On met en sesssion le type de graphique choisi par l'utilisateur pour afficher l'onglet correspondant lors de l'affichage des stats
+        $request->getSession()->set('typeGraphique', $typeGraph);
         switch($typeStat) {
             case 'classique':
                 $evaluations = $repoEval->findAllWithOnePart();
@@ -47,9 +49,9 @@ class StatsController extends AbstractController
                 $evaluations = $repoEval->findAllWithSeveralParts();
                 $titre = "Statistiques classiques avec parties";
                 break;
-            case 'evolution' :
+            case 'comparaison' :
                 $evaluations = $repoEval->findAll();
-                $titre = "Évolution d'un groupe ou d'un statut";
+                $titre = "Comparaison de la moyenne d'un groupe ou d'un statut entre 1 évaluation et d'autres évaluations";
                 break;
         }
         $form = $this->createFormBuilder()
@@ -74,8 +76,8 @@ class StatsController extends AbstractController
                         'slug' => $form->get('evaluations')->getData()->getSlug(),
                     ]);
                     break;
-                case 'evolution' :
-                    return $this->redirectToRoute('statistiques_evolution_choisir_groupes_statuts', [
+                case 'comparaison' :
+                    return $this->redirectToRoute('statistiques_comparaison_choisir_groupes_statuts', [
                         'slug' => $form->get('evaluations')->getData()->getSlug(),
                     ]);
                     break;
@@ -88,9 +90,9 @@ class StatsController extends AbstractController
     }
 
     /**
-     * @Route("/evolution/{slug}/choisir-groupes-et-statuts", name="statistiques_evolution_choisir_groupes_statuts", methods={"GET","POST"})
+     * @Route("/comparaison/{slug}/choisir-groupes-et-statuts", name="statistiques_comparaison_choisir_groupes_statuts", methods={"GET","POST"})
      */
-    public function choisirGroupesEtStatutsEvolution(Request $request, Evaluation $evaluation, StatutRepository $repoStatut,GroupeEtudiantRepository $repoGroupe): Response
+    public function choisirGroupesEtStatutscomparaison(Request $request, Evaluation $evaluation, StatutRepository $repoStatut,GroupeEtudiantRepository $repoGroupe): Response
     {
         $session = $request->getSession();
         $groupeConcerne = $evaluation->getGroupe();
@@ -121,7 +123,7 @@ class StatsController extends AbstractController
         if ($form->isSubmitted()  && $form->isValid()) {
             $session->set('groupesChoisis', $form->get('groupes')->getData());
             $session->set('statutsChoisis', $form->get('statuts')->getData());
-            return $this->redirectToRoute('statistiques_evolution_choisir_autres_evals', [
+            return $this->redirectToRoute('statistiques_comparaison_choisir_autres_evals', [
                 'slug' => $evaluation->getSlug(),
             ]);
         }
@@ -133,9 +135,9 @@ class StatsController extends AbstractController
     }
 
     /**
-     * @Route("/evolution/{slug}/choisir-autres-evals", name="statistiques_evolution_choisir_autres_evals", methods={"GET","POST"})
+     * @Route("/comparaison/{slug}/choisir-autres-evals", name="statistiques_comparaison_choisir_autres_evals", methods={"GET","POST"})
      */
-    public function choisirEvalsEvolutions(Request $request, Evaluation $evaluationConcernee, EvaluationRepository $repoEval, PointsRepository $repoPoints ): Response
+    public function choisirEvalsComparaison(Request $request, Evaluation $evaluationConcernee, EvaluationRepository $repoEval, PointsRepository $repoPoints ): Response
     {
         $form = $this->createFormBuilder()
             ->add('evaluations', EntityType::class, [
@@ -146,7 +148,7 @@ class StatsController extends AbstractController
                 'mapped' => false,
                 'expanded' => true,
                 'multiple' => true,
-                'choices' => $repoEval->findAllOverAGroupExceptCurrentOne($evaluationConcernee->getId(), $evaluationConcernee->getGroupe()->getId())
+                'choices' => $repoEval->findAllOverAGroupExceptCurrentOne($evaluationConcernee->getGroupe()->getId(),$evaluationConcernee->getId())
             ])
             ->getForm();
 
@@ -227,7 +229,7 @@ class StatsController extends AbstractController
                 "stats" => $tabStatsComparaison
             ]
             ];
-            return $this->render('statistiques/statsEvolution.html.twig', [
+            return $this->render('statistiques/statsComparaison.html.twig', [
                 'evaluations' => $evaluationsChoisies,
                 'evaluationConcernee' => $evaluationConcernee,
                 'groupes' => $groupes,
@@ -450,10 +452,12 @@ class StatsController extends AbstractController
     }
 
     /**
-     * @Route("/plusieurs-eval/groupes/choisir-groupe", name="stats_choisir_groupe_haut_niveau_evaluable")
+     * @Route("/plusieurs-eval/groupes/{typeGraph}/choisir-groupe", name="stats_choisir_groupe_haut_niveau_evaluable")
      */
-    public function choisirGroupeStatsPlusieursEvals(Request $request, GroupeEtudiantRepository $repoGroupe): Response
+    public function choisirGroupeStatsPlusieursEvals(Request $request, GroupeEtudiantRepository $repoGroupe, $typeGraph): Response
     {
+        //On met en sesssion le type de graphique choisi par l'utilisateur pour afficher l'onglet correspondant lors de l'affichage des stats
+        $request->getSession()->set('typeGraphique', $typeGraph);
         $form = $this->createFormBuilder()
             ->add('groupes', EntityType::class, [
                 'class' => GroupeEtudiant::Class,
@@ -587,10 +591,12 @@ class StatsController extends AbstractController
     }
 
     /**
-     * @Route("/plusieurs-eval/statuts/choisir-statut", name="stats_choisir_statut")
+     * @Route("/plusieurs-eval/statuts/{typeGraph}/choisir-statut", name="stats_choisir_statut")
      */
-    public function choisirStatutsEvaluable(Request $request, StatutRepository $repoStatut): Response
+    public function choisirStatutsEvaluable(Request $request, StatutRepository $repoStatut, $typeGraph): Response
     {
+        //On met en sesssion le type de graphique choisi par l'utilisateur pour afficher l'onglet correspondant lors de l'affichage des stats
+        $request->getSession()->set('typeGraphique', $typeGraph);
         $form = $this->createFormBuilder()
             ->add('groupes', EntityType::class, [
                 'class' => Statut::Class, //On veut choisir des statut

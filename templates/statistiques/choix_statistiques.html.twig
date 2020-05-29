@@ -11,339 +11,246 @@
             -moz-box-shadow: -1px 9px 40px -12px rgba(0,0,0,0.75);
             box-shadow: -1px 9px 40px -12px rgba(0, 0, 0, 0.75);
         }
+
+        /* Style the Image Used to Trigger the Modal */
+        .imageAAgrandir {
+            border-radius: 5px;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+
+        .imageAAgrandir:hover {opacity: 0.7;}
+
+        /* The Modal (background) */
+        .modal {
+            display: none; /* Hidden by default */
+            position: fixed; /* Stay in place */
+            z-index: 1; /* Sit on top */
+            padding-top: 100px; /* Location of the box */
+            left: 0;
+            top: 0;
+            width: 100%; /* Full width */
+            height: 100%; /* Full height */
+            overflow: auto; /* Enable scroll if needed */
+            background-color: rgb(0,0,0); /* Fallback color */
+            background-color: rgba(0,0,0,0.9); /* Black w/ opacity */
+        }
+
+        /* Modal Content (Image) */
+        .modal-content {
+            margin: auto;
+            display: block;
+            width: 100%;
+        }
+
+        /* Add Animation - Zoom in the Modal */
+        .modal-content, #caption {
+            animation-name: zoom;
+            animation-duration: 0.6s;
+        }
+
+        @keyframes zoom {
+            from {transform:scale(0)}
+            to {transform:scale(1)}
+        }
+
+        /* The Close Button */
+        .close {
+            position: absolute;
+            top: 15px;
+            right: 35px;
+            color: #f1f1f1;
+            font-size: 40px;
+            font-weight: bold;
+            transition: 0.3s;
+        }
+
+        .close:hover,
+        .close:focus {
+            color: #bbb;
+            text-decoration: none;
+            cursor: pointer;
+        }
+
+        /* 100% Image Width on Smaller Screens */
+        @media only screen and (max-width: 700px){
+            .modal-content {
+                width: 100%;
+            }
+        }
     </style>
 {% endblock %}
 
 {% block contenu %}
-    <div class="card">
-        <ul class="list-group list-group-flush">
-            <li class="list-group-item text-white" style="background-color:#bdc3c7;">
-                Statistiques classiques sur une évaluation
-            </li>
+    <!-- STATS CLASSIQUES -->
+    <div class="card-deck">
+        <div class="card">
+            <img class="card-img-top imageAAgrandir" src="{{ asset('img/statistiques/classiques/histo.png') }}" alt="Card image cap">
             <div class="card-body">
-                <h1 class="h4 mb-0 text-gray-800">Exemple de graphique obtenu</h1> <br>
-                <canvas id="graph_stats_classiques"></canvas>
                 <hr>
-                <p class="card-text">
-                    Génération de statistiques triviales : Répartition des notes, moyenne, médiane, écart-type, note minimale et maximale. <br>
-                    Ces statistiques sont générées pour des évaluations avec une seule note par étudiant.
-                </p>
-                <a href="{{ path('statistiques_choix_evaluation', {'typeStat':'classique'}) }}" class="btn btn-primary">Consulter ce type de statistiques</a>
+                <h5 class="card-title">Statistiques classiques sur une évaluation (répartition des notes)</h5>
+                <p class="card-text">Génération de statistiques triviales : Répartition des notes, moyenne, médiane, écart-type, note minimale et maximale. <br>
+                    Ces statistiques sont générées pour des évaluations avec une seule note par étudiant.</p>
+                <a href="{{ path('statistiques_choix_evaluation', {'typeStat' : 'classique', 'typeGraph' : 'histogramme'}) }}" class="btn btn-primary">Consulter ce type de statistiques</a>
             </div>
-        </ul>
+        </div>
+        <div class="card">
+            <img class="card-img-top imageAAgrandir" id="myImg" src="{{ asset('img/statistiques/classiques/bam.png') }}" alt="Card image cap">
+            <div class="card-body">
+                <hr>
+                <h5 class="card-title">Statistiques classiques sur une évaluation (boîte à moustache)</h5>
+                <p class="card-text">Génération de statistiques triviales : Répartition des notes, moyenne, médiane, écart-type, note minimale et maximale. <br>
+                    Ces statistiques sont générées pour des évaluations avec une seule note par étudiant.</p>
+                <a href="{{ path('statistiques_choix_evaluation', {'typeStat' : 'classique', 'typeGraph' : 'boite-moustache'}) }}" class="btn btn-primary">Consulter ce type de statistiques</a>
+            </div>
+        </div>
+        <div class="card">
+            <img class="card-img-top imageAAgrandir" src="{{ asset('img/statistiques/classiques/moy.png') }}" alt="Card image cap">
+            <div class="card-body">
+                <hr>
+                <h5 class="card-title">Statistiques classiques sur une évaluation (moyenne et écart-type)</h5>
+                <p class="card-text">Génération de statistiques triviales : Répartition des notes, moyenne, médiane, écart-type, note minimale et maximale. <br>
+                    Ces statistiques sont générées pour des évaluations avec une seule note par étudiant.</p>
+                <a href="{{ path('statistiques_choix_evaluation', {'typeStat' : 'classique', 'typeGraph' : 'moyenne'}) }}" class="btn btn-primary">Consulter ce type de statistiques</a>
+            </div>
+        </div>
     </div>
     <br>
-    <div class="card">
-        <ul class="list-group list-group-flush">
-            <li class="list-group-item text-white" style="background-color:#bdc3c7;">
-                Statistiques classiques sur une évaluation avec des parties
-            </li>
+    <!-- STATS CLASSIQUES AVEC PARTIES -->
+    <div class="card-deck">
+        <div class="card">
+            <img class="card-img-top imageAAgrandir" src="{{ asset('img/statistiques/classiques-avec-parties/histo.png') }}" alt="Card image cap">
             <div class="card-body">
-                <h1 class="h4 mb-0 text-gray-800">Exemple de graphique obtenu pour une partie donnée</h1> <br>
-                <canvas id="graph_stats_parties"></canvas>
                 <hr>
-                <p class="card-text">
-                    Génération de statistiques triviales : Répartition des notes, moyenne, médiane, écart-type, note minimale et maximale. <br>
-                    Ces statistiques sont générées pour des évaluations découpées en plusieurs parties, avec plusieurs notes par étudiant.
-                </p>
-                <a href="{{ path('statistiques_choix_evaluation', {'typeStat':'classique-avec-parties'}) }}" class="btn btn-primary">Consulter ce type de statistiques</a>
+                <h5 class="card-title">Statistiques classiques sur une évaluation avec parties (répartition des notes)</h5>
+                <p class="card-text">Génération de statistiques triviales : Répartition des notes, moyenne, médiane, écart-type, note minimale et maximale. <br>
+                    Ces statistiques sont générées pour des évaluations avec une seule note par étudiant.</p>
+                <a href="{{ path('statistiques_choix_evaluation', {'typeStat' : 'classique-avec-parties', 'typeGraph' : 'histogramme'}) }}" class="btn btn-primary">Consulter ce type de statistiques</a>
             </div>
-        </ul>
+        </div>
+        <div class="card">
+            <img class="card-img-top imageAAgrandir" id="myImg" src="{{ asset('img/statistiques/classiques-avec-parties/bam.png') }}" alt="Card image cap">
+            <div class="card-body">
+                <hr>
+                <h5 class="card-title">Statistiques classiques sur une évaluation avec parties (boîte à moustache)</h5>
+                <p class="card-text">Génération de statistiques triviales : Répartition des notes, moyenne, médiane, écart-type, note minimale et maximale. <br>
+                    Ces statistiques sont générées pour des évaluations avec une seule note par étudiant.</p>
+                <a href="{{ path('statistiques_choix_evaluation', {'typeStat' : 'classique-avec-parties', 'typeGraph' : 'boite-moustache'}) }}" class="btn btn-primary">Consulter ce type de statistiques</a>
+            </div>
+        </div>
+        <div class="card">
+            <img class="card-img-top imageAAgrandir" src="{{ asset('img/statistiques/classiques-avec-parties/moy.png') }}" alt="Card image cap">
+            <div class="card-body">
+                <hr>
+                <h5 class="card-title">Statistiques classiques sur une évaluation avec parties (moyenne et écart-type)</h5>
+                <p class="card-text">Génération de statistiques triviales : Répartition des notes, moyenne, médiane, écart-type, note minimale et maximale. <br>
+                    Ces statistiques sont générées pour des évaluations avec une seule note par étudiant.</p>
+                <a href="{{ path('statistiques_choix_evaluation', {'typeStat' : 'classique-avec-parties', 'typeGraph' : 'moyenne'}) }}" class="btn btn-primary">Consulter ce type de statistiques</a>
+            </div>
+        </div>
     </div>
     <br>
-    <div class="card">
-        <ul class="list-group list-group-flush">
-            <li class="list-group-item text-white" style="background-color:#bdc3c7;">
-                Statistiques classiques sur plusieurs évaluations
-            </li>
+    <!--  STATS PLUSIEURS EVALS, GROUPE  -->
+    <div class="card-deck">
+        <div class="card">
+            <img class="card-img-top imageAAgrandir" src="{{ asset('img/statistiques/plusieurs-evals-groupe/histo.png') }}" alt="Card image cap">
             <div class="card-body">
-                <h1 class="h4 mb-0 text-gray-800">Exemple de graphique obtenu sur deux évaluations</h1> <br>
-                <canvas id="graph_stats_plusieurs_evals_groupe_statut"></canvas>
                 <hr>
-                <p class="card-text">
-                    Générations de statistiques triviales : répartition des notes, moyenne, médiane, écart-type, note minimale et maximale. <br>
-                    Ces statistiques sont générées sur les résultats d'un groupe et de ses sous-groupes ou d'un groupe d'étudiants ayant un statut particulier sur plusieurs évaluations. <br>
-                    Le calcul est effectué sur la note finale de chaque évaluation.
-                </p>
-                <a href="{{ path('stats_choisir_groupe_haut_niveau_evaluable') }}" class="btn btn-primary">Consulter ce type de statistiques par groupes</a>
-                <a href="{{ path('stats_choisir_statut') }}" class="btn btn-primary">Consulter ce type de statistiques par statuts</a>
+                <h5 class="card-title">Statistiques classiques sur plusieurs évaluations par groupes (répartition des notes)</h5>
+                <p class="card-text">Générations de statistiques triviales : répartition des notes, moyenne, médiane, écart-type, note minimale et maximale. <br>
+                    Le calcul est effectué sur la note finale de chaque évaluation.</p>
+                <a href="{{ path('stats_choisir_groupe_haut_niveau_evaluable', {'typeGraph': 'histogramme'}) }}" class="btn btn-primary">Consulter ce type de statistiques</a>
             </div>
-        </ul>
+        </div>
+        <div class="card">
+            <img class="card-img-top imageAAgrandir" id="myImg" src="{{ asset('img/statistiques/plusieurs-evals-groupe/bam.png') }}" alt="Card image cap">
+            <div class="card-body">
+                <hr>
+                <h5 class="card-title">Statistiques classiques sur plusieurs évaluations par groupes (boîte à moustache)</h5>
+                <p class="card-text">Générations de statistiques triviales : répartition des notes, moyenne, médiane, écart-type, note minimale et maximale. <br>
+                    Le calcul est effectué sur la note finale de chaque évaluation.</p>
+                <a href="{{ path('stats_choisir_groupe_haut_niveau_evaluable', {'typeGraph': 'boite-moustache'}) }}" class="btn btn-primary">Consulter ce type de statistiques</a>
+            </div>
+        </div>
+        <div class="card">
+            <img class="card-img-top imageAAgrandir" src="{{ asset('img/statistiques/plusieurs-evals-groupe/moy.png') }}" alt="Card image cap">
+            <div class="card-body">
+                <hr>
+                <h5 class="card-title">Statistiques classiques sur plusieurs évaluations par groupes (moyenne et écart-type)</h5>
+                <p class="card-text">Générations de statistiques triviales : répartition des notes, moyenne, médiane, écart-type, note minimale et maximale. <br>
+                    Le calcul est effectué sur la note finale de chaque évaluation.</p>
+                <a href="{{ path('stats_choisir_groupe_haut_niveau_evaluable', {'typeGraph': 'moyenne'}) }}" class="btn btn-primary">Consulter ce type de statistiques</a>
+            </div>
+        </div>
     </div>
     <br>
-    <div class="card">
-        <ul class="list-group list-group-flush">
-            <li class="list-group-item text-white" style="background-color:#bdc3c7;">
-                Évolution d'un groupe ou d'un groupe d'étudiants ayant un statut particulier sur plusieurs évaluations
-            </li>
+    <!-- STATS PLUSIEURS EVALS, STATUT -->
+    <div class="card-deck">
+        <div class="card">
+            <img class="card-img-top imageAAgrandir" src="{{ asset('img/statistiques/plusieurs-evals-statut/histo.png') }}" alt="Card image cap">
             <div class="card-body">
-                <h1 class="h4 mb-0 text-gray-800">Exemple de graphique obtenu sur trois évaluations</h1> <br>
-                <canvas id="graph_stats_plusieurs_evals"></canvas>
                 <hr>
-                <p class="card-text">
-                    Génération de statistiques de comparaison de résultats : Comparaison de la moyenne d'un groupe ou d'un groupe d'étudiants <br>
-                    ayant un statut particulier à une évaluation avec la moyenne d'un ensemble d'autres évaluations passées par ces mêmes groupes.
-                </p>
-                <a href="{{ path('statistiques_choix_evaluation', {'typeStat':'evolution'}) }}" class="btn btn-primary">Consulter ce type de statistiques</a>
+                <h5 class="card-title">Statistiques classiques sur plusieurs évaluations par statut (répartition des notes)</h5>
+                <p class="card-text">Générations de statistiques triviales : répartition des notes, moyenne, médiane, écart-type, note minimale et maximale. <br>
+                    Le calcul est effectué sur la note finale de chaque évaluation.</p>
+                <a href="{{ path('stats_choisir_statut', {'typeGraph': 'histogramme'}) }}" class="btn btn-primary">Consulter ce type de statistiques</a>
             </div>
-        </ul>
+        </div>
+        <div class="card">
+            <img class="card-img-top imageAAgrandir" id="myImg" src="{{ asset('img/statistiques/plusieurs-evals-statut/bam.png') }}" alt="Card image cap">
+            <div class="card-body">
+                <hr>
+                <h5 class="card-title">Statistiques classiques sur plusieurs évaluations par statut (boîte à moustache)</h5>
+                <p class="card-text">Générations de statistiques triviales : répartition des notes, moyenne, médiane, écart-type, note minimale et maximale. <br>
+                    Le calcul est effectué sur la note finale de chaque évaluation.</p>
+                <a href="{{ path('stats_choisir_statut', {'typeGraph': 'boite-moustache'}) }}" class="btn btn-primary">Consulter ce type de statistiques</a>
+            </div>
+        </div>
+        <div class="card">
+            <img class="card-img-top imageAAgrandir" src="{{ asset('img/statistiques/plusieurs-evals-statut/moy.png') }}" alt="Card image cap">
+            <div class="card-body">
+                <hr>
+                <h5 class="card-title">Statistiques classiques sur plusieurs évaluations par statut (moyenne et écart-type)</h5>
+                <p class="card-text">Générations de statistiques triviales : répartition des notes, moyenne, médiane, écart-type, note minimale et maximale. <br>
+                    Le calcul est effectué sur la note finale de chaque évaluation.</p>
+                <a href="{{ path('stats_choisir_statut', {'typeGraph': 'moyenne'}) }}" class="btn btn-primary">Consulter ce type de statistiques</a>
+            </div>
+        </div>
+    </div>
+    <br>
+    <!-- STATS COMPARAISON -->
+    <div class="card-deck">
+        <div class="card">
+            <img class="card-img-top imageAAgrandir" src="{{ asset('img/statistiques/comparaison/moy.png') }}" alt="Card image cap">
+            <div class="card-body">
+                <hr>
+                <h5 class="card-title">Évolution d'un groupe ou d'un groupe d'étudiants ayant un statut particulier sur plusieurs évaluations</h5>
+                <p class="card-text">Génération de statistiques de comparaison de résultats : Comparaison de la moyenne d'un groupe ou d'un groupe d'étudiants <br>
+                    ayant un statut particulier à une évaluation avec la moyenne d'un ensemble d'autres évaluations passées par ces mêmes groupes.</p>
+                <a href="{{ path('statistiques_choix_evaluation', {'typeStat' : 'comparaison', 'typeGraph' : 'moyenne'}) }}" class="btn btn-primary">Consulter ce type de statistiques</a>
+            </div>
+        </div>
+    </div>
+    <!-- Modale dans laquelle les photos agrandies sont affichées -->
+    <div id="modale-images" class="modal">
+        <span class="close">&times;</span>
+        <img class="modal-content" id="nouvelleImageAffichee">
     </div>
 {% endblock %}
 
 {% block javascripts %}
 
     <script>
-        // Objet options des graphiques
-        var options = {
-            scales: {
-                xAxes: [{
-                    gridLines: {
-                        display: false
-                    },
-                    ticks: {
-                        fontSize: 16,
-                    },
-                    maxBarThickness: 100,
-                    stacked: false,
-                }],
-                yAxes: [{
-                    labelString: 'Intervalle de note',
-                    ticks: {
-                        beginAtZero: true,
-                        max: undefined,
-                        min: 0,
-                        fontSize: 16,
-                    },
-                    stacked: false,
-                }],
-            },
-            legend: {
-                position: 'top',
-                labels: {
-                    fontSize: 16,
-                },
-            },
-            aspectRatio: 3,
-            maintainAspectRatio: true,
-            responsive: true,
-            tooltips: {
-                intersect: false,
-                titleMarginBottom: 10,
-                titleFontColor: '#6e707e',
-                titleFontSize: 16,
-                backgroundColor: "#FFFFFF",
-                bodyFontColor: "#858796",
-                borderColor: '#dddfeb',
-                borderWidth: 1,
-                xPadding: 15,
-                yPadding: 15,
-                displayColors: true,
-                caretPadding: 10
-            },
-            plugins : {
-                labels: {
-                    render: 'value'
-                }
-            }
-        }
-
-        //Données des graphiques
-        var dataClassique = {
-            labels: ['[0;4[', '[4;8[', '[8;12[', '[12;16[', '[16;20]'],
-            datasets: [
-                {
-                    label: 'Groupe 1',
-                    data: [4,2,7,6,5],
-                    borderColor: "#808080",
-                    labelColor: [
-                        'rgba(155, 89, 182)',
-                    ],
-                    backgroundColor: [
-                        'rgba(155, 89, 182)',
-                        'rgba(155, 89, 182)',
-                        'rgba(155, 89, 182)',
-                        'rgba(155, 89, 182)',
-                        'rgba(155, 89, 182)'
-                    ],
-                    hoverBackgroundColor : [
-                        'rgba(155, 89, 182)',
-                        'rgba(155, 89, 182)',
-                        'rgba(155, 89, 182)',
-                        'rgba(155, 89, 182)',
-                        'rgba(155, 89, 182)'
-                    ]
-                },
-                {
-                    label: 'Groupe 2',
-                    data: [8,1,5,3,4],
-                    borderColor: "#808080",
-                    labelColor: [
-                        'rgba(192, 57, 43)',
-                    ],
-                    backgroundColor: [
-                        'rgba(192, 57, 43)',
-                        'rgba(192, 57, 43)',
-                        'rgba(192, 57, 43)',
-                        'rgba(192, 57, 43)',
-                        'rgba(192, 57, 43)'
-                    ],
-                    hoverBackgroundColor : [
-                        'rgba(192, 57, 43)',
-                        'rgba(192, 57, 43)',
-                        'rgba(192, 57, 43)',
-                        'rgba(192, 57, 43)',
-                        'rgba(192, 57, 43)'
-                    ]
-                }
-            ],
-        };
-        var dataPlusieursParties = {
-            labels: ['[0;4[', '[4;8[', '[8;12[', '[12;16[', '[16;20]'],
-            datasets: [
-                {
-                    label: 'Groupe 1',
-                    data: [7,1,0,5,10],
-                    borderColor: "#808080",
-                    labelColor: [
-                        'rgba(41, 128, 185)',
-                    ],
-                    backgroundColor: [
-                        'rgba(41, 128, 185)',
-                        'rgba(41, 128, 185)',
-                        'rgba(41, 128, 185)',
-                        'rgba(41, 128, 185)',
-                        'rgba(41, 128, 185)'
-                    ],
-                    hoverBackgroundColor : [
-                        'rgba(41, 128, 185)',
-                        'rgba(41, 128, 185)',
-                        'rgba(41, 128, 185)',
-                        'rgba(41, 128, 185)',
-                        'rgba(41, 128, 185)'
-                    ]
-                },
-                {
-                    label: 'Groupe 2',
-                    data: [6,3,1,3,4],
-                    borderColor: "#808080",
-                    labelColor: [
-                        'rgba(22, 160, 133)',
-                    ],
-                    backgroundColor: [
-                        'rgba(22, 160, 133)',
-                        'rgba(22, 160, 133)',
-                        'rgba(22, 160, 133)',
-                        'rgba(22, 160, 133)',
-                        'rgba(22, 160, 133)'
-                    ],
-                    hoverBackgroundColor : [
-                        'rgba(22, 160, 133)',
-                        'rgba(22, 160, 133)',
-                        'rgba(22, 160, 133)',
-                        'rgba(22, 160, 133)',
-                        'rgba(22, 160, 133)'
-                    ]
-                }
-            ],
-        };
-        var dataPlusieursEvals = {
-            labels: ['Groupe 1', 'Groupe 2'],
-            datasets: [
-                {
-                    label: 'Moyenne',
-                    data: [15.5,10.3],
-                    borderColor: "#808080",
-                    labelColor: [
-                        'rgba(243, 156, 18)',
-                    ],
-                    backgroundColor: [
-                        'rgba(243, 156, 18)',
-                        'rgba(243, 156, 18)',
-                    ],
-                    hoverBackgroundColor : [
-                        'rgba(243, 156, 18)',
-                        'rgba(243, 156, 18)',
-                    ]
-                },
-                {
-                    label: 'Écart-type',
-                    data: [5.47,6.04],
-                    borderColor: "#808080",
-                    labelColor: [
-                        'rgba(211, 84, 0)',
-                    ],
-                    backgroundColor: [
-                        'rgba(211, 84, 0)',
-                        'rgba(211, 84, 0)',
-                    ],
-                    hoverBackgroundColor : [
-                        'rgba(211, 84, 0)',
-                        'rgba(211, 84, 0)',
-                    ]
-                }
-            ],
-        };
-        var dataEvolutionGroupeStatut = {
-            labels: ['Groupe 1', 'Groupe 2'],
-            datasets: [
-                {
-                    label: 'Moyenne à Évaluation mathématiques',
-                    data: [12.5,9.7],
-                    borderColor: "#808080",
-                    labelColor: [
-                        'rgba(44, 62, 80)',
-                    ],
-                    backgroundColor: [
-                        'rgba(44, 62, 80)',
-                        'rgba(44, 62, 80)',
-                    ],
-                    hoverBackgroundColor : [
-                        'rgba(44, 62, 80)',
-                        'rgba(44, 62, 80)',
-                    ]
-                },
-                {
-                    label: 'Moyenne aux autres évaluations choisies',
-                    data: [10.3,16],
-                    borderColor: "#808080",
-                    labelColor: [
-                        'rgba(149, 165, 166)',
-                    ],
-                    backgroundColor: [
-                        'rgba(149, 165, 166)',
-                        'rgba(149, 165, 166)',
-                    ],
-                    hoverBackgroundColor : [
-                        'rgba(149, 165, 166)',
-                        'rgba(149, 165, 166)',
-                    ]
-                }
-            ],
-        };
-
-
-        //Affichage des graphiques
-        var chartClassique = new Chart(document.getElementById("graph_stats_classiques").getContext('2d'), {
-            type: 'bar',
-            data: dataClassique,
-            options: options,
-        });
-        var chartParties = new Chart(document.getElementById("graph_stats_parties").getContext('2d'), {
-            type: 'bar',
-            data: dataPlusieursParties,
-            options: options,
-        });
-        var chartEvolution = new Chart(document.getElementById("graph_stats_plusieurs_evals_groupe_statut").getContext('2d'), {
-            type: 'bar',
-            data: dataPlusieursEvals,
-            options: options,
-        });
-        var chartPlusieursEvals = new Chart(document.getElementById("graph_stats_plusieurs_evals").getContext('2d'), {
-            type: 'bar',
-            data: dataEvolutionGroupeStatut,
-            options: options,
-        });
-
+        //Event listener pour agrandir l'image lorsqu'on clique dessus
+        //La fonction va afficher dans la fenêtre l'image, non réduite à la taille de la carte
+        $(".imageAAgrandir").on('click', function () {
+            $("#modale-images").css("display", "block");
+            $("#nouvelleImageAffichee").attr("src", this.src);
+        })
+        //Quand on clique sur la croix on ferme
+        $(".close").on('click', function () {
+            $("#modale-images").css("display", "none");
+        })
     </script>
 
 
