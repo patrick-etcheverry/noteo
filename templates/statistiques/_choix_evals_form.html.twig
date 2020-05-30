@@ -1,7 +1,6 @@
 {{ form_start(form) }}
     {{form_errors(form.evaluations)}}
     {% set route = app.request.attributes.get('_route') %}
-    {{dump(route)}}
 <div class="table-responsive table-hover">
     <table class="table" id= "evaluations">
         <thead>
