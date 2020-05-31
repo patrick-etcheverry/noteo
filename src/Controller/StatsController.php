@@ -28,22 +28,43 @@ class StatsController extends AbstractController
     /**
      * @Route("/choix-statistiques", name="choix_statistiques", methods={"GET"})
      */
-    public function choixStatistiques(): Response
+    public function choixStatistiques(EvaluationRepository $repoEval, StatutRepository $repoStatut, GroupeEtudiantRepository $repoGroupe): Response
     {
-        return $this->render('statistiques/choix_statistiques.html.twig');
+        //On définit quelles fonctionnalités seront disponibles à l'utilisateur
+        $statsClassiquesDispo = count($repoEval->findAllWithOnePart()) >= 1; //Si plus d'une éval simple dans l'appli
+        $statsClassiquesParPartiesDispo = count($repoEval->findAllWithSeveralParts()) >= 1;  //Si plus d'une éval avec partie dans l'appli
+        $statsPlusieursEvalsGroupeDispo = count($repoGroupe->findAll()) >=1 && count($repoEval->findAll()) >= 2;  //Si plus d'un groupe et plus de 2 évals dans l'appli
+        $statsPlusieursEvalsStatutDispo = count($repoStatut->findAll()) >=1 && count($repoEval->findAll()) >= 2; //Si plus d'un statut et plus de 2 évals dans l'appli
+        $statsComparaisonDispo = count($repoEval->findAll()) >= 2; //Si plus de 2 évals dans l'appli
+
+        return $this->render('statistiques/choix_statistiques.html.twig', [
+            'statsClassiquesDispo' => $statsClassiquesDispo,
+            'statsClassiquesParPartiesDispo' => $statsClassiquesParPartiesDispo,
+            'statsPlusieursEvalsGroupeDispo' => $statsPlusieursEvalsGroupeDispo,
+            'statsPlusieursEvalsStatutDispo' => $statsPlusieursEvalsStatutDispo,
+            'statsComparaisonDispo' => $statsComparaisonDispo
+        ]);
     }
 
     /**
-     * @Route("/{typeStat}/choix-evaluation", name="statistiques_choix_evaluation", methods={"GET", "POST"})
+     * @Route("/{typeStat}/{typeGraph}/choix-evaluation", name="statistiques_choix_evaluation", methods={"GET", "POST"})
      */
-    public function choixEvaluation($typeStat, EvaluationRepository $repoEval, Request $request): Response
+    public function choixEvaluation($typeStat, EvaluationRepository $repoEval, Request $request, $typeGraph): Response
     {
+        //On met en sesssion le type de graphique choisi par l'utilisateur pour afficher l'onglet correspondant lors de l'affichage des stats
+        $request->getSession()->set('typeGraphique', $typeGraph);
         switch($typeStat) {
             case 'classique':
                 $evaluations = $repoEval->findAllWithOnePart();
+                $titre = "Statistiques classiques";
                 break;
             case 'classique-avec-parties' :
                 $evaluations = $repoEval->findAllWithSeveralParts();
+                $titre = "Statistiques classiques avec parties";
+                break;
+            case 'comparaison' :
+                $evaluations = $repoEval->findAll();
+                $titre = "Comparaison de la moyenne d'un groupe ou d'un statut entre 1 évaluation et d'autres évaluations";
                 break;
         }
         $form = $this->createFormBuilder()
@@ -61,22 +82,189 @@ class StatsController extends AbstractController
 
         $form->handleRequest($request);
         if ($form->isSubmitted()  && $form->isValid()) {
-            return $this->redirectToRoute('statistiques_choisir_groupes_parties_statuts', [
-                'slugEval' => $form->get('evaluations')->getData()->getSlug(),
-            ]);
+            switch ($typeStat) {
+                case 'classique':
+                case 'classique-avec-parties' :
+                    return $this->redirectToRoute('statistiques_classiques_choisir_groupes_parties_statuts', [
+                        'slug' => $form->get('evaluations')->getData()->getSlug(),
+                    ]);
+                    break;
+                case 'comparaison' :
+                    return $this->redirectToRoute('statistiques_comparaison_choisir_groupes_statuts', [
+                        'slug' => $form->get('evaluations')->getData()->getSlug(),
+                    ]);
+                    break;
+            }
         }
         return $this->render('statistiques/choix_evaluation.html.twig', [
-            'form' => $form->createView()
+            'form' => $form->createView(),
+            'titrePage' => $titre
         ]);
     }
 
     /**
-     * @Route("/{slugEval}/choisir-groupes-et-statuts", name="statistiques_choisir_groupes_parties_statuts", methods={"GET","POST"})
+     * @Route("/comparaison/{slug}/choisir-groupes-et-statuts", name="statistiques_comparaison_choisir_groupes_statuts", methods={"GET","POST"})
      */
-    public function choisirGroupesPartiesEtStatuts(Request $request, $slugEval, StatutRepository $repoStatut, EvaluationRepository $repoEval, GroupeEtudiantRepository $repoGroupe, PointsRepository $repoPoints ): Response
+    public function choisirGroupesEtStatutscomparaison(Request $request, Evaluation $evaluation, StatutRepository $repoStatut,GroupeEtudiantRepository $repoGroupe): Response
     {
         $session = $request->getSession();
-        $evaluation = $repoEval->findOneBySlug($slugEval);
+        $groupeConcerne = $evaluation->getGroupe();
+        //On récupère la liste de tous les enfants (directs et indirects) du groupe concerné pour choisir ceux sur lesquels on veut des statistiques
+        $choixGroupe = $repoGroupe->findAllOrderedFromNode($groupeConcerne);
+        $form = $this->createFormBuilder()
+            ->add('groupes', EntityType::class, [
+                'class' => GroupeEtudiant::Class,
+                'choice_label' => false,
+                'label' => false,
+                'mapped' => false,
+                'expanded' => true,
+                'multiple' => true,
+                'choices' => $choixGroupe // On choisira parmis le groupe concerné et ses enfants
+            ])
+            ->add('statuts', EntityType::class, [
+                'class' => Statut::Class,
+                'choice_label' => false,
+                'label' => false,
+                'mapped' => false,
+                'expanded' => true,
+                'multiple' => true,
+                'choices' => $repoStatut->findByEvaluation($evaluation->getId()) // On choisira parmis les statuts qui possède au moins 1 étudiant ayant participé à l'évaluation
+                // 'choices' => []
+            ])
+            ->getForm();
+        $form->handleRequest($request);
+        if ($form->isSubmitted()  && $form->isValid()) {
+            $session->set('groupesChoisis', $form->get('groupes')->getData());
+            $session->set('statutsChoisis', $form->get('statuts')->getData());
+            return $this->redirectToRoute('statistiques_comparaison_choisir_autres_evals', [
+                'slug' => $evaluation->getSlug(),
+            ]);
+        }
+        return $this->render('statistiques/choix_groupes_et_parties.html.twig', [
+            'form' => $form->createView(),
+            'evaluation' => $evaluation,
+            'pasDeChoixParties' => true
+        ]);
+    }
+
+    /**
+     * @Route("/comparaison/{slug}/choisir-autres-evals", name="statistiques_comparaison_choisir_autres_evals", methods={"GET","POST"})
+     */
+    public function choisirEvalsComparaison(Request $request, Evaluation $evaluationConcernee, EvaluationRepository $repoEval, PointsRepository $repoPoints ): Response
+    {
+        $form = $this->createFormBuilder()
+            ->add('evaluations', EntityType::class, [
+                'constraints' => [new NotNull],
+                'class' => Evaluation::Class,
+                'choice_label' => false,
+                'label' => false,
+                'mapped' => false,
+                'expanded' => true,
+                'multiple' => true,
+                'choices' => $repoEval->findAllOverAGroupExceptCurrentOne($evaluationConcernee->getGroupe()->getId(),$evaluationConcernee->getId())
+            ])
+            ->getForm();
+
+        $form->handleRequest($request);
+
+        if($form->isSubmitted() && $form->isValid()) {
+            $session = $request->getSession();
+            $tabStatsComparaison = array();
+            $evaluationsChoisies =  $form->get('evaluations')->getData();
+            $groupes = $session->get('groupesChoisis');
+            $statuts = $session->get('statutsChoisis');
+
+            foreach ($groupes as $groupe) {
+                // déterminer la moyenne du groupe courant à l'évaluation que l'on veut comparer aux autres
+                $pointsEvaluationGroupe = $repoPoints->findAllNotesByGroupe($evaluationConcernee->getId(), $groupe->getId());
+                $moyenneEvaluationCouranteGroupe = array();
+                foreach ($pointsEvaluationGroupe as $note) {
+                    $moyenneEvaluationGroupe[] = $note["valeur"];
+                }
+                $moyenneEvaluationCouranteGroupe = $this->moyenne($moyenneEvaluationGroupe);
+
+                //déterminer la moyenne des moyennes aux évaluations
+                $moyennesGroupeTmp = array();
+
+                foreach ($evaluationsChoisies as $evaluationCourante) { // pour chaque évaluation, on détermine sa moyenne pour le groupe courant
+                    //determiner la moyenne de l'évaluation courante
+                    $tabPoints = $repoPoints->findAllNotesByGroupe($evaluationCourante->getId(), $groupe->getId()); // on récupère les notes
+                    //on crée un tableau temporaire ou on stoque séparement chaque note
+                    $copieTab = array();
+                    foreach ($tabPoints as $note) {
+                        $copieTab[] = $note["valeur"];
+                    }
+                    $moyenneEvaluationCourante = $this->moyenne($copieTab); // on determine la moyenne du controle courant
+                    array_push($moyennesGroupeTmp, $moyenneEvaluationCourante);
+                }
+                //on détermine la moyenne des moyennes
+                $moyenneDesMoyennesEvaluations = $this->moyenne($moyennesGroupeTmp);
+                $tabStatsComparaison[] = [
+                    "nom" => $groupe->getNom(),
+                    "moyenneControleCourant" => $moyenneEvaluationCouranteGroupe,
+                    "moyenneAutresControles" => $moyenneDesMoyennesEvaluations,
+                ];
+            }
+
+            ///on traite les statistiques pour tous les statuts
+            foreach ($statuts as $statut) {
+                /// déterminer la moyenne du groupe courant à l'évaluation
+                $pointsEvaluationStatut = $repoPoints->findAllNotesByStatut($evaluationConcernee->getId(), $statut->getId());
+                $moyenneEvaluationCouranteStatut = array();
+                foreach ($pointsEvaluationStatut as $note) {
+                    $moyenneEvaluationCouranteStatut[] = $note["valeur"];
+                }
+                $moyenneEvaluationCouranteStatut = $this->moyenne($moyenneEvaluationCouranteStatut);
+                /// déterminer la moyenne des moyennes aux évaluations
+                $moyennesTmp = array();
+
+                foreach ($evaluationsChoisies as $evaluationCourante) { // pour chaque évaluation, on détermine sa moyenne pour le groupe courant
+                    //determiner la moyenne de l'évaluation courante
+                    $tabPoints = $repoPoints->findAllNotesByStatut($evaluationCourante->getId(), $statut->getId()); // on récupère les notes
+                    //on crée un tableau temporaire ou on stoque séparement chaque note
+                    $copieTab = array();
+                    foreach ($tabPoints as $note) {
+                        $copieTab[] = $note["valeur"];
+                    }
+                    $moyenneEvaluationCourante = $this->moyenne($copieTab); // on determine la moyenne du controle courant
+                    array_push($moyennesTmp, $moyenneEvaluationCourante);
+                }
+                //on détermine la moyenne des moyennes
+                $moyenneDesMoyennesEvaluations = $this->moyenne($moyennesTmp);
+                $tabStatsComparaison[] = [
+                    "nom" => $statut->getNom(),
+                    "moyenneControleCourant" => $moyenneEvaluationCouranteStatut,
+                    "moyenneAutresControles" => $moyenneDesMoyennesEvaluations,
+                ];
+            }
+            $formatAdapteALaVue = [[
+                "nom" => "Comparaison des évaluations",
+                "stats" => $tabStatsComparaison
+            ]
+            ];
+            return $this->render('statistiques/statsComparaison.html.twig', [
+                'evaluations' => $evaluationsChoisies,
+                'evaluationConcernee' => $evaluationConcernee,
+                'groupes' => $groupes,
+                "parties" => $formatAdapteALaVue,
+                'titre' => "Comparer " . (count($evaluationsChoisies)+1) . ' évaluations',
+                'plusieursEvals' => true,
+            ]);
+        }
+
+        return $this->render('statistiques/choix_evaluation.html.twig', [
+            'form' => $form->createView(),
+            'titrePage' => "Choisir les autres évals",
+            'titre' => 'Consulter les statistiques'
+        ]);
+    }
+
+    /**
+     * @Route("/classique/{slug}/choisir-groupes-et-statuts", name="statistiques_classiques_choisir_groupes_parties_statuts", methods={"GET","POST"})
+     */
+    public function choisirGroupesPartiesEtStatuts(Request $request, Evaluation $evaluation, StatutRepository $repoStatut, GroupeEtudiantRepository $repoGroupe, PointsRepository $repoPoints ): Response
+    {
+        $session = $request->getSession();
         $groupeConcerne = $evaluation->getGroupe();
         //On récupère la liste de tous les enfants (directs et indirects) du groupe concerné pour choisir ceux sur lesquels on veut des statistiques
         $choixGroupe = $repoGroupe->findAllOrderedFromNode($groupeConcerne);
@@ -111,7 +299,6 @@ class StatsController extends AbstractController
                 'expanded' => true,
                 'multiple' => true,
                 'choices' => $repoStatut->findByEvaluation($evaluation->getId()) // On choisira parmis les statuts qui possède au moins 1 étudiant ayant participé à l'évaluation
-                // 'choices' => []
             ]);
         $form = $formBuilder->getForm()->handleRequest($request);
         if ($form->isSubmitted()  && $form->isValid()) {
@@ -182,7 +369,8 @@ class StatsController extends AbstractController
         }
         return $this->render('statistiques/choix_groupes_et_parties.html.twig', [
             'form' => $form->createView(),
-            'evaluation' => $evaluation
+            'evaluation' => $evaluation,
+            'pasDeChoixParties' => false
         ]);
     }
 
@@ -277,10 +465,12 @@ class StatsController extends AbstractController
     }
 
     /**
-     * @Route("/plusieurs-eval/groupes/choisir-groupe", name="stats_choisir_groupe_haut_niveau_evaluable")
+     * @Route("/plusieurs-eval/groupes/{typeGraph}/choisir-groupe", name="stats_choisir_groupe_haut_niveau_evaluable")
      */
-    public function choisirGroupeStatsPlusieursEvals(Request $request, GroupeEtudiantRepository $repoGroupe): Response
+    public function choisirGroupeStatsPlusieursEvals(Request $request, GroupeEtudiantRepository $repoGroupe, $typeGraph): Response
     {
+        //On met en sesssion le type de graphique choisi par l'utilisateur pour afficher l'onglet correspondant lors de l'affichage des stats
+        $request->getSession()->set('typeGraphique', $typeGraph);
         $form = $this->createFormBuilder()
             ->add('groupes', EntityType::class, [
                 'class' => GroupeEtudiant::Class,
@@ -414,10 +604,12 @@ class StatsController extends AbstractController
     }
 
     /**
-     * @Route("/plusieurs-eval/statuts/choisir-statut", name="stats_choisir_statut")
+     * @Route("/plusieurs-eval/statuts/{typeGraph}/choisir-statut", name="stats_choisir_statut")
      */
-    public function choisirStatutsEvaluable(Request $request, StatutRepository $repoStatut): Response
+    public function choisirStatutsEvaluable(Request $request, StatutRepository $repoStatut, $typeGraph): Response
     {
+        //On met en sesssion le type de graphique choisi par l'utilisateur pour afficher l'onglet correspondant lors de l'affichage des stats
+        $request->getSession()->set('typeGraphique', $typeGraph);
         $form = $this->createFormBuilder()
             ->add('groupes', EntityType::class, [
                 'class' => Statut::Class, //On veut choisir des statut

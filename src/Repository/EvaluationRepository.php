@@ -103,6 +103,20 @@ class EvaluationRepository extends ServiceEntityRepository
             ->execute();
     }
 
+    public function findAllOverAGroupExceptCurrentOne($idGroupe, $idEvalCourante) {
+        return $this->getEntityManager()->createQuery('
+            SELECT e
+            FROM App\Entity\Evaluation e
+            JOIN e.groupe g
+            JOIN g.enseignant et
+            WHERE g.id = :idG
+            AND e.id != :idE
+            ')
+            ->setParameter('idG', $idGroupe)
+            ->setParameter('idE', $idEvalCourante)
+            ->execute();
+    }
+
 
     // /**
     //  * @return Stage[] Returns an array of Stage objects

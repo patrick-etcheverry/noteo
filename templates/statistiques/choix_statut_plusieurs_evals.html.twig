@@ -2,6 +2,8 @@
 
 {% block titrePage %}Statistiques par groupes d'étudiants ayant un statut particulier{% endblock %}
 
+{% block statistiques %} active {% endblock %}
+
 {% block contenu %}
     <h1 class="h4 mb-0 text-gray-800">Groupe d'étudiants ayant un statut particulier pour lequel vous souhaitez voir des statistiques</h1> <br>
     {{ include('statistiques/_choix_groupes_form.html.twig', {'titre':'Choisir les évaluations'}) }}

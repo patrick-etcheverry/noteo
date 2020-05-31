@@ -1,0 +1,530 @@
+{% extends 'base.html.twig' %}
+
+{% block titrePage %}{{ titre }}{% endblock %}
+
+{% block statistiques %}active{% endblock %}
+
+{% block stylesheets %}
+    <style>
+        .card:hover{
+            -webkit-box-shadow: -1px 9px 40px -12px rgba(0,0,0,0.75);
+            -moz-box-shadow: -1px 9px 40px -12px rgba(0,0,0,0.75);
+            box-shadow: -1px 9px 40px -12px rgba(0, 0, 0, 0.75);
+        }
+    </style>
+{% endblock %}
+
+{% block contenu %}
+    <div class="table-responsive">
+        <table align="center" class="table">
+            <tbody>
+            {% if plusieursEvals %}
+                <tr>
+                    <th>Évaluations comparées</th>
+                    <td>
+                        <ul>
+                            <li>{{ evaluationConcernee.nom }} ({{ evaluationConcernee.date|date("d/m/Y") }})</li>
+                            {% for evaluation in evaluations %}
+                                <li>{{ evaluation.nom }} ({{ evaluation.date|date("d/m/Y") }})</li>
+                            {% endfor %}
+                        </ul>
+                    </td>
+                </tr>
+                <tr>
+                    <th>Groupes sélectionnés</th>
+                    <td>
+                        <ul>
+                            {% for groupe in parties[0].stats %}
+                              <li>{{ groupe.nom }}</li>
+                            {% endfor %}
+                        </ul>
+                    </td>
+                </tr>
+            {% else %}
+                <tr>
+                    <th class="intitule"><label for="evaluation_groupe" >Groupe évalué</label></th>
+                    <td >{{evaluation.groupe.nom}}</td>
+                </tr>
+                <tr>
+                    <th class="intitule"><label for="evaluation_date" >Date de l'évaluation</label></th>
+                    <td >{{evaluation.date | date("d/m/Y")}}</td>
+                </tr>
+            {% endif %}
+            <tr>
+                <th class="intitule"><label >Actions</label></th>
+                <td>
+                    <a href="#"><i style="font-size: 25px;" data-toggle='tooltip' title="Exporter les statistiques au format PDF" class="icon-file-pdf" onclick="genPDF()"></i></a>
+                    {% if not plusieursEvals %}
+                        {% if (evaluation.enseignant.id == app.user.id or is_granted('ROLE_ADMIN')) %}
+                            <a href="{{path("previsualisation_mail", {slug:evaluation.slug})}}"><i style="font-size: 25px;"  data-toggle='tooltip' title="Envoyer les statistiques aux étudiants"  class="icon-mail"></i></a>
+                        {% endif %}
+                    {% endif %}
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <div class='bouton' align=center>
+        <span style="font-size:15px" class="badge badge-pill badge-primary"><i class="icon-attention-circled"></i> Les statistiques ne prennent pas en compte les étudiants démissionaires ou absents</span>
+    </div>
+    {% if parties is not empty %}
+        {% for partie in parties %}
+            <div class="card">
+                <ul class="list-group list-group-flush">
+                    <li class="list-group-item text-white" style="background-color:#bdc3c7;">
+                        {{ partie.nom }}
+                    </li>
+                    <li class="list-group-item">
+                        <div id="Moyenne_ecart_{{ partie.nom | replace({' ': '_'}) }}">
+                            <div class="container-fluid">
+                                <div class="card-md-auto">
+                                    <div class="card-header" style="background-color: transparent">
+                                        Groupes
+                                    </div>
+                                    <div class="card-body">
+                                        {% set tabCounter = 0 %}
+                                        {% for groupe in parties[0].stats %}
+                                            <div class="form-check form-check-inline">
+                                                <input class="form-check-input" type="checkbox" id="{{groupe.nom}}" checked onChange="changement(this.id, this.checked, '{{ loop.parent.loop.index -1 }}', 'moy')">
+                                                <label class="form-check-label" for="inlineCheckbox1" name="label_{{groupe.nom}}_moy">{{groupe.nom}}</label>
+                                            </div>
+                                            {% set tabCounter = tabCounter + 1 %}
+                                        {% endfor %}
+                                    </div>
+                                </div>
+                            </div>
+                            <br>
+                            <div class="container-fluid">
+                                <span style="font-size:15px"><i class="icon-attention-circled"></i>Survolez le graphique pour plus d'informations</span>
+                                <canvas align=center id="comparaisonMoyennes"></canvas>
+                            </div>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+            <br>
+        {% endfor %}
+    {% else %}
+        <div class="info">
+            <h2 class="h4 mb-0 text-gray-800">Veuillez sélectionner des parties de l'évaluations sur lesquelles voir des statistiques </h2>
+        </div>
+    {% endif %}
+{% endblock %}
+
+{% block javascripts %}
+
+<script type="text/javascript" src="{{asset("js/jspdf.min.js")}}"></script>
+<script type="text/javascript" src="{{asset("js/html2canvas.min.js")}}"></script>
+<script type="text/javascript" src="{{asset("js/boxplot.js")}}"></script>
+
+<!-- Script pour la génération des graphiques -->
+<script type="text/javascript">
+
+    // ----- VARIABLES GLOBALES ---------
+    {% if plusieursEvals %}
+    var nomEvaluation = "Synthèse des {{evaluations.count}} evaluation(s)"
+    {% else %}
+    var nomEvaluation = "{{evaluation.nom}}";
+    {% endif %}
+
+    var fontSize = 16;
+
+    // Liste de couleurs communes
+    var noir = "#000000", jaune = "#FFFF00", bleu = "#0000FF", rouge = "#FF0000", vert = "#00FF00", violet = "#EE82EE", blanc = "#FFFFFF", gris = "#808080";
+
+    // Pallette de couleurs (valeurs rgb)
+    var couleurs = [
+        [192, 57, 43],
+        [155, 89, 182],
+        [41, 128, 185],
+        [22, 160, 133],
+        [46, 204, 113],
+        [243, 156, 18],
+        [211, 84, 0],
+        [189, 195, 199],
+        [127, 140, 141],
+        [44, 62, 80],
+        [231, 76, 60],
+        [142, 68, 173],
+        [26, 188, 156],
+        [39, 174, 96],
+        [241, 196, 15],
+        [230, 126, 34],
+        [236, 240, 241],
+        [149, 165, 166],
+        [52, 73, 94],
+    ];
+
+    var groupes = "{{parties[0].stats|json_encode()}}";
+    groupes = groupes.replace(/&quot;/g, "\""); // remplacement de toutes les itérations de ' &quot; ' par ' " '
+    groupes = JSON.parse(groupes);
+
+    // Groupes sélectionés (avec les cases à cocher) par graphique
+    var groupesChecked = [];
+    groupesChecked['histo']= [];
+    groupesChecked['bam'] = [];
+    groupesChecked['moy'] = [];
+
+    // Objet données du graphique
+    var chartDATA = {
+        labels: [],
+        datasets: undefined,
+    };
+
+    //Contiendra les variables des graphiques pour les mettre à jour
+    var graphiques = [];
+    // Objet options du graphique
+    var options = {
+        scales: {
+            xAxes: [{
+                gridLines: {
+                    display: false
+                },
+                ticks: {
+                    fontSize: fontSize,
+                },
+                maxBarThickness: 100,
+                stacked: false,
+            }],
+            yAxes: [{
+                labelString: 'Intervalle de note',
+                ticks: {
+                    beginAtZero: true,
+                    max: 10,
+                    min: 0,
+                    fontSize: fontSize,
+                },
+                stacked: false,
+            }],
+        },
+        legend: {
+            position: 'top',
+            labels: {
+                fontSize: fontSize,
+            },
+        },
+        aspectRatio: 3,
+        maintainAspectRatio: true,
+        responsive: true,
+        tooltips: {
+            intersect: false,
+            titleMarginBottom: 10,
+            titleFontColor: '#6e707e',
+            titleFontSize: fontSize,
+            backgroundColor: blanc,
+            bodyFontColor: "#858796",
+            borderColor: '#dddfeb',
+            borderWidth: 1,
+            xPadding: 15,
+            yPadding: 15,
+            displayColors: true,
+            caretPadding: 10
+        },
+        plugins : {
+            labels: {
+                render: 'value'
+            }
+        }
+    }
+
+    // --------- CODE ------------
+
+    // Création des graphiques au chargement de la fenètre
+    window.onload = function(){
+
+        window.chartMoy = new Chart(document.getElementById("comparaisonMoyennes").getContext('2d'), {
+            type: 'bar',
+            data: chartDATA,
+            options: options,
+        });
+        //Pour que tout soit coché par défaut
+        {% for groupe in parties[0].stats %}
+            changement("{{ groupe.nom }}", true, 0, 'moy')
+        {% endfor %}
+
+    }
+
+    //------ FONCTIONS -----
+
+    // Met à jour le graphique en fonction des cases qui sont cochées
+    function changement(nom, value, partieConcernee, typeStat){
+        // Gère l'addition et la suppression des groupes à afficher dans le graphe
+        if(value){ // la case à été cochée
+            groupesChecked[typeStat].push(nom); // Ajout dans la liste cochée
+        }
+        else { // la case à été décochée
+            var index = contains(groupesChecked[typeStat], nom); // index au quel se trouve le groupe dans le tableau groupes s'il existe
+            if(index != -1){
+                groupesChecked[typeStat].splice(index, 1); // Suppression de la liste cochée
+            }
+        }
+        var chartOptions = options; // Récupération de la template des options
+        var chartDonnees = {};
+        // Récupération de la template des données du graphique
+        // Génération des labels & cacul du max
+        switch (typeStat) {
+            case 'moy':
+                chartDonnees.labels = groupesChecked[typeStat];
+                chartOptions.scales.yAxes[0].ticks.min = undefined;
+                chartOptions.scales.yAxes[0].ticks.max = undefined;
+                break;
+            default:
+                break;
+        }
+        // Génération des datasets des groupes sélectionés pour chartJS en fonction du graphique sélectioné
+        // Remplacement des données du graphe par les nouvelles données générées
+        switch(typeStat){
+            case 'moy':
+                chartDonnees.datasets = genDataMoyenneEcart(partieConcernee);
+                break;
+        }
+
+        //  MaJ du graphique + MaJ des options
+        switch (typeStat) {
+            case 'moy' : // Moyenne & écart-type
+                chartMoy.options = chartOptions;
+                chartMoy.data = chartDonnees;
+                chartMoy.update();
+                break;
+            default:
+                break;
+        }
+    }
+
+    // Génère les données requises par Chart.js pour le graphique 'Moyenne & écart-type'
+    function genDataMoyenneEcart(partieConcernee){
+        var liste = getGroupesData(groupesChecked['moy'], partieConcernee); // Récupération des données
+        var moyenneControleCourant = [];
+        var moyenneAnciensControles = [];
+        for(var i = 0; i < liste.length; i++){ // Choix des informations requises
+            moyenneControleCourant.push(liste[i].moyenneControleCourant);
+            moyenneAnciensControles.push(liste[i].moyenneAutresControles);
+        }
+        var couleurMoyenne = couleurs[0];
+        var couleurEcartType = couleurs[1];
+        data = [ // Création des objets datasets de Chart.js avec nos données
+            {
+                label: 'Moyenne à {{ evaluationConcernee.nom }}',
+                backgroundColor: "rgb("+couleurMoyenne[0]+","+couleurMoyenne[1]+","+couleurMoyenne[2]+")",
+                hoverBackgroundColor: "rgb("+couleurMoyenne[0]+","+couleurMoyenne[1]+","+couleurMoyenne[2]+")",
+                borderColor: gris,
+                data: moyenneControleCourant
+            },
+            {
+                label: 'Moyenne aux autres évaluations choisies',
+                backgroundColor: "rgb("+couleurEcartType[0]+","+couleurEcartType[1]+","+couleurEcartType[2]+")",
+                hoverBackgroundColor: "rgb("+couleurEcartType[0]+","+couleurEcartType[1]+","+couleurEcartType[2]+")",
+                borderColor: gris,
+                data: moyenneAnciensControles
+            }
+        ];
+        return data;
+    }
+
+    // Retourne un tableau d'objets groupe avec leurs données en fonction d'une liste de noms de groupes
+    function getGroupesData(listeGroupes, partieConcernee){
+        groupesAvecDonnees = [];
+        for(var i = 0; i < listeGroupes.length; i++){
+            for (var j = 0; j < groupes.length ; j++) {
+                if(groupes[j].nom == listeGroupes[i]) {
+                    groupesAvecDonnees.push(groupes[j])
+                }
+            }
+        }
+        return groupesAvecDonnees;
+    }
+
+    // génère des codes couleurs rgb aléatoires
+    function genRandomColor(){
+        return "rgb(" + Math.floor(Math.random() * Math.floor(255)) + ","
+            + Math.floor(Math.random() * Math.floor(255)) + ","
+            + Math.floor(Math.random() * Math.floor(255)) + ")";
+    }
+
+    // retourne l'index au quel se trouve l'élément dans array, s'il n'y est pas renvoie -1
+    function contains(array, element){
+        for(var i = 0; i < array.length; i++){
+            if(array[i] == element){
+                return i;
+            }
+        }
+        return -1;
+    }
+</script>
+
+{#<!-- Patie dédié au la génération du pdf -->#}
+{#<script type="text/javascript">#}
+
+{#  var xStat = 200#}
+{#  var xLabelStat = 30#}
+{#  var xRepartition = 475#}
+{#  var xIntervalle = 330#}
+{#  var xTitre = 300#}
+{#  var yTitre = 50#}
+{#  var y = 100#}
+{#  var deltaY = 20#}
+{#  var numeroCarte = 1#}
+
+
+{#  function genPDF(){#}
+{#    var nomEval = "{{evaluation.nom}}"#}
+{#    var nomGroupe = "{{evaluation.groupe.nom}}"#}
+{#    var date = "{{evaluation.date | date("d/m/Y")}}"#}
+{#    var doc = new jsPDF('p','pt','a4');#}
+{#    var longueur = nomEval.length#}
+
+{#    //Définition du haut du PDF#}
+{#    if (longueur < 35) {#}
+{#      doc.setFontSize(35)#}
+{#    }#}
+{#    if (longueur < 50 && longueur > 34) {#}
+{#      doc.setFontSize(25)#}
+{#    }#}
+{#    if (longueur > 49 && longueur < 70) {#}
+{#      doc.setFontSize(20)#}
+{#    }#}
+{#    if (longueur > 69) {#}
+{#      doc.setFontSize(16)#}
+{#    }#}
+
+{#    doc.text(nomEval,300,200,(align = "center"))#}
+{#    doc.setFontSize(16)#}
+{#    doc.text("Groupe évalué :",70,300)#}
+{#    doc.text(nomGroupe,260,300)#}
+{#    doc.text("Date :",70,330)#}
+{#    doc.text(date,260,330)#}
+
+{#    {% for groupe in groupes %}#}
+
+{#    var effectifDuGroupe="{% set effectifTotal = 0 %}#}
+{#    {% for effectif in groupe.repartition %}#}
+{#      {% set effectifTotal = effectifTotal + effectif %}#}
+{#    {% endfor %}#}
+{#    ({{ effectifTotal }} étudiants)".trim()#}
+
+
+{#    if (numeroCarte == 1) {#}
+{#      doc.addPage()#}
+{#      yTitre = 50#}
+{#      y = 100#}
+{#    }#}
+{#    if (numeroCarte == 2) {#}
+{#      yTitre = 300#}
+{#      y = 350#}
+{#    }#}
+{#    if (numeroCarte == 3) {#}
+{#      yTitre = 550#}
+{#      y = 600#}
+{#    }#}
+{#    doc.setFontSize(25)#}
+{#    var nomCarteGroupe = "{{groupe.nom}}" +" "+ effectifDuGroupe#}
+{#    doc.text(nomCarteGroupe,xTitre,yTitre,(align = "center"))#}
+{#    doc.setFontSize(12)#}
+
+{#    //traitement du nom du groupe#}
+{#    var phraseNomGroupe = "Statistiques"#}
+{#    doc.text(phraseNomGroupe,20,y)#}
+{#    y = y + deltaY#}
+{#    //traitement de la moyenne#}
+{#    var moyenne = "{{groupe.moyenne}}"#}
+{#    doc.text("Moyenne :",xLabelStat,y)#}
+{#    doc.text(moyenne,xStat,y)#}
+{#    y = y + deltaY#}
+{#    //traitement de l'écart type#}
+{#    var ecartType = "{{groupe.ecartType}}"#}
+{#    doc.text("Ecart-type :",xLabelStat,y)#}
+{#    doc.text(ecartType,xStat,y)#}
+{#    y = y + deltaY#}
+{#    //traitement de la note minimal#}
+{#    var min = "{{groupe.minimum}}"#}
+{#    doc.text("Note(s) minimale(s) :",xLabelStat,y)#}
+{#    doc.text(min,xStat,y)#}
+{#    y = y + deltaY#}
+{#    //traitement de la note maximal#}
+{#    var max = "{{groupe.maximum}}"#}
+{#    doc.text("Note(s) maximale(s) :",xLabelStat,y)#}
+{#    doc.text(max,xStat,y)#}
+{#    y = y + deltaY#}
+{#    //traitement de la mediane#}
+{#    var mediane = "{{groupe.mediane}}"#}
+{#    doc.text("Médiane :",xLabelStat,y)#}
+{#    doc.text(mediane,xStat,y)#}
+
+{#    //traitement de la répartition des notes#}
+{#    if (numeroCarte == 1) {#}
+{#      y = 100#}
+{#    }#}
+{#    if (numeroCarte == 2) {#}
+{#      y = 350#}
+{#    }#}
+{#    if (numeroCarte == 3) {#}
+{#      y = 600#}
+{#    }#}
+{#    doc.text("Répartition des notes", 320,y)#}
+{#    y = y + deltaY#}
+{#    doc.text("[0;4[ : ", xIntervalle,y);#}
+{#    var premierIntervalle = "{{groupe.notes[0]}} étudiant(s)"#}
+{#    doc.text(premierIntervalle,xRepartition, y)#}
+{#    y = y + deltaY#}
+{#    doc.text("[4;8[ : ", xIntervalle,y);#}
+{#    var deuxiemeIntervalle = "{{groupe.notes[1]}} étudiant(s)"#}
+{#    doc.text(deuxiemeIntervalle,xRepartition, y)#}
+{#    y = y + deltaY#}
+{#    doc.text("[8;12[ : ", xIntervalle,y);#}
+{#    var troisiemeIntervalle = "{{groupe.notes[2]}} étudiant(s)"#}
+{#    doc.text(troisiemeIntervalle,xRepartition, y)#}
+{#    y = y + deltaY#}
+{#    doc.text("[12;16[ : ", xIntervalle,y);#}
+{#    var quatriemeIntervalle = "{{groupe.notes[3]}} étudiant(s)"#}
+{#    doc.text(quatriemeIntervalle,xRepartition, y)#}
+{#    y = y + deltaY#}
+{#    doc.text("[16;20] : ", xIntervalle,y);#}
+{#    var cinquiemeIntervalle = "{{groupe.notes[4]}} étudiant(s)"#}
+{#    doc.text(cinquiemeIntervalle,xRepartition, y)#}
+
+{#    if (numeroCarte == 3) {#}
+{#      numeroCarte = 1#}
+{#    }#}
+{#    else {#}
+{#      numeroCarte = numeroCarte + 1#}
+{#    }#}
+
+{#    {% endfor %}#}
+
+{#    doc.save(nomEval)#}
+
+
+{#    //Piste de solution pour améliorer l'xport pdf#}
+{#    /*html2canvas($("#lesStats .cardhu-S1"),{#}
+{#      useCORS:true,#}
+{#      logging:true,#}
+{#      onrendered:function(canvas,capture){#}
+{#        capture = canvas.toDataURL('image/png',1.0);#}
+{#        document.body.insertAdjacentHTML('beforeend',"<img id='arthur' src='" + capture +"'>")#}
+
+{#      }#}
+{#    }).then(function(){#}
+{#      doc.addImage(document.getElementById("arthur").src,'PNG',20,110);#}
+{#      doc.addPage()#}
+{#      doc.save(nomEval)#}
+{#    });*/#}
+
+{#  /*  html2canvas($("#lesStats .cardhu-S1"),{#}
+{#      useCORS:true,#}
+{#      logging:true,#}
+{#      onrendered:function(canvas,capture){#}
+{#        capture = canvas.toDataURL('image/png',1.0);#}
+{#        document.body.insertAdjacentHTML('beforeend',"<img id='arthur' src='" + capture +"'>")#}
+
+{#      }#}
+{#    }).then(function(){#}
+{#      doc.addImage(document.getElementById("arthur").src,'PNG',20,110);#}
+{#      doc.addPage()#}
+{#      doc.save(nomEval)#}
+{#    });*/#}
+
+
+{#  }#}
+</script>
+{% endblock %}

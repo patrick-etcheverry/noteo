@@ -23,12 +23,49 @@
   </tbody>
 </table>
 </div>
-
 {% if edit %}
   <div class="info">
     <h5 class="h5 mb-0 text-gray-800">Pour modifier les groupes auxquels appartient cet étudiant, rendez-vous <a href="{{ path('groupe_etudiant_index') }}">ici</a>. <br>
       Si vous souhaitez ajouter ou retirer cet étudiant d'un groupe d'étudiants possèdant un statut particulier, rendez-vous <a href="{{ path('statut_index') }}">ici</a>.</h5>
   </div>
+{% endif %}
+
+
+{% if formStatut.statuts is defined %}
+{% if formStatut.statuts is not empty %}
+<br><h1 class="h4 mb-0 text-gray-800">Ajouter l'étudiant à un groupe d'étudiants ayant un statut particulier (facultatif)</h1> <br>
+<div class="table-responsive table-hover">
+<table class="table" id= "statuts">
+<thead>
+  <th><input type="checkbox" onclick= "cocherToutesLesCases('form[statuts][]', this.checked)" id="checkbox" title="Tout cocher"/></th>
+  <th>Nom</th>
+  <th>Description</th>
+  <th>Créateur</th>
+</thead>
+<tbody>
+
+  {% for statut in formStatut.statuts %}
+
+    {# store index of the category in a variable #}
+    {% set index = statut.vars.value %}
+
+    {# get entity object from its index in the Categories Field #}
+    {% set entity = formStatut.statuts.vars.choices[index].data %}
+      <tr>
+          <td>{{form_widget(formStatut.statuts[index])}}</td>
+          <td>{{entity.nom}}</td>
+          <td>{{entity.description}}</td>
+          <td>{{entity.enseignant.prenom}} {{entity.enseignant.nom}}</td>
+      </tr>
+  {% endfor %}
+</tbody>
+</table>
+</div>
+{% else %}
+    <div class="info">
+        <h5 class="h5 mb-0 text-gray-800">Il est possible d'obtenir des statistiques sur des groupes d'étudiants ayant un statut particulier (boursiers, redoublants, ...). Vous pouvez créer de tels groupes <a href="{{ path('statut_new') }}">ici</a>.</h5>
+    </div>
+{% endif %}
 {% endif %}
 
 <div class='bouton' align=center>

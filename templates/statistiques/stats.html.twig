@@ -68,10 +68,11 @@
   {{ message }}
 </div>
 {% endfor %}
-
 <div class='bouton' align=center>
   <span style="font-size:15px" class="badge badge-pill badge-primary"><i class="icon-attention-circled"></i> Les statistiques ne prennent pas en compte les étudiants démissionaires ou absents</span>
 </div>
+{# récupération du type de graphique récupéré à la première étape #}
+{% set tabActive = app.session.get('typeGraphique') %}
 {% if parties is not empty %}
   {% for partie in parties %}
     <div class="card">
@@ -81,9 +82,9 @@
         </li>
         <li class="list-group-item">
           <ul class="nav nav-tabs">
-            <li class="nav-item"><a class="nav-link active" data-toggle="tab" href="#Repartition_Histogramme_{{ partie.nom | replace({' ': '_'}) }}">Répartition (Histogramme)</a></li>
-            <li class="nav-item"><a class="nav-link" data-toggle="tab" href="#Repartition_Boites_{{ partie.nom | replace({' ': '_'}) }}">Répartition (Boîte à moustaches)</a></li>
-            <li class="nav-item"><a class="nav-link" data-toggle="tab" href="#Moyenne_ecart_{{ partie.nom | replace({' ': '_'}) }}">Moyenne & Écart-type</a></li>
+            <li class="nav-item"><a class="nav-link {% if tabActive =="histogramme" %}active{% endif %}" data-toggle="tab" href="#Repartition_Histogramme_{{ partie.nom | replace({' ': '_'}) }}">Répartition (Histogramme)</a></li>
+            <li class="nav-item"><a class="nav-link {% if tabActive =="boite-moustache" %}active{% endif %}" data-toggle="tab" href="#Repartition_Boites_{{ partie.nom | replace({' ': '_'}) }}">Répartition (Boîte à moustaches)</a></li>
+            <li class="nav-item"><a class="nav-link {% if tabActive =="moyenne" %}active{% endif %}" data-toggle="tab" href="#Moyenne_ecart_{{ partie.nom | replace({' ': '_'}) }}">Moyenne & Écart-type</a></li>
           </ul>
           <div class="tab-content">
             <!-- Répartition (Histogramme) -->

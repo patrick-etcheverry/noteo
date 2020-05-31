@@ -1,11 +1,11 @@
 {% extends 'base.html.twig' %}
 
-{% block titrePage %}Statistiques classiques{% endblock %}
+{% block titrePage %}{{ titrePage }}{% endblock %}
 
 {% block statistiques %}active{% endblock %}
 
 {% block contenu %}
-    <h1 class="h4 mb-0 text-gray-800">Choisir l'évaluation pour laquelle vous désirez consulter les statistiques</h1> <br>
+    <h1 class="h4 mb-0 text-gray-800">{{ sousTitrePage |default("Choisir l'évaluation pour laquelle vous désirez consulter les statistiques") }}</h1> <br>
     {{ include('statistiques/_choix_evals_form.html.twig') }}
 {% endblock %}
 
