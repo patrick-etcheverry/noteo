@@ -530,11 +530,16 @@ class StatsController extends AbstractController
     /**
      * @Route("/plusieurs-eval/groupes/{slug}/", name="determiner_evolution_etudiants_groupe")
      */
-    public function determinerEvolutionEtudiantGroupes(Request $request, GroupeEtudiant $groupes, PointsRepository $repoPoints): Response
+    public function determinerEvolutionEtudiantGroupes(Request $request, GroupeEtudiant $groupe, PointsRepository $repoPoints): Response
     {
+      $session = $request->getSession();
+      $evaluations = $session->get('evaluations');
+      $groupes = $session->get('lesGroupes');
 
       return $this->render('statistiques/statsEvolution.html.twig', [
-
+        'evaluations' => $evaluations,
+        'groupes' => $groupes,
+        'titre' => "Evolution des résultats "
       ]);
     }
 
@@ -562,7 +567,6 @@ class StatsController extends AbstractController
         if ($form->isSubmitted()  && $form->isValid())
         {
             $evaluations = $form->get('evaluations')->getData();
-
             $listeStatsParGroupe = array(); // On initialise un tableau vide qui contiendra les statistiques des groupes choisis
 
             $lesGroupes = array(); // On regroupe le groupe principal et les sous groupes pour faciliter la requete
@@ -575,8 +579,10 @@ class StatsController extends AbstractController
             }
             if ($typeGraphique == "courbes") {
 
-                return $this->redirectToRoute("determiner_evolution_etudiants_groupe",[
-                  'slug' => $groupe->getSlug(),
+              $request->getSession()->set('evaluations', $evaluations);
+              $request->getSession()->set('lesGroupes', $lesGroupes);
+              return $this->redirectToRoute("determiner_evolution_etudiants_groupe",[
+                'slug' => $groupe->getSlug()
                 ]);
             }
             else {
@@ -619,7 +625,6 @@ class StatsController extends AbstractController
                   'plusieursEvals' => true,
               ]);
             }
-
         }
 
         return $this->render('statistiques/choix_evals_plusieurs_evals_groupes.html.twig', ['form' => $form->createView()]);
