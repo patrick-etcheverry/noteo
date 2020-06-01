@@ -532,6 +532,9 @@ class StatsController extends AbstractController
      */
     public function choisirEvalsGroupePlusieursEvals(Request $request, GroupeEtudiant $groupe, PointsRepository $repoPoints): Response
     {
+
+      $typeGraphique = $request->getSession()->get('typeGraphique');   // Récupération du type de stat dans la session
+
         $form = $this->createFormBuilder()
             ->add('evaluations', EntityType::class, [
                 'class' => Evaluation::Class,
@@ -559,45 +562,50 @@ class StatsController extends AbstractController
             {
                 array_push($lesGroupes, $sousGroupe);
             }
-
-            foreach ($lesGroupes as $groupe) // On récupère les notes du groupe principal et des sous groupes sur toutes les évaluations choisis
-            {
-                $tabPoints = array();
-                foreach ($evaluations as $eval)
-                {
-                    array_push($tabPoints, $repoPoints->findAllNotesByGroupe($eval->getId(), $groupe->getId()));
-                }
-                //On crée une copie de tabPoints qui contiendra les valeurs des notes pour simplifier le tableau renvoyé par la requete
-                $copieTabPoints = array();
-                foreach ($tabPoints as $element)
-                {
-                    foreach ($element as $point)
-                    {
-                        foreach ($point as $note)
-                        {
-                            $copieTabPoints[] = $note;
-                        }
-                    }
-                }
-                //On remplit le tableau qui contiendra toutes les statistiques du groupe
-                $listeStatsParGroupe[] = array("nom" => $groupe->getNom(),
-                    "repartition" => $this->repartition($copieTabPoints),
-                    "listeNotes" => $copieTabPoints,
-                    "moyenne" => $this->moyenne($copieTabPoints),
-                    "ecartType" => $this->ecartType($copieTabPoints),
-                    "minimum" => $this->minimum($copieTabPoints),
-                    "maximum" => $this->maximum($copieTabPoints),
-                    "mediane" => $this->mediane($copieTabPoints)
-                );
+            if ($typeGraphique == "courbes") {
+              
             }
-            $formatStatsPourLaVue = [["nom" => "Évaluations", "bareme" => 20, "stats" => $listeStatsParGroupe]];
-            return $this->render('statistiques/stats.html.twig', [
-                'parties' => $formatStatsPourLaVue,
-                'evaluations' => $evaluations,
-                'groupes' => $lesGroupes,
-                'titre' => 'Consulter les statistiques sur '. count($evaluations) . ' évaluation(s)',
-                'plusieursEvals' => true,
-            ]);
+            else {
+              foreach ($lesGroupes as $groupe) // On récupère les notes du groupe principal et des sous groupes sur toutes les évaluations choisis
+              {
+                  $tabPoints = array();
+                  foreach ($evaluations as $eval)
+                  {
+                      array_push($tabPoints, $repoPoints->findAllNotesByGroupe($eval->getId(), $groupe->getId()));
+                  }
+                  //On crée une copie de tabPoints qui contiendra les valeurs des notes pour simplifier le tableau renvoyé par la requete
+                  $copieTabPoints = array();
+                  foreach ($tabPoints as $element)
+                  {
+                      foreach ($element as $point)
+                      {
+                          foreach ($point as $note)
+                          {
+                              $copieTabPoints[] = $note;
+                          }
+                      }
+                  }
+                  //On remplit le tableau qui contiendra toutes les statistiques du groupe
+                  $listeStatsParGroupe[] = array("nom" => $groupe->getNom(),
+                      "repartition" => $this->repartition($copieTabPoints),
+                      "listeNotes" => $copieTabPoints,
+                      "moyenne" => $this->moyenne($copieTabPoints),
+                      "ecartType" => $this->ecartType($copieTabPoints),
+                      "minimum" => $this->minimum($copieTabPoints),
+                      "maximum" => $this->maximum($copieTabPoints),
+                      "mediane" => $this->mediane($copieTabPoints)
+                  );
+              }
+              $formatStatsPourLaVue = [["nom" => "Évaluations", "bareme" => 20, "stats" => $listeStatsParGroupe]];
+              return $this->render('statistiques/stats.html.twig', [
+                  'parties' => $formatStatsPourLaVue,
+                  'evaluations' => $evaluations,
+                  'groupes' => $lesGroupes,
+                  'titre' => 'Consulter les statistiques sur '. count($evaluations) . ' évaluation(s)',
+                  'plusieursEvals' => true,
+              ]);
+            }
+
         }
 
         return $this->render('statistiques/choix_evals_plusieurs_evals_groupes.html.twig', ['form' => $form->createView()]);
