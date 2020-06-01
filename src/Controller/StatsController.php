@@ -528,6 +528,17 @@ class StatsController extends AbstractController
     }
 
     /**
+     * @Route("/plusieurs-eval/groupes/{slug}/", name="determiner_evolution_etudiants_groupe")
+     */
+    public function determinerEvolutionEtudiantGroupes(Request $request, GroupeEtudiant $groupes, PointsRepository $repoPoints): Response
+    {
+
+      return $this->render('statistiques/statsEvolution.html.twig', [
+
+      ]);
+    }
+
+    /**
      * @Route("/plusieurs-eval/groupes/{slug}/choisir-evaluations/", name="statistiques_groupes_choisir_plusieurs_evaluations")
      */
     public function choisirEvalsGroupePlusieursEvals(Request $request, GroupeEtudiant $groupe, PointsRepository $repoPoints): Response
@@ -563,7 +574,10 @@ class StatsController extends AbstractController
                 array_push($lesGroupes, $sousGroupe);
             }
             if ($typeGraphique == "courbes") {
-              
+
+                return $this->redirectToRoute("determiner_evolution_etudiants_groupe",[
+                  'slug' => $groupe->getSlug(),
+                ]);
             }
             else {
               foreach ($lesGroupes as $groupe) // On récupère les notes du groupe principal et des sous groupes sur toutes les évaluations choisis

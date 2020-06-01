@@ -226,39 +226,9 @@
         </div>
         <br>
     {% endif %}
-    {% if statsPlusieursEvalsStatutDispo or statsPlusieursEvalsGroupeDispo %}
-    <div class="card-deck">
-      {% if statsPlusieursEvalsGroupeDispo %}
-        <div class="card">
-            <img class="card-img-top imageAAgrandir" src="{{ asset('https://cdn.discordapp.com/attachments/701780712847704154/717006548353941514/unnamed.png') }}" alt="Card image cap">
-            <div class="card-body">
-                <hr>
-                <h5 class="card-title">Évolution des résultats de chaques étudiants de groupes sur plusieurs évalautions </h5>
-                <p class="card-text">Générations de graphiques en courbes détaillant l'évolution des résultats de chaque étudiants de groupes préalablements sélectionnées. <br>
-                  L'évolution est déterminée pour un ensemble d'évaluations sélectionnée et est réprésenté de facon chronologique.</p>
-                <a href="{{ path('stats_choisir_groupe_haut_niveau_evaluable', {'typeGraph': 'courbes'}) }}" class="btn btn-primary">Consulter ce type de statistiques</a>
-            </div>
-        </div>
-      {% endif %}
-      {% if statsPlusieursEvalsStatutDispo %}
-        <div class="card">
-            <img class="card-img-top imageAAgrandir" src="{{ asset('https://cdn.discordapp.com/attachments/701780712847704154/717006548353941514/unnamed.png') }}" alt="Card image cap">
-            <div class="card-body">
-                <hr>
-                <h5 class="card-title">Évolution des résultats de chaques étudiants de groupes d'étudiants <br>
-                    ayant un statut particulier sur plusieurs évalautions</h5>
-                    <p class="card-text">Générations de graphiques en courbes détaillant l'évolution des résultats de chaque étudiants de groupes ayant un statut particulier préalablements sélectionnées. <br>
-                      L'évolution est déterminée pour un ensemble d'évaluations sélectionnée et est réprésenté de facon chronologique.</p>
-                <a href="{{ path('stats_choisir_statut', {'typeGraph': 'courbes'}) }}" class="btn btn-primary">Consulter ce type de statistiques</a>
-            </div>
-        </div>
-      {% endif %}
-    </div>
-    <br>
-    {% endif %}
-    {% if statsComparaisonDispo %}
-        <!-- STATS COMPARAISON -->
+      <!-- STATS COMPARAISON -->
         <div class="card-deck">
+        {% if statsComparaisonDispo %}
             <div class="card">
                 <img class="card-img-top imageAAgrandir" src="{{ asset('img/statistiques/comparaison/moy.png') }}" alt="Card image cap">
                 <div class="card-body">
@@ -269,8 +239,36 @@
                     <a href="{{ path('statistiques_choix_evaluation', {'typeStat' : 'comparaison', 'typeGraph' : 'moyenne'}) }}" class="btn btn-primary">Consulter ce type de statistiques</a>
                 </div>
             </div>
+        {% endif %}
+          <!-- STATS EVOLUTION, STATUT -->
+        {% if statsPlusieursEvalsGroupeDispo %}
+          <div class="card">
+              <img class="card-img-top imageAAgrandir" src="{{ asset('https://cdn.discordapp.com/attachments/701780712847704154/717006548353941514/unnamed.png') }}" alt="Card image cap">
+              <div class="card-body">
+                  <hr>
+                  <h5 class="card-title">Évolution des résultats de chaques étudiants de groupes sur plusieurs évalautions </h5>
+                  <p class="card-text">Générations de graphiques en courbes détaillant l'évolution des résultats de chaque étudiants de groupes préalablements sélectionnées. <br>
+                    L'évolution est déterminée pour un ensemble d'évaluations sélectionnée et est réprésenté de facon chronologique.</p>
+                  <a href="{{ path('stats_choisir_groupe_haut_niveau_evaluable', {'typeGraph': 'courbes'}) }}" class="btn btn-primary">Consulter ce type de statistiques</a>
+              </div>
+          </div>
+        {% endif %}
+        <!-- STATS EVOLUTION, GROUPE -->
+        {% if statsPlusieursEvalsStatutDispo %}
+          <div class="card">
+              <img class="card-img-top imageAAgrandir" src="{{ asset('https://cdn.discordapp.com/attachments/701780712847704154/717006548353941514/unnamed.png') }}" alt="Card image cap">
+              <div class="card-body">
+                  <hr>
+                  <h5 class="card-title">Évolution des résultats de chaques étudiants de groupes d'étudiants <br>
+                      ayant un statut particulier sur plusieurs évalautions</h5>
+                      <p class="card-text">Générations de graphiques en courbes détaillant l'évolution des résultats de chaque étudiants de groupes ayant un statut particulier préalablements sélectionnées. <br>
+                        L'évolution est déterminée pour un ensemble d'évaluations sélectionnée et est réprésenté de facon chronologique.</p>
+                  <a href="{{ path('stats_choisir_statut', {'typeGraph': 'courbes'}) }}" class="btn btn-primary">Consulter ce type de statistiques</a>
+              </div>
+          </div>
+        {% endif %}
         </div>
-    {% endif %}
+
     {# Pas très beau et pratique à utiliser, à faire évoluer si possible #}
     {% if not statsClassiquesDispo and not statsClassiquesParPartiesDispo and not statsPlusieursEvalsGroupeDispo and not statsPlusieursEvalsStatutDispo and not statsComparaisonDispo %}
         <div class="info">
