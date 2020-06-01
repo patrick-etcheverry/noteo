@@ -73,7 +73,42 @@
 </div>
 {# récupération du type de graphique récupéré à la première étape #}
 {% set tabActive = app.session.get('typeGraphique') %}
-{% if parties is not empty %}
+{% if tabActive == "courbes" %}
+  <div class="card">
+      <ul class="list-group list-group-flush">
+          <li class="list-group-item text-white" style="background-color:#bdc3c7;">
+            Nom de la partie
+          </li>
+          <li class="list-group-item">
+              <div >
+                  <div class="container-fluid">
+                      <div class="card-md-auto">
+                          <div class="card-header" style="background-color: transparent">
+                              Groupes
+                          </div>
+                          <div class="card-body">
+                              {% set tabCounter = 0 %}
+                              {% for groupe in parties[0].stats %}
+                                  <div class="form-check form-check-inline">
+                                <!--      <input class="form-check-input" type="checkbox" id="nomDuGroupeTwig" checked onChange="changement(this.id, this.checked, 'twig(loop.parent.loop.index -1)', 'moy')">
+                                      <label class="form-check-label" for="inlineCheckbox1" name="label_nomDuGroupeTwig_moy">nomDuGroupeTwig</label> -->
+                                  </div>
+                                  {% set tabCounter = tabCounter + 1 %}
+                              {% endfor %}
+                          </div>
+                      </div>
+                  </div>
+                  <br>
+                  <div class="container-fluid">
+                      <!--<span style="font-size:15px"><i class="icon-attention-circled"></i>Survolez le graphique pour plus d'informations</span> -->
+                      <canvas id="diagrammeEvolutionResultat"></canvas>
+                  </div>
+              </div>
+          </li>
+      </ul>
+  </div>
+
+{% elseif parties is not empty %}
   {% for partie in parties %}
     <div class="card">
       <ul class="list-group list-group-flush">
@@ -314,7 +349,9 @@
  // --------- CODE ------------
 
   // Création des graphiques au chargement de la fenètre
+  {% set tabActive = app.session.get('typeGraphique') %}
   window.onload = function(){
+    {% if tabActive != "courbes"%}
     {% for partie in parties %}
         var graphiquesPartieCourante =  [];
 
@@ -340,6 +377,51 @@
         graphiquesPartieCourante.push(chartMoy)
         graphiques.push(graphiquesPartieCourante)
     {% endfor %}
+    {% else %}
+      var datapoints = [10, 12, 12, 11, 8, 11, NaN, 14, 11, 14, 12, 5, 17];
+      var datapoints2 = [14, 15, 18, 17, 18, 12, 13.5, 16, 12, 15, NaN, 11, 17];
+      var diagrammeEvolutionResultat = document.getElementById('diagrammeEvolutionResultat').getContext('2d');
+      var myLineChart = new Chart(diagrammeEvolutionResultat, {
+          type: 'line',
+          data: {
+              labels: ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12'],
+              datasets: [{
+					label: 'oups',
+					data: datapoints,
+					borderColor: 'rgba(0, 255, 0, 1)',
+					backgroundColor: 'rgba(0, 0, 0, 0)',
+					fill: false,
+					lineTension: 0
+				},
+        {
+          label: 'Linear interpolation',
+          data: datapoints2,
+          borderColor: 'rgba(0, 255, 0, 1)',
+          backgroundColor: 'rgba(0, 0, 0, 0)',
+          fill: false,
+          lineTension: 0
+        }]
+    				},
+          options: {
+            scales: {
+              xAxes: [{
+                display: true,
+                scaleLabel: {
+                  display: true
+                }
+              }],
+              yAxes: [{
+                display: true,
+                scaleLabel: {
+                  display: true,
+                  labelString: 'Value'
+                }
+              }]
+            }
+
+          },
+      });
+    {% endif %}
 
     {# Pour que toutes les cases soient cochées par défaut #}
     {% for partie in parties %}
@@ -435,6 +517,7 @@ function changement(nom, value, partieConcernee, typeStat){
   }
 
   //  MaJ du graphique + MaJ des options
+  {% if tabActive != "courbes" %}
   switch (typeStat) {
     case 'histo':
       graphiques[partieConcernee][0].options = chartOptions;
@@ -454,6 +537,7 @@ function changement(nom, value, partieConcernee, typeStat){
     default:
       break;
   }
+  {% endif %}
 }
 
 function genDataRepartition(type, partieConcernee){
@@ -548,6 +632,7 @@ function contains(array, element){
   }
   return -1;
 }
+
 </script>
 
 {#<!-- Patie dédié au la génération du pdf -->#}
