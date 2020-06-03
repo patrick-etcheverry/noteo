@@ -5,7 +5,7 @@
         <thead>
         <th>
           {% if route != "stats_choisir_groupe_haut_niveau_evaluable" and route != "stats_choisir_statut" %}
-            <input type="checkbox" onclick= "cocherToutesLesCases('form[groupes][]', this.checked)" id="checkbox" title="Tout cocher"/>
+            <input type="checkbox" onclick= "cocherToutesLesCases('form[groupes][]', this.checked)" name="checkbox" title="Tout cocher"/>
           {% endif %}
         </th>
         <th>Nom</th>
@@ -39,7 +39,7 @@
         </tbody>
     </table>
     <div class='bouton' align=center>
-        <button class="d-sm-inline-block btn btn-sm btn-primary shadow-sm">{{ titre | default("Choisir les sous-groupes") }}</button>
+        <button class="d-sm-inline-block btn btn-sm btn-primary shadow-sm" id="valider">{{ titre | default("Choisir les sous-groupes") }}</button>
     </div>
 </div>
 {{form_end(form)}}

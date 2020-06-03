@@ -37,3 +37,35 @@
     </script>
 
 {% endblock %}
+
+
+{% block javascripts %}
+    <script>
+        window.onload = function() {
+            $("#valider").attr('disabled', true)
+        }
+
+        $("[name='checkbox']").on('click', function () {
+            checkCasesCocheesPage()
+        })
+        //Event listerner pour déclencher le check à chaque case cochée
+        $("[name='form[evaluations][]']").on('click', function () {
+            checkCasesCocheesPage()
+        })
+
+        function checkCasesCocheesPage() {
+            evalCheck = false; //Au moins une évaluation coché
+            $("#valider").attr('disabled', true)
+            $("[name='form[evaluations][]']").each( function () {
+                if (this.checked) {
+                    evalCheck = true;
+                    return false; //Equivalent d'un break, car un seul coché suffit
+                }
+            })
+            if(evalCheck) { //Si une une évaluation cochée
+                $("#valider").attr('disabled', false)
+            }
+        }
+    </script>
+{% endblock %}
+

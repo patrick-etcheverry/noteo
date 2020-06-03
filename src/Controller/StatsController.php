@@ -549,57 +549,54 @@ class StatsController extends AbstractController
 
         if ($form->isSubmitted()  && $form->isValid())
         {
-            $evaluations = $form->get('evaluations')->getData();
-
-            $listeStatsParGroupe = array(); // On initialise un tableau vide qui contiendra les statistiques des groupes choisis
-
-            $lesGroupes = array(); // On regroupe le groupe principal et les sous groupes pour faciliter la requete
-
-            array_push($lesGroupes, $groupe);
-
-            foreach ($request->getSession()->get('sousGroupes') as $sousGroupe)
-            {
-                array_push($lesGroupes, $sousGroupe);
-            }
-
-            foreach ($lesGroupes as $groupe) // On récupère les notes du groupe principal et des sous groupes sur toutes les évaluations choisis
-            {
-                $tabPoints = array();
-                foreach ($evaluations as $eval)
+            if(count($form->get('evaluations')->getData()) > 0) {
+                $evaluations = $form->get('evaluations')->getData();
+                $listeStatsParGroupe = array(); // On initialise un tableau vide qui contiendra les statistiques des groupes choisis
+                $lesGroupes = array(); // On regroupe le groupe principal et les sous groupes pour faciliter la requete
+                array_push($lesGroupes, $groupe);
+                foreach ($request->getSession()->get('sousGroupes') as $sousGroupe)
                 {
-                    array_push($tabPoints, $repoPoints->findAllNotesByGroupe($eval->getId(), $groupe->getId()));
+                    array_push($lesGroupes, $sousGroupe);
                 }
-                //On crée une copie de tabPoints qui contiendra les valeurs des notes pour simplifier le tableau renvoyé par la requete
-                $copieTabPoints = array();
-                foreach ($tabPoints as $element)
+                foreach ($lesGroupes as $groupe) // On récupère les notes du groupe principal et des sous groupes sur toutes les évaluations choisis
                 {
-                    foreach ($element as $point)
+                    $tabPoints = array();
+                    foreach ($evaluations as $eval)
                     {
-                        foreach ($point as $note)
+                        array_push($tabPoints, $repoPoints->findAllNotesByGroupe($eval->getId(), $groupe->getId()));
+                    }
+                    //On crée une copie de tabPoints qui contiendra les valeurs des notes pour simplifier le tableau renvoyé par la requete
+                    $copieTabPoints = array();
+                    foreach ($tabPoints as $element)
+                    {
+                        foreach ($element as $point)
                         {
-                            $copieTabPoints[] = $note;
+                            foreach ($point as $note)
+                            {
+                                $copieTabPoints[] = $note;
+                            }
                         }
                     }
+                    //On remplit le tableau qui contiendra toutes les statistiques du groupe
+                    $listeStatsParGroupe[] = array("nom" => $groupe->getNom(),
+                        "repartition" => $this->repartition($copieTabPoints),
+                        "listeNotes" => $copieTabPoints,
+                        "moyenne" => $this->moyenne($copieTabPoints),
+                        "ecartType" => $this->ecartType($copieTabPoints),
+                        "minimum" => $this->minimum($copieTabPoints),
+                        "maximum" => $this->maximum($copieTabPoints),
+                        "mediane" => $this->mediane($copieTabPoints)
+                    );
                 }
-                //On remplit le tableau qui contiendra toutes les statistiques du groupe
-                $listeStatsParGroupe[] = array("nom" => $groupe->getNom(),
-                    "repartition" => $this->repartition($copieTabPoints),
-                    "listeNotes" => $copieTabPoints,
-                    "moyenne" => $this->moyenne($copieTabPoints),
-                    "ecartType" => $this->ecartType($copieTabPoints),
-                    "minimum" => $this->minimum($copieTabPoints),
-                    "maximum" => $this->maximum($copieTabPoints),
-                    "mediane" => $this->mediane($copieTabPoints)
-                );
+                $formatStatsPourLaVue = [["nom" => "Évaluations", "bareme" => 20, "stats" => $listeStatsParGroupe]];
+                return $this->render('statistiques/stats.html.twig', [
+                    'parties' => $formatStatsPourLaVue,
+                    'evaluations' => $evaluations,
+                    'groupes' => $lesGroupes,
+                    'titre' => 'Consulter les statistiques sur '. count($evaluations) . ' évaluation(s)',
+                    'plusieursEvals' => true,
+                ]);
             }
-            $formatStatsPourLaVue = [["nom" => "Évaluations", "bareme" => 20, "stats" => $listeStatsParGroupe]];
-            return $this->render('statistiques/stats.html.twig', [
-                'parties' => $formatStatsPourLaVue,
-                'evaluations' => $evaluations,
-                'groupes' => $lesGroupes,
-                'titre' => 'Consulter les statistiques sur '. count($evaluations) . ' évaluation(s)',
-                'plusieursEvals' => true,
-            ]);
         }
 
         return $this->render('statistiques/choix_evals_plusieurs_evals_groupes.html.twig', ['form' => $form->createView()]);
