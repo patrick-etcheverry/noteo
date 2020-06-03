@@ -6,8 +6,8 @@
 
 {% block contenu %}
   {{ form_start(form)}}
-  {% if evaluation.parties |length > 1 and not pasDeChoixParties %}
-    <h1 class="h4 mb-0 text-gray-800">Sélectionner les parties de l'évaluation pour lesquelles vous souhaitez voir les statistiques</h1> <br>
+  {% if evaluation.parties | length > 1 and not pasDeChoixParties %}
+    <h1 class="h4 mb-0 text-gray-800">Sélectionner au moins une partie de l'évaluation pour laquelle vous souhaitez voir les statistiques</h1> <br>
     <div class="row">
       <div class="col-lg-4">
       </div>
@@ -15,7 +15,7 @@
         <div class="table-responsive table-hover">
           <table class="table" id="parties">
             <thead>
-            <th><input type="checkbox" onclick= "cocherToutesLesCases('form[parties][]', this.checked )" id="checkbox" title="Tout cocher"/></th>
+            <th><input type="checkbox" onclick= "cocherToutesLesCases('form[parties][]', this.checked )" name="checkbox" title="Tout cocher"/></th>
             <th>Intitulé</th>
             <th>Barème</th>
             </thead>
@@ -51,7 +51,7 @@
   <div class="table-responsive table-hover">
     <table class="table" id= "groupes">
       <thead>
-      <th><input type="checkbox" onclick= "cocherToutesLesCases('form[groupes][]', this.checked)" id="checkbox" title="Tout cocher"/></th>
+      <th><input type="checkbox" onclick= "cocherToutesLesCases('form[groupes][]', this.checked)" name="checkbox" title="Tout cocher"/></th>
       <th>Nom</th>
       <th>Effectif</th>
       <th>Description</th>
@@ -87,7 +87,7 @@
     <div class="table-responsive table-hover">
       <table class="table" id= "statuts">
         <thead>
-        <th><input type="checkbox" onclick= "cocherToutesLesCases('form[statuts][]', this.checked)" id="checkbox" title="Tout cocher"/></th>
+        <th><input type="checkbox" onclick= "cocherToutesLesCases('form[statuts][]', this.checked);" name="checkbox" title="Tout cocher"/></th>
         <th>Nom</th>
         <th>Description</th>
         <th>Créateur</th>
@@ -114,8 +114,7 @@
     </div>
   {% endif %}
   <div class='bouton' align=center>
-    <a href="{{path('evaluation_enseignant', {'id': app.user.id })}}" class="d-sm-inline-block btn btn-sm btn-secondary shadow-sm">Annuler</a>
-    <button class="d-sm-inline-block btn btn-sm btn-primary shadow-sm">Consulter les statistiques</button>
+    <button disabled id="valider" class="d-sm-inline-block btn btn-sm btn-primary shadow-sm">Consulter les statistiques</button>
   </div>
   {{ form_end(form) }}
 {% endblock %}
@@ -164,4 +163,58 @@
     tableStatuts.rows().nodes().page.len(-1).draw();
   });
 </script>
+{% endblock %}
+
+{% block javascripts %}
+  <script>
+    $("[name='checkbox']").on('click', function () {
+      checkCasesCocheesPage()
+    })
+    //Event listerner pour déclencher le check à chaque case cochée
+    $("[name='form[groupes][]']").on('click', function () {
+      checkCasesCocheesPage()
+    })
+
+    $("[name='form[statuts][]']").on('click', function () {
+      checkCasesCocheesPage()
+    })
+
+    $("[name='form[parties][]']").on('click', function () {
+      checkCasesCocheesPage()
+    })
+
+   function checkCasesCocheesPage() {
+     groupesCheck = false; //Au moins un groupe coché
+     statutsCheck = false; //Au moins un statut coché
+     partiesCheck = false; //Au moins une partie cochée
+     $("#valider").attr('disabled', true)
+     $("[name='form[groupes][]']").each( function () {
+       if (this.checked) {
+         groupesCheck = true;
+         return false; //Equivalent d'un break, car un seul coché suffit
+       }
+     })
+     $("[name='form[statuts][]']").each( function () {
+       if (this.checked) {
+         statutsCheck = true;
+         return false;
+       }
+     })
+     $("[name='form[parties][]']").each( function () {
+       if (this.checked) {
+         partiesCheck = true;
+         return false;
+       }
+     })
+     {% if evaluation.parties|length == 1 %}
+       if(groupesCheck || statutsCheck) { //Si un groupe ou statut coché
+         $("#valider").attr('disabled', false)
+       }
+     {% else %}
+       if((groupesCheck || statutsCheck) && partiesCheck) { //Si un groupe ou statut coché ET une partie cochée
+         $("#valider").attr('disabled', false)
+       }
+     {% endif %}
+   }
+  </script>
 {% endblock %}
