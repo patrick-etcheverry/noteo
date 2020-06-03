@@ -109,7 +109,7 @@ class GroupeEtudiantRepository extends NestedTreeRepository
             ;
     }
 
-    public function findAllWithStudents()
+    public function findAllHavingStudents()
     {
         return $this->createQueryBuilder('g')
             ->addSelect('e')
