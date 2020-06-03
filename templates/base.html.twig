@@ -224,26 +224,23 @@
   <script src="{{ asset('vendor/BoostrapTreeView/js/manipulationTreeView.js') }}"></script>
 
   {% block javascripts %}
+  {% endblock %}
 
   <script type="text/javascript">
-  function cocherToutesLesCases(nameCases, caseCochee)
-  {
-    $("input[name='"+ nameCases +"']").each(
-      function()
-      {
-        this.checked = caseCochee;
-      })
-  }
-
-  $(document).on('page.dt', function(){
-    $("#checkbox").each(function(){
-        this.check = false;
-    })
-  })
-
+    /*
+    * Fonction permettant de cocher toutes les cases d'une liste de casses à cocher
+    * 1er paramètre : le nom qui lie toutes les cases à cocher (l'attribut name)
+    * 2eme paramètre : est ce que la case 'tout cocher' a été cochée ou non (true ou false)
+    */
+    function cocherToutesLesCases(nameCases, caseCochee)
+    {
+      $("input[name='"+ nameCases +"']").each(
+              function()
+              {
+                this.checked = caseCochee;
+              })
+    }
   </script>
-
-  {% endblock %}
 
   {% block datatables %}
   {% endblock %}
