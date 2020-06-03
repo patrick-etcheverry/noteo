@@ -241,8 +241,23 @@
             </div>
         </div>
     {% endif %}
+    {% if ficheEtudiant %}
+        <!-- FICHE ETUDIANT -->
+        <div class="card-deck">
+            <div class="card">
+                <img class="card-img-top imageAAgrandir" src="{{ asset('img/statistiques/comparaison/moy.png') }}" alt="Card image cap">
+                <div class="card-body">
+                    <hr>
+                    <h5 class="card-title">Fiche étudiant</h5>
+                    <p class="card-text">Fiche récapitulative d'un étudiant sélectionné. Contient le classement de l'étudiant parmi tout les groupes et statuts 
+                    auxquels il appartient sur toutes les évaluations auxquelles il a participé.</p>
+                    <a href="{{ path('statistiques_fiche_etudiant_choisir_etudiant') }}" class="btn btn-primary">Consulter la fiche d'un étudiant</a>
+                </div>
+            </div>
+        </div>
+    {% endif %}
     {# Pas très beau et pratique à utiliser, à faire évoluer si possible #}
-    {% if not statsClassiquesDispo and not statsClassiquesParPartiesDispo and not statsPlusieursEvalsGroupeDispo and not statsPlusieursEvalsStatutDispo and not statsComparaisonDispo %}
+    {% if not statsClassiquesDispo and not statsClassiquesParPartiesDispo and not statsPlusieursEvalsGroupeDispo and not statsPlusieursEvalsStatutDispo and not statsComparaisonDispo and not ficheEtudiant %}
         <div class="info">
             <h1 class="h4 mb-0 text-gray-800">Vous ne pouvez consulter aucun type de statistiques pour le moment.</h1>
             <h1 class="h4 mb-0 text-gray-800">Créez des groupes, des groupes d'étudiants ayant un statut particulier et des évaluations pour consulter les statistiques.</h1>

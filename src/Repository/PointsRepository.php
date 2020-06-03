@@ -171,6 +171,23 @@ class PointsRepository extends ServiceEntityRepository
             ->execute();
 
     }
+
+    public function findNoteByEvalAndStudent($idEval, $idEtudiant)
+    {
+        return $this->getEntityManager()->createQuery('
+            SELECT p.valeur
+            FROM App\Entity\Points p
+            JOIN p.etudiant et
+            JOIN p.partie pa
+            JOIN pa.evaluation ev
+            WHERE ev.id = :idEv
+            AND et.id = :idEt
+        ')
+            ->setParameter('idEt', $idEtudiant)
+            ->setParameter('idEv', $idEval)
+            ->execute();
+
+    }
     // /**
     //  * @return Points[] Returns an array of Points objects
     //  */
