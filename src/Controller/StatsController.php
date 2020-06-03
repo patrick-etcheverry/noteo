@@ -168,88 +168,90 @@ class StatsController extends AbstractController
         $form->handleRequest($request);
 
         if($form->isSubmitted() && $form->isValid()) {
-            $session = $request->getSession();
-            $tabStatsComparaison = array();
-            $evaluationsChoisies =  $form->get('evaluations')->getData();
-            $groupes = $session->get('groupesChoisis');
-            $statuts = $session->get('statutsChoisis');
+            if(count($form->get('evaluations')->getData()) > 0) {
+                $session = $request->getSession();
+                $tabStatsComparaison = array();
+                $evaluationsChoisies =  $form->get('evaluations')->getData();
+                $groupes = $session->get('groupesChoisis');
+                $statuts = $session->get('statutsChoisis');
 
-            foreach ($groupes as $groupe) {
-                // déterminer la moyenne du groupe courant à l'évaluation que l'on veut comparer aux autres
-                $pointsEvaluationGroupe = $repoPoints->findAllNotesByGroupe($evaluationConcernee->getId(), $groupe->getId());
-                $moyenneEvaluationCouranteGroupe = array();
-                foreach ($pointsEvaluationGroupe as $note) {
-                    $moyenneEvaluationGroupe[] = $note["valeur"];
-                }
-                $moyenneEvaluationCouranteGroupe = $this->moyenne($moyenneEvaluationGroupe);
-
-                //déterminer la moyenne des moyennes aux évaluations
-                $moyennesGroupeTmp = array();
-
-                foreach ($evaluationsChoisies as $evaluationCourante) { // pour chaque évaluation, on détermine sa moyenne pour le groupe courant
-                    //determiner la moyenne de l'évaluation courante
-                    $tabPoints = $repoPoints->findAllNotesByGroupe($evaluationCourante->getId(), $groupe->getId()); // on récupère les notes
-                    //on crée un tableau temporaire ou on stoque séparement chaque note
-                    $copieTab = array();
-                    foreach ($tabPoints as $note) {
-                        $copieTab[] = $note["valeur"];
+                foreach ($groupes as $groupe) {
+                    // déterminer la moyenne du groupe courant à l'évaluation que l'on veut comparer aux autres
+                    $pointsEvaluationGroupe = $repoPoints->findAllNotesByGroupe($evaluationConcernee->getId(), $groupe->getId());
+                    $moyenneEvaluationCouranteGroupe = array();
+                    foreach ($pointsEvaluationGroupe as $note) {
+                        $moyenneEvaluationGroupe[] = $note["valeur"];
                     }
-                    $moyenneEvaluationCourante = $this->moyenne($copieTab); // on determine la moyenne du controle courant
-                    array_push($moyennesGroupeTmp, $moyenneEvaluationCourante);
-                }
-                //on détermine la moyenne des moyennes
-                $moyenneDesMoyennesEvaluations = $this->moyenne($moyennesGroupeTmp);
-                $tabStatsComparaison[] = [
-                    "nom" => $groupe->getNom(),
-                    "moyenneControleCourant" => $moyenneEvaluationCouranteGroupe,
-                    "moyenneAutresControles" => $moyenneDesMoyennesEvaluations,
-                ];
-            }
+                    $moyenneEvaluationCouranteGroupe = $this->moyenne($moyenneEvaluationGroupe);
 
-            ///on traite les statistiques pour tous les statuts
-            foreach ($statuts as $statut) {
-                /// déterminer la moyenne du groupe courant à l'évaluation
-                $pointsEvaluationStatut = $repoPoints->findAllNotesByStatut($evaluationConcernee->getId(), $statut->getId());
-                $moyenneEvaluationCouranteStatut = array();
-                foreach ($pointsEvaluationStatut as $note) {
-                    $moyenneEvaluationCouranteStatut[] = $note["valeur"];
-                }
-                $moyenneEvaluationCouranteStatut = $this->moyenne($moyenneEvaluationCouranteStatut);
-                /// déterminer la moyenne des moyennes aux évaluations
-                $moyennesTmp = array();
+                    //déterminer la moyenne des moyennes aux évaluations
+                    $moyennesGroupeTmp = array();
 
-                foreach ($evaluationsChoisies as $evaluationCourante) { // pour chaque évaluation, on détermine sa moyenne pour le groupe courant
-                    //determiner la moyenne de l'évaluation courante
-                    $tabPoints = $repoPoints->findAllNotesByStatut($evaluationCourante->getId(), $statut->getId()); // on récupère les notes
-                    //on crée un tableau temporaire ou on stoque séparement chaque note
-                    $copieTab = array();
-                    foreach ($tabPoints as $note) {
-                        $copieTab[] = $note["valeur"];
+                    foreach ($evaluationsChoisies as $evaluationCourante) { // pour chaque évaluation, on détermine sa moyenne pour le groupe courant
+                        //determiner la moyenne de l'évaluation courante
+                        $tabPoints = $repoPoints->findAllNotesByGroupe($evaluationCourante->getId(), $groupe->getId()); // on récupère les notes
+                        //on crée un tableau temporaire ou on stoque séparement chaque note
+                        $copieTab = array();
+                        foreach ($tabPoints as $note) {
+                            $copieTab[] = $note["valeur"];
+                        }
+                        $moyenneEvaluationCourante = $this->moyenne($copieTab); // on determine la moyenne du controle courant
+                        array_push($moyennesGroupeTmp, $moyenneEvaluationCourante);
                     }
-                    $moyenneEvaluationCourante = $this->moyenne($copieTab); // on determine la moyenne du controle courant
-                    array_push($moyennesTmp, $moyenneEvaluationCourante);
+                    //on détermine la moyenne des moyennes
+                    $moyenneDesMoyennesEvaluations = $this->moyenne($moyennesGroupeTmp);
+                    $tabStatsComparaison[] = [
+                        "nom" => $groupe->getNom(),
+                        "moyenneControleCourant" => $moyenneEvaluationCouranteGroupe,
+                        "moyenneAutresControles" => $moyenneDesMoyennesEvaluations,
+                    ];
                 }
-                //on détermine la moyenne des moyennes
-                $moyenneDesMoyennesEvaluations = $this->moyenne($moyennesTmp);
-                $tabStatsComparaison[] = [
-                    "nom" => $statut->getNom(),
-                    "moyenneControleCourant" => $moyenneEvaluationCouranteStatut,
-                    "moyenneAutresControles" => $moyenneDesMoyennesEvaluations,
+
+                ///on traite les statistiques pour tous les statuts
+                foreach ($statuts as $statut) {
+                    /// déterminer la moyenne du groupe courant à l'évaluation
+                    $pointsEvaluationStatut = $repoPoints->findAllNotesByStatut($evaluationConcernee->getId(), $statut->getId());
+                    $moyenneEvaluationCouranteStatut = array();
+                    foreach ($pointsEvaluationStatut as $note) {
+                        $moyenneEvaluationCouranteStatut[] = $note["valeur"];
+                    }
+                    $moyenneEvaluationCouranteStatut = $this->moyenne($moyenneEvaluationCouranteStatut);
+                    /// déterminer la moyenne des moyennes aux évaluations
+                    $moyennesTmp = array();
+
+                    foreach ($evaluationsChoisies as $evaluationCourante) { // pour chaque évaluation, on détermine sa moyenne pour le groupe courant
+                        //determiner la moyenne de l'évaluation courante
+                        $tabPoints = $repoPoints->findAllNotesByStatut($evaluationCourante->getId(), $statut->getId()); // on récupère les notes
+                        //on crée un tableau temporaire ou on stoque séparement chaque note
+                        $copieTab = array();
+                        foreach ($tabPoints as $note) {
+                            $copieTab[] = $note["valeur"];
+                        }
+                        $moyenneEvaluationCourante = $this->moyenne($copieTab); // on determine la moyenne du controle courant
+                        array_push($moyennesTmp, $moyenneEvaluationCourante);
+                    }
+                    //on détermine la moyenne des moyennes
+                    $moyenneDesMoyennesEvaluations = $this->moyenne($moyennesTmp);
+                    $tabStatsComparaison[] = [
+                        "nom" => $statut->getNom(),
+                        "moyenneControleCourant" => $moyenneEvaluationCouranteStatut,
+                        "moyenneAutresControles" => $moyenneDesMoyennesEvaluations,
+                    ];
+                }
+                $formatAdapteALaVue = [[
+                    "nom" => "Comparaison des évaluations",
+                    "stats" => $tabStatsComparaison
+                ]
                 ];
+                return $this->render('statistiques/statsComparaison.html.twig', [
+                    'evaluations' => $evaluationsChoisies,
+                    'evaluationConcernee' => $evaluationConcernee,
+                    'groupes' => $groupes,
+                    "parties" => $formatAdapteALaVue,
+                    'titre' => "Comparer " . (count($evaluationsChoisies)+1) . ' évaluations',
+                    'plusieursEvals' => true,
+                ]);
             }
-            $formatAdapteALaVue = [[
-                "nom" => "Comparaison des évaluations",
-                "stats" => $tabStatsComparaison
-            ]
-            ];
-            return $this->render('statistiques/statsComparaison.html.twig', [
-                'evaluations' => $evaluationsChoisies,
-                'evaluationConcernee' => $evaluationConcernee,
-                'groupes' => $groupes,
-                "parties" => $formatAdapteALaVue,
-                'titre' => "Comparer " . (count($evaluationsChoisies)+1) . ' évaluations',
-                'plusieursEvals' => true,
-            ]);
         }
 
         return $this->render('statistiques/choix_evaluation.html.twig', [
