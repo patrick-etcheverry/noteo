@@ -658,44 +658,46 @@ class StatsController extends AbstractController
 
         if ($form->isSubmitted()  && $form->isValid())
         {
-            $evaluations = $form->get('evaluations')->getData();
-            $listeStatsParStatut = array(); // On initialise un tableau vide qui contiendra les statistiques du statut choisi
-            $tabPoints = array();
-            foreach ($evaluations as $eval)
-            {
-                array_push($tabPoints, $repoPoints->findAllNotesByStatut($eval->getId(), $statut->getId()));
-            }
-            //On crée une copie de tabPoints qui contiendra les valeurs des notes pour simplifier le tableau renvoyé par la requete
-            $copieTabPoints = array();
-            foreach ($tabPoints as $element)
-            {
-                foreach ($element as $point)
+            if(count($form->get('evaluations')->getData()) > 0) {
+                $evaluations = $form->get('evaluations')->getData();
+                $listeStatsParStatut = array(); // On initialise un tableau vide qui contiendra les statistiques du statut choisi
+                $tabPoints = array();
+                foreach ($evaluations as $eval)
                 {
-                    foreach ($point as $note)
+                    array_push($tabPoints, $repoPoints->findAllNotesByStatut($eval->getId(), $statut->getId()));
+                }
+                //On crée une copie de tabPoints qui contiendra les valeurs des notes pour simplifier le tableau renvoyé par la requete
+                $copieTabPoints = array();
+                foreach ($tabPoints as $element)
+                {
+                    foreach ($element as $point)
                     {
-                        $copieTabPoints[] = $note;
+                        foreach ($point as $note)
+                        {
+                            $copieTabPoints[] = $note;
+                        }
                     }
                 }
-            }
-            //On remplit le tableau qui contiendra toutes les statistiques du groupe
-            $listeStatsParStatut[] = array("nom" => $statut->getNom(),
-                "repartition" => $this->repartition($copieTabPoints),
-                "listeNotes" => $copieTabPoints,
-                "moyenne" => $this->moyenne($copieTabPoints),
-                "ecartType" => $this->ecartType($copieTabPoints),
-                "minimum" => $this->minimum($copieTabPoints),
-                "maximum" => $this->maximum($copieTabPoints),
-                "mediane" => $this->mediane($copieTabPoints)
-            );
+                //On remplit le tableau qui contiendra toutes les statistiques du groupe
+                $listeStatsParStatut[] = array("nom" => $statut->getNom(),
+                    "repartition" => $this->repartition($copieTabPoints),
+                    "listeNotes" => $copieTabPoints,
+                    "moyenne" => $this->moyenne($copieTabPoints),
+                    "ecartType" => $this->ecartType($copieTabPoints),
+                    "minimum" => $this->minimum($copieTabPoints),
+                    "maximum" => $this->maximum($copieTabPoints),
+                    "mediane" => $this->mediane($copieTabPoints)
+                );
 
-            $formatStatsPourLaVue = [["nom" => "Évaluations", "bareme" => 20, "stats" => $listeStatsParStatut]];
-            return $this->render('statistiques/stats.html.twig', [
-                'parties' => $formatStatsPourLaVue,
-                'evaluations' => $evaluations,
-                'groupes' => $statut,
-                'titre' => 'Consulter les statistiques sur '. count($evaluations) . ' évaluation(s)',
-                'plusieursEvals' => true,
-            ]);
+                $formatStatsPourLaVue = [["nom" => "Évaluations", "bareme" => 20, "stats" => $listeStatsParStatut]];
+                return $this->render('statistiques/stats.html.twig', [
+                    'parties' => $formatStatsPourLaVue,
+                    'evaluations' => $evaluations,
+                    'groupes' => $statut,
+                    'titre' => 'Consulter les statistiques sur '. count($evaluations) . ' évaluation(s)',
+                    'plusieursEvals' => true,
+                ]);
+            }
         }
 
         return $this->render('statistiques/choix_evals_plusieurs_evals_statut.html.twig', [
