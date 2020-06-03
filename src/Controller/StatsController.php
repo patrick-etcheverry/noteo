@@ -33,7 +33,7 @@ class StatsController extends AbstractController
         //On définit quelles fonctionnalités seront disponibles à l'utilisateur
         $statsClassiquesDispo = count($repoEval->findAllWithOnePart()) >= 1; //Si plus d'une éval simple dans l'appli
         $statsClassiquesParPartiesDispo = count($repoEval->findAllWithSeveralParts()) >= 1;  //Si plus d'une éval avec partie dans l'appli
-        $statsPlusieursEvalsGroupeDispo = count($repoGroupe->findAllWithStudents()) >=1 && count($repoEval->findAll()) >= 2;  //Si plus d'un groupe avec des étudiants et plus de 2 évals dans l'appli
+        $statsPlusieursEvalsGroupeDispo = count($repoGroupe->findAllHavingStudents()) >=1 && count($repoEval->findAll()) >= 2;  //Si plus d'un groupe avec des étudiants et plus de 2 évals dans l'appli
         $statsPlusieursEvalsStatutDispo = count($repoStatut->findAllHavingStudents()) >=1 && count($repoEval->findAll()) >= 2; //Si plus d'un statut avec des étudiants et plus de 2 évals dans l'appli
         $statsComparaisonDispo = count($repoEval->findAll()) >= 2; //Si plus de 2 évals dans l'appli
 
