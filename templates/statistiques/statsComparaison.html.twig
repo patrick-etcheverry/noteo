@@ -11,6 +11,10 @@
             -moz-box-shadow: -1px 9px 40px -12px rgba(0,0,0,0.75);
             box-shadow: -1px 9px 40px -12px rgba(0, 0, 0, 0.75);
         }
+        span.notBold{
+          font-weight: normal;
+        }
+
     </style>
 {% endblock %}
 
@@ -20,10 +24,12 @@
             <tbody>
             {% if plusieursEvals %}
                 <tr>
-                    <th>Évaluations comparées</th>
+                    <th>Évaluations comparées<br><br><p><span class="notBold">Comparaison des résultats de l'évaluation {{ evaluationConcernee.nom }} ({{ evaluationConcernee.date|date("d/m/Y")}})
+                    <br> avec les résultats des évaluations suivantes : </span></p></th>
                     <td>
+
                         <ul>
-                            <li>{{ evaluationConcernee.nom }} ({{ evaluationConcernee.date|date("d/m/Y") }})</li>
+                            <br>
                             {% for evaluation in evaluations %}
                                 <li>{{ evaluation.nom }} ({{ evaluation.date|date("d/m/Y") }})</li>
                             {% endfor %}
