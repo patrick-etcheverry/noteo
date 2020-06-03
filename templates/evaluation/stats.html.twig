@@ -26,7 +26,8 @@
     <tr>
       <th class="intitule"><label >Actions</label></th>
       <td>
-        <a href="#"><i style="font-size: 25px;" data-toggle='tooltip' title="Exporter les statistiques au format PDF" class="icon-file-pdf" onclick="genPDF()"></i></a>
+        <a href="#"><i style="font-size: 25px;" data-toggle='tooltip' title="Exporter les statistiques au format PDF (Portrait)" class="icon-file-pdf" onclick="genPDF(onChartReady, true)"></i></a>
+        <a href="#"><i style="font-size: 25px;" data-toggle='tooltip' title="Exporter les statistiques au format PDF (Paysage)" class="fas icon-file-pdf fa-rotate-270" onclick="genPDF(onChartReady, false)"></i></a>
         {% if evaluation.enseignant.id == app.user.id or is_granted('ROLE_ADMIN') %}
         <a href="{{path("previsualisation_mail", {slug:evaluation.slug})}}"><i style="font-size: 25px;"  data-toggle='tooltip' title="Envoyer les statistiques aux étudiants"  class="icon-mail"></i></a>
         {% endif %}
@@ -50,7 +51,6 @@
     <li class="nav-item"><a class="nav-link active" data-toggle="tab" href="#Repartition_Histogramme">Répartition (Histogramme)</a></li>
     <li class="nav-item"><a class="nav-link" data-toggle="tab" href="#Repartition_Boites">Répartition (Boîte à moustaches)</a></li>
     <li class="nav-item"><a class="nav-link" data-toggle="tab" href="#Moyenne_ecart">Moyenne & Écart-type</a></li>
-    <li class="nav-item"><a class="nav-link" onclick="getImages()">Get images</a></li>
 </ul>
 
 <div class="tab-content">
@@ -163,6 +163,8 @@
   var nomEvaluation = "{{evaluation.nom}}";
   var fontSize = 16;
 
+  var wait_for_chart_ready = false; // Faux, si le graphique est en cours de création -> Vrai une fois que le graphique est prêt à être exporté en Image pour le pdf
+
   // Liste de couleurs communes
   var noir = "#000000", jaune = "#FFFF00", bleu = "#0000FF", rouge = "#FF0000", vert = "#00FF00", violet = "#EE82EE", blanc = "#FFFFFF", gris = "#808080";
 
@@ -180,9 +182,9 @@
 
   // Groupes sélectionés (avec les cases à cocher) par graphique
   var groupesChecked = [];
-  groupesChecked['histo'] = [];
-  groupesChecked['bam'] = [];
-  groupesChecked['moy'] = [];
+  groupesChecked['histo'] = []; // Répartion (Histogramme)
+  groupesChecked['bam'] = []; // Répartion (Boîtes à moustaches)
+  groupesChecked['moy'] = []; // Moyenne et écart-type
 
   // Objet données du graphique
   const chartDATA = {
@@ -190,9 +192,10 @@
     datasets: undefined,
   };
 
-  const pdfChartFontSize = 16;
+  // Taille de police d'écriture pour les graphiques exportés dans le fichier PDF
+  const pdfChartFontSize = 24;
 
-  // Tableau des images pour le pdf.
+  // Liste des images des graphiques pour le fichier PDF.
   var images = undefined;
 
   // Objet options du graphique
@@ -302,13 +305,14 @@ function formatageCasesACocher(){
   }
 }
 
-// Renvoie la valeur max de l'axe Y pour l'histogramme
+// Renvoie la valeur max de l'axe Y des groupes sélectionés de l'Histogramme
 function getMax(){
   var max = 0;
-  for(var i = 0; i < groupes.length; i++){
-    for(var j = 0; j < groupes[i].notes.length; j++){
-      if(groupes[i].notes[j] > max){
-        max = groupes[i].notes[j];
+  var grps = getGroupesData(groupesChecked['histo']);
+  for(var i = 0; i < grps.length; i++){
+    for(var j = 0; j < grps[i].notes.length; j++){
+      if(grps[i].notes[j] > max){
+        max = grps[i].notes[j];
       }
     }
   }
@@ -503,11 +507,12 @@ function contains(array, element){
 
 //----------------- PARTIE GENERATION DE PDF --------------
 
-function getImages(largeur, longueur){
+function getImages(largeur, longueur, callback){
 
   // options du graphique pour la génération de graphiques pour le pdf.
   const pdfChartOptions = {animation:{
-  duration: false, },scales:{xAxes:[{gridLines:{display:!1},ticks:{fontSize:fontSize,},maxBarThickness:100,stacked:!1,}],yAxes:[{ticks:{beginAtZero:!0,max:undefined,min:0,fontSize:pdfChartFontSize},stacked:!1,}],},legend:{position:'top',labels:{fontSize:fontSize,},},aspectRatio:3,maintainAspectRatio:!0,responsive:!1,tooltips:{intersect:!1,titleMarginBottom:10,titleFontColor:'#6e707e',titleFontSize:fontSize,backgroundColor:"#FFFFFF",bodyFontColor:"#858796",borderColor:'#dddfeb',borderWidth:1,xPadding:15,yPadding:15,displayColors:!0,caretPadding:10,},plugins:{labels:{render:'value'}}};
+    onComplete: callback,
+    duration: false, },scales:{xAxes:[{gridLines:{display:!1},ticks:{fontSize:pdfChartFontSize,},maxBarThickness:100,stacked:!1,}],yAxes:[{ticks:{beginAtZero:!0,max:undefined,min:0,fontSize:pdfChartFontSize},stacked:!1,}],},legend:{position:'top',labels:{fontSize:pdfChartFontSize,},},aspectRatio:3,maintainAspectRatio:!0,responsive:!1,tooltips:{intersect:!1,titleMarginBottom:10,titleFontColor:'#6e707e',titleFontSize:fontSize,backgroundColor:"#FFFFFF",bodyFontColor:"#858796",borderColor:'#dddfeb',borderWidth:1,xPadding:15,yPadding:15,displayColors:!0,caretPadding:10,},plugins:{labels:{render:'value'}}};
 
   images = [];
 
@@ -551,7 +556,9 @@ function getImages(largeur, longueur){
       options: options,
     });
 
-    sleep(50);
+    // sleep(50);
+    while(!wait_for_chart_ready){};
+    wait_for_chart_ready = !wait_for_chart_ready;
     images.push(window.hiddenGraph.toBase64Image());
 
     // Supression de l'instance du graphique
@@ -562,63 +569,163 @@ function getImages(largeur, longueur){
   }
 }
 
+function onChartReady(){
+  wait_for_chart_ready = true;
+}
+
 function sleep(ms) {
   return new Promise(resolve => setTimeout(resolve, ms));
 }
 
-function genPDF(){
+function genPDF(callback, portrait){
 
   // CONSTANTES
-  const imageWidth = 500;
-  const largeurCanvas = 1000;
-  const longueurCanvas = 400;
+  const imageWidthPortrait = 500
+  const imageWidthPaysage = 780;
+  const largeurCanvas = 1500;
+  const longueurCanvas = 650;
 
-  getImages(largeurCanvas, longueurCanvas);
+  // var banierreNoteo = new Image();
+  // banierreNoteo.src = '{{asset("public/img/banniere_noteo.jpg")}}';
+  // banierreNoteo = getBase64Image(banierreNoteo);
+  // const logoIut = '{{asset("public/img/logo_iut.jpg")}}';
+
+  getImages(largeurCanvas, longueurCanvas, callback);
 
   // Contenu du pdf à générer
   var docDefinition = {
+    compress: false,
+    pageOrientation: (portrait ? 'portrait' : 'landscape'),
+    info: {
+      title: '{{evaluation.nom}}',
+      author: 'Noteo',
+    },
     content: [
-      {
-      },
+      // { // BANIERE NOTEO
+      //   image: '{{asset("public/img/banniere_noteo.jpeg")}}',
+      //   width: imageWidth,
+      // },
       { // HEADER
   			text: '{{evaluation.nom}}',
-  			style: 'header'
+  			style: 'header',
   		},
       {
-        image: 'chartBar',
-        width: imageWidth,
-        pageBreak: 'after'
-      },
-      {
-        image: 'boxplot',
-        width: imageWidth,
+        text: '',
+        style : '',
         pageBreak: 'after',
-      },
-      {
-        image: 'chartMoy',
-        width: imageWidth,
-        pageBreak: 'after',
-      },
+      }
     ],
     images : {
-      chartBar : images[0],
-      boxplot : images[1],
-      chartMoy : images[2],
+      histo : images[0],
+      bam : images[1],
+      moy : images[2],
+      // noteo: banierreNoteo,
+      // iut: logoIut,
     },
+    styles: {
+  		header: {
+  			fontSize: 18,
+  			bold: true,
+        alignment: 'justify',
+  		},
+  		subheader: {
+  			fontSize: 16,
+  		},
+      un_peu_plus_grand: {
+        fontSize: 14,
+      },
+	   }
   };
 
+  // Génération des pages
+  for(clef in groupesChecked){
+    var contenu = [
+      {
+        text: (clef == 'moy' ? 'Moyenne et écart-type\n' : 'Répartion des notes\n'),
+        style: 'subheader'
+      },
+      {
+        image: clef,
+        width: (portrait ? imageWidthPortrait : imageWidthPaysage),
+        pageBreak: (portrait ? '' : 'after'),
+      },
+      {
+        text: 'Données affichées\n',
+        style: 'un_peu_plus_grand',
+      },
+		  {
+  			style: 'tableExample',
+  			table: {
+          headerRows: 1,
+  				body: getDataForPdfTable(clef),
+          width: ["auto"],
+  			},
+  			layout: {
+  				fillColor: function (rowIndex, node, columnIndex) {
+  					return (rowIndex % 2 === 0) ? '#CCCCCC' : null;
+  				}
+  			},
+        pageBreak: 'after',
+		  },
+    ];
+    docDefinition.content.push(contenu);
+  }
+
   // Génération du pdf en fonction de docDefinition et téléchargement de ce dernier
-  pdfMake.createPdf(docDefinition).download();
-
+  pdfMake.createPdf(docDefinition).download(nomEvaluation);
 }
 
-// Template de page du document pdf
-function genPagePDF(imgName, data){
-  var page = {};
-  page.image = imgName;
-  return page;
+// Génère les tableaux de données déstinés au fichier pdf
+function getDataForPdfTable(clef){
+  var donnees = []; // Donées du tableau
+  var groupesData = getGroupesData(groupesChecked[clef]);
+  switch(clef){
+    case 'histo':
+      var header = [];
+      header.push({text: '', style: 'tableHeader'}); // Case vide en haut à gauche
+      // Création du header du tableau en fonction des labels du graphique
+      for(var i = 0; i < window.chartBar.data.labels.length; i++){
+        header.push({text: window.chartBar.data.labels[i], style: 'tableHeader'});
+      }
+      donnees.push(header);
+      for(var i = 0; i < groupesChecked[clef].length; i++){
+          var temp_row = [];
+          temp_row.push(groupesChecked[clef][i]);
+          for(var j = 0; j < 5; j++){
+            temp_row.push(groupesData[i].notes[j]);
+          }
+          donnees.push(temp_row);
+      }
+      break;
+    case 'moy':
+      donnees.push(["", "Moyenne", "Ecart-type", "Effectif"]); // header du tableau
+      for(var i = 0; i < groupesChecked[clef].length; i++){
+          var temp_row = [];
+          temp_row.push(groupesChecked[clef][i]);
+          temp_row.push(groupesData[i].moyenne);
+          temp_row.push(groupesData[i].ecartType);
+          temp_row.push(groupesData[i].allNotes.length);
+          donnees.push(temp_row);
+      }
+      break;
+    case 'bam':
+    donnees.push(["", "Moyenne", "Ecart-type", "Minimum", "Médiane", "Maximum", "Effectif"]); // header du tableau
+    // Création des lignes du tableau (1 ligne par groupe)
+    for(var i = 0; i < groupesChecked[clef].length; i++){
+        var temp_row = [];
+        temp_row.push(groupesChecked[clef][i]);
+        temp_row.push(groupesData[i].moyenne);
+        temp_row.push(groupesData[i].ecartType);
+        temp_row.push(groupesData[i].minimum);
+        temp_row.push(groupesData[i].mediane);
+        temp_row.push(groupesData[i].maximum);
+        temp_row.push(groupesData[i].allNotes.length);
+        donnees.push(temp_row);
+    }
+      break;
+  }
+  return donnees;
 }
-
 </script>
 
 {% endblock %}
