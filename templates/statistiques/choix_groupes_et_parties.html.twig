@@ -5,7 +5,6 @@
 {% block statistiques %}active{% endblock %}
 
 {% block contenu %}
-{{dump(evaluations)}}
   {{ form_start(form)}}
   {% if evaluation.parties | length > 1 and not pasDeChoixParties %}
     <h1 class="h4 mb-0 text-gray-800">Sélectionner au moins une partie de l'évaluation pour laquelle vous souhaitez voir les statistiques</h1> <br>
