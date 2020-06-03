@@ -113,7 +113,7 @@ class GroupeEtudiantRepository extends NestedTreeRepository
     {
         return $this->createQueryBuilder('g')
             ->addSelect('e')
-            ->leftjoin('g.etudiants', 'e')
+            ->join('g.etudiants', 'e')
             ->getQuery()
             ->getResult()
             ;
