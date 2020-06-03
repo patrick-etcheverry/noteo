@@ -33,8 +33,8 @@ class StatsController extends AbstractController
         //On définit quelles fonctionnalités seront disponibles à l'utilisateur
         $statsClassiquesDispo = count($repoEval->findAllWithOnePart()) >= 1; //Si plus d'une éval simple dans l'appli
         $statsClassiquesParPartiesDispo = count($repoEval->findAllWithSeveralParts()) >= 1;  //Si plus d'une éval avec partie dans l'appli
-        $statsPlusieursEvalsGroupeDispo = count($repoGroupe->findAll()) >=1 && count($repoEval->findAll()) >= 2;  //Si plus d'un groupe et plus de 2 évals dans l'appli
-        $statsPlusieursEvalsStatutDispo = count($repoStatut->findAll()) >=1 && count($repoEval->findAll()) >= 2; //Si plus d'un statut et plus de 2 évals dans l'appli
+        $statsPlusieursEvalsGroupeDispo = count($repoGroupe->findAllWithStudents()) >=1 && count($repoEval->findAll()) >= 2;  //Si plus d'un groupe avec des étudiants et plus de 2 évals dans l'appli
+        $statsPlusieursEvalsStatutDispo = count($repoStatut->findAllWithStudents()) >=1 && count($repoEval->findAll()) >= 2; //Si plus d'un statut avec des étudiants et plus de 2 évals dans l'appli
         $statsComparaisonDispo = count($repoEval->findAll()) >= 2; //Si plus de 2 évals dans l'appli
 
         return $this->render('statistiques/choix_statistiques.html.twig', [

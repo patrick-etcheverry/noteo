@@ -109,6 +109,17 @@ class GroupeEtudiantRepository extends NestedTreeRepository
             ;
     }
 
+    public function findAllWithStudents()
+    {
+        return $this->createQueryBuilder('g')
+            ->addSelect('e')
+            ->leftjoin('g.etudiants', 'e')
+            ->getQuery()
+            ->getResult()
+            ;
+    }
+
+
     // /**
     //  * @return GroupeEtudiant[] Returns an array of GroupeEtudiant objects
     //  */
