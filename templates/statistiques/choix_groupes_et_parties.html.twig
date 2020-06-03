@@ -167,6 +167,10 @@
 
 {% block javascripts %}
   <script>
+    window.onload = function() {
+      checkCasesCocheesPage()
+    }
+
     $("[name='checkbox']").on('click', function () {
       checkCasesCocheesPage()
     })

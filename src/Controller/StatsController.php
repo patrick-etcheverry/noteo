@@ -254,7 +254,7 @@ class StatsController extends AbstractController
             }
         }
 
-        return $this->render('statistiques/choix_evaluation.html.twig', [
+        return $this->render('statistiques/choix_plusieurs_evals_comparaison.html.twig', [
             'form' => $form->createView(),
             'titrePage' => "Choisir les autres évals",
             'titre' => 'Consulter les statistiques'
