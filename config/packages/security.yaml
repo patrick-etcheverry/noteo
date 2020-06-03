@@ -38,3 +38,4 @@ security:
          - { path: ^/evaluation, roles: ROLE_USER }
          - { path: ^/statut, roles: ROLE_USER }
          - { path: ^/partie, roles: ROLE_USER }
+         - { path: ^/statistiques, roles: ROLE_USER }

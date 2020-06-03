@@ -23,6 +23,20 @@ class StatutRepository extends ServiceEntityRepository
     * @return Statut[] Returns an array of Statut objects
     */
 
+    public function findAllHavingStudents()
+    {
+        return $this->createQueryBuilder('s')
+            ->addSelect('e')
+            ->join('s.etudiants', 'e')
+            ->getQuery()
+            ->getResult()
+        ;
+    }
+
+    /**
+     * @return Statut[] Returns an array of Statut objects
+     */
+
     public function findAllWithStudents()
     {
         return $this->createQueryBuilder('s')
@@ -30,7 +44,7 @@ class StatutRepository extends ServiceEntityRepository
             ->leftjoin('s.etudiants', 'e')
             ->getQuery()
             ->getResult()
-        ;
+            ;
     }
 
     /**
