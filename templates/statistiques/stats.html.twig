@@ -633,11 +633,13 @@ function genPDF(callback, portrait){
   // banierreNoteo = getBase64Image(banierreNoteo);
   // const logoIut = '{{asset("public/img/logo_iut.jpg")}}';
 
+  // Génération des images des graphiques pour le pdf
   getImages(largeurCanvas, longueurCanvas, callback);
 
   // Contenu du pdf à générer
   var docDefinition = {
     compress: false,
+    footer: function(currentPage, pageCount) { return {text: (currentPage.toString() + "  "), alignment: 'right', margin: 15}; },
     pageOrientation: (portrait ? 'portrait' : 'landscape'),
     info: {
       title: '{{evaluation.nom}}',
@@ -673,9 +675,11 @@ function genPDF(callback, portrait){
   		},
   		subheader: {
   			fontSize: 16,
+        margin: 15,
   		},
       un_peu_plus_grand: {
         fontSize: 14,
+        margin: 15,
       },
 	   }
   };
@@ -685,7 +689,7 @@ function genPDF(callback, portrait){
     for(clef in groupesChecked[indexPartie]){
       var contenu = [
         {
-          text: (clef == 'moy' ? 'Moyenne et écart-type\n' : 'Répartion des notes\n'),
+          text: (clef == 'moy' ? 'Moyenne et écart-type\n' : 'Répartition des notes\n'),
           style: 'subheader'
         },
         {
