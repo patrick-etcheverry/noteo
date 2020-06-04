@@ -26,7 +26,8 @@
     <tr>
       <th class="intitule"><label >Actions</label></th>
       <td>
-        <a href="#"><i style="font-size: 25px;" data-toggle='tooltip' title="Exporter les statistiques au format PDF" class="icon-file-pdf" onclick="genPDF()"></i></a>
+        <a href="#"><i style="font-size: 25px;" data-toggle='tooltip' title="Exporter les statistiques au format PDF (Portrait)" class="icon-file-pdf" onclick="genPDF(onChartReady, true)"></i></a>
+        <a href="#"><i style="font-size: 25px;" data-toggle='tooltip' title="Exporter les statistiques au format PDF (Paysage)" class="fas icon-file-pdf fa-rotate-270" onclick="genPDF(onChartReady, false)"></i></a>
         {% if evaluation.enseignant.id == app.user.id or is_granted('ROLE_ADMIN') %}
         <a href="{{path("previsualisation_mail", {slug:evaluation.slug})}}"><i style="font-size: 25px;"  data-toggle='tooltip' title="Envoyer les statistiques aux étudiants"  class="icon-mail"></i></a>
         {% endif %}
@@ -46,6 +47,7 @@
 </div>
 {% if groupes is not empty %}
 
+<<<<<<< HEAD
 {% for groupe in groupes %}
 
 <br>
@@ -82,6 +84,96 @@
       </li>
     </div>
   </ul>
+=======
+<ul class="nav nav-tabs">
+    <li class="nav-item"><a class="nav-link active" data-toggle="tab" href="#Repartition_Histogramme">Répartition (Histogramme)</a></li>
+    <li class="nav-item"><a class="nav-link" data-toggle="tab" href="#Repartition_Boites">Répartition (Boîte à moustaches)</a></li>
+    <li class="nav-item"><a class="nav-link" data-toggle="tab" href="#Moyenne_ecart">Moyenne & Écart-type</a></li>
+</ul>
+
+<div class="tab-content">
+<!-- Répartition (Histogramme) -->
+<div id="Repartition_Histogramme" class="tab-pane active">
+  <div class="container-fluid">
+  <br>
+  <div class="card-md-auto">
+    <div class="card-header">
+      Groupes
+    </div>
+    <div class="card-body">
+    {% set tabCounter = 0 %}
+    {% for groupe in groupes %}
+      <div class="form-check form-check-inline">
+        <input class="form-check-input" type="checkbox" id="{{groupe.nom}}" onChange="changement(this.id, this.checked, 'histo', false)">
+        <label class="form-check-label" for="inlineCheckbox1" id="label_{{groupe.nom}}_histo">{{groupe.nom}}</label>
+      </div>
+     {% set tabCounter = tabCounter + 1 %}
+   {% endfor %}
+   </div>
+  </div>
+   </div>
+   <br>
+   <div class="container-fluid">
+      <canvas align=center id="graphHisto"></canvas>
+   </div>
+</div>
+<!-- fin Répartition (Histogramme) -->
+
+<!-- Répartition (Boîte à moustache) -->
+<div id="Repartition_Boites" class="tab-pane fade">
+  <div class="container-fluid">
+  <br>
+  <div class="card-md-auto">
+    <div class="card-header">
+      Groupes
+    </div>
+    <div class="card-body">
+    {% set tabCounter = 0 %}
+    {% for groupe in groupes %}
+      <div class="form-check form-check-inline">
+        <input class="form-check-input" type="checkbox" id="{{groupe.nom}}" onChange="changement(this.id, this.checked, 'bam', false)">
+        <label class="form-check-label" for="inlineCheckbox1" id="label_{{groupe.nom}}_bam">{{groupe.nom}}</label>
+      </div>
+     {% set tabCounter = tabCounter + 1 %}
+   {% endfor %}
+   </div>
+  </div>
+   </div>
+   <br>
+   <div class="container-fluid">
+      <canvas align=center id="graphBoites"></canvas>
+   </div>
+</div>
+<!-- fin Répartition (Boîtes à moustache) -->
+
+<!-- Moyenne & Ecart-type -->
+<div id="Moyenne_ecart" class="tab-pane fade">
+  <div class="container-fluid">
+  <br>
+  <div class="card-md-auto">
+    <div class="card-header">
+      Groupes
+    </div>
+    <div class="card-body">
+    {% set tabCounter = 0 %}
+    {% for groupe in groupes %}
+      <div class="form-check form-check-inline">
+        <input class="form-check-input" type="checkbox" id="{{groupe.nom}}" onChange="changement(this.id, this.checked, 'moy', false)">
+        <label class="form-check-label" for="inlineCheckbox1" id="label_{{groupe.nom}}_moy">{{groupe.nom}}</label>
+      </div>
+     {% set tabCounter = tabCounter + 1 %}
+   {% endfor %}
+   </div>
+  </div>
+   </div>
+   <br>
+   <div class="container-fluid">
+      <canvas align=center id="grapheMoyenne"></canvas>
+   </div>
+</div>
+<!-- fin Moyenne & Ecart-type -->
+
+>>>>>>> generation_pdf
 </div>
 
 {% endfor %}
@@ -98,6 +190,7 @@
 
 {% block javascripts %}
 
+<<<<<<< HEAD
 <script type="text/javascript" src="{{asset("js/jspdf.min.js")}}"></script>
 <script type="text/javascript" src="{{asset("js/html2canvas.min.js")}}"></script>
 
@@ -134,148 +227,585 @@
     }
     if (longueur > 69) {
       doc.setFontSize(16)
-    }
+=======
+<!-- Import de pdfmake -->
+<script type="text/javascript" src="{{asset("js/pdfmake.min.js")}}"></script>
+<script type="text/javascript" src="{{asset("js/vfs_fonts.js")}}"></script>
+<!-- Script pour les graphiques de type 'Boîte à moustache' -->
+<script type="text/javascript" src="{{asset("js/boxplot.js")}}"></script>
 
-    doc.text(nomEval,300,200,(align = "center"))
-    doc.setFontSize(16)
-    doc.text("Groupe évalué :",70,300)
-    doc.text(nomGroupe,260,300)
-    doc.text("Date :",70,330)
-    doc.text(date,260,330)
+<!-- Script pour la génération des graphiques -->
+<script type="text/javascript">
 
-    {% for groupe in groupes %}
+  // ----- VARIABLES GLOBALES ---------
 
-    var effectifDuGroupe="{% set effectifTotal = 0 %}
-    {% for effectif in groupe.notes %}
-      {% set effectifTotal = effectifTotal + effectif %}
-    {% endfor %}
-    ({{ effectifTotal }} étudiants)".trim()
+  var nomEvaluation = "{{evaluation.nom}}";
+  var fontSize = 16;
 
+  var wait_for_chart_ready = false; // Faux, si le graphique est en cours de création -> Vrai une fois que le graphique est prêt à être exporté en Image pour le pdf
 
-    if (numeroCarte == 1) {
-      doc.addPage()
-      yTitre = 50
-      y = 100
-    }
-    if (numeroCarte == 2) {
-      yTitre = 300
-      y = 350
-    }
-    if (numeroCarte == 3) {
-      yTitre = 550
-      y = 600
-    }
-    doc.setFontSize(25)
-    var nomCarteGroupe = "{{groupe.nom}}" +" "+ effectifDuGroupe
-    doc.text(nomCarteGroupe,xTitre,yTitre,(align = "center"))
-    doc.setFontSize(12)
+  // Liste de couleurs communes
+  var noir = "#000000", jaune = "#FFFF00", bleu = "#0000FF", rouge = "#FF0000", vert = "#00FF00", violet = "#EE82EE", blanc = "#FFFFFF", gris = "#808080";
 
-    //traitement du nom du groupe
-    var phraseNomGroupe = "Statistiques"
-    doc.text(phraseNomGroupe,20,y)
-    y = y + deltaY
-    //traitement de la moyenne
-    var moyenne = "{{groupe.moyenne}}"
-    doc.text("Moyenne :",xLabelStat,y)
-    doc.text(moyenne,xStat,y)
-    y = y + deltaY
-    //traitement de l'écart type
-    var ecartType = "{{groupe.ecartType}}"
-    doc.text("Ecart-type :",xLabelStat,y)
-    doc.text(ecartType,xStat,y)
-    y = y + deltaY
-    //traitement de la note minimal
-    var min = "{{groupe.minimum}}"
-    doc.text("Note(s) minimale(s) :",xLabelStat,y)
-    doc.text(min,xStat,y)
-    y = y + deltaY
-    //traitement de la note maximal
-    var max = "{{groupe.maximum}}"
-    doc.text("Note(s) maximale(s) :",xLabelStat,y)
-    doc.text(max,xStat,y)
-    y = y + deltaY
-    //traitement de la mediane
-    var mediane = "{{groupe.mediane}}"
-    doc.text("Médiane :",xLabelStat,y)
-    doc.text(mediane,xStat,y)
+  // Pallette de couleurs (valeurs rgb)
+  var couleurs = [
+    [192, 57, 43], [155, 89, 182], [41, 128, 185], [22, 160, 133], [46, 204, 113], [243, 156, 18], [211, 84, 0], [189, 195, 199], [127, 140, 141],
+    [44, 62, 80], [231, 76, 60], [142, 68, 173], [26, 188, 156], [39, 174, 96], [241, 196, 15], [230, 126, 34], [236, 240, 241], [149, 165, 166],
+    [52, 73, 94],
+  ];
 
-    //traitement de la répartition des notes
-    if (numeroCarte == 1) {
-      y = 100
-    }
-    if (numeroCarte == 2) {
-      y = 350
-    }
-    if (numeroCarte == 3) {
-      y = 600
-    }
-    doc.text("Répartition des notes", 320,y)
-    y = y + deltaY
-    doc.text("[0;4[ : ", xIntervalle,y);
-    var premierIntervalle = "{{groupe.notes[0]}} étudiant(s)"
-    doc.text(premierIntervalle,xRepartition, y)
-    y = y + deltaY
-    doc.text("[4;8[ : ", xIntervalle,y);
-    var deuxiemeIntervalle = "{{groupe.notes[1]}} étudiant(s)"
-    doc.text(deuxiemeIntervalle,xRepartition, y)
-    y = y + deltaY
-    doc.text("[8;12[ : ", xIntervalle,y);
-    var troisiemeIntervalle = "{{groupe.notes[2]}} étudiant(s)"
-    doc.text(troisiemeIntervalle,xRepartition, y)
-    y = y + deltaY
-    doc.text("[12;16[ : ", xIntervalle,y);
-    var quatriemeIntervalle = "{{groupe.notes[3]}} étudiant(s)"
-    doc.text(quatriemeIntervalle,xRepartition, y)
-    y = y + deltaY
-    doc.text("[16;20] : ", xIntervalle,y);
-    var cinquiemeIntervalle = "{{groupe.notes[4]}} étudiant(s)"
-    doc.text(cinquiemeIntervalle,xRepartition, y)
+  // passage de la liste groupes de twig à js
+  var groupes = "{{groupes|json_encode()}}";
+  groupes = groupes.replace(/&quot;/g, "\""); // remplacement de toutes les itérations de ' &quot; ' par ' " '
+  groupes = JSON.parse(groupes);
 
-    if (numeroCarte == 3) {
-      numeroCarte = 1
-    }
-    else {
-      numeroCarte = numeroCarte + 1
-    }
+  // Groupes sélectionés (avec les cases à cocher) par graphique
+  var groupesChecked = [];
+  groupesChecked['histo'] = []; // Répartion (Histogramme)
+  groupesChecked['bam'] = []; // Répartion (Boîtes à moustaches)
+  groupesChecked['moy'] = []; // Moyenne et écart-type
 
-    {% endfor %}
+  // Objet données du graphique
+  const chartDATA = {
+    labels: [],
+    datasets: undefined,
+  };
 
-    doc.save(nomEval)
+  // Taille de police d'écriture pour les graphiques exportés dans le fichier PDF
+  const pdfChartFontSize = 24;
 
+  // Liste des images des graphiques pour le fichier PDF.
+  var images = undefined;
 
-    //Piste de solution pour améliorer l'xport pdf
-    /*html2canvas($("#lesStats .cardhu-S1"),{
-      useCORS:true,
-      logging:true,
-      onrendered:function(canvas,capture){
-        capture = canvas.toDataURL('image/png',1.0);
-        document.body.insertAdjacentHTML('beforeend',"<img id='arthur' src='" + capture +"'>")
-
+  // Objet options du graphique
+  const options = {
+    scales: {
+      xAxes: [{
+        gridLines: {
+          display: false
+        },
+        ticks: {
+          fontSize: fontSize,
+        },
+        maxBarThickness: 100,
+        stacked: false,
+      }],
+      yAxes: [{
+        labelString: 'Intervalle de note',
+        ticks: {
+          beginAtZero: true,
+          max: 10,
+          min: 0,
+          fontSize: fontSize,
+        },
+        stacked: false,
+      }],
+    },
+    legend: {
+					position: 'top',
+          labels: {
+            fontSize: fontSize,
+          },
+		},
+    aspectRatio: 3,
+    maintainAspectRatio: true,
+    responsive: true,
+    tooltips: {
+      intersect: false,
+      titleMarginBottom: 10,
+      titleFontColor: '#6e707e',
+      titleFontSize: fontSize,
+      backgroundColor: blanc,
+      bodyFontColor: "#858796",
+      borderColor: '#dddfeb',
+      borderWidth: 1,
+      xPadding: 15,
+      yPadding: 15,
+      displayColors: true,
+      caretPadding: 10
+    },
+    plugins : {
+      labels: {
+        render: 'value'
       }
-    }).then(function(){
-      doc.addImage(document.getElementById("arthur").src,'PNG',20,110);
-      doc.addPage()
-      doc.save(nomEval)
-    });*/
-
-  /*  html2canvas($("#lesStats .cardhu-S1"),{
-      useCORS:true,
-      logging:true,
-      onrendered:function(canvas,capture){
-        capture = canvas.toDataURL('image/png',1.0);
-        document.body.insertAdjacentHTML('beforeend',"<img id='arthur' src='" + capture +"'>")
-
-      }
-    }).then(function(){
-      doc.addImage(document.getElementById("arthur").src,'PNG',20,110);
-      doc.addPage()
-      doc.save(nomEval)
-    });*/
-
-
+    }
   }
 
+ // --------- CODE -------------
 
+  // Mise en forme du etexte des cases à cocher
+  formatageCasesACocher();
+
+  // Création des graphiques au chargement de la fenètre
+  window.onload = function(){
+    window.chartBar = new Chart(document.getElementById("graphHisto").getContext('2d'), {
+      type: 'bar',
+      data: chartDATA,
+      options: options
+    });
+
+    window.chartBoite = new Chart(document.getElementById("graphBoites").getContext('2d'), {
+      type: 'boxplot',
+      data: chartDATA,
+      options: options,
+    });
+
+    window.chartMoy = new Chart(document.getElementById("grapheMoyenne").getContext('2d'), {
+      type: 'bar',
+      data: chartDATA,
+      options: options,
+    });
+  }
+
+// ------ FONCTIONS -----
+
+// Coloration du texte des cases à cocher avec les bonnes couleurs + réajustement de la taille de la police
+// Chaque label de case à cocher à comme id : label_nomGroupe_nomGraphe
+function formatageCasesACocher(){
+  // Création de couleurs si la liste couleurs n'as pas assez d'éléments
+  if(groupes.length > couleurs.length){
+    var gap = groupes.length - couleurs.length;
+    for(var i = 0; i < gap; i++){
+      var coul = couleurs[i];
+      couleurs.push([(coul[0] + 60) % 255, (coul[1] - 60) % 255, coul[2]]);
+    }
+  }
+  // Coloration + Ajustement de la taille de la police des labels des cases à cocher
+  for(var i = 0; i < groupes.length; i++){
+    for(var clef in groupesChecked){
+      if(clef == 'moy'){ // Pas de coloration pour le graphique de la moyenne et l'écart-type
+        break;
+      }
+      var nom = groupes[i].nom;
+      var rgb = "rgb("+couleurs[i][0]+","+couleurs[i][1]+","+couleurs[i][2]+")";
+      document.getElementById("label_"+nom+"_"+clef).style.color = rgb;
+      document.getElementById("label_"+nom+"_"+clef).style.fontSize = (fontSize+"px");
+    }
+  }
+}
+
+// Renvoie la valeur max de l'axe Y des groupes sélectionés de l'Histogramme
+function getMax(){
+  var max = 0;
+  var grps = getGroupesData(groupesChecked['histo']);
+  for(var i = 0; i < grps.length; i++){
+    for(var j = 0; j < grps[i].notes.length; j++){
+      if(grps[i].notes[j] > max){
+        max = grps[i].notes[j];
+      }
+    }
+  }
+  return max;
+}
+
+// Met à jour le graphique en fonction des cases qui sont cochées
+function changement(nom, value, type, pdf){
+  if((nom != undefined && value != undefined) && !pdf){
+    // Gère l'addition et la suppression des groupes à afficher dans le graphe
+    if(value){ // la case à été cochée
+      groupesChecked[type].push(nom); // Ajout dans la liste cochée
+    } else { // la case à été décochée
+      var index = contains(groupesChecked[type], nom); // index au quel se trouve le groupe dans le tableau groupes s'il existe
+      if(index != -1){
+        groupesChecked[type].splice(index, 1); // Suppression de la liste cochée
+      }
+    }
+  }
+
+  var chartOptions = (pdf ? window.hiddenGraph.options : options); // Récupération de la template des options
+  var chartDonnees = {};
+  // Génération des labels & cacul du max
+  switch (type) {
+    case 'histo':
+      // Changement des labels + de l'échelle de l'axe Y
+      chartDonnees.labels = ['[0;4[', '[4;8[', '[8;12[', '[12;16[', '[16;20]'];
+      chartOptions.scales.yAxes[0].ticks.min = 0;
+      chartOptions.scales.yAxes[0].ticks.max = getMax();
+      break;
+    case 'bam': // Boîte à moustache
+      // Changement des labels + de l'échelle de l'axe Y
+      chartDonnees.labels = [nomEvaluation];
+      chartOptions.scales.yAxes[0].ticks.min = 0;
+      chartOptions.scales.yAxes[0].ticks.max = 20;
+      break;
+    case 'moy':
+      chartDonnees.labels = groupesChecked[type];
+      chartOptions.scales.yAxes[0].ticks.min = 0;
+      chartOptions.scales.yAxes[0].ticks.max = undefined;
+      break;
+    default:
+      break;
+  }
+
+  // Génération des datasets des groupes sélectionés pour chartJS en fonction du graphique sélectioné
+  // Remplacement des données du graphe par les nouvelles données générées
+  switch(type){
+    case 'histo':
+    case 'bam':
+      chartDonnees.datasets = genDataRepartition(type);
+      break;
+    case 'moy':
+      chartDonnees.datasets = genDataMoyenneEcart();
+      break;
+  }
+
+  //  MaJ du graphique + MaJ des options
+  if(!pdf){
+    switch (type) {
+      case 'histo':
+        window.chartBar.options = chartOptions;
+        window.chartBar.data = chartDonnees;
+        window.chartBar.update();
+        break;
+      case 'bam': // Boîte à moustaches
+        window.chartBoite.options = chartOptions;
+        window.chartBoite.data = chartDonnees;
+        window.chartBoite.update();
+        break;
+      case 'moy' : // Moyenne & écart-type
+        window.chartMoy.options = chartOptions;
+        window.chartMoy.data = chartDonnees;
+        window.chartMoy.update();
+        break;
+      default:
+        break;
+    }
+  } else {
+    window.hiddenGraph.type = (type == 'bam' ? 'boxplot' : 'bar');
+    console.log("type: " + type + " => " + window.hiddenGraph.type);
+    window.hiddenGraph.options = chartOptions;
+    window.hiddenGraph.data = chartDonnees;
+    window.hiddenGraph.update();
+  }
+
+}
+
+function dl(type, data){
+  var element = document.createElement('a');
+    element.setAttribute('href', data);
+    element.setAttribute('download', type);
+    element.style.display = 'none';
+    document.body.appendChild(element);
+    element.click();
+    document.body.removeChild(element);
+}
+
+function genDataRepartition(type){
+  var data = [];
+  for(var i = 0; i < groupesChecked[type].length; i++){
+    var set = {};
+    var index = -1;
+    for(var j = 0; j < groupes.length; j++){
+      if(groupes[j].nom == groupesChecked[type][i]){
+        index = j;
+      }
+    }
+    if(index != -1){
+      set.label = groupes[index].nom;
+      switch (type) {
+        case 'histo': // Histogramme
+          set.data = groupes[index].notes;
+          set.borderColor = gris;
+          break;
+        case 'bam': // Boîte à moustaches
+          set.data = [groupes[index].allNotes];
+          set.borderColor = noir;
+          break;
+        default:
+          break;
+      }
+      var rgb = "rgb("+couleurs[index][0]+","+couleurs[index][1]+","+couleurs[index][2]+")";
+      set.backgroundColor = rgb;
+      set.hoverBackgroundColor = rgb;
+      data.push(set);
+    }
+  }
+  return data;
+}
+
+// Génère les données requises par Chart.js pour le graphique 'Moyenne & écart-type'
+function genDataMoyenneEcart(){
+  var liste = getGroupesData(groupesChecked['moy']); // Récupération des données
+  var moyenne = [];
+  var ecartType = [];
+  for(var i = 0; i < liste.length; i++){ // Choix des informations requises
+    moyenne.push(liste[i].moyenne);
+    ecartType.push(liste[i].ecartType);
+  }
+  var couleurMoyenne = couleurs[0];
+  var couleurEcartType = couleurs[1];
+  data = [ // Création des objets datasets de Chart.js avec nos données
+    {
+      label: 'Moyenne',
+      backgroundColor: "rgb("+couleurMoyenne[0]+","+couleurMoyenne[1]+","+couleurMoyenne[2]+")",
+      hoverBackgroundColor: "rgb("+couleurMoyenne[0]+","+couleurMoyenne[1]+","+couleurMoyenne[2]+")",
+      borderColor: gris,
+      data: moyenne
+    },
+    {
+      label: 'Écart-type',
+      backgroundColor: "rgb("+couleurEcartType[0]+","+couleurEcartType[1]+","+couleurEcartType[2]+")",
+      hoverBackgroundColor: "rgb("+couleurEcartType[0]+","+couleurEcartType[1]+","+couleurEcartType[2]+")",
+      borderColor: gris,
+      data: ecartType
+    }
+  ];
+  return data;
+}
+
+// Retourne un tableau d'objets groupe avec leurs données en fonction d'une liste de noms de groupes
+function getGroupesData(liste){
+  groupesAvecDonnees = [];
+  for(var i = 0; i < liste.length; i++){
+    for(var j = 0; j < groupes.length; j++){
+      if(groupes[j].nom == liste[i]){
+        groupesAvecDonnees[i] = groupes[j];
+        break;
+      }
+    }
+  }
+  return groupesAvecDonnees;
+}
+
+// génère des codes couleurs rgb aléatoires
+function genRandomColor(){
+  return "rgb(" + Math.floor(Math.random() * Math.floor(255)) + ","
+                + Math.floor(Math.random() * Math.floor(255)) + ","
+                + Math.floor(Math.random() * Math.floor(255)) + ")";
+}
+
+// retourne l'index au quel se trouve l'élément dans array, s'il n'y est pas renvoie -1
+function contains(array, element){
+  for(var i = 0; i < array.length; i++){
+    if(array[i] == element){
+      return i;
+    }
+  }
+  return -1;
+}
+
+//----------------- PARTIE GENERATION DE PDF --------------
+
+function getImages(largeur, longueur, callback){
+
+  // options du graphique pour la génération de graphiques pour le pdf.
+  const pdfChartOptions = {animation:{
+    onComplete: callback,
+    duration: false, },scales:{xAxes:[{gridLines:{display:!1},ticks:{fontSize:pdfChartFontSize,},maxBarThickness:100,stacked:!1,}],yAxes:[{ticks:{beginAtZero:!0,max:undefined,min:0,fontSize:pdfChartFontSize},stacked:!1,}],},legend:{position:'top',labels:{fontSize:pdfChartFontSize,},},aspectRatio:3,maintainAspectRatio:!0,responsive:!1,tooltips:{intersect:!1,titleMarginBottom:10,titleFontColor:'#6e707e',titleFontSize:fontSize,backgroundColor:"#FFFFFF",bodyFontColor:"#858796",borderColor:'#dddfeb',borderWidth:1,xPadding:15,yPadding:15,displayColors:!0,caretPadding:10,},plugins:{labels:{render:'value'}}};
+
+  images = [];
+
+  for(var clef in groupesChecked){
+    // Création du canvas caché
+    var canvas = document.createElement("canvas");
+    canvas.setAttribute('id', 'hiddenGraph');
+    canvas.style.display = 'none'; // N'affiche pas l'élément
+    canvas.style.width = largeur+'px';
+    canvas.style.height = longueur+'px';
+    document.body.appendChild(canvas);
+
+    var chartDonnees = {};
+    var options = pdfChartOptions;
+    switch (clef) {
+      case 'histo':
+        chartDonnees.labels = ['[0;4[', '[4;8[', '[8;12[', '[12;16[', '[16;20]'];
+        options.scales.yAxes[0].ticks.min = 0;
+        options.scales.yAxes[0].ticks.max = getMax();
+        break;
+      case 'bam': // Boîte à moustache
+        chartDonnees.labels = [nomEvaluation];
+        options.scales.yAxes[0].ticks.min = 0;
+        options.scales.yAxes[0].ticks.max = 20;
+        break;
+      case 'moy':
+        chartDonnees.labels = groupesChecked[clef];
+        options.scales.yAxes[0].ticks.min = 0;
+        options.scales.yAxes[0].ticks.max = undefined;
+        break;
+      default:
+        break;
+>>>>>>> generation_pdf
+    }
+
+    chartDonnees.datasets = (clef == 'moy' ? genDataMoyenneEcart() : genDataRepartition(clef));
+
+    // Création du chart dans le canvas caché
+    window.hiddenGraph = new Chart(document.getElementById("hiddenGraph").getContext('2d'), {
+      type: (clef == 'bam' ? 'boxplot' : 'bar'),
+      data: chartDonnees,
+      options: options,
+    });
+
+    // sleep(50);
+    while(!wait_for_chart_ready){};
+    wait_for_chart_ready = !wait_for_chart_ready;
+    images.push(window.hiddenGraph.toBase64Image());
+
+    // Supression de l'instance du graphique
+    window.hiddenGraph.destroy();
+
+    // Suppression du canvas caché de l'arborescence de la page
+    document.body.removeChild(canvas);
+  }
+}
+
+function onChartReady(){
+  wait_for_chart_ready = true;
+}
+
+function sleep(ms) {
+  return new Promise(resolve => setTimeout(resolve, ms));
+}
+
+function genPDF(callback, portrait){
+
+  // CONSTANTES
+  const imageWidthPortrait = 500
+  const imageWidthPaysage = 780;
+  const largeurCanvas = 1500;
+  const longueurCanvas = 650;
+
+  // var banierreNoteo = new Image();
+  // banierreNoteo.src = '{{asset("public/img/banniere_noteo.jpg")}}';
+  // banierreNoteo = getBase64Image(banierreNoteo);
+  // const logoIut = '{{asset("public/img/logo_iut.jpg")}}';
+
+  getImages(largeurCanvas, longueurCanvas, callback);
+
+  // Contenu du pdf à générer
+  var docDefinition = {
+    compress: false,
+    pageOrientation: (portrait ? 'portrait' : 'landscape'),
+    info: {
+      title: '{{evaluation.nom}}',
+      author: 'Noteo',
+    },
+    content: [
+      // { // BANIERE NOTEO
+      //   image: '{{asset("public/img/banniere_noteo.jpeg")}}',
+      //   width: imageWidth,
+      // },
+      { // HEADER
+  			text: '{{evaluation.nom}}',
+  			style: 'header',
+  		},
+      {
+        text: '',
+        style : '',
+        pageBreak: 'after',
+      }
+    ],
+    images : {
+      histo : images[0],
+      bam : images[1],
+      moy : images[2],
+      // noteo: banierreNoteo,
+      // iut: logoIut,
+    },
+    styles: {
+  		header: {
+  			fontSize: 18,
+  			bold: true,
+        alignment: 'justify',
+  		},
+  		subheader: {
+  			fontSize: 16,
+  		},
+      un_peu_plus_grand: {
+        fontSize: 14,
+      },
+	   }
+  };
+
+  // Génération des pages
+  for(clef in groupesChecked){
+    var contenu = [
+      {
+        text: (clef == 'moy' ? 'Moyenne et écart-type\n' : 'Répartion des notes\n'),
+        style: 'subheader'
+      },
+      {
+        image: clef,
+        width: (portrait ? imageWidthPortrait : imageWidthPaysage),
+        pageBreak: (portrait ? '' : 'after'),
+      },
+      {
+        text: 'Données affichées\n',
+        style: 'un_peu_plus_grand',
+      },
+		  {
+  			style: 'tableExample',
+  			table: {
+          headerRows: 1,
+  				body: getDataForPdfTable(clef),
+          width: ["auto"],
+  			},
+  			layout: {
+  				fillColor: function (rowIndex, node, columnIndex) {
+  					return (rowIndex % 2 === 0) ? '#CCCCCC' : null;
+  				}
+  			},
+        pageBreak: 'after',
+		  },
+    ];
+    docDefinition.content.push(contenu);
+  }
+
+  // Génération du pdf en fonction de docDefinition et téléchargement de ce dernier
+  pdfMake.createPdf(docDefinition).download(nomEvaluation);
+}
+
+// Génère les tableaux de données déstinés au fichier pdf
+function getDataForPdfTable(clef){
+  var donnees = []; // Donées du tableau
+  var groupesData = getGroupesData(groupesChecked[clef]);
+  switch(clef){
+    case 'histo':
+      var header = [];
+      header.push({text: '', style: 'tableHeader'}); // Case vide en haut à gauche
+      // Création du header du tableau en fonction des labels du graphique
+      for(var i = 0; i < window.chartBar.data.labels.length; i++){
+        header.push({text: window.chartBar.data.labels[i], style: 'tableHeader'});
+      }
+      donnees.push(header);
+      for(var i = 0; i < groupesChecked[clef].length; i++){
+          var temp_row = [];
+          temp_row.push(groupesChecked[clef][i]);
+          for(var j = 0; j < 5; j++){
+            temp_row.push(groupesData[i].notes[j]);
+          }
+          donnees.push(temp_row);
+      }
+      break;
+    case 'moy':
+      donnees.push(["", "Moyenne", "Ecart-type", "Effectif"]); // header du tableau
+      for(var i = 0; i < groupesChecked[clef].length; i++){
+          var temp_row = [];
+          temp_row.push(groupesChecked[clef][i]);
+          temp_row.push(groupesData[i].moyenne);
+          temp_row.push(groupesData[i].ecartType);
+          temp_row.push(groupesData[i].allNotes.length);
+          donnees.push(temp_row);
+      }
+      break;
+    case 'bam':
+    donnees.push(["", "Moyenne", "Ecart-type", "Minimum", "Médiane", "Maximum", "Effectif"]); // header du tableau
+    // Création des lignes du tableau (1 ligne par groupe)
+    for(var i = 0; i < groupesChecked[clef].length; i++){
+        var temp_row = [];
+        temp_row.push(groupesChecked[clef][i]);
+        temp_row.push(groupesData[i].moyenne);
+        temp_row.push(groupesData[i].ecartType);
+        temp_row.push(groupesData[i].minimum);
+        temp_row.push(groupesData[i].mediane);
+        temp_row.push(groupesData[i].maximum);
+        temp_row.push(groupesData[i].allNotes.length);
+        donnees.push(temp_row);
+    }
+      break;
+  }
+  return donnees;
+}
 </script>
 
 <script type="text/javascript">
