@@ -5,8 +5,13 @@
 {% block statistiques %}active{% endblock %}
 
 {% block contenu %}
-    <h1 class="h4 mb-0 text-gray-800">{{ sousTitrePage |default("Choisir l'évaluation pour laquelle vous désirez consulter les statistiques") }}</h1> <br>
-    {{ include('statistiques/_choix_evals_form.html.twig') }}
+    <h1 class="h4 mb-0 text-gray-800">Choisir les évaluations pour lesquelles vous désirez consulter les statistiques"</h1> <br>
+    {% if dispoEvals == true %}
+      {{ include('statistiques/_choix_evals_form.html.twig') }}
+    {% else %}
+      <p> Aucune évaluation n'est comparable avec l'évaluation {{evaluation.nom}}. Vous pouvez créer des évaluations <a href="{{ path('evaluation_enseignant')}}">ici </a>
+      où bien sélectionner une autre évaluation de référence à <a href='{{ path('statistiques_choix_evaluation', {'typeStat' : 'comparaison', 'typeGraph' : 'moyenne'}) }}'>l'étape précédente </a>.</p>
+    {% endif %}
 {% endblock %}
 
 {% block datatables %}

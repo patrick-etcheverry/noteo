@@ -64,7 +64,7 @@ class StatsController extends AbstractController
                 break;
             case 'comparaison' :
                 $evaluations = $repoEval->findAll();
-                $titre = "Comparaison de la moyenne d'un groupe ou d'un statut entre 1 évaluation et d'autres évaluations";
+                $titre = "Comparaison de la moyenne de groupes ou de statuts entre 1 évaluation et d'autres évaluations";
                 break;
         }
         $form = $this->createFormBuilder()
@@ -107,6 +107,11 @@ class StatsController extends AbstractController
      */
     public function choisirEvalsComparaison(Request $request, Evaluation $evaluation, EvaluationRepository $repoEval ): Response
     {
+        $evaluationsDispos = $repoEval->findAllOverAGroupExceptCurrentOne($evaluation->getGroupe()->getId(),$evaluation->getId());
+        $areThereSomeAvailableTets;
+
+        count($evaluationsDispos) == 0 ? $areThereSomeAvailableTets = false : $areThereSomeAvailableTets = true;
+
         $form = $this->createFormBuilder()
             ->add('evaluations', EntityType::class, [
                 'constraints' => [new NotNull],
@@ -116,7 +121,7 @@ class StatsController extends AbstractController
                 'mapped' => false,
                 'expanded' => true,
                 'multiple' => true,
-                'choices' => $repoEval->findAllOverAGroupExceptCurrentOne($evaluation->getGroupe()->getId(),$evaluation->getId())
+                'choices' => $evaluationsDispos
             ])
             ->getForm();
 
@@ -133,11 +138,12 @@ class StatsController extends AbstractController
             ]);
 
         }
-
         return $this->render('statistiques/choix_plusieurs_evals_comparaison.html.twig', [
             'form' => $form->createView(),
-            'titrePage' => "Choisir les autres évals",
-            'titre' => 'Consulter les statistiques'
+            'titrePage' => "Choisir les autres évaluations",
+            'titre' => 'Consulter les statistiques',
+            'evaluation' => $evaluation,
+            'dispoEvals' => $areThereSomeAvailableTets
         ]);
     }
 
