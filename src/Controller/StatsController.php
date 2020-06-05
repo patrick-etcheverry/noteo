@@ -7,10 +7,12 @@ use App\Entity\GroupeEtudiant;
 use App\Entity\Partie;
 use App\Entity\Points;
 use App\Entity\Statut;
+use App\Entity\Etudiant;
 use App\Repository\EvaluationRepository;
 use App\Repository\GroupeEtudiantRepository;
 use App\Repository\PointsRepository;
 use App\Repository\StatutRepository;
+use App\Repository\EtudiantRepository;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
@@ -530,16 +532,78 @@ class StatsController extends AbstractController
     /**
      * @Route("/plusieurs-eval/groupes/{slug}/", name="determiner_evolution_etudiants_groupe")
      */
-    public function determinerEvolutionEtudiantGroupes(Request $request, GroupeEtudiant $groupe, PointsRepository $repoPoints): Response
+    public function determinerEvolutionEtudiantGroupes(Request $request, GroupeEtudiant $groupe, PointsRepository $repoPoints, GroupeEtudiantRepository $repoGroupe, EtudiantRepository $repoEtudiant, EvaluationRepository $repoEval): Response
     {
       $session = $request->getSession();
       $evaluations = $session->get('evaluations');
+      $tabEvaluations = array();
+      foreach ($evaluations as $evaluation) {
+        array_push($tabEvaluations, $repoEval->find ($evaluation->getId()));
+      }
       $groupes = $session->get('lesGroupes');
+      $tabGroupes = array();
+      $children = array();
+      foreach ($groupes as $groupe) {
+          array_push($tabGroupes, $repoGroupe->find($groupe->getId()));
+        }
+
+      foreach ($tabGroupes as $groupe) {
+        if ($groupe->getChildren() != null) {
+          $compteur = 0;
+          $children["enfant".strval( $compteur ) ] = $groupe->getChildren();
+          $compteur +=1;
+        }
+      }
+
+
+
+      $type = "groupe";
+
+      /// génération des statistiques
+
+      ///initialisation
+
+      $stats = array(); // le tableau qui contiendra toutes les données exploitables par le typeGraphique
+      $grouepsStats = array();
+      array_push($stats, $type);
+      array_push($stats, $evaluations);
+
+
+        foreach ($tabGroupes as $groupe) {
+          $groupeEtudiant = array();
+          $groupeEtudiant["nomGroupe"] = $groupe->getNom();
+          $EtudiantsDuGroupe = $groupe->getEtudiants();
+
+          foreach ($EtudiantsDuGroupe as $etudiant) {
+            $etudiantEtSesNotes = array();
+            $etudiantEtSesNotes["nomEtudiant"] = $etudiant->getNom();
+            foreach ($tabEvaluations as $evaluation) {
+                $notesEtudiant = array();
+                $notesEtEtudiants = $repoPoints->findNotesAndEtudiantByEvaluation($evaluation);
+                foreach ($notesEtEtudiants as $points) {
+                    $compteur = 0;
+                  if ($points->getEtudiant() == $etudiant) {
+                    array_push($notesEtudiant, $points->getValeur());
+                  }
+                  $etudiantEtSesNotes["notes"] = $notesEtudiant;
+                }
+            }
+            $groupeEtudiant["etudiant".strval( $etudiant->getId() ) ] = $etudiantEtSesNotes;
+          }
+          array_push($stats, $groupeEtudiant);
+        }
+
+
+
 
       return $this->render('statistiques/statsEvolution.html.twig', [
         'evaluations' => $evaluations,
         'groupes' => $groupes,
-        'titre' => "Evolution des résultats "
+        'titre' => "Evolution des résultats ",
+        'stats' => $stats,
+        'tabGroupes' => $tabGroupes,
+        'tabEvaluations' => $tabEvaluations,
+        'children' => $children
       ]);
     }
 
@@ -570,8 +634,9 @@ class StatsController extends AbstractController
             $listeStatsParGroupe = array(); // On initialise un tableau vide qui contiendra les statistiques des groupes choisis
 
             $lesGroupes = array(); // On regroupe le groupe principal et les sous groupes pour faciliter la requete
-
-            array_push($lesGroupes, $groupe);
+            if($typeGraphique != "courbes"){
+              array_push($lesGroupes, $groupe);
+            }
 
             foreach ($request->getSession()->get('sousGroupes') as $sousGroupe)
             {
@@ -582,7 +647,9 @@ class StatsController extends AbstractController
               $request->getSession()->set('evaluations', $evaluations);
               $request->getSession()->set('lesGroupes', $lesGroupes);
               return $this->redirectToRoute("determiner_evolution_etudiants_groupe",[
-                'slug' => $groupe->getSlug()
+                'slug' => $groupe->getSlug(),
+                'evaluations' => $evaluations,
+                'lesGroupes' => $lesGroupes
                 ]);
             }
             else {

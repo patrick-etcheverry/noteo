@@ -30,7 +30,7 @@ class EtudiantRepository extends ServiceEntityRepository
         FROM App\Entity\Etudiant e
         JOIN e.groupes g
         WHERE g.slug = :slugGroupeParent AND
-        e.id NOT IN (SELECT e2.id FROM App\Entity\Etudiant e2 JOIN e2.groupes g2 WHERE g2.slug = :slugGroupeCourant) 
+        e.id NOT IN (SELECT e2.id FROM App\Entity\Etudiant e2 JOIN e2.groupes g2 WHERE g2.slug = :slugGroupeCourant)
         ')
         ->setParameter('slugGroupeParent', $parent->getSlug())
         ->setParameter('slugGroupeCourant', $current->getSlug())
@@ -47,12 +47,11 @@ class EtudiantRepository extends ServiceEntityRepository
         SELECT e
         FROM App\Entity\Etudiant e
         LEFT JOIN e.statuts s
-        WHERE e.id NOT IN (SELECT e2.id FROM App\Entity\Etudiant e2 JOIN e2.statuts s2 WHERE s2.slug = :slugStatutCourant) 
+        WHERE e.id NOT IN (SELECT e2.id FROM App\Entity\Etudiant e2 JOIN e2.statuts s2 WHERE s2.slug = :slugStatutCourant)
         ')
         ->setParameter('slugStatutCourant', $current->getSlug())
         ->execute();
     }
-
 
     // /**
     //  * @return Etudiant[] Returns an array of Etudiant objects
