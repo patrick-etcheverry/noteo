@@ -36,3 +36,11 @@
     </script>
 
 {% endblock %}
+
+{% block javascripts %}
+    <script>
+        window.onload = function() {
+            $("[name='form[evaluations]']").first().attr('checked', true)
+        }
+    </script>
+{% endblock %}

@@ -77,3 +77,11 @@
 </script>
 
 {% endblock %}
+
+{% block javascripts %}
+  <script>
+    window.onload = function() {
+      $("[name='form[groupes]']").first().attr('checked', true)
+    }
+  </script>
+{% endblock %}
