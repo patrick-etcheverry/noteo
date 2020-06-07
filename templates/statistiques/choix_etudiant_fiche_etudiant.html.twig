@@ -10,19 +10,27 @@
     {{ include('statistiques/_choix_etudiant_form.html.twig') }}
 {% endblock %}
 
+{% block javascripts %}
+    <script>
+        window.onload = function() {
+            $("[name='form[etudiants]']").first().attr('checked', true)
+        }
+    </script>
+{% endblock %}
+
 {% block datatables %}
 
     <script type="text/javascript">
 
-        var table = $('#etudiants').DataTable({
+        var table = $('#evaluations').DataTable({
             language: {
                 // Suppression du label Rechercher et ajout du placeholder
                 search: "_INPUT_",
                 searchPlaceholder: "Rechercher...",
                 "url": "{{asset('tradfr.json')}}"
             },
-            order: [2, 'asc'],
-            columns: [{"orderable": false}, null, null, {"orderable": false}, null],
+            order: [1, 'asc'],
+            columns: [{"orderable": false}, null, null, {"orderable": false}],
             lengthMenu: [
                 [15, 30, 45, -1],
                 [15, 30, 45, "Tout"]
@@ -36,12 +44,4 @@
         });
     </script>
 
-{% endblock %}
-
-{% block javascripts %}
-    <script>
-        window.onload = function() {
-            $("[name='form[etudiants]']").first().attr('checked', true)
-        }
-    </script>
 {% endblock %}
