@@ -14,6 +14,9 @@
         span.notBold{
           font-weight: normal;
         }
+        span.bold{
+          font-weight: bold;
+        }
 
     </style>
 {% endblock %}
@@ -24,12 +27,16 @@
             <tbody>
             {% if plusieursEvals %}
                 <tr>
-                    <th>Évaluations comparées<br><br><p><span class="notBold">Comparaison des résultats de l'évaluation {{ evaluationConcernee.nom }} ({{ evaluationConcernee.date|date("d/m/Y")}})
-                    <br> avec les résultats des évaluations suivantes : </span></p></th>
-                    <td>
+                    <th><p>Évaluation de référence</p>
+                      <ul>
+                        <li>  <p><span class="notBold"> {{ evaluationConcernee.nom }} ({{ evaluationConcernee.date|date("d/m/Y")}})</span></p></li>
+                      </ul>
+                    </th>
 
+
+                    <td>
                         <ul>
-                            <br>
+                        <p><span class="bold"> Évaluations comparées </span></p>
                             {% for evaluation in evaluations %}
                                 <li>{{ evaluation.nom }} ({{ evaluation.date|date("d/m/Y") }})</li>
                             {% endfor %}
