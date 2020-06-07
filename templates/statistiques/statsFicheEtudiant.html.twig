@@ -23,7 +23,7 @@
         <td>{{ etudiant.nom }}</td>
     </tr>
     <tr>
-        <th>Prenom</th>
+        <th>Prénom</th>
         <td>{{ etudiant.prenom }}</td>
     </tr>
     <tr>
@@ -62,6 +62,15 @@
   {{ message }}
 </div>
 {% endfor %}
+{% if evaluations|length > 1 %}
+<h1 class="h4 mb-0 text-gray-800">Historique des notes</h1><br>
+<div class="container-fluid">
+  <span style="font-size:15px"><i class="icon-attention-circled"></i>Survolez le graphique pour plus d'informations</span>
+  <canvas align=center id="graphLine"></canvas>
+</div> 
+{% endif %}
+<br><h1 class="h4 mb-0 text-gray-800">Classement par rapport aux groupes/statuts</h1><br>
+{% set nbCard = 0 %}
 {% for evaluation in evaluations %}
     <div class="card">
       <ul class="list-group list-group-flush">
@@ -69,43 +78,55 @@
           {{ evaluation.nom }}
         </li>
         <li class="card-deck">
-        {% set nbCard = 0 %}
+        {% set nbLoop = 0 %}
         {% for groupe in groupesEtStatuts %}
-            {% if nbCard > 0 and nbCard is divisible by(3) %}
-            </li>
+            {% if nbLoop > 0 and nbLoop is divisible by(3) %}
+            </li><br>
             <li class="card-deck">
             {% endif %}
             {% if groupe.estEvaluable is defined %}
             {% if groupe.estEvaluable != false %}
-            
+          
+            <div class="container-fluid">
+              <br><span style="font-size:15px"><i class="icon-attention-circled"></i>Survolez le graphique pour plus d'informations</span><br>
+              <canvas align=center id="graphBar_{{evaluation.nom}}_{{groupe.nom}}" aria-label="Hello ARIA World" role="img"></canvas>
+            </div> 
             <div class="card">
                 <div class="card-body">
                     <h5 class="card-title">{{ groupe.nom }}</h5>
                     <p class="card-text">
                     <ul>
                         <li>Classement : {{ stats[nbCard + 1]['position'] }}</li>
-                        <li>Moyenne du groupe : {{ stats[nbCard + 1]['moyenneGroupe'] }}</li>
-                        <li>Note de l'étudiant : {{ stats[nbCard + 1]['noteEtudiant'] }}</li>
+                        <li id="moyGpe_{{evaluation.nom}}_{{groupe.nom}}">Moyenne du groupe : {{ stats[nbCard + 1]['moyenneGroupe'] }}</li>
+                        <li id="noteEtu_{{evaluation.nom}}_{{groupe.nom}}">Note de l'étudiant : {{ stats[nbCard + 1]['noteEtudiant'] }}</li>
                     </ul>
                     </p>
                 </div>
             </div>
+            <br>
             {% set nbCard = nbCard + 1 %}
+            {% set nbLoop = nbLoop + 1 %}
             {% endif %}
             {% else %}
+            <div class="container-fluid">
+              <br><span style="font-size:15px"><i class="icon-attention-circled"></i>Survolez le graphique pour plus d'informations</span><br>
+              <canvas align=center id="graphBar_{{evaluation.nom}}_{{groupe.nom}}" aria-label="Hello ARIA World" role="img"></canvas>
+            </div> 
             <div class="card">
                 <div class="card-body">
                     <h5 class="card-title">{{ groupe.nom }}</h5>
                     <p class="card-text">
                     <ul>
                         <li>Classement : {{ stats[nbCard + 1]['position'] }}</li>
-                        <li>Moyenne du groupe : {{ stats[nbCard + 1]['moyenneGroupe'] }}</li>
-                        <li>Note de l'étudiant : {{ stats[nbCard + 1]['noteEtudiant'] }}</li>
+                        <li id="moyGpe_{{evaluation.nom}}_{{groupe.nom}}">Moyenne du groupe : {{ stats[nbCard + 1]['moyenneGroupe'] }}</li>
+                        <li id="noteEtu_{{evaluation.nom}}_{{groupe.nom}}">Note de l'étudiant : {{ stats[nbCard + 1]['noteEtudiant'] }}</li>
                     </ul>
                     </p>
                 </div>
             </div>
+            <br>
             {% set nbCard = nbCard + 1 %}
+            {% set nbLoop = nbLoop + 1 %}
             {% endif %}
         {% endfor %}
         </li>
@@ -114,5 +135,178 @@
 {% endfor %}
     <br>
 {% endblock %}
+
+{% block javascripts %}
+
+<script type="text/javascript" src="{{asset("js/jspdf.min.js")}}"></script>
+<script type="text/javascript" src="{{asset("js/html2canvas.min.js")}}"></script>
+<script type="text/javascript" src="{{asset("js/boxplot.js")}}"></script>
+
+<!-- Script pour la génération des graphiques -->
+<script type="text/javascript">
+  var fontSize = 16;
+
+  var noir = "#000000", jaune = "#FFFF00", bleu = "#0000FF", rouge = "#FF0000", vert = "#00FF00", violet = "#EE82EE", blanc = "#FFFFFF", gris = "#808080";
+
+  // Pallette de couleurs (valeurs rgb)
+  var couleurs = [
+    [192, 57, 43],
+    [155, 89, 182],
+    [41, 128, 185],
+    [22, 160, 133],
+    [46, 204, 113],
+    [243, 156, 18],
+    [211, 84, 0],
+    [189, 195, 199],
+    [127, 140, 141],
+    [44, 62, 80],
+    [231, 76, 60],
+    [142, 68, 173],
+    [26, 188, 156],
+    [39, 174, 96],
+    [241, 196, 15],
+    [230, 126, 34],
+    [236, 240, 241],
+    [149, 165, 166],
+    [52, 73, 94],
+  ];
+
+  var chartDATA = {
+    labels: [],
+    datasets: undefined,
+  };
+  //Contiendra les variables des graphiques pour les mettre à jour
+  var graphiques = [];
+  // Objet options du graphique
+  var options = {
+    scales: {
+      xAxes: [{
+        gridLines: {
+          display: false
+        },
+        ticks: {
+          fontSize: fontSize,
+        },
+        maxBarThickness: 100,
+        stacked: false,
+      }],
+      yAxes: [{
+        labelString: 'Intervalle de note',
+        ticks: {
+          beginAtZero: true,
+          max: 20,
+          min: 0,
+          fontSize: fontSize,
+        },
+        stacked: false,
+      }],
+    },
+    legend: {
+      position: 'top',
+      labels: {
+        fontSize: fontSize,
+        },
+	  },
+    aspectRatio: 3,
+    maintainAspectRatio: true,
+    responsive: true,
+    tooltips: {
+      intersect: false,
+      titleMarginBottom: 10,
+      titleFontColor: '#6e707e',
+      titleFontSize: fontSize,
+      backgroundColor: blanc,
+      bodyFontColor: "#858796",
+      borderColor: '#dddfeb',
+      borderWidth: 1,
+      xPadding: 15,
+      yPadding: 15,
+      displayColors: true,
+      caretPadding: 10
+    },
+    plugins : {
+      labels: {
+        render: 'value'
+      }
+    }
+  }
+  
+  /*window.addEventListener('loadend', function(){*/
+    {% if evaluations|length > 1 %}
+
+      var nomEvals = [];
+      var notesEtu = [];
+
+      {% for evaluation in evaluations %}
+        {% set passageEvalSuivante = groupesEtStatuts|length * loop.index %}
+        {% set noteEtu = stats[passageEvalSuivante - 1]['noteEtudiant']%}
+        var nomEval = {{evaluation.nom|json_encode|raw}};
+        nomEvals.push(nomEval);
+        notesEtu.push({{noteEtu}});
+      {% endfor %}
+      
+      var chartLine = new Chart(document.getElementById("graphLine").getContext('2d'), {
+        type: 'line',
+        data: {
+          labels: nomEvals,
+          datasets: [{
+            data: notesEtu,
+            label: 'Notes de l\'étudiant',
+            borderColor: "#3e95cd",
+            fill: false
+          }]
+        },
+        options: options
+      });
+      chartLine.update();
+    {% endif %}
+
+    {% for evaluation in evaluations %}
+      {% for groupe in groupesEtStatuts %}
+      {% set passageEvalSuivante = groupesEtStatuts|length - 1 * loop.parent.loop.index %}
+        {% if groupe.estEvaluable is defined %}
+          {% if groupe.estEvaluable != false %}
+          var noteEtu = document.getElementById("noteEtu_{{evaluation.nom}}_{{groupe.nom}}").innerHTML.split(': ')[1]
+          var noteGpe = document.getElementById("moyGpe_{{evaluation.nom}}_{{groupe.nom}}").innerHTML.split(': ')[1]
+          var notes = [noteEtu, noteGpe]
+          var chartBar = new Chart(document.getElementById("graphBar_{{evaluation.nom}}_{{groupe.nom}}").getContext('2d'), {
+            type: 'bar',
+            data: {
+              labels: ['Note de l\'étudiant', 'Moyenne du groupe'],
+              datasets: [{
+                label: 'Moyenne sur l\'évaluation',
+                backgroundColor: "#3e95cd",
+                data: notes
+              }]
+            },
+            options: options,
+          });
+          chartBar.update();
+          {% endif %}
+        {% else %}
+          var noteEtu = document.getElementById("noteEtu_{{evaluation.nom}}_{{groupe.nom}}").innerHTML.split(': ')[1]
+          var noteGpe = document.getElementById("moyGpe_{{evaluation.nom}}_{{groupe.nom}}").innerHTML.split(': ')[1]
+          var notes = [noteEtu, noteGpe]
+          var chartBar = new Chart(document.getElementById("graphBar_{{evaluation.nom}}_{{groupe.nom}}").getContext('2d'), {
+            type: 'bar',
+            data: {
+              labels: ['Note de l\'étudiant', 'Moyenne du groupe'],
+              datasets: [{
+                label: 'Moyenne sur l\'évaluation',
+                backgroundColor: "#3e95cd",
+                data: notes
+              }]
+            },
+            options: options,
+          });
+          chartBar.update();
+        {% endif %}
+      {% endfor %}
+    {% endfor %}
+  /*});*/
+</script>
+
+{% endblock %}
+
 
 

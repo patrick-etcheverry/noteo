@@ -37,3 +37,11 @@
     </script>
 
 {% endblock %}
+
+{% block javascripts %}
+    <script>
+        window.onload = function() {
+            $("[name='form[etudiants]']").first().attr('checked', true)
+        }
+    </script>
+{% endblock %}

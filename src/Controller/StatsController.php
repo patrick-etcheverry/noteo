@@ -720,7 +720,8 @@ class StatsController extends AbstractController
             'label' => false, // On n'affiche pas le label du champ
             'expanded' => true, // Pour avoir des boutons
             'multiple' => false, // radios
-            'choices' => $repoEtudiant->findAll() // On choisira parmis tous les étudiants
+            'choices' => $repoEtudiant->findAll(), // On choisira parmis tous les étudiants
+            'constraints' => [new NotBlank()]
         ])
         ->getForm();
 
@@ -741,8 +742,6 @@ class StatsController extends AbstractController
             }
             $groupes = $etudiant->getGroupes();
             $statuts = $etudiant->getStatuts();
-            $listeStatsParGroupe = array();
-            $listeStatsParStatut = array();
             $toutesLesStats = array();
 
             foreach ($evaluations as $eval)
@@ -764,10 +763,8 @@ class StatsController extends AbstractController
 
                     //On récupère la moyenne du groupe
                     $tabPoints = array();
-                    foreach ($evaluations as $eval)
-                    {
-                        array_push($tabPoints, $repoPoint->findAllNotesByGroupe($eval->getId(), $groupe->getId()));
-                    }
+                    array_push($tabPoints, $repoPoint->findAllNotesByGroupe($eval->getId(), $groupe->getId()));
+                    
                     //On crée une copie de tabPoints qui contiendra les valeurs des notes pour simplifier le tableau renvoyé par la requete
                     $copieTabPoints = array();
                     foreach ($tabPoints as $element)
@@ -806,10 +803,8 @@ class StatsController extends AbstractController
 
                     //On récupère la moyenne du groupe
                     $tabPoints = array();
-                    foreach ($evaluations as $eval)
-                    {
-                        array_push($tabPoints, $repoPoint->findAllNotesByStatut($eval->getId(), $statut->getId()));
-                    }
+                    array_push($tabPoints, $repoPoint->findAllNotesByStatut($eval->getId(), $statut->getId()));
+
                     //On crée une copie de tabPoints qui contiendra les valeurs des notes pour simplifier le tableau renvoyé par la requete
                     $copieTabPoints = array();
                     foreach ($tabPoints as $element)
