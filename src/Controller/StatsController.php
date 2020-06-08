@@ -499,6 +499,7 @@ class StatsController extends AbstractController
      */
     public function choisirSousGroupesStatsPlusieursEvals(Request $request, GroupeEtudiant $groupe, GroupeEtudiantRepository $repoGroupe): Response
     {
+        $typeGraphique = $request->getSession()->get('typeGraphique');   // Récupération du type de stat dans la session
         $groupesAChoisir = $repoGroupe->findAllOrderedFromNode($groupe);
         array_shift($groupesAChoisir); //On ne veut pas avoir le groupe choisi dans le choix
         $form = $this->createFormBuilder()
@@ -526,7 +527,9 @@ class StatsController extends AbstractController
         return $this->render('statistiques/choix_sous-groupes_plusieurs_evals.html.twig', [
             'groupe' => $groupe,
             'pasDIndentation' => false,
-            'form' => $form->createView()]);
+            'form' => $form->createView(),
+            'typeGraphique' => $typeGraphique
+          ]);
     }
 
     /**
@@ -554,9 +557,6 @@ class StatsController extends AbstractController
           $compteur +=1;
         }
       }
-
-
-
       $type = "groupe";
 
       /// génération des statistiques
@@ -565,45 +565,50 @@ class StatsController extends AbstractController
 
       $stats = array(); // le tableau qui contiendra toutes les données exploitables par le typeGraphique
       $grouepsStats = array();
-      array_push($stats, $type);
-      array_push($stats, $evaluations);
-
+      $stats["type"] = $type;
+      $stats["evaluations"] = $tabEvaluations;
 
         foreach ($tabGroupes as $groupe) {
           $groupeEtudiant = array();
-          $groupeEtudiant["nomGroupe"] = $groupe->getNom();
-          $EtudiantsDuGroupe = $groupe->getEtudiants();
+          $etudiants = array();
+          $nbCourbesSurGraph = 12;
+          $recupEtudiantsGroupe = $groupe->getEtudiants();
+          $nbEtudiants = count($recupEtudiantsGroupe);
+          $nbGraph = intdiv ( $nbEtudiants, $nbCourbesSurGraph );
+          if ($nbEtudiants % $nbCourbesSurGraph > 0) {
+            $nbGraph += 1;
+          }
+          $groupeEtudiant["nom"] = $groupe->getNom();
+          $groupeEtudiant["nbGraph"] = $nbGraph;
 
-          foreach ($EtudiantsDuGroupe as $etudiant) {
-            $etudiantEtSesNotes = array();
-            $etudiantEtSesNotes["nomEtudiant"] = $etudiant->getNom();
+
+          foreach ($recupEtudiantsGroupe as $etudiant) {
+            $notesEtudiant = array();
+              $etudiantCourant = array();
+              $etudiantCourant["nomPrenom"] = strval( $etudiant->getNom()." ".$etudiant->getPrenom());
+
             foreach ($tabEvaluations as $evaluation) {
-                $notesEtudiant = array();
                 $notesEtEtudiants = $repoPoints->findNotesAndEtudiantByEvaluation($evaluation);
+
                 foreach ($notesEtEtudiants as $points) {
-                    $compteur = 0;
                   if ($points->getEtudiant() == $etudiant) {
                     array_push($notesEtudiant, $points->getValeur());
                   }
-                  $etudiantEtSesNotes["notes"] = $notesEtudiant;
                 }
             }
-            $groupeEtudiant["etudiant".strval( $etudiant->getId() ) ] = $etudiantEtSesNotes;
+            $etudiantCourant["notes"] = $notesEtudiant;
+            array_push($etudiants, $etudiantCourant);
           }
+          $groupeEtudiant["etudiants"] = $etudiants;
           array_push($stats, $groupeEtudiant);
         }
 
-
-
-
       return $this->render('statistiques/statsEvolution.html.twig', [
-        'evaluations' => $evaluations,
-        'groupes' => $groupes,
+        'evaluations' => $tabEvaluations,
+        'groupes' => $tabGroupes,
         'titre' => "Evolution des résultats ",
         'stats' => $stats,
-        'tabGroupes' => $tabGroupes,
-        'tabEvaluations' => $tabEvaluations,
-        'children' => $children
+        'nbCourbes' => $nbCourbesSurGraph
       ]);
     }
 
@@ -647,9 +652,7 @@ class StatsController extends AbstractController
               $request->getSession()->set('evaluations', $evaluations);
               $request->getSession()->set('lesGroupes', $lesGroupes);
               return $this->redirectToRoute("determiner_evolution_etudiants_groupe",[
-                'slug' => $groupe->getSlug(),
-                'evaluations' => $evaluations,
-                'lesGroupes' => $lesGroupes
+                'slug' => $groupe->getSlug()
                 ]);
             }
             else {
@@ -694,7 +697,9 @@ class StatsController extends AbstractController
             }
         }
 
-        return $this->render('statistiques/choix_evals_plusieurs_evals_groupes.html.twig', ['form' => $form->createView()]);
+        return $this->render('statistiques/choix_evals_plusieurs_evals_groupes.html.twig', [
+          'form' => $form->createView()
+        ]);
     }
 
     /**

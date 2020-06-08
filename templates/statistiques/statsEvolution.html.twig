@@ -15,14 +15,23 @@
 {% endblock %}
 
 {% block contenu %}
-{{dump(stats)}}
-{{dump(tabGroupes)}}
-{{dump(tabEvaluations)}}
-{{dump(children)}}
+
+{% for i in 0..stats|length - 3 %}
+{% for graphCourant in  1..stats[i].nbGraph %}
+
+{% set idGraph = "diagrammeEvolutionResultat" ~ stats[i].nom ~ "_" ~graphCourant %}
+
+
 <div class="card">
     <ul class="list-group list-group-flush">
         <li class="list-group-item text-white" style="background-color:#bdc3c7;">
-          Groupe - numéro de partie
+          {{stats[i].nom}}
+          {% for groupe in groupes %}
+            {% if stats[i].nom == groupe.nom %}
+            du {{groupe.parent.nom}} ({{groupe.parent.parent.nom}})
+            {% endif %}
+          {% endfor %}
+          - Partie {{graphCourant}}
         </li>
         <li class="list-group-item">
             <div >
@@ -32,32 +41,38 @@
                             Groupes
                         </div>
                         <div class="card-body">
-
-
-                                <div class="form-check form-check-inline">
-                              <!--      <input class="form-check-input" type="checkbox" id="nomDuGroupeTwig" checked onChange="changement(this.id, this.checked, 'twig(loop.parent.loop.index -1)', 'moy')">
-                                    <label class="form-check-label" for="inlineCheckbox1" name="label_nomDuGroupeTwig_moy">nomDuGroupeTwig</label> -->
-                                </div>
-
-
                         </div>
                     </div>
                 </div>
                 <br>
                 <div class="container-fluid">
-                    <!--<span style="font-size:15px"><i class="icon-attention-circled"></i>Survolez le graphique pour plus d'informations</span> -->
-                    <canvas id="diagrammeEvolutionResultat"></canvas>
+                    <span style="font-size:15px"><i class="icon-attention-circled"></i>Survolez le graphique pour plus d'informations</span>
+                    <canvas id="{{idGraph}}"></canvas>
                 </div>
             </div>
         </li>
     </ul>
 </div>
+<br>
 
+{% endfor %}
+{% endfor %}
 
 {#
-{{dump(groupes)}}
-{{dump(evaluations)}}
-#}
+{{stats.type}} <br>
+{{stats.evaluations[1].nom}}
+{% for i in 0..stats|length - 3 %}<br>
+  {{ stats[i].nbGraph }}
+  {{ stats[i].nom }}
+  {{stats[i]["etudiants"]|length}}
+  {% for etudiant in stats[i]["etudiants"] %}
+    {{etudiant.nomPrenom}} <br>
+    {% for note in etudiant.notes %}
+      {{note}} <br>
+    {% endfor %}
+  {% endfor %}
+  <br><br><br><br>
+{% endfor %} #}
 
 
 {% endblock %}
@@ -66,29 +81,30 @@
 
 <script type="text/javascript">
 
-var datapoints = [10, 12, 12, 11, 8, 11, 5, 14, 11, 14, 12, 5, 17];
-      var datapoints2 = [14, 15, 18, 17, 18, 12, 13.5, 16, 12, 15, NaN, 11, 17];
-      var diagrammeEvolutionResultat = document.getElementById('diagrammeEvolutionResultat').getContext('2d');
-      var myLineChart = new Chart(diagrammeEvolutionResultat, {
+{% for i in 0..stats|length - 3 %}
+{% for graphCourant in  1..stats[i].nbGraph %}
+
+{% set idGraph = "diagrammeEvolutionResultat" ~ stats[i].nom ~ "_" ~graphCourant %}
+
+var diagrammeEvolutionResultat = document.getElementById( "{{ idGraph }}" ).getContext('2d');
+
+var myLineChart = new Chart(diagrammeEvolutionResultat, {
           type: 'line',
           data: {
-              labels: ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12'],
-              datasets: [{
-					label: 'oups',
-					data: datapoints,
-					borderColor: 'rgba(0, 255, 0, 1)',
-					backgroundColor: 'rgba(0, 0, 0, 0)',
-					fill: false,
-					lineTension: 0
-				},
-        {
-          label: 'Linear interpolation',
-          data: datapoints2,
-          borderColor: 'rgba(0, 0, 255, 1)',
-          backgroundColor: 'rgba(0, 0, 0, 0)',
-          fill: false,
-          lineTension: 0
-        }]
+              labels: [{% for evaluation in evaluations %} '{{evaluation.nom}}', {% endfor %}],
+              datasets: [
+        {% for etudiant in stats[i]["etudiants"] %}
+          {
+  					label: '{{etudiant.nomPrenom}}',
+  					data: [{% for note in etudiant.notes %} {{note}},{% endfor %}],
+  					borderColor: random_rgba(),
+  					backgroundColor: random_rgba(),
+  					fill: false,
+  					lineTension: 0
+  				},
+        {% endfor %}
+
+        ]
     				},
           options: {
             scales: {
@@ -106,9 +122,20 @@ var datapoints = [10, 12, 12, 11, 8, 11, 5, 14, 11, 14, 12, 5, 17];
                 }
               }]
             }
-
           },
       });
+
+      function random_rgba() {
+        var min = 0;
+        var max = 255;
+        var red = Math.random() * (max - min) + min;
+        var green = Math.random() * (max - min) + min;
+        var blue = Math.random() * (max - min) + min;
+        return 'rgba(' + red + ',' + green + ',' + blue + ',' + 1 + ')';
+  }
+
+{% endfor %}
+{% endfor %}
 
 </script>
 

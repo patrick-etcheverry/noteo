@@ -226,18 +226,17 @@
   {% block javascripts %}
 
   <script type="text/javascript">
-  function cocherToutesLesCases(nameCases, caseCochee)
-  {
-    $("input[name='"+ nameCases +"']").each(
-      function()
-      {
+  function cocherToutesLesCases(nameCases, caseCochee){
+    $("input[name='"+ nameCases +"']").each(function(){
+      if (!this.disabled) {
         this.checked = caseCochee;
-      })
+      }
+    })
   }
 
   $(document).on('page.dt', function(){
     $("#checkbox").each(function(){
-        this.check = false;
+      this.check = false;
     })
   })
 
