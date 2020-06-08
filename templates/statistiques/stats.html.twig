@@ -661,7 +661,7 @@ function genPDF(callback, portrait){
       },
       { // TABLES DES MATIERES
         toc: {
-          id: 'tabMatieres'
+          id: 'tabMatieres',
           title: {
             text: 'Table des matières',
             style: 'header',
@@ -724,6 +724,7 @@ function genPDF(callback, portrait){
         {
           text: (clef == 'moy' ? 'Moyenne et écart-type' : 'Répartition des notes'),
           style: (portrait ? 'subheader' : 'subheader_paysage'),
+          tocItem: 'tabMatieres',
         },
         {
           text: (groupesChecked.length > 1 ? "Partie : " + nomPartie : ''), // Nom de la partie si
