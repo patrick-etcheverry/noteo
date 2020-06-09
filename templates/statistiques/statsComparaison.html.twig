@@ -36,7 +36,7 @@
 
                     <td>
                         <ul>
-                        <p><span class="bold"> Évaluations comparées </span></p>
+                        <p><span class="bold"> Évaluations comparées à l'évaluation de référence</span></p>
                             {% for evaluation in evaluations %}
                                 <li>{{ evaluation.nom }} ({{ evaluation.date|date("d/m/Y") }})</li>
                             {% endfor %}
@@ -44,7 +44,7 @@
                     </td>
                 </tr>
                 <tr>
-                    <th>Groupes sélectionnés</th>
+                    <th>Groupes observés</th>
                     <td>
                         <ul>
                             {% for groupe in parties[0].stats %}
