@@ -10,14 +10,6 @@
     {{ include('statistiques/_choix_etudiant_form.html.twig') }}
 {% endblock %}
 
-{% block javascripts %}
-    <script>
-        window.onload = function() {
-            $("[name='form[etudiants]']").first().attr('checked', true)
-        }
-    </script>
-{% endblock %}
-
 {% block datatables %}
 
     <script type="text/javascript">
@@ -44,4 +36,12 @@
         });
     </script>
 
+{% endblock %}
+
+{% block javascripts %}
+    <script>
+        window.onload = function() {
+            $("[name='form[etudiants]']").first().attr('checked', true)
+        }
+    </script>
 {% endblock %}
