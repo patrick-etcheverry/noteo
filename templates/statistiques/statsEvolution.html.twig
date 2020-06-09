@@ -15,6 +15,41 @@
 {% endblock %}
 
 {% block contenu %}
+<div class="table-responsive">
+    <table align="center" class="table">
+        <tbody>
+          <tr>
+              <th>Évaluations Concernées</th>
+              <td>
+                  <ul>
+                      {% for evaluation in evaluations %}
+                          <li>{{ evaluation.nom }} ({{ evaluation.date|date("d/m/Y") }})</li>
+                      {% endfor %}
+                  </ul>
+              </td>
+          </tr>
+          <tr>
+              <th>Groupes sélectionnés</th>
+              <td>
+                  <ul>
+                      {% for groupe in groupes %}
+                        <li>{{ groupe.nom }} du {{groupe.parent.nom}} ({{groupe.parent.parent.nom}}) : {{groupe.etudiants|length}} étudiants </li>
+                      {% endfor %}
+                  </ul>
+              </td>
+          </tr>
+          <tr>
+              <th class="intitule"><label >Actions</label></th>
+              <td>
+                  <a href="#"><i style="font-size: 25px;" data-toggle='tooltip' title="Exporter les statistiques au format PDF" class="icon-file-pdf" onclick="genPDF()"></i></a>
+              </td>
+          </tr>
+        </tbody>
+    </table>
+</div>
+<div class='bouton' align=center>
+    <span style="font-size:15px" class="badge badge-pill badge-primary"><i class="icon-attention-circled"></i> ??? Les statistiques ne prennent pas en compte les étudiants démissionaires ou absents ???</span>
+</div>
 
 {% for i in 0..stats|length - 3 %}
 {% for graphCourant in  1..stats[i].nbGraph %}
@@ -34,19 +69,11 @@
           - Partie {{graphCourant}}
         </li>
         <li class="list-group-item">
-            <div >
-                <div class="container-fluid">
-                    <div class="card-md-auto">
-                        <div class="card-header" style="background-color: transparent">
-                            Groupes
-                        </div>
-                        <div class="card-body">
-                        </div>
-                    </div>
-                </div>
+            <div>
                 <br>
                 <div class="container-fluid">
                     <span style="font-size:15px"><i class="icon-attention-circled"></i>Survolez le graphique pour plus d'informations</span>
+                    <br>
                     <canvas id="{{idGraph}}"></canvas>
                 </div>
             </div>
@@ -57,23 +84,6 @@
 
 {% endfor %}
 {% endfor %}
-
-{#
-{{stats.type}} <br>
-{{stats.evaluations[1].nom}}
-{% for i in 0..stats|length - 3 %}<br>
-  {{ stats[i].nbGraph }}
-  {{ stats[i].nom }}
-  {{stats[i]["etudiants"]|length}}
-  {% for etudiant in stats[i]["etudiants"] %}
-    {{etudiant.nomPrenom}} <br>
-    {% for note in etudiant.notes %}
-      {{note}} <br>
-    {% endfor %}
-  {% endfor %}
-  <br><br><br><br>
-{% endfor %} #}
-
 
 {% endblock %}
 
@@ -93,7 +103,7 @@ var myLineChart = new Chart(diagrammeEvolutionResultat, {
           data: {
               labels: [{% for evaluation in evaluations %} '{{evaluation.nom}}', {% endfor %}],
               datasets: [
-        {% for etudiant in stats[i]["etudiants"] %}
+        {% for etudiant in stats[i]["etudiants"][graphCourant-1] %}
         {% set randomRed = random(0, 255) %}
         {% set randomGreen = random(0, 255) %}
         {% set randomBlue = random(0, 255) %}
@@ -120,11 +130,18 @@ var myLineChart = new Chart(diagrammeEvolutionResultat, {
               yAxes: [{
                 display: true,
                 scaleLabel: {
-                  display: true,
+                  display: false,
                   labelString: 'Value'
+                },
+                ticks: {
+                    suggestedMin: 0,
+                    suggestedMax: 20
                 }
               }]
-            }
+            },
+            legend: {
+            display: true
+        }
           },
       });
 

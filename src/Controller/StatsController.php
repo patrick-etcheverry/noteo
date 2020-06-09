@@ -571,7 +571,7 @@ class StatsController extends AbstractController
         foreach ($tabGroupes as $groupe) {
           $groupeEtudiant = array();
           $etudiants = array();
-          $nbCourbesSurGraph = 12;
+          $nbCourbesSurGraph = 10;
           $recupEtudiantsGroupe = $groupe->getEtudiants();
           $nbEtudiants = count($recupEtudiantsGroupe);
           $nbGraph = intdiv ( $nbEtudiants, $nbCourbesSurGraph );
@@ -580,25 +580,42 @@ class StatsController extends AbstractController
           }
           $groupeEtudiant["nom"] = $groupe->getNom();
           $groupeEtudiant["nbGraph"] = $nbGraph;
+          $nbEtudiantsRestants = $nbEtudiants;
+          $nbEtudiantTraite = 0;
 
+          for ($g = 1; $g < $nbGraph+1; $g++) { //pour chaque partie
+            //echo(" : graphe courant traité ".var_dump($g)."|");
 
-          foreach ($recupEtudiantsGroupe as $etudiant) {
-            $notesEtudiant = array();
-              $etudiantCourant = array();
-              $etudiantCourant["nomPrenom"] = strval( $etudiant->getNom()." ".$etudiant->getPrenom());
+              //echo("Nombre d'étudiants restants".var_dump($nbEtudiants)."|");
+              $partie = array(); // on crée un tableau qui contiendra $nbCourbesSurGraph étudiants
+              for ($i = $nbEtudiantTraite ; $i < $nbEtudiantTraite + $nbCourbesSurGraph; $i++) { //
+                //echo(var_dump($i)." : nb étudiant traité");
 
-            foreach ($tabEvaluations as $evaluation) {
-                $notesEtEtudiants = $repoPoints->findNotesAndEtudiantByEvaluation($evaluation);
+                if($recupEtudiantsGroupe[$i] != null){ // si on a toujours un étudiant a traiter
 
-                foreach ($notesEtEtudiants as $points) {
-                  if ($points->getEtudiant() == $etudiant) {
-                    array_push($notesEtudiant, $points->getValeur());
+                  $notesEtudiant = array(); // on crée un tableau qui contiendra les notres de l'étudiant courant
+                  $etudiantCourant = array(); // on crée un tableau qui contiendra toutes les données relatives à l'étudiant
+                  $etudiantCourant["nomPrenom"] = strval( $recupEtudiantsGroupe[$i]->getNom()." ".$recupEtudiantsGroupe[$i]->getPrenom()); // on y insère le nom et prénom de l'étudiant
+
+                  foreach ($tabEvaluations as $evaluation) { // pour chaque évlatuation
+                    $notesEtEtudiants = $repoPoints->findNotesAndEtudiantByEvaluation($evaluation); // on récupère les notes et les étudiants de cette évaluation
+
+                    foreach ($notesEtEtudiants as $points) { // pour chaque note
+                      if ($points->getEtudiant() == $recupEtudiantsGroupe[$i]) { // si la note correspond a celle de l'étudiant courant
+                        array_push($notesEtudiant, $points->getValeur()); // on pousse cette note dans le tableau des notes de l'étudiant
+                      }
+                    }
                   }
+                  $etudiantCourant["notes"] = $notesEtudiant; // on pousse les notes de l'étudiant courant
+                  array_push($partie, $etudiantCourant); //on pousse l'étudiant
+                  $nbEtudiantsRestants --; // on décrémente le nombre d'étudiant a traiter
                 }
+              }
+              $nbEtudiantTraite += $nbCourbesSurGraph;
+              $nbEtudiantsRestants -= $nbEtudiantTraite;
+              array_push($etudiants, $partie); // on pousse la partie
             }
-            $etudiantCourant["notes"] = $notesEtudiant;
-            array_push($etudiants, $etudiantCourant);
-          }
+
           $groupeEtudiant["etudiants"] = $etudiants;
           array_push($stats, $groupeEtudiant);
         }
@@ -606,7 +623,7 @@ class StatsController extends AbstractController
       return $this->render('statistiques/statsEvolution.html.twig', [
         'evaluations' => $tabEvaluations,
         'groupes' => $tabGroupes,
-        'titre' => "Evolution des résultats ",
+        'titre' => "Évolution de résultats ",
         'stats' => $stats,
         'nbCourbes' => $nbCourbesSurGraph
       ]);
