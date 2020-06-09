@@ -94,11 +94,14 @@ var myLineChart = new Chart(diagrammeEvolutionResultat, {
               labels: [{% for evaluation in evaluations %} '{{evaluation.nom}}', {% endfor %}],
               datasets: [
         {% for etudiant in stats[i]["etudiants"] %}
+        {% set randomRed = random(0, 255) %}
+        {% set randomGreen = random(0, 255) %}
+        {% set randomBlue = random(0, 255) %}
           {
   					label: '{{etudiant.nomPrenom}}',
   					data: [{% for note in etudiant.notes %} {{note}},{% endfor %}],
-  					borderColor: random_rgba(),
-  					backgroundColor: random_rgba(),
+  					borderColor: 'rgba({{randomRed}},{{randomGreen}},{{randomBlue}},1)',
+  					backgroundColor:'rgba({{randomRed}},{{randomGreen}},{{randomBlue}},1)',
   					fill: false,
   					lineTension: 0
   				},
