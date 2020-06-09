@@ -550,6 +550,17 @@ class StatsController extends AbstractController
           array_push($tabGroupes, $repoGroupe->find($groupe->getId()));
         }
 
+
+
+  usort($tabEvaluations, function ( $a, $b ) {
+      if ($a->getdate() == $b->getdate()) {
+        return 0;
+    }
+    return ($a->getdate() < $b->getdate()) ? -1 : 1;
+  }
+);
+
+
       /// génération des données de statistiques
 
       $stats = array(); // le tableau qui contiendra toutes les données exploitables par le typeGraphique

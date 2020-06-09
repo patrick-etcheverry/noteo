@@ -33,7 +33,7 @@
               <td>
                   <ul>
                       {% for groupe in groupes %}
-                        <li>{{ groupe.nom }} du {{groupe.parent.nom}} ({{groupe.parent.parent.nom}}) : {{groupe.etudiants|length}} étudiants </li>
+                        <li>{{ groupe.nom }} du {{groupe.parent.nom}} ({{groupe.parent.parent.nom}}) </li>
                       {% endfor %}
                   </ul>
               </td>
