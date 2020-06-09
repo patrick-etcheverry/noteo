@@ -48,13 +48,12 @@
     </table>
 </div>
 <div class='bouton' align=center>
-    <span style="font-size:15px" class="badge badge-pill badge-primary"><i class="icon-attention-circled"></i> ??? Les statistiques ne prennent pas en compte les étudiants démissionaires ou absents ???</span>
+    <span style="font-size:15px" class="badge badge-info"><i class="icon-attention-circled"></i>Les statistiques ne prennent pas en compte les étudiants démissionaires</span>
 </div>
 
 {% for i in 0..stats|length - 3 %}
-{% for graphCourant in  1..stats[i].nbGraph %}
 
-{% set idGraph = "diagrammeEvolutionResultat" ~ stats[i].nom ~ "_" ~graphCourant %}
+{% set idGraph = "diagrammeEvolutionResultat" ~ stats[i].nom %}
 
 
 <div class="card">
@@ -66,7 +65,6 @@
             du {{groupe.parent.nom}} ({{groupe.parent.parent.nom}})
             {% endif %}
           {% endfor %}
-          - Partie {{graphCourant}}
         </li>
         <li class="list-group-item">
             <div>
@@ -81,8 +79,6 @@
     </ul>
 </div>
 <br>
-
-{% endfor %}
 {% endfor %}
 
 {% endblock %}
@@ -92,9 +88,9 @@
 <script type="text/javascript">
 
 {% for i in 0..stats|length - 3 %}
-{% for graphCourant in  1..stats[i].nbGraph %}
+{% for graphCourant in  1..stats[i] %}
 
-{% set idGraph = "diagrammeEvolutionResultat" ~ stats[i].nom ~ "_" ~graphCourant %}
+{% set idGraph = "diagrammeEvolutionResultat" ~ stats[i].nom %}
 
 var diagrammeEvolutionResultat = document.getElementById( "{{ idGraph }}" ).getContext('2d');
 
@@ -103,7 +99,7 @@ var myLineChart = new Chart(diagrammeEvolutionResultat, {
           data: {
               labels: [{% for evaluation in evaluations %} '{{evaluation.nom}}', {% endfor %}],
               datasets: [
-        {% for etudiant in stats[i]["etudiants"][graphCourant-1] %}
+        {% for etudiant in stats[i]["etudiants"] %}
         {% set randomRed = random(0, 255) %}
         {% set randomGreen = random(0, 255) %}
         {% set randomBlue = random(0, 255) %}
