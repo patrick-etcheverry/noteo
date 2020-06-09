@@ -537,41 +537,29 @@ class StatsController extends AbstractController
      */
     public function determinerEvolutionEtudiantGroupes(Request $request, GroupeEtudiant $groupe, PointsRepository $repoPoints, GroupeEtudiantRepository $repoGroupe, EtudiantRepository $repoEtudiant, EvaluationRepository $repoEval): Response
     {
+      $type = "groupe";
       $session = $request->getSession();
-      $evaluations = $session->get('evaluations');
+      $evaluations = $session->get('evaluations'); // récupération des évaluations passées en session
       $tabEvaluations = array();
       foreach ($evaluations as $evaluation) {
         array_push($tabEvaluations, $repoEval->find ($evaluation->getId()));
       }
-      $groupes = $session->get('lesGroupes');
+      $groupes = $session->get('lesGroupes'); // récupération des groupes passés en session
       $tabGroupes = array();
-      $children = array();
       foreach ($groupes as $groupe) {
           array_push($tabGroupes, $repoGroupe->find($groupe->getId()));
         }
 
-      foreach ($tabGroupes as $groupe) {
-        if ($groupe->getChildren() != null) {
-          $compteur = 0;
-          $children["enfant".strval( $compteur ) ] = $groupe->getChildren();
-          $compteur +=1;
-        }
-      }
-      $type = "groupe";
-
-      /// génération des statistiques
-
-      ///initialisation
+      /// génération des données de statistiques
 
       $stats = array(); // le tableau qui contiendra toutes les données exploitables par le typeGraphique
-      $grouepsStats = array();
       $stats["type"] = $type;
       $stats["evaluations"] = $tabEvaluations;
 
         foreach ($tabGroupes as $groupe) {
           $groupeEtudiant = array();
           $etudiants = array();
-          $nbCourbesSurGraph = 10;
+          $nbCourbesSurGraph = 10; // le nombre maximum de courbes que l'on veut voir sur les graphiques
           $recupEtudiantsGroupe = $groupe->getEtudiants();
           $nbEtudiants = count($recupEtudiantsGroupe);
           $nbGraph = intdiv ( $nbEtudiants, $nbCourbesSurGraph );
@@ -583,20 +571,16 @@ class StatsController extends AbstractController
           $nbEtudiantsRestants = $nbEtudiants;
           $nbEtudiantTraite = 0;
 
-          for ($g = 1; $g < $nbGraph+1; $g++) { //pour chaque partie
-            //echo(" : graphe courant traité ".var_dump($g)."|");
+          for ($g = 1; $g < $nbGraph+1; $g++) { //pour chaque parti
 
-              //echo("Nombre d'étudiants restants".var_dump($nbEtudiants)."|");
               $partie = array(); // on crée un tableau qui contiendra $nbCourbesSurGraph étudiants
               for ($i = $nbEtudiantTraite ; $i < $nbEtudiantTraite + $nbCourbesSurGraph; $i++) { //
-                //echo(var_dump($i)." : nb étudiant traité");
 
                 if($recupEtudiantsGroupe[$i] != null){ // si on a toujours un étudiant a traiter
 
                   $notesEtudiant = array(); // on crée un tableau qui contiendra les notres de l'étudiant courant
                   $etudiantCourant = array(); // on crée un tableau qui contiendra toutes les données relatives à l'étudiant
                   $etudiantCourant["nomPrenom"] = strval( $recupEtudiantsGroupe[$i]->getNom()." ".$recupEtudiantsGroupe[$i]->getPrenom()); // on y insère le nom et prénom de l'étudiant
-
                   foreach ($tabEvaluations as $evaluation) { // pour chaque évlatuation
                     $notesEtEtudiants = $repoPoints->findNotesAndEtudiantByEvaluation($evaluation); // on récupère les notes et les étudiants de cette évaluation
 
@@ -606,6 +590,7 @@ class StatsController extends AbstractController
                       }
                     }
                   }
+
                   $etudiantCourant["notes"] = $notesEtudiant; // on pousse les notes de l'étudiant courant
                   array_push($partie, $etudiantCourant); //on pousse l'étudiant
                   $nbEtudiantsRestants --; // on décrémente le nombre d'étudiant a traiter
