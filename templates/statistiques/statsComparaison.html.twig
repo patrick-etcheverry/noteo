@@ -11,6 +11,13 @@
             -moz-box-shadow: -1px 9px 40px -12px rgba(0,0,0,0.75);
             box-shadow: -1px 9px 40px -12px rgba(0, 0, 0, 0.75);
         }
+        span.notBold{
+          font-weight: normal;
+        }
+        span.bold{
+          font-weight: bold;
+        }
+
     </style>
 {% endblock %}
 
@@ -20,18 +27,25 @@
             <tbody>
             {% if plusieursEvals %}
                 <tr>
-                    <th>Évaluations comparées</th>
+                    <th><p>Évaluation de référence</p>
+                      <p><span class="notBold"> {{ evaluationConcernee.nom }} ({{ evaluationConcernee.date|date("d/m/Y")}})</span></p></li>
+                    </th>
                     <td>
                         <ul>
-                            <li>{{ evaluationConcernee.nom }} ({{ evaluationConcernee.date|date("d/m/Y") }})</li>
-                            {% for evaluation in evaluations %}
-                                <li>{{ evaluation.nom }} ({{ evaluation.date|date("d/m/Y") }})</li>
-                            {% endfor %}
+                        <p><span class="bold"> Évaluations comparées à l'évaluation de référence</span></p>
+                            {% if evaluations|length > 1 %}
+                                {% for evaluation in evaluations %}
+                                    <li>{{ evaluation.nom }} ({{ evaluation.date|date("d/m/Y") }})</li>
+                                {% endfor %}
+                            {% else %}
+                                    {{ evaluations[0].nom }} ({{ evaluations[0].date|date("d/m/Y") }})</li>
+                            {% endif %}
+
                         </ul>
                     </td>
                 </tr>
                 <tr>
-                    <th>Groupes sélectionnés</th>
+                    <th>Groupes observés</th>
                     <td>
                         <ul>
                             {% for groupe in parties[0].stats %}
@@ -96,7 +110,7 @@
                             </div>
                             <br>
                             <div class="container-fluid">
-                                <span style="font-size:15px"><i class="icon-attention-circled"></i>Survolez le graphique pour plus d'informations</span>
+                                <span style="font-size:15px"><i class="icon-attention-circled"></i>Survolez le graphique pour plus d'informations, cliquez sur un label pour masquer les données</span>
                                 <canvas align=center id="comparaisonMoyennes"></canvas>
                             </div>
                         </div>

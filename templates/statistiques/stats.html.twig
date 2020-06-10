@@ -13,7 +13,6 @@
     }
   </style>
 {% endblock %}
-
 {% block contenu %}
 <div class="table-responsive">
 <table align="center" class="table">
@@ -110,7 +109,7 @@
               </div>
               <br>
               <div class="container-fluid">
-                <span style="font-size:15px"><i class="icon-attention-circled"></i>Survolez le graphique pour plus d'informations</span>
+                <span style="font-size:15px"><i class="icon-attention-circled"></i>Survolez le graphique pour plus d'informations, cliquez sur un label pour masquer les données</span>
                 <canvas align=center id="graphHisto_{{ loop.index -1 }}"></canvas>
               </div>
             </div>
@@ -137,7 +136,7 @@
               </div>
               <br>
               <div class="container-fluid">
-                <span style="font-size:15px"><i class="icon-attention-circled"></i>Survolez le graphique pour plus d'informations</span>
+                <span style="font-size:15px"><i class="icon-attention-circled"></i>Survolez le graphique pour plus d'informations, cliquez sur un label pour masquer les données</span>
                 <canvas align=center id="graphBoites_{{ loop.index -1 }}"></canvas>
               </div>
             </div>
@@ -164,7 +163,7 @@
               </div>
               <br>
               <div class="container-fluid">
-                <span style="font-size:15px"><i class="icon-attention-circled"></i>Survolez le graphique pour plus d'informations</span>
+                <span style="font-size:15px"><i class="icon-attention-circled"></i>Survolez le graphique pour plus d'informations, cliquez sur un label pour masquer les données</span>
                 <canvas align=center id="grapheMoyenne_{{ loop.index -1 }}"></canvas>
               </div>
             </div>
@@ -473,7 +472,7 @@ function genDataRepartition(type, partieConcernee){
           break;
         case 'bam': // Boîte à moustaches
           set.data = [parties[partieConcernee].stats[indexGroupe].listeNotes];
-          set.borderColor = noir;
+          set.borderColor = gris;
           break;
         default:
           break;

@@ -7,7 +7,7 @@
 {% block contenu %}
   {{ form_start(form)}}
   {% if evaluation.parties | length > 1 and not pasDeChoixParties %}
-    <h1 class="h4 mb-0 text-gray-800">Sélectionner au moins une partie de l'évaluation pour laquelle vous souhaitez voir les statistiques</h1> <br>
+    <h1 class="h4 mb-0 text-gray-800">Sélectionner au moins une partie de l'évaluation pour laquelle vous souhaitez consulter les statistiques</h1> <br>
     <div class="row">
       <div class="col-lg-4">
       </div>
@@ -47,7 +47,7 @@
       </div>
     </div>
   {% endif %}
-  <h1 class="h4 mb-0 text-gray-800">Sélectionner les groupes pour lesquels vous souhaitez voir les statistiques</h1> <br>
+  <h1 class="h4 mb-0 text-gray-800">Sélectionner les groupes pour lesquels vous souhaitez consulter les statistiques</h1> <br>
   <div class="table-responsive table-hover">
     <table class="table" id= "groupes">
       <thead>
@@ -82,7 +82,7 @@
       </tbody>
     </table>
   </div>
-  <br><h1 class="h4 mb-0 text-gray-800">Sélectionner les groupes d'étudiants ayant un statut particulier pour lesquels vous souhaitez voir les statistiques</h1> <br>
+  <br><h1 class="h4 mb-0 text-gray-800">Sélectionner les groupes d'étudiants ayant un statut particulier pour lesquels vous souhaitez consulter les statistiques</h1> <br>
   {% if form.statuts is not empty %}
     <div class="table-responsive table-hover">
       <table class="table" id= "statuts">
