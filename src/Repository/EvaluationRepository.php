@@ -103,6 +103,21 @@ class EvaluationRepository extends ServiceEntityRepository
             ->execute();
     }
 
+    public function findAllByEtudiant($idEtudiant) {
+        return $this->getEntityManager()->createQuery('
+            SELECT e
+            FROM App\Entity\Evaluation e
+            JOIN e.groupe g
+            JOIN g.etudiants et
+            WHERE et.id = :idEtudiant
+            ORDER BY e.date
+        ')
+            ->setParameter('idEtudiant', $idEtudiant)
+            ->execute();
+    }
+
+
+
     public function findAllOverAGroupExceptCurrentOne($idGroupe, $idEvalCourante) {
         return $this->getEntityManager()->createQuery('
             SELECT e
