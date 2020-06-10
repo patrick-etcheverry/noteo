@@ -56,15 +56,18 @@ class StatsController extends AbstractController
         switch($typeStat) {
             case 'classique':
                 $evaluations = $repoEval->findAllWithOnePart();
-                $titre = "Statistiques classiques";
+                $titrePage = "Analyse d’une évaluation simple";
+                $sousTitrePage = "Choisir l'évaluation pour laquelle vous désirez consulter les statistiques";
                 break;
             case 'classique-avec-parties' :
                 $evaluations = $repoEval->findAllWithSeveralParts();
-                $titre = "Statistiques classiques avec parties";
+                $titrePage = "Analyse d’une évaluation avec parties";
+                $sousTitrePage = "Choisir l'évaluation pour laquelle vous désirez consulter les statistiques";
                 break;
             case 'comparaison' :
                 $evaluations = $repoEval->findAll();
-                $titre = "Comparaison de la moyenne d'un groupe ou d'un statut entre 1 évaluation et d'autres évaluations";
+                $titrePage = "Comparaison des résultats d’une évaluation spécifique à un ensemble d’évaluations";
+                $sousTitrePage = "Choisir l'évaluation de référence qui sera comparée à un ensemble d’évaluations";
                 break;
         }
         $form = $this->createFormBuilder()
@@ -87,6 +90,7 @@ class StatsController extends AbstractController
                 case 'classique-avec-parties' :
                     return $this->redirectToRoute('statistiques_classiques_choisir_groupes_parties_statuts', [
                         'slug' => $form->get('evaluations')->getData()->getSlug(),
+                        'typeStat' => $typeStat
                     ]);
                     break;
                 case 'comparaison' :
@@ -98,7 +102,8 @@ class StatsController extends AbstractController
         }
         return $this->render('statistiques/choix_evaluation.html.twig', [
             'form' => $form->createView(),
-            'titrePage' => $titre
+            'titrePage' => $titrePage,
+            'sousTitrePage' => $sousTitrePage
         ]);
     }
 
@@ -143,7 +148,8 @@ class StatsController extends AbstractController
         return $this->render('statistiques/choix_groupes_et_parties.html.twig', [
             'form' => $form->createView(),
             'evaluation' => $evaluation,
-            'pasDeChoixParties' => true
+            'pasDeChoixParties' => true,
+            "titrePage" => "Comparaison des résultats d’une évaluation spécifique à un ensemble d’évaluations"
         ]);
     }
 
@@ -256,16 +262,24 @@ class StatsController extends AbstractController
 
         return $this->render('statistiques/choix_plusieurs_evals_comparaison.html.twig', [
             'form' => $form->createView(),
-            'titrePage' => "Choisir les autres évals",
-            'titre' => 'Consulter les statistiques'
+            'titrePage' => "Comparaison des résultats d’une évaluation spécifique à un ensemble d’évaluations",
+            'evaluation' => $evaluationConcernee,
         ]);
     }
 
     /**
-     * @Route("/classique/{slug}/choisir-groupes-et-statuts", name="statistiques_classiques_choisir_groupes_parties_statuts", methods={"GET","POST"})
+     * @Route("/{typeStat}/{slug}/choisir-groupes-et-statuts", name="statistiques_classiques_choisir_groupes_parties_statuts", methods={"GET","POST"})
      */
-    public function choisirGroupesPartiesEtStatuts(Request $request, Evaluation $evaluation, StatutRepository $repoStatut, GroupeEtudiantRepository $repoGroupe, PointsRepository $repoPoints ): Response
+    public function choisirGroupesPartiesEtStatuts(Request $request, $typeStat, Evaluation $evaluation, StatutRepository $repoStatut, GroupeEtudiantRepository $repoGroupe, PointsRepository $repoPoints ): Response
     {
+        switch($typeStat) {
+            case 'classique':
+                $titrePage = "Analyse d’une évaluation simple";
+                break;
+            case 'classique-avec-parties' :
+                $titrePage = "Analyse d’une évaluation avec parties";
+                break;
+        }
         $session = $request->getSession();
         $groupeConcerne = $evaluation->getGroupe();
         //On récupère la liste de tous les enfants (directs et indirects) du groupe concerné pour choisir ceux sur lesquels on veut des statistiques
@@ -364,7 +378,7 @@ class StatsController extends AbstractController
                 //Mise en session des stats pour le mail et la page de visualisation
                 $session->set('stats',$toutesLesStats);
                 return $this->render('statistiques/stats.html.twig', [
-                    'titre' => 'Consulter les statistiques pour ' . $evaluation->getNom(),
+                    'titrePage' => 'Statistiques pour ' . $evaluation->getNom(),
                     'plusieursEvals' => false,
                     'evaluation' => $evaluation,
                     'parties' => $toutesLesStats
@@ -374,7 +388,8 @@ class StatsController extends AbstractController
         return $this->render('statistiques/choix_groupes_et_parties.html.twig', [
             'form' => $form->createView(),
             'evaluation' => $evaluation,
-            'pasDeChoixParties' => false
+            'pasDeChoixParties' => false,
+            'titrePage' => $titrePage
         ]);
     }
 
@@ -595,7 +610,7 @@ class StatsController extends AbstractController
                     'parties' => $formatStatsPourLaVue,
                     'evaluations' => $evaluations,
                     'groupes' => $lesGroupes,
-                    'titre' => 'Consulter les statistiques sur '. count($evaluations) . ' évaluation(s)',
+                    'titrePage' => 'Consulter les statistiques sur '. count($evaluations) . ' évaluation(s)',
                     'plusieursEvals' => true,
                 ]);
             }
@@ -703,7 +718,8 @@ class StatsController extends AbstractController
         }
 
         return $this->render('statistiques/choix_evals_plusieurs_evals_statut.html.twig', [
-            'form' => $form->createView()
+            'form' => $form->createView(),
+            'statut' => $statut
         ]);
     }
 
