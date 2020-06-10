@@ -1,6 +1,6 @@
 {% extends 'base.html.twig' %}
 
-{% block titrePage %}Statistiques classiques{% endblock %}
+{% block titrePage %}{{ titrePage }} ({{ evaluation.nom }}){% endblock %}
 
 {% block statistiques %}active{% endblock %}
 
@@ -114,7 +114,7 @@
     </div>
   {% endif %}
   <div class='bouton' align=center>
-    <button disabled id="valider" class="d-sm-inline-block btn btn-sm btn-primary shadow-sm">Consulter les statistiques</button>
+    <button disabled id="valider" class="d-sm-inline-block btn btn-sm btn-primary shadow-sm">Suivant</button>
   </div>
   {{ form_end(form) }}
 {% endblock %}
