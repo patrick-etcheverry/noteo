@@ -620,6 +620,8 @@ function onChartReady(){
   wait_for_chart_ready = true;
 }
 
+var fichier = undefined;
+
 function genPDF(callback, portrait){
 
   // CONSTANTES
@@ -628,18 +630,19 @@ function genPDF(callback, portrait){
   const largeurCanvas = 1500;
   const longueurCanvas = 650;
 
-  // var banierreNoteo = new Image();
-  // banierreNoteo.src = '{{asset("public/img/banniere_noteo.jpg")}}';
-  // banierreNoteo = getBase64Image(banierreNoteo);
-  // const logoIut = '{{asset("public/img/logo_iut.jpg")}}';
-
   // Génération des images des graphiques pour le pdf
   getImages(largeurCanvas, longueurCanvas, callback);
 
   // Contenu du pdf à générer
   var docDefinition = {
     compress: false,
-    footer: function(currentPage, pageCount) { return {text: (currentPage.toString() + "  "), alignment: 'right', margin: 15}; },
+    footer: function(currentPage, pageCount) { return {
+        columns: [
+          { text: 'Document généré par l\'application Noteo', alignment: 'center', italics: true},
+          { text: (currentPage.toString() + " "), alignment: 'right', margin: [0,0,35,25]},
+        ]
+      };
+    },
     pageOrientation: (portrait ? 'portrait' : 'landscape'),
     info: {
       title: '{{evaluation.nom}}',
@@ -647,25 +650,20 @@ function genPDF(callback, portrait){
     },
     content: [
       // { // BANIERE NOTEO
-      //   image: '{{asset("public/img/banniere_noteo.jpeg")}}',
-      //   width: imageWidth,
+      //   image: (window.location.host + '{{asset("/img/banniere_noteo.jpg")}}'),
+      //   width: (portrait ? imageWidthPortrait : imageWidthPaysage),
       // },
       { // PAGE DE GARDE
-  			text: '{{evaluation.nom}}',
+  			text: '{{evaluation.nom}}\n({{evaluation.date|date("d/m/Y")}})\n',
   			style: 'header',
   		},
-      {
-        text: '',
-        style : '',
-        pageBreak: 'after',
-      },
       { // TABLES DES MATIERES
         toc: {
           id: 'tabMatieres',
           title: {
             text: 'Table des matières',
             style: 'header',
-          }
+          },
         },
         pageBreak: 'after',
     },
@@ -674,8 +672,6 @@ function genPDF(callback, portrait){
       histo : images[0],
       bam : images[1],
       moy : images[2],
-      // noteo: banierreNoteo,
-      // iut: logoIut,
     },
     styles: {
   		header: {
@@ -722,13 +718,9 @@ function genPDF(callback, portrait){
       compteurTypeGraph++;
       var contenu = [
         {
-          text: (clef == 'moy' ? 'Moyenne et écart-type' : 'Répartition des notes'),
+          text: (clef == 'moy' ? 'Moyenne et écart-type' : (clef == 'bam' ? 'Répartition des notes (Boîte à moustaches)' : 'Répartition des notes (Histogramme)')) + (groupesChecked.length > 1 ? " - Partie : " + nomPartie : ''),
           style: (portrait ? 'subheader' : 'subheader_paysage'),
           tocItem: 'tabMatieres',
-        },
-        {
-          text: (groupesChecked.length > 1 ? "Partie : " + nomPartie : ''), // Nom de la partie si
-          style: 'un_peu_plus_grand',
         },
         {
           image: clef,
@@ -759,7 +751,8 @@ function genPDF(callback, portrait){
   }
 
   // Génération du pdf en fonction de docDefinition et téléchargement de ce dernier
-  pdfMake.createPdf(docDefinition).download(nomEvaluation);
+  fichier = pdfMake.createPdf(docDefinition);
+  fichier.download(nomEvaluation);
 }
 
 // Génère les tableaux de données déstinés au fichier pdf
