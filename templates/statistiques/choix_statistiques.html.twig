@@ -355,6 +355,19 @@
             </div>
         </div>
     </div>
+        <!-- FICHE ETUDIANT -->
+        <div class="card-deck">
+            <div class="card">
+                <img class="card-img-top imageAAgrandir" src="{{ asset('img/statistiques/fiche-etudiant/moy.png') }}" alt="Card image cap">
+                <div class="card-body">
+                    <hr>
+                    <h5 class="card-title">Fiche étudiant</h5>
+                    <p class="card-text">Fiche récapitulative d'un étudiant sélectionné. Contient le classement de l'étudiant parmi tout les groupes et statuts 
+                    auxquels il appartient sur toutes les évaluations auxquelles il a participé.</p>
+                    <a href="{{ path('statistiques_fiche_etudiant_choisir_etudiant') }}" class="btn btn-primary">Consulter la fiche d'un étudiant</a>
+                </div>
+            </div>
+        </div>
     <!-- Modale dans laquelle les photos agrandies sont affichées -->
     <div id="modale-images" class="modaleImage">
         <span class="close-modaleImage">&times;</span>
