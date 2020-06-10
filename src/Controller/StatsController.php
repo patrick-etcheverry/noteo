@@ -732,16 +732,21 @@ class StatsController extends AbstractController
             $etudiant = $form->get('etudiants')->getData();
             $evaluations = $repoEval->findAllByEtudiant($etudiant->getId());
             $groupesEtStatuts = array();
+            $groupes = array();
+            $statuts = array();
             foreach ($etudiant->getGroupes() as $groupe)
             {
-                array_push($groupesEtStatuts, $groupe);
+                if ($groupe->getEstEvaluable() == true)
+                {
+                    array_push($groupesEtStatuts, $groupe);
+                    array_push($groupes, $groupe);
+                }
             }
             foreach ($etudiant->getStatuts() as $statut)
             {
                 array_push($groupesEtStatuts, $statut);
+                array_push($statuts, $statut);
             }
-            $groupes = $etudiant->getGroupes();
-            $statuts = $etudiant->getStatuts();
             $toutesLesStats = array();
 
             foreach ($evaluations as $eval)

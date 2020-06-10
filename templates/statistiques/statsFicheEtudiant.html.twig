@@ -74,8 +74,8 @@
 {% for evaluation in evaluations %}
     <div class="card">
       <ul class="list-group list-group-flush">
-        <li class="list-group-item text-white" style="background-color:#bdc3c7;">
-          {{ evaluation.nom }}
+        <li class="list-group-item text-white" style="background-color:#bdc3c7;" id="date_{{loop.index}}">
+          {{ evaluation.nom }} ({{evaluation.date|date("d/m/Y")}})
         </li>
         <li class="card-deck">
         {% set nbLoop = 0 %}
@@ -86,7 +86,7 @@
             {% endif %}
             {% if groupe.estEvaluable is defined %}
             {% if groupe.estEvaluable != false %}
-          
+
             <div class="container-fluid">
               <br><span style="font-size:15px"><i class="icon-attention-circled"></i>Survolez le graphique pour plus d'informations</span><br>
               <canvas align=center id="graphBar_{{evaluation.nom}}_{{groupe.nom}}" aria-label="Hello ARIA World" role="img"></canvas>
@@ -96,16 +96,15 @@
                     <h5 class="card-title">{{ groupe.nom }}</h5>
                     <p class="card-text">
                     <ul>
-                        <li>Classement : {{ stats[nbCard + 1]['position'] }}</li>
-                        <li id="moyGpe_{{evaluation.nom}}_{{groupe.nom}}">Moyenne du groupe : {{ stats[nbCard + 1]['moyenneGroupe'] }}</li>
-                        <li id="noteEtu_{{evaluation.nom}}_{{groupe.nom}}">Note de l'étudiant : {{ stats[nbCard + 1]['noteEtudiant'] }}</li>
+                        <li{% if loop.first %} id="{{loop.parent.loop.index}}" {% endif %}>Classement : {{ stats[nbCard]['position'] }}</li>
+                        <li id="moyGpe_{{evaluation.nom}}_{{groupe.nom}}">Moyenne du groupe : {{ stats[nbCard]['moyenneGroupe'] }}</li>
+                        <li id="noteEtu_{{evaluation.nom}}_{{groupe.nom}}">Note de l'étudiant : {{ stats[nbCard]['noteEtudiant'] }}</li>
                     </ul>
                     </p>
                 </div>
             </div>
             <br>
             {% set nbCard = nbCard + 1 %}
-            {% set nbLoop = nbLoop + 1 %}
             {% endif %}
             {% else %}
             <div class="container-fluid">
@@ -117,27 +116,28 @@
                     <h5 class="card-title">{{ groupe.nom }}</h5>
                     <p class="card-text">
                     <ul>
-                        <li>Classement : {{ stats[nbCard + 1]['position'] }}</li>
-                        <li id="moyGpe_{{evaluation.nom}}_{{groupe.nom}}">Moyenne du groupe : {{ stats[nbCard + 1]['moyenneGroupe'] }}</li>
-                        <li id="noteEtu_{{evaluation.nom}}_{{groupe.nom}}">Note de l'étudiant : {{ stats[nbCard + 1]['noteEtudiant'] }}</li>
+                        <li{% if loop.first %} id="{{loop.parent.loop.index}}" {% endif %}>Classement : {{ stats[nbCard]['position'] }}</li>
+                        <li id="moyGpe_{{evaluation.nom}}_{{groupe.nom}}">Moyenne du groupe : {{ stats[nbCard]['moyenneGroupe'] }}</li>
+                        <li id="noteEtu_{{evaluation.nom}}_{{groupe.nom}}">Note de l'étudiant : {{ stats[nbCard]['noteEtudiant'] }}</li>
                     </ul>
                     </p>
                 </div>
             </div>
             <br>
             {% set nbCard = nbCard + 1 %}
-            {% set nbLoop = nbLoop + 1 %}
             {% endif %}
         {% endfor %}
         </li>
       </ul>
     </div>
+{% set nbLoop = nbLoop + 1 %}
 {% endfor %}
     <br>
 {% endblock %}
 
 {% block javascripts %}
 
+<script type="text/javascript" src="http://code.jquery.com/jquery-2.0.2.js"></script>
 <script type="text/javascript" src="{{asset("js/jspdf.min.js")}}"></script>
 <script type="text/javascript" src="{{asset("js/html2canvas.min.js")}}"></script>
 <script type="text/javascript" src="{{asset("js/boxplot.js")}}"></script>
@@ -236,13 +236,19 @@
 
       var nomEvals = [];
       var notesEtu = [];
+      var classements = [];
+      var dates = [];
 
       {% for evaluation in evaluations %}
         {% set passageEvalSuivante = groupesEtStatuts|length * loop.index %}
         {% set noteEtu = stats[passageEvalSuivante - 1]['noteEtudiant']%}
+        {% set classement = stats[passageEvalSuivante - 1]['position']%}
         var nomEval = {{evaluation.nom|json_encode|raw}};
         nomEvals.push(nomEval);
         notesEtu.push({{noteEtu}});
+        classements.push({{classement}});
+        dates.push({{evaluation.date|date("d/m/Y")}});
+
       {% endfor %}
       
       var chartLine = new Chart(document.getElementById("graphLine").getContext('2d'), {
@@ -256,9 +262,41 @@
             fill: false
           }]
         },
-        options: options
+        options: options 
       });
+      chartLine.options = {
+        scales: { // Retire les labels sur l'axe des abscisses
+          xAxes: [{
+            ticks: {
+              display: false
+            }
+          }]
+        },
+        tooltips: {
+                enabled: true,
+                mode: 'single',
+                callbacks: {
+                    label: function(tooltipItems, data) { // Tooltip custom pour avoir la note, le classement et la date de l'évaluation
+                       var multistringText = ['Note de l\'etudiant : ' + tooltipItems.yLabel]; // Note de l'étudiant
+                       var index = tooltipItems.index+1;
+                           multistringText.push(document.getElementById(index).innerHTML); // Classement
+                       var str = document.getElementById("date_" + index).innerHTML
+                           multistringText.push("Date de l\'évaluaton : " + str.substring(str.lastIndexOf("(") + 1, str.lastIndexOf(")"))); // Date de l'évaluation
+                        return multistringText;
+                    }
+                }
+            }
+      };
       chartLine.update();
+
+      // Redirection vers la carte correspondante en fonction du clic
+      $("#graphLine").click(
+        function(evt){
+          var points = chartLine.getElementsAtEvent(evt);
+          var index = parseInt(points[0]["_index"]) + 1;
+          var id = "#date_"+index;
+        $('html, body').animate({scrollTop: $(id).offset().top}, 'slow');
+      });
     {% endif %}
 
     {% for evaluation in evaluations %}
