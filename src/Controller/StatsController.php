@@ -5,7 +5,6 @@ namespace App\Controller;
 use App\Entity\Evaluation;
 use App\Entity\GroupeEtudiant;
 use App\Entity\Partie;
-use App\Entity\Points;
 use App\Entity\Statut;
 use App\Repository\EvaluationRepository;
 use App\Repository\GroupeEtudiantRepository;
@@ -13,12 +12,14 @@ use App\Repository\PointsRepository;
 use App\Repository\StatutRepository;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
+use Symfony\Component\Form\Extension\Core\Type\FileType;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\Validator\Constraints\File;
 use Symfony\Component\Validator\Constraints\NotBlank;
 use Symfony\Component\Validator\Constraints\NotNull;
+use Symfony\Component\Filesystem\Filesystem; // Pour gèrer la suppression d'un fichier
 
 /**
  * @Route("/statistiques")
@@ -394,17 +395,90 @@ class StatsController extends AbstractController
     }
 
     /**
-     * @Route("/previsualisation-mail/{slug}", name="previsualisation_mail", methods={"GET"})
+     * @Route("/previsualisation-mail/{slug}", name="previsualisation_mail", methods={"GET", "POST"})
      */
-    public function previsualisationMail(Evaluation $evaluation): Response
+    public function envoiMail(Evaluation $evaluation, Request $request, PointsRepository $pointsRepository,  \Swift_Mailer $mailer,  Filesystem $filesystem): Response
     {
         $nbEtudiants = count($evaluation->getGroupe()->getEtudiants());
         $nomGroupe = $evaluation->getGroupe()->getNom();
         $this->denyAccessUnlessGranted('EVALUATION_PREVISUALISATION_MAIL', $evaluation);
+        $form = $this->createFormBuilder()
+            ->add('fichierPDF', FileType::class, [
+                'required' => false,
+                'constraints' => [new File([
+                    'maxSize' => '8Mi',
+                    'mimeTypes' => 'application/pdf',
+                    'mimeTypesMessage' => 'Le fichier ajouté n\'est pas un fichier pdf',
+                    'uploadFormSizeErrorMessage' => 'Le fichier ajouté est trop volumineux'
+                ])],
+                'attr' => [
+                    'placeholder' => 'Aucun fichier choisi',
+                    'accept' => '.pdf'
+                ]
+            ])
+            ->getForm();
+        $form->handleRequest($request);
+        if($form->isSubmitted() && $form->isValid()) {
+            $fichier = $form->get('fichierPDF')->getData();
+            $filesystem->remove(['symlink', "pdf_temp", 'activity.log']); //Pour vider le stockage temporaire du précédent pdf envoyé
+            //Pour ne traiter le fichier optionnel que si il est déposé
+            if ($fichier) {
+                $originalFilename = pathinfo($fichier->getClientOriginalName(), PATHINFO_FILENAME);
+                //Rajout de l'extension au nom de fichier
+                $newFilename = $originalFilename.'.'.$fichier->guessExtension();
+                //Déplacement du fichier
+                $fichier->move(
+                    "pdf_temp", //Déplacé dans le dossier pdf_temp dans public
+                    $newFilename
+                );
+            }
+            $session = $request->getSession();
+            // Récupération des stats mises en session
+            $stats = $session->get('stats');
+            $notesEtudiants = $pointsRepository->findNotesAndEtudiantByEvaluation($evaluation);
+            $tabRang = $pointsRepository->findAllNotesByGroupe($evaluation->getId(),$evaluation->getGroupe()->getId());
+            $copieTabRang = array();
+            foreach ($tabRang as $element) {
+                $copieTabRang[] = $element["valeur"];
+            }
+            $effectif = sizeof($copieTabRang);
+            $mailAdmin = $_ENV['MAIL_ADMINISTRATEUR'];
+            for ($i=0; $i < count($notesEtudiants); $i++) {
+                $noteEtudiant = $notesEtudiants[$i]->getValeur();
+                $position = array_search($noteEtudiant, $copieTabRang) + 1;
+                $message = (new \Swift_Message('Noteo - ' . $evaluation->getNom()))
+                    ->setFrom($_ENV['UTILISATEUR_SMTP'])
+                    ->setTo($notesEtudiants[$i]->getEtudiant()->getMail())
+                    ->setBody(
+                        $this->renderView('evaluation/mailEnvoye.html.twig',[
+                            'etudiantsEtNotes' => $notesEtudiants[$i],
+                            'stats' => $stats,
+                            'position' => $position,
+                            'effectif' => $effectif,
+                            'mailAdmin' => $mailAdmin
+                        ]),'text/html');
+                if($fichier) { //Si le pdf est ajouté on le joint au mail
+                    $message->attach(\Swift_Attachment::fromPath('pdf_temp/'.$newFilename));
+                }
+                $mailer->send($message);
+            }
+            $this->addFlash(
+                'info',
+                'L\'envoi des mails a été effectué avec succès.'
+            );
+            return $this->render('statistiques/stats.html.twig', [
+                'titrePage' => 'Consulter les statistiques pour' . $evaluation->getNom(),
+                'plusieursEvals' => false,
+                'parties' => $stats,
+                'evaluation' => $evaluation
+            ]);
+
+        }
         return $this->render('evaluation/previsualisationMail.html.twig',[
             'evaluation' => $evaluation,
             'nbEtudiants' => $nbEtudiants,
-            'nomGroupe' => $nomGroupe
+            'nomGroupe' => $nomGroupe,
+            'form' => $form->createView()
         ]);
     }
 
@@ -434,52 +508,6 @@ class StatsController extends AbstractController
             'position' => $position,
             'effectif' => $effectif,
             'mailAdmin' =>  $mailAdmin
-        ]);
-    }
-
-    /**
-     * @Route("/envoi-mail/{slug}", name="envoi_mail", methods={"GET"})
-     */
-    public function envoiMail(Request $request, Evaluation $evaluation, PointsRepository $pointsRepository, \Swift_Mailer $mailer): Response
-    {
-        $this->denyAccessUnlessGranted('EVALUATION_ENVOI_MAIL', $evaluation);
-        // Récupération de la session
-        $session = $request->getSession();
-        // Récupération des stats mises en session
-        $stats = $session->get('stats');
-        $notesEtudiants = $pointsRepository->findNotesAndEtudiantByEvaluation($evaluation);
-        $tabRang = $pointsRepository->findAllNotesByGroupe($evaluation->getId(),$evaluation->getGroupe()->getId());
-        $copieTabRang = array();
-        foreach ($tabRang as $element) {
-            $copieTabRang[] = $element["valeur"];
-        }
-        $effectif = sizeof($copieTabRang);
-        $mailAdmin = $_ENV['MAIL_ADMINISTRATEUR'];
-        for ($i=0; $i < count($notesEtudiants); $i++) {
-            $noteEtudiant = $notesEtudiants[$i]->getValeur();
-            $position = array_search($noteEtudiant, $copieTabRang) + 1;
-            $message = (new \Swift_Message('Noteo - ' . $evaluation->getNom()))
-                ->setFrom($_ENV['UTILISATEUR_SMTP'])
-                ->setTo($notesEtudiants[$i]->getEtudiant()->getMail())
-                ->setBody(
-                    $this->renderView('evaluation/mailEnvoye.html.twig',[
-                        'etudiantsEtNotes' => $notesEtudiants[$i],
-                        'stats' => $stats,
-                        'position' => $position,
-                        'effectif' => $effectif,
-                        'mailAdmin' => $mailAdmin
-                    ]),'text/html');
-            $mailer->send($message);
-        }
-        $this->addFlash(
-            'info',
-            'L\'envoi des mails a été effectué avec succès.'
-        );
-        return $this->render('statistiques/stats.html.twig', [
-            'titre' => 'Consulter les statistiques pour' . $evaluation->getNom(),
-            'plusieursEvals' => false,
-            'parties' => $stats,
-            'evaluation' => $evaluation
         ]);
     }
 

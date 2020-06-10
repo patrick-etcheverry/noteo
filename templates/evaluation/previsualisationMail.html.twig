@@ -5,12 +5,35 @@
 {% block statistiques %}active{% endblock %}
 
 {% block contenu %}
-<h1 class="h4 mb-0 text-gray-800">Aperçu du mail que les étudiants du groupe {{ nomGroupe }} recevront</h1> <br>
-<div align=center>
-  <iframe src="{{path("exemple_mail",{id:evaluation.id})}}" style="overflow:hidden;height:60vh;width:60vw"></iframe>
-</div>
-<div class='bouton' align=center>
-  <a href="javascript:history.go(-1)" class="d-sm-inline-block btn btn-sm btn-secondary shadow-sm">Annuler</a>
-  <a href="{{path("envoi_mail",{slug:evaluation.slug})}}" class="d-sm-inline-block btn btn-sm btn-primary shadow-sm">Envoyer le mail aux {{ nbEtudiants }} étudiants</a>
-</div>
+  {{ form_start(form) }}
+  <h1 class="h4 mb-0 text-gray-800">Aperçu du mail que les étudiants du groupe {{ nomGroupe }} recevront</h1> <br>
+  <div align=center>
+    <iframe src="{{path("exemple_mail",{id:evaluation.id})}}" style="overflow:hidden;height:60vh;width:60vw"></iframe>
+  </div>
+  <br>
+  <h1 class="h4 mb-0 text-gray-800">Joindre un fichier PDF au mail (optionnel)</h1> <br>
+  <div class="table-responsive">
+    <table align="center" class="table">
+      <tbody>
+      <tr>
+        <th class="intitule"><label for="groupe_etudiant_fichier" class="required">Fichier PDF</label></th>
+        <td >{{form_errors(form.fichierPDF)}}{{form_widget(form.fichierPDF)}}</td>
+      </tr>
+      </tbody>
+    </table>
+  </div>
+  <div class='bouton' align=center>
+    <button type="submit" class="btn btn-primary">Envoyer le mail aux {{ nbEtudiants }} étudiants</button>
+  </div>
+  {{ form_end(form) }}
+{% endblock %}
+
+{% block javascripts %}
+  <script>
+    //Pour mettre à jour le nom du fichier déposé dans le champ de formulaire
+    $(".custom-file-input").on("change", function() {
+      var fileName = $(this).val().split("\\").pop();
+      $(this).siblings(".custom-file-label").addClass("selected").html(fileName);
+    });
+  </script>
 {% endblock %}

@@ -12,6 +12,7 @@ use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
+use Symfony\Component\Validator\Constraints\File;
 use Symfony\Component\Validator\Constraints\NotBlank;
 
 class GroupeEtudiantType extends AbstractType
@@ -36,7 +37,10 @@ class GroupeEtudiantType extends AbstractType
 
             ->add('fichier', FileType::class, [
               'mapped' => false,
-              'constraints' => [new NotBlank],
+              'constraints' => [new File([
+                  'maxSize' => '16Mi',
+                  'uploadFormSizeErrorMessage' => 'Le fichier ajouté est trop volumineux'
+              ])],
               'attr' => [
                 'placeholder' => 'Aucun fichier choisi',
                 'accept' => '.csv'
