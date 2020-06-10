@@ -347,7 +347,7 @@
                             auxquels il appartient.
                         </p>
                         {% if not ficheEtudiantDispo %}
-                            <span style="font-size:15px; color: #0275d8"><i class="icon-attention-circled"></i>Statistique indisponible : <a href="{{ path("etudiant_new") }}"> Créez un étudiant</a></span>
+                            <span style="font-size:15px; color: #0275d8"><i class="icon-attention-circled"></i>Statistique indisponible : {% if is_granted('ROLE_ADMIN') %}<a href="{{ path("groupe_etudiant_new") }}">Créez un groupe</a> ou {% endif %}<a href="{{ path("evaluation_choose_group", {"typeEval" : "simple"}) }}">Créez des évaluations</a></span>
                             <br><br>
                         {% endif %}
                         <button {% if not ficheEtudiantDispo %}disabled{% endif %} onclick="location.href='{{ path('statistiques_fiche_etudiant_choisir_etudiant') }}'" class="btn {% if ficheEtudiantDispo %}btn-primary{% else %}btn-secondary{% endif %}">Consulter ce type de statistiques</button>

@@ -53,6 +53,20 @@ class EtudiantRepository extends ServiceEntityRepository
         ->execute();
     }
 
+    /**
+     * @return Etudiant[] Returns an array of Etudiant objects
+     */
+
+    public function findAllConcernedByAtLeastOneEvaluation()
+    {
+        return $this->getEntityManager()->createQuery('
+        SELECT e
+        FROM App\Entity\Etudiant e
+        JOIN e.points p
+        ')
+        ->execute();
+    }
+
 
     // /**
     //  * @return Etudiant[] Returns an array of Etudiant objects

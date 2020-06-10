@@ -21,7 +21,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Validator\Constraints\File;
 use Symfony\Component\Validator\Constraints\NotBlank;
 use Symfony\Component\Validator\Constraints\NotNull;
-use Symfony\Component\Filesystem\Filesystem; // Pour gèrer la suppression d'un fichier
+use Symfony\Component\Filesystem\Filesystem;
 
 /**
  * @Route("/statistiques")
@@ -39,7 +39,7 @@ class StatsController extends AbstractController
         $statsPlusieursEvalsGroupeDispo = count($repoGroupe->findAllHavingStudents()) >=1 && count($repoEval->findAll()) >= 2;  //Si plus d'un groupe avec des étudiants et plus de 2 évals dans l'appli
         $statsPlusieursEvalsStatutDispo = count($repoStatut->findAllHavingStudents()) >=1 && count($repoEval->findAll()) >= 2; //Si plus d'un statut avec des étudiants et plus de 2 évals dans l'appli
         $statsComparaisonDispo = count($repoEval->findAll()) >= 2; //Si plus de 2 évals dans l'appli
-        $ficheEtudiantDispo = count($repoEtudiant->findAll()) >= 1; //Si il y a au moins 1 étudiant dans l'appli
+        $ficheEtudiantDispo = count($repoEtudiant->findAllConcernedByAtLeastOneEvaluation()) >= 1; //Si il y a au moins 1 étudiant concerné par une évaluation dans l'appli
 
         return $this->render('statistiques/choix_statistiques.html.twig', [
             'statsClassiquesDispo' => $statsClassiquesDispo,
@@ -767,7 +767,7 @@ class StatsController extends AbstractController
             'label' => false, // On n'affiche pas le label du champ
             'expanded' => true, // Pour avoir des boutons
             'multiple' => false, // radios
-            'choices' => $repoEtudiant->findAll(), // On choisira parmis tous les étudiants
+            'choices' => $repoEtudiant->findAllConcernedByAtLeastOneEvaluation(), // On choisira parmis tous les étudiants
             'constraints' => [new NotBlank()]
         ])
         ->getForm();
