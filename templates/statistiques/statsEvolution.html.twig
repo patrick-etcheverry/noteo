@@ -33,7 +33,7 @@
               <td>
                   <ul>
                       {% for groupe in groupes %}
-                        <li>{{ groupe.nom }} du {{groupe.parent.nom}} ({{groupe.parent.parent.nom}}) </li>
+                        <li>{{ groupe.nom }}</li>
                       {% endfor %}
                   </ul>
               </td>
@@ -61,9 +61,6 @@
         <li class="list-group-item text-white" style="background-color:#bdc3c7;">
           {{stats[i].nom}}
           {% for groupe in groupes %}
-            {% if stats[i].nom == groupe.nom %}
-            du {{groupe.parent.nom}} ({{groupe.parent.parent.nom}})
-            {% endif %}
           {% endfor %}
         </li>
         <li class="list-group-item">
@@ -86,28 +83,26 @@
 {% block javascripts %}
 
 <script type="text/javascript">
-
+  var tabColors = [];
 {% for i in 0..stats|length - 3 %}
 {% for graphCourant in  1..stats[i] %}
-
 {% set idGraph = "diagrammeEvolutionResultat" ~ stats[i].nom %}
-
+{% set nbEtudiantsGroupeCourant = stats[i]["etudiants"]|length %}
+for (var i = 0; i < {{nbEtudiantsGroupeCourant}}; i++) {
+  tabColors.push(getRandomAndUniqueColor());
+}
 var diagrammeEvolutionResultat = document.getElementById( "{{ idGraph }}" ).getContext('2d');
-
 var myLineChart = new Chart(diagrammeEvolutionResultat, {
           type: 'line',
           data: {
               labels: [{% for evaluation in evaluations %} '{{evaluation.nom}}', {% endfor %}],
               datasets: [
         {% for etudiant in stats[i]["etudiants"] %}
-        {% set randomRed = random(0, 255) %}
-        {% set randomGreen = random(0, 255) %}
-        {% set randomBlue = random(0, 255) %}
           {
   					label: '{{etudiant.nomPrenom}}',
-  					data: [{% for note in etudiant.notes %} {{note}},{% endfor %}],
-  					borderColor: 'rgba({{randomRed}},{{randomGreen}},{{randomBlue}},1)',
-  					backgroundColor:'rgba({{randomRed}},{{randomGreen}},{{randomBlue}},1)',
+  					data: [{% for note in etudiant.notes %} {{note}}, {% endfor %}],
+  					borderColor: tabColors[{{loop.index}}],
+  					backgroundColor: tabColors[{{loop.index}}],
   					fill: false,
   					lineTension: 0
   				},
@@ -141,13 +136,16 @@ var myLineChart = new Chart(diagrammeEvolutionResultat, {
           },
       });
 
-      function random_rgba() {
-        var min = 0;
-        var max = 255;
-        var red = Math.random() * (max - min) + min;
-        var green = Math.random() * (max - min) + min;
-        var blue = Math.random() * (max - min) + min;
-        return 'rgba(' + red + ',' + green + ',' + blue + ',' + 1 + ')';
+
+  function getRandomAndUniqueColor()
+  {
+    var min = 0;
+    var max = 255;
+    var red = Math.random() * (max - min) + min;
+    var green = Math.random() * (max - min) + min;
+    var blue = Math.random() * (max - min) + min;
+    var string = "rgba("+red.toString()+", "+green.toString()+", "+blue.toString()+")"
+  return string;
   }
 
 {% endfor %}
