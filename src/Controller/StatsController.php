@@ -39,7 +39,7 @@ class StatsController extends AbstractController
         $statsPlusieursEvalsGroupeDispo = count($repoGroupe->findAllHavingStudents()) >=1 && count($repoEval->findAll()) >= 2;  //Si plus d'un groupe avec des étudiants et plus de 2 évals dans l'appli
         $statsPlusieursEvalsStatutDispo = count($repoStatut->findAllHavingStudents()) >=1 && count($repoEval->findAll()) >= 2; //Si plus d'un statut avec des étudiants et plus de 2 évals dans l'appli
         $statsComparaisonDispo = count($repoEval->findAll()) >= 2; //Si plus de 2 évals dans l'appli
-        $ficheEtudiant = count($repoEtudiant->findAll()) >= 1; //Si il y a au moins 1 étudiant dans l'appli 
+        $ficheEtudiantDispo = count($repoEtudiant->findAll()) >= 1; //Si il y a au moins 1 étudiant dans l'appli
 
         return $this->render('statistiques/choix_statistiques.html.twig', [
             'statsClassiquesDispo' => $statsClassiquesDispo,
@@ -47,7 +47,7 @@ class StatsController extends AbstractController
             'statsPlusieursEvalsGroupeDispo' => $statsPlusieursEvalsGroupeDispo,
             'statsPlusieursEvalsStatutDispo' => $statsPlusieursEvalsStatutDispo,
             'statsComparaisonDispo' => $statsComparaisonDispo,
-            'ficheEtudiant' => $ficheEtudiant
+            'ficheEtudiantDispo' => $ficheEtudiantDispo
         ]);
     }
 

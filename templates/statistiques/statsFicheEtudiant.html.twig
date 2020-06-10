@@ -57,11 +57,6 @@
   </tbody>
 </table>
 </div>
-{% for message in app.flashes('info') %}
-<div class="alert alert-success" role="alert">
-  {{ message }}
-</div>
-{% endfor %}
 {% if evaluations|length > 1 %}
 <h1 class="h4 mb-0 text-gray-800">Historique des notes</h1><br>
 <div class="container-fluid">
@@ -81,66 +76,60 @@
         {% set nbLoop = 0 %}
         {% for groupe in groupesEtStatuts %}
             {% if nbLoop > 0 and nbLoop is divisible by(3) %}
-            </li><br>
-            <li class="card-deck">
+                </li><br>
+                <li class="card-deck">
             {% endif %}
             {% if groupe.estEvaluable is defined %}
-            {% if groupe.estEvaluable != false %}
-
-            <div class="container-fluid">
-              <br><span style="font-size:15px"><i class="icon-attention-circled"></i>Survolez le graphique pour plus d'informations</span><br>
-              <canvas align=center id="graphBar_{{evaluation.nom}}_{{groupe.nom}}" aria-label="Hello ARIA World" role="img"></canvas>
-            </div> 
-            <div class="card">
-                <div class="card-body">
-                    <h5 class="card-title">{{ groupe.nom }}</h5>
-                    <p class="card-text">
-                    <ul>
-                        <li{% if loop.first %} id="{{loop.parent.loop.index}}" {% endif %}>Classement : {{ stats[nbCard]['position'] }}</li>
-                        <li id="moyGpe_{{evaluation.nom}}_{{groupe.nom}}">Moyenne du groupe : {{ stats[nbCard]['moyenneGroupe'] }}</li>
-                        <li id="noteEtu_{{evaluation.nom}}_{{groupe.nom}}">Note de l'étudiant : {{ stats[nbCard]['noteEtudiant'] }}</li>
-                    </ul>
-                    </p>
-                </div>
-            </div>
-            <br>
-            {% set nbCard = nbCard + 1 %}
-            {% endif %}
+                {% if groupe.estEvaluable %}
+                    <div class="card">
+                        <div class="card-body">
+                            <h5 class="card-title">{{ groupe.nom }}</h5>
+                            <p class="card-text">
+                            <ul>
+                                <li{% if loop.first %} id="{{loop.parent.loop.index}}" {% endif %}>Classement : {{ stats[nbCard]['position'] }}</li>
+                                <li id="moyGpe_{{evaluation.nom}}_{{groupe.nom}}">Moyenne du groupe : {{ stats[nbCard]['moyenneGroupe'] }}</li>
+                                <li id="noteEtu_{{evaluation.nom}}_{{groupe.nom}}">Note de l'étudiant : {{ stats[nbCard]['noteEtudiant'] }}</li>
+                            </ul>
+                            </p>
+                        </div>
+                    </div>
+                    <div class="container-fluid">
+                        <br><span style="font-size:15px"><i class="icon-attention-circled"></i>Survolez le graphique pour plus d'informations</span><br>
+                        <canvas align=center id="graphBar_{{evaluation.nom}}_{{groupe.nom}}" aria-label="Hello ARIA World" role="img"></canvas>
+                    </div>
+                    {% set nbCard = nbCard + 1 %}
+                {% endif %}
             {% else %}
-            <div class="container-fluid">
-              <br><span style="font-size:15px"><i class="icon-attention-circled"></i>Survolez le graphique pour plus d'informations</span><br>
-              <canvas align=center id="graphBar_{{evaluation.nom}}_{{groupe.nom}}" aria-label="Hello ARIA World" role="img"></canvas>
-            </div> 
-            <div class="card">
-                <div class="card-body">
-                    <h5 class="card-title">{{ groupe.nom }}</h5>
-                    <p class="card-text">
-                    <ul>
-                        <li{% if loop.first %} id="{{loop.parent.loop.index}}" {% endif %}>Classement : {{ stats[nbCard]['position'] }}</li>
-                        <li id="moyGpe_{{evaluation.nom}}_{{groupe.nom}}">Moyenne du groupe : {{ stats[nbCard]['moyenneGroupe'] }}</li>
-                        <li id="noteEtu_{{evaluation.nom}}_{{groupe.nom}}">Note de l'étudiant : {{ stats[nbCard]['noteEtudiant'] }}</li>
-                    </ul>
-                    </p>
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="card-title">{{ groupe.nom }}</h5>
+                        <p class="card-text">
+                        <ul>
+                            <li{% if loop.first %} id="{{loop.parent.loop.index}}" {% endif %}>Classement : {{ stats[nbCard]['position'] }}</li>
+                            <li id="moyGpe_{{evaluation.nom}}_{{groupe.nom}}">Moyenne du groupe : {{ stats[nbCard]['moyenneGroupe'] }}</li>
+                            <li id="noteEtu_{{evaluation.nom}}_{{groupe.nom}}">Note de l'étudiant : {{ stats[nbCard]['noteEtudiant'] }}</li>
+                        </ul>
+                        </p>
+                    </div>
                 </div>
-            </div>
-            <br>
-            {% set nbCard = nbCard + 1 %}
+                <div class="container-fluid">
+                    <br><span style="font-size:15px"><i class="icon-attention-circled"></i>Survolez le graphique pour plus d'informations</span><br>
+                    <canvas align=center id="graphBar_{{evaluation.nom}}_{{groupe.nom}}" aria-label="Hello ARIA World" role="img"></canvas>
+                </div>
+                <br>
+                {% set nbCard = nbCard + 1 %}
             {% endif %}
         {% endfor %}
         </li>
       </ul>
     </div>
-{% set nbLoop = nbLoop + 1 %}
+    <br>
+    {% set nbLoop = nbLoop + 1 %}
 {% endfor %}
     <br>
 {% endblock %}
 
 {% block javascripts %}
-
-<script type="text/javascript" src="http://code.jquery.com/jquery-2.0.2.js"></script>
-<script type="text/javascript" src="{{asset("js/jspdf.min.js")}}"></script>
-<script type="text/javascript" src="{{asset("js/html2canvas.min.js")}}"></script>
-<script type="text/javascript" src="{{asset("js/boxplot.js")}}"></script>
 
 <!-- Script pour la génération des graphiques -->
 <script type="text/javascript">
@@ -233,12 +222,10 @@
   
   /*window.addEventListener('loadend', function(){*/
     {% if evaluations|length > 1 %}
-
       var nomEvals = [];
       var notesEtu = [];
       var classements = [];
       var dates = [];
-
       {% for evaluation in evaluations %}
         {% set passageEvalSuivante = groupesEtStatuts|length * loop.index %}
         {% set noteEtu = stats[passageEvalSuivante - 1]['noteEtudiant']%}
@@ -258,7 +245,7 @@
           datasets: [{
             data: notesEtu,
             label: 'Notes de l\'étudiant',
-            borderColor: "#3e95cd",
+            borderColor: "#0275d8",
             fill: false
           }]
         },
@@ -313,7 +300,7 @@
               labels: ['Note de l\'étudiant', 'Moyenne du groupe'],
               datasets: [{
                 label: 'Moyenne sur l\'évaluation',
-                backgroundColor: "#3e95cd",
+                backgroundColor: "#0275d8",
                 data: notes
               }]
             },
@@ -331,7 +318,7 @@
               labels: ['Note de l\'étudiant', 'Moyenne du groupe'],
               datasets: [{
                 label: 'Moyenne sur l\'évaluation',
-                backgroundColor: "#3e95cd",
+                backgroundColor: "#0275d8",
                 data: notes
               }]
             },
