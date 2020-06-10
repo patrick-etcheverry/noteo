@@ -281,10 +281,11 @@
                 <img class="card-img-top imageAAgrandir" src="{{ asset('img/statistiques/comparaison/moy.png') }}" alt="Card image cap">
                 <div class="card-body">
                     <hr>
-                    <h5 class="card-title">Évolution d'un groupe ou d'un groupe d'étudiants ayant un statut particulier sur plusieurs évaluations</h5>
+                    <h5 class="card-title">Comparaison des résultats d’une évaluation spécifique à un ensemble d’évaluations</h5>
                     <p class="card-text">
-                        Génération de statistiques de comparaison de résultats : Comparaison de la moyenne d'un groupe ou d'un groupe d'étudiants <br>
-                        ayant un statut particulier à une évaluation de référence avec la moyenne d'un ensemble d'autres évaluations passées par ces mêmes groupes.
+                        Comparez les résultats obtenus à une évaluation par rapport à un ensemble d’évaluations
+                        (par exemple : comparer les résultats obtenus par les étudiants à une évaluation d’algorithmique par rapport à l’ensemble des évaluations en informatique).<br>
+                        La comparaison peut porter sur des groupes spécifiques (groupes de TD/TP) et/ou des étudiants ayant un statut particulier (boursiers, redoublants…).
                     </p>
                     {% if not statsComparaisonDispo %}
                         <span style="font-size:15px; color: #0275d8"><i class="icon-attention-circled"></i>Pas assez d'évaluations à comparer</span> <br>
