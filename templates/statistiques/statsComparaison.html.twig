@@ -28,18 +28,19 @@
             {% if plusieursEvals %}
                 <tr>
                     <th><p>Évaluation de référence</p>
-                      <ul>
-                        <li>  <p><span class="notBold"> {{ evaluationConcernee.nom }} ({{ evaluationConcernee.date|date("d/m/Y")}})</span></p></li>
-                      </ul>
+                      <p><span class="notBold"> {{ evaluationConcernee.nom }} ({{ evaluationConcernee.date|date("d/m/Y")}})</span></p></li>
                     </th>
-
-
                     <td>
                         <ul>
                         <p><span class="bold"> Évaluations comparées à l'évaluation de référence</span></p>
-                            {% for evaluation in evaluations %}
-                                <li>{{ evaluation.nom }} ({{ evaluation.date|date("d/m/Y") }})</li>
-                            {% endfor %}
+                            {% if evaluations|length > 1 %}
+                                {% for evaluation in evaluations %}
+                                    <li>{{ evaluation.nom }} ({{ evaluation.date|date("d/m/Y") }})</li>
+                                {% endfor %}
+                            {% else %}
+                                    {{ evaluations[0].nom }} ({{ evaluations[0].date|date("d/m/Y") }})</li>
+                            {% endif %}
+
                         </ul>
                     </td>
                 </tr>
@@ -109,7 +110,7 @@
                             </div>
                             <br>
                             <div class="container-fluid">
-                                <span style="font-size:15px"><i class="icon-attention-circled"></i>Survolez le graphique pour plus d'informations</span>
+                                <span style="font-size:15px"><i class="icon-attention-circled"></i>Survolez le graphique pour plus d'informations, cliquez sur un label pour masquer les données</span>
                                 <canvas align=center id="comparaisonMoyennes"></canvas>
                             </div>
                         </div>

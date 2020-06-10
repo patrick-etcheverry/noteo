@@ -5,12 +5,11 @@
 {% block statistiques %}active{% endblock %}
 
 {% block contenu %}
-    <h1 class="h4 mb-0 text-gray-800">Selectionner les évaluations à comparer à l'évaluation de référence</h1> <br>
-    {{ include('statistiques/_choix_evals_form.html.twig') }}
+    <h1 class="h4 mb-0 text-gray-800">Sélectionner l'ensemble des évaluations dont la moyenne globale sera comparée à la moyenne de l'évaluation de référence {{ evaluation.nom }}</h1> <br>
     {% if dispoEvals == true %}
       {{ include('statistiques/_choix_evals_form.html.twig') }}
     {% else %}
-      <p> Aucune évaluation n'est comparable avec l'évaluation {{evaluation.nom}}. Vous pouvez créer des évaluations <a href="{{ path('evaluation_enseignant')}}">ici </a>
+      <p> Aucune évaluation n'est comparable avec l'évaluation {{evaluation.nom}}. Vous pouvez créer des évaluations <a href="{{ path('evaluation_choose_group', {'typeEval':'simple'})}}">ici</a>
       où bien sélectionner une autre évaluation de référence à <a href='{{ path('statistiques_choix_evaluation', {'typeStat' : 'comparaison', 'typeGraph' : 'moyenne'}) }}'>l'étape précédente </a>.</p>
     {% endif %}
 {% endblock %}
