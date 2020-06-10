@@ -39,8 +39,6 @@ class GroupeEtudiantType extends AbstractType
               'mapped' => false,
               'constraints' => [new File([
                   'maxSize' => '16Mi',
-                  'mimeTypes' => 'text/csv',
-                  'mimeTypesMessage' => 'Le fichier ajouté n\'est pas un fichier csv',
                   'uploadFormSizeErrorMessage' => 'Le fichier ajouté est trop volumineux'
               ])],
               'attr' => [
