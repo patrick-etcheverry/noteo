@@ -386,8 +386,7 @@ function changement(nom, value, partieConcernee, typeStat){
   // Gère l'addition et la suppression des groupes à afficher dans le graphe
   if(value){ // la case à été cochée
     groupesChecked[partieConcernee][typeStat].push(nom); // Ajout dans la liste cochée
-  }
-  else { // la case à été décochée
+  } else { // la case à été décochée
       var index = contains(groupesChecked[partieConcernee][typeStat], nom); // index au quel se trouve le groupe dans le tableau groupes s'il existe
       if(index != -1){
         groupesChecked[partieConcernee][typeStat].splice(index, 1); // Suppression de la liste cochée
@@ -547,7 +546,7 @@ function contains(array, element){
   return -1;
 }
 
-//----------------- PARTIE GENERATION DE PDF --------------
+//----------------- PARTIE GENERATION DE PDF -------------
 
 function getImages(largeur, longueur, callback){
 
@@ -579,7 +578,7 @@ function getImages(largeur, longueur, callback){
         case 'bam': // Boîte à moustache
           chartDonnees.labels = [nomEvaluation];
           options.scales.yAxes[0].ticks.min = 0;
-          options.scales.yAxes[0].ticks.max = 20;
+          options.scales.yAxes[0].ticks.max = undefined;
           break;
         case 'moy':
           chartDonnees.labels = groupesChecked[indexPartie][clef];
@@ -590,7 +589,8 @@ function getImages(largeur, longueur, callback){
           break;
       }
 
-      chartDonnees.datasets = (clef == 'moy' ? genDataMoyenneEcart(indexPartie) : genDataRepartition(clef, indexPartie)); // Argument 0 => test d'accomodation avec le code d'Arthur relatif aux stats par parties
+      // Génération des données nécessaires à la bonne creation du graphique
+      chartDonnees.datasets = (clef == 'moy' ? genDataMoyenneEcart(indexPartie) : genDataRepartition(clef, indexPartie));
 
       // Création du chart dans le canvas caché
       window.hiddenGraph = new Chart(document.getElementById("hiddenGraph").getContext('2d'), {
@@ -620,8 +620,6 @@ function onChartReady(){
   wait_for_chart_ready = true;
 }
 
-var fichier = undefined;
-
 function genPDF(callback, portrait){
 
   // CONSTANTES
@@ -649,10 +647,6 @@ function genPDF(callback, portrait){
       author: 'Noteo',
     },
     content: [
-      // { // BANIERE NOTEO
-      //   image: (window.location.host + '{{asset("/img/banniere_noteo.jpg")}}'),
-      //   width: (portrait ? imageWidthPortrait : imageWidthPaysage),
-      // },
       { // PAGE DE GARDE
   			text: '{{evaluation.nom}}\n({{evaluation.date|date("d/m/Y")}})\n',
   			style: 'header',
@@ -668,11 +662,11 @@ function genPDF(callback, portrait){
         pageBreak: 'after',
     },
     ],
-    images : {
-      histo : images[0],
-      bam : images[1],
-      moy : images[2],
-    },
+    // images : {
+    //   histo : images[0],
+    //   bam : images[1],
+    //   moy : images[2],
+    // },
     styles: {
   		header: {
   			fontSize: 18,
@@ -723,7 +717,7 @@ function genPDF(callback, portrait){
           tocItem: 'tabMatieres',
         },
         {
-          image: clef,
+          image: images[indexPartie*3+compteurTypeGraph-1],
           width: (portrait ? imageWidthPortrait : imageWidthPaysage),
           pageBreak: (portrait ? '' : 'after'),
         },
@@ -737,12 +731,12 @@ function genPDF(callback, portrait){
             headerRows: 1,
     				body: getDataForPdfTable(clef, indexPartie, portrait),
     			},
-    			layout: { // Colore une ligne sur 2 (pour l'effet zèbre sur le tableau)
+    			layout: { // Colore une ligne sur 2 (pour l'effet zèbré sur le tableau)
     				fillColor: function (rowIndex, node, columnIndex) {
     					return (rowIndex % 2 === 0) ? '#CCCCCC' : null;
     				}
     			},
-          // Saut de page s'il reste encore des grpahiques à ajouter au pdf
+          // Saut de page s'il reste encore des graphiques à ajouter au pdf
           pageBreak: (compteurTypeGraph == fin_compteur && indexPartie == groupesChecked.length-1 ? '' : 'after'),
   		  },
       ];
@@ -751,8 +745,7 @@ function genPDF(callback, portrait){
   }
 
   // Génération du pdf en fonction de docDefinition et téléchargement de ce dernier
-  fichier = pdfMake.createPdf(docDefinition);
-  fichier.download(nomEvaluation);
+  pdfMake.createPdf(docDefinition).download(nomEvaluation);
 }
 
 // Génère les tableaux de données déstinés au fichier pdf
