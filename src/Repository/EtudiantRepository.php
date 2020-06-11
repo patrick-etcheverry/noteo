@@ -67,6 +67,20 @@ class EtudiantRepository extends ServiceEntityRepository
         ->execute();
     }
 
+    /**
+     * @return Etudiant[] Returns an array of Etudiant objects
+     */
+
+    public function findAllWithStatut()
+    {
+        return $this->getEntityManager()->createQuery('
+        SELECT e, s
+        FROM App\Entity\Etudiant e
+        LEFT JOIN e.statuts s
+        ')
+            ->execute();
+    }
+
 
     // /**
     //  * @return Etudiant[] Returns an array of Etudiant objects
