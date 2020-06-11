@@ -24,11 +24,7 @@
             {% set entity = form.groupes.vars.choices[index].data %}
             <tr>
                 <td>
-              {% if typeGraphique is defined and typeGraphique == "courbes" and entity.children|length > 0 %}
-                {{form_widget(form.groupes[index], {"attr":{"disabled":true}})}}
-              {% else %}
-                {{form_widget(form.groupes[index])}}
-              {% endif %}
+                  {{form_widget(form.groupes[index])}}
                 </td>
                 <td>
                     {% if not pasDIndentation %}

@@ -559,14 +559,10 @@ class StatsController extends AbstractController
     return ($a->getdate() < $b->getdate()) ? -1 : 1;
   }
 );
-
-
       /// génération des données de statistiques
-
       $stats = array(); // le tableau qui contiendra toutes les données exploitables par le typeGraphique
       $stats["type"] = $type;
       $stats["evaluations"] = $tabEvaluations;
-
         /// génération des statistiques
         $stats = array(); // le tableau qui contiendra toutes les données exploitables par le typeGraphique
         $grouepsStats = array();
