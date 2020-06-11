@@ -5,7 +5,8 @@
 {% block statistiques %} active {% endblock %}
 
 {% block contenu %}
-    <h1 class="h4 mb-0 text-gray-800">Selectionner le groupe d'étudiants ayant un statut particulier pour lequel vous souhaitez voir des statistiques</h1> <br>
+    <h1 class="h4 mb-0 text-gray-800">Selectionner le groupe d'étudiants ayant un statut particulier pour lequel vous
+        souhaitez voir des statistiques</h1> <br>
     {{ include('statistiques/_choix_groupes_form.html.twig', {'titre':'Choisir les évaluations'}) }}
 {% endblock %}
 
@@ -17,18 +18,19 @@
                 // Suppression du label Rechercher et ajout du placeholder
                 search: "_INPUT_",
                 searchPlaceholder: "Rechercher...",
-                "url": "{{asset('tradfr.json')}}"
+                "url": "{{ asset('tradfr.json') }}"
             },
-            aaSorting : [],
-            columns: [{"orderable": false}, null, null,null,{"orderable": false}],
+            aaSorting: [],
+            columns: [{"orderable": false}, null, null, null, {"orderable": false}],
             lengthMenu: [
                 [15, 30, 45, -1],
                 [15, 30, 45, "Tout"]
             ],
-            pageLength : {{ app.user.preferenceNbElementsTableaux }}, <!-- Pour que le nombre d'éléments affichés par défaut soit celui de la préference de l'utilisateur -->
+            pageLength: {{ app.user.preferenceNbElementsTableaux }}, <!-- Pour que le nombre d'éléments affichés par défaut soit celui de la préference de l'utilisateur -->
             info: false,
         });
         $("[name='form']").on('submit', function () {
+            tableGroupes.search("").draw(); //Pour annuler la recherche effectuée dans le champ en haut à droite du tableau
             tableGroupes.rows().nodes().page.len(-1).draw(); // Cette fonction permet, avant la soumission du formulaire, d'afficher dans le DOM toutes les lignes du tableau pour qu'aucune ne soit ignorée
         });
     </script>
@@ -36,8 +38,8 @@
 
 {% block javascripts %}
     <script>
-        window.onload = function() {
-            $("[name='form[groupes]']").first().attr('checked', true)
+        window.onload = function () {
+            $("[name='form[groupes]']").first().attr('checked', true) //Pour cocher le premier choix par défaut
         }
     </script>
 {% endblock %}

@@ -5,115 +5,116 @@
 {% block etudiants %}active{% endblock %}
 
 {% block contenu %}
-
-{% if etudiants is not empty %}
-<div class='bouton' align=center>
-  <a class="d-sm-inline-block btn btn-sm btn-primary shadow-sm" href="{{ path('etudiant_new') }}">Ajouter un étudiant</a>
-</div>
-<div class="table-responsive table-hover">
-<table class="table" id ="table">
-  <thead>
-    <tr>
-      <th>Nom</th>
-      <th>Prénom</th>
-      <th>Statut(s)</th>
-      <th>Mail</th>
-      <th></th>
-    </tr>
-  </thead>
-  <tbody>
-
-    {% for etudiant in etudiants %}
-    <tr>
-      <td>{{ etudiant.nom }}</td>
-      <td>{{ etudiant.prenom }}</td>
-      <td>
-        {% for statut in etudiant.statuts %}
-        <span class="badge badge-primary">{{statut.nom}}</span>
-        {% endfor %}
-      </td>
-      <td>{{ etudiant.mail }}</td>
-      <td>
-        <a href="{{ path('etudiant_show', {'id': etudiant.id}) }}"><i class="icon-eye" data-toggle='tooltip' title='Consulter {{ etudiant.prenom }} {{ etudiant.nom }}'></i></a>
-        <a href="{{ path('etudiant_edit', {'id': etudiant.id}) }}"><i class="icon-pencil-1" data-toggle='tooltip' title='Modifier {{ etudiant.prenom }} {{ etudiant.nom }}'></i></a>
-        <a href="#" onclick="supprimerEtudiant('{{ path('etudiant_delete', {'id': etudiant.id}) }}')"><i class="icon-trash" data-toggle='tooltip' title='Supprimer {{ etudiant.prenom }} {{ etudiant.nom }}'></i></a>
-      </td>
-    </tr>
-    {% endfor %}
-
-  </tbody>
-</table>
-</div>
-{% else %}
-<div class="info">
-  <h2 class="h4 mb-0 text-gray-800">Vous n'avez aucun étudiant</h1>
-  </div>
-
-<div class='bouton' align=center>
-    <a class="d-sm-inline-block btn btn-sm btn-primary shadow-sm" href="{{ path('groupe_etudiant_new') }}">Créer un groupe</a>
-  </div>
-{% endif %}
-<div class="modal fade" id="delEtud" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-  <div class="modal-dialog" role="document">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title" id="exampleModalLabel">Avertissement</h5>
-        <button class="close" type="button" data-dismiss="modal" aria-label="Close">
-          <span aria-hidden="true">x</span>
-        </button>
-      </div>
-      <div class="modal-body">
-        Êtes-vous sur de vouloir supprimer l'étudiant ? <br>
-        Il sera retiré de tous les groupes et sa note, pour toutes les évaluations auxquelles il a participé, sera supprimée.
-      </div>
-      <div class="modal-footer">
-        <a class="d-sm-inline-block btn btn-sm btn-primary shadow-sm" id = "BoutonSupprimerModale" href="#">Supprimer l'étudiant</a>
-      </div>
+    {% if etudiants is not empty %}
+        <div class='bouton' align=center>
+            <a class="d-sm-inline-block btn btn-sm btn-primary shadow-sm" href="{{ path('etudiant_new') }}">
+              Ajouter un étudiant
+            </a>
+        </div>
+        <div class="table-responsive table-hover">
+            <table class="table" id="table">
+                <thead>
+                <tr>
+                    <th>Nom</th>
+                    <th>Prénom</th>
+                    <th>Statut(s)</th>
+                    <th>Mail</th>
+                    <th></th>
+                </tr>
+                </thead>
+                <tbody>
+                  {% for etudiant in etudiants %}
+                      <tr>
+                          <td>{{ etudiant.nom }}</td>
+                          <td>{{ etudiant.prenom }}</td>
+                          <td>
+                              {% for statut in etudiant.statuts %}
+                                  <span class="badge badge-primary">{{ statut.nom }}</span>
+                              {% endfor %}
+                          </td>
+                          <td>{{ etudiant.mail }}</td>
+                          <td>
+                              <a href="{{ path('etudiant_show', {'id': etudiant.id}) }}"><i class="icon-eye"
+                                                                                            data-toggle='tooltip'
+                                                                                            title='Consulter {{ etudiant.prenom }} {{ etudiant.nom }}'></i></a>
+                              <a href="{{ path('etudiant_edit', {'id': etudiant.id}) }}"><i class="icon-pencil-1"
+                                                                                            data-toggle='tooltip'
+                                                                                            title='Modifier {{ etudiant.prenom }} {{ etudiant.nom }}'></i></a>
+                              <a href="#"
+                                 onclick="supprimerEtudiant('{{ path('etudiant_delete', {'id': etudiant.id}) }}')"><i
+                                          class="icon-trash" data-toggle='tooltip'
+                                          title='Supprimer {{ etudiant.prenom }} {{ etudiant.nom }}'></i></a>
+                          </td>
+                      </tr>
+                  {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    {% else %}
+        <div class="info">
+            <h2 class="h4 mb-0 text-gray-800">Vous n'avez aucun étudiant</h2>
+        </div>
+        <div class='bouton' align=center>
+            <a class="d-sm-inline-block btn btn-sm btn-primary shadow-sm" href="{{ path('groupe_etudiant_new') }}">
+              Créer un groupe
+            </a>
+        </div>
+    {% endif %}
+    <div class="modal fade" id="delEtud" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+         aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Avertissement</h5>
+                    <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">x</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    Êtes-vous sur de vouloir supprimer l'étudiant ? <br>
+                    Il sera retiré de tous les groupes et sa note, pour toutes les évaluations auxquelles il a
+                    participé, sera supprimée.
+                </div>
+                <div class="modal-footer">
+                    <a class="d-sm-inline-block btn btn-sm btn-primary shadow-sm" id="BoutonSupprimerModale" href="#">
+                      Supprimer l'étudiant
+                    </a>
+                </div>
+            </div>
+        </div>
     </div>
-  </div>
-</div>
-
-
-
-
 {% endblock %}
 
 {% block datatables %}
-
-<script type="text/javascript">
-$(document).ready(function() {
-  $('#table').dataTable({
-    language: {
-      // Suppression du label Rechercher et ajout du placeholder
-      search: "_INPUT_",
-      searchPlaceholder: "Rechercher...",
-      "url": "{{asset('tradfr.json')}}"
-    },
-    order: [
-      [0, "asc"]
-    ],
-    columns: [null, null,null,{"orderable": false},{"orderable": false}],
-    lengthMenu: [
-      [15, 30, 45, -1],
-      [15, 30, 45, "Tout"]
-    ],
-    pageLength : {{ app.user.preferenceNbElementsTableaux }}, <!-- Pour que le nombre d'éléments affichés par défaut soit celui de la préference de l'utilisateur -->
-    info: false,
-  });
-});
-</script>
-
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $('#table').dataTable({
+                language: {
+                    // Suppression du label Rechercher et ajout du placeholder
+                    search: "_INPUT_",
+                    searchPlaceholder: "Rechercher...",
+                    "url": "{{ asset('tradfr.json') }}"
+                },
+                order: [
+                    [0, "asc"]
+                ],
+                columns: [null, null, null, {"orderable": false}, {"orderable": false}],
+                lengthMenu: [
+                    [15, 30, 45, -1],
+                    [15, 30, 45, "Tout"]
+                ],
+                pageLength: {{ app.user.preferenceNbElementsTableaux }}, <!-- Pour que le nombre d'éléments affichés par défaut soit celui de la préference de l'utilisateur -->
+                info: false,
+            });
+        });
+    </script>
 {% endblock %}
 
 {% block javascripts %}
-
-<script type="text/javascript">
-
-function supprimerEtudiant(url) {
-  $("#delEtud").modal();
-  document.getElementById("BoutonSupprimerModale").href = url;
-}
-
-</script>
-
+    <script type="text/javascript">
+        function supprimerEtudiant(url) {
+            $("#delEtud").modal();
+            document.getElementById("BoutonSupprimerModale").href = url;
+        }
+    </script>
 {% endblock %}

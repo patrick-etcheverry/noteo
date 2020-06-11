@@ -5,97 +5,100 @@
 {% block groupes %}active{% endblock %}
 
 {% block contenu %}
-{% if is_granted('ROLE_ADMIN') %}
-<div class='bouton' align=center>
-  <a class="d-sm-inline-block btn btn-sm btn-primary shadow-sm" href="{{ path('groupe_etudiant_edit', {'slug': groupe_etudiant.slug}) }}">Modifier {{ groupe_etudiant.nom }}</a>
-</div>
-{% endif %}
-<div class="table-responsive">
-    <table class="table">
-        <tbody>
+    {% if is_granted('ROLE_ADMIN') %}
+        <div class='bouton' align=center>
+            <a class="d-sm-inline-block btn btn-sm btn-primary shadow-sm"
+               href="{{ path('groupe_etudiant_edit', {'slug': groupe_etudiant.slug}) }}">Modifier {{ groupe_etudiant.nom }}</a>
+        </div>
+    {% endif %}
+    <div class="table-responsive">
+        <table class="table">
+            <tbody>
             <tr>
                 <th class="intitule" ondblclick="InvasionCommuniste()">Description du groupe</th>
-                <td >{{ groupe_etudiant.description }}</td>
+                <td>{{ groupe_etudiant.description }}</td>
             </tr>
             <tr>
-              <th class="intitule">Évaluable <a href="#HelpEvaluable" data-toggle='modal' data-target='#HelpEvaluable'><i class="icon-help-circled"></i></a></th>
-              <td >{{ groupe_etudiant.estEvaluable ? 'Oui' : 'Non'}}</td>
+                <th class="intitule">Évaluable <a href="#HelpEvaluable" data-toggle='modal'
+                                                  data-target='#HelpEvaluable'><i class="icon-help-circled"></i></a>
+                </th>
+                <td>{{ groupe_etudiant.estEvaluable ? 'Oui' : 'Non' }}</td>
             </tr>
             <tr>
-              <th class="intitule">Créateur</th>
-              <td >{{ groupe_etudiant.enseignant.prenom }} {{ groupe_etudiant.enseignant.nom }}</td>
+                <th class="intitule">Créateur</th>
+                <td>{{ groupe_etudiant.enseignant.prenom }} {{ groupe_etudiant.enseignant.nom }}</td>
             </tr>
-        </tbody>
-    </table>
-</div>
+            </tbody>
+        </table>
+    </div>
     <h1 class="h4 mb-0 text-gray-800">Liste des étudiants du groupe</h1> <br>
-<div class="table-responsive">
-    <table class="table" id="etud">
-      <thead>
-        <tr>
-          <th>Nom</th>
-          <th>Prénom</th>
-          <th>Mail</th>
-        </tr>
-      </thead>
-      <tbody>
-        {% if etudiants is not empty %}
-        {% for etudiant in etudiants %}
-        <tr>
-          <td>{{etudiant.nom}}</td>
-          <td>{{etudiant.prenom}}</td>
-          <td>{{etudiant.mail}}</td>
-        </tr>
-        {% endfor %}
-        {% endif %}
-      </tbody>
-    </table>
-</div>
+    <div class="table-responsive">
+        <table class="table" id="etud">
+            <thead>
+            <tr>
+                <th>Nom</th>
+                <th>Prénom</th>
+                <th>Mail</th>
+            </tr>
+            </thead>
+            <tbody>
+            {% if etudiants is not empty %}
+                {% for etudiant in etudiants %}
+                    <tr>
+                        <td>{{ etudiant.nom }}</td>
+                        <td>{{ etudiant.prenom }}</td>
+                        <td>{{ etudiant.mail }}</td>
+                    </tr>
+                {% endfor %}
+            {% endif %}
+            </tbody>
+        </table>
+    </div>
     <!-- Modale du ? de évaluable -->
-    <div class="modal fade" id="HelpEvaluable" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-      <div class="modal-dialog" role="document">
-        <div class="modal-content">
-          <div class="modal-header">
-            <h5 class="modal-title" id="exampleModalLabel">Aide</h5>
-            <button class="close" type="button" data-dismiss="modal" aria-label="Close">
-              <span aria-hidden="true">x</span>
-            </button>
-          </div>
-          <div align=center class="modal-body">
-            Cet attribut d'un groupe détermine si vous pourrez, ou non, créer des évaluations pour celui-ci.
-          </div>
-          <div class="modal-footer">
-            <button class="d-sm-inline-block btn btn-sm btn-primary shadow-sm" type="button" data-dismiss="modal">Ok</button>
-          </div>
+    <div class="modal fade" id="HelpEvaluable" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+         aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Aide</h5>
+                    <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">x</span>
+                    </button>
+                </div>
+                <div align=center class="modal-body">
+                    Cet attribut d'un groupe détermine si vous pourrez, ou non, créer des évaluations pour celui-ci.
+                </div>
+                <div class="modal-footer">
+                    <button class="d-sm-inline-block btn btn-sm btn-primary shadow-sm" type="button"
+                            data-dismiss="modal">Ok
+                    </button>
+                </div>
+            </div>
         </div>
-      </div>
     </div>
 {% endblock %}
 
 {% block datatables %}
-
-<script type="text/javascript">
-
-$(document).ready(function() {
-  $('#etud').dataTable({
-    language: {
-      // Suppression du label Rechercher et ajout du placeholder
-      search: "_INPUT_",
-      searchPlaceholder: "Rechercher...",
-      "url": "{{asset('tradfr.json')}}"
-    },
-    order: [
-      [0, "asc"]
-    ],
-    columns: [null, null, {"orderable": false}],
-      lengthMenu: [
-          [15, 30, 45, -1],
-          [15, 30, 45, "Tout"]
-      ],
-      pageLength : {{ app.user.preferenceNbElementsTableaux }}, <!-- Pour que le nombre d'éléments affichés par défaut soit celui de la préference de l'utilisateur -->
-    info: false,
-  });
-});
-</script>
-
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $('#etud').dataTable({
+                language: {
+                    // Suppression du label Rechercher et ajout du placeholder
+                    search: "_INPUT_",
+                    searchPlaceholder: "Rechercher...",
+                    "url": "{{ asset('tradfr.json') }}"
+                },
+                order: [
+                    [0, "asc"]
+                ],
+                columns: [null, null, {"orderable": false}],
+                lengthMenu: [
+                    [15, 30, 45, -1],
+                    [15, 30, 45, "Tout"]
+                ],
+                pageLength: {{ app.user.preferenceNbElementsTableaux }}, <!-- Pour que le nombre d'éléments affichés par défaut soit celui de la préference de l'utilisateur -->
+                info: false,
+            });
+        });
+    </script>
 {% endblock %}

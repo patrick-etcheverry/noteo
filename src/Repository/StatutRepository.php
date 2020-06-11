@@ -20,8 +20,8 @@ class StatutRepository extends ServiceEntityRepository
     }
 
     /**
-    * @return Statut[] Returns an array of Statut objects
-    */
+     * @return Statut[] Returns an array of Statut objects
+     */
 
     public function findAllHavingStudents()
     {
@@ -29,8 +29,7 @@ class StatutRepository extends ServiceEntityRepository
             ->addSelect('e')
             ->join('s.etudiants', 'e')
             ->getQuery()
-            ->getResult()
-        ;
+            ->getResult();
     }
 
     /**
@@ -43,15 +42,15 @@ class StatutRepository extends ServiceEntityRepository
             ->addSelect('e')
             ->leftjoin('s.etudiants', 'e')
             ->getQuery()
-            ->getResult()
-            ;
+            ->getResult();
     }
 
     /**
-    * @return Statut[] Returns an array of Statut objects
-    */
+     * @return Statut[] Returns an array of Statut objects
+     */
 
-    public function findByEvaluation($idEval) {
+    public function findByEvaluation($idEval)
+    {
 
         return $this->getEntityManager()->createQuery('
             SELECT s
@@ -66,7 +65,8 @@ class StatutRepository extends ServiceEntityRepository
             ->execute();
     }
 
-    public function findAllWith1EvalOrMore() {
+    public function findAllWith1EvalOrMore()
+    {
 
         return $this->getEntityManager()->createQuery('
             SELECT s

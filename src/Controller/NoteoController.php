@@ -10,13 +10,13 @@ use Symfony\Component\Routing\Annotation\Route;
 
 class NoteoController extends AbstractController
 {
-  /**
-  * @Route("/", name="noteo_login")
-  */
-  public function index()
-  {
-    return $this->redirectToRoute('app_login');
-  }
+    /**
+     * @Route("/", name="noteo_login")
+     */
+    public function index()
+    {
+        return $this->redirectToRoute('app_login');
+    }
 
     /**
      * @Route("/reinitialiser", name="app_reset")

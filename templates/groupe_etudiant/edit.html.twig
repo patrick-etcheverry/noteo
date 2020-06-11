@@ -6,80 +6,76 @@
 
 {% block contenu %}
     {{ include('groupe_etudiant/_form.html.twig', {'button_label': 'Enregistrer'}) }}
-
     <!-- Modale du ? de évaluable -->
-    <div class="modal fade" id="HelpEvaluable" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-      <div class="modal-dialog" role="document">
-        <div class="modal-content">
-          <div class="modal-header">
-            <h5 class="modal-title" id="exampleModalLabel">Aide</h5>
-            <button class="close" type="button" data-dismiss="modal" aria-label="Close">
-              <span aria-hidden="true">x</span>
-            </button>
-          </div>
-          <div align=center class="modal-body">
-            Cet attribut d'un groupe détermine si vous pourrez, ou non, créer des évaluations pour celui-ci.
-          </div>
-          <div class="modal-footer">
-            <button class="d-sm-inline-block btn btn-sm btn-primary shadow-sm" type="button" data-dismiss="modal">Ok</button>
-          </div>
+    <div class="modal fade" id="HelpEvaluable" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+         aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Aide</h5>
+                    <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">x</span>
+                    </button>
+                </div>
+                <div align=center class="modal-body">
+                    Cet attribut d'un groupe détermine si vous pourrez, ou non, créer des évaluations pour celui-ci.
+                </div>
+                <div class="modal-footer">
+                    <button class="d-sm-inline-block btn btn-sm btn-primary shadow-sm" type="button"
+                            data-dismiss="modal">Ok
+                    </button>
+                </div>
+            </div>
         </div>
-      </div>
     </div>
-
 {% endblock %}
 
 {% block datatables %}
-
-<script type="text/javascript">
-
-  //Activation de Datatables sur le tableau d'ajout des étudiants
-  var tableAjout = $('#tableAjouter').DataTable({
-    language: {
-      // Suppression du label Rechercher et ajout du placeholder
-      search: "_INPUT_",
-      searchPlaceholder: "Rechercher...",
-      "url": "{{asset('tradfr.json')}}"
-    },
-    order: [
-      [1, "asc"]
-    ],
-    columns: [{"orderable": false}, null, null, {"orderable": false}],
-    lengthMenu: [
-      [15, 30, 45, -1],
-      [15, 30, 45, "Tout"]
-    ],
-    pageLength : {{ app.user.preferenceNbElementsTableaux }}, <!-- Pour que le nombre d'éléments affichés par défaut soit celui de la préference de l'utilisateur -->
-    info: false,
-  });
-
-  //Activation de Datatables sur le tableau de suppression des étudiants
-  var tableSuppr = $('#tableSupprimer').DataTable({
-    language: {
-      // Suppression du label Rechercher et ajout du placeholder
-      search: "_INPUT_",
-      searchPlaceholder: "Rechercher...",
-      "url": "{{asset('tradfr.json')}}"
-    },
-    order: [
-      [1, "asc"]
-    ],
-    columns: [{"orderable": false}, null, null, {"orderable": false}],
-    lengthMenu: [
-      [15, 30, 45, -1],
-      [15, 30, 45, "Tout"]
-    ],
-    pageLength : {{ app.user.preferenceNbElementsTableaux }}, <!-- Pour que le nombre d'éléments affichés par défaut soit celui de la préference de l'utilisateur -->
-    info: false,
-  });
-
-  //La fonction sera enclenchée lors de la soumission du formulaire
-$("[name='groupe_etudiant_edit']").on('submit', function () {
-  tableAjout.rows().nodes().page.len(-1).draw(); // Cette fonction permet, avant la soumission du formulaire, d'afficher dans le DOM toutes les lignes du tableau pour qu'aucune ne soit ignorée
-  tableSuppr.rows().nodes().page.len(-1).draw();
-});
-
-
-</script>
-
+    <script type="text/javascript">
+        //Activation de Datatables sur le tableau d'ajout des étudiants
+        var tableAjout = $('#tableAjouter').DataTable({
+            language: {
+                // Suppression du label Rechercher et ajout du placeholder
+                search: "_INPUT_",
+                searchPlaceholder: "Rechercher...",
+                "url": "{{ asset('tradfr.json') }}"
+            },
+            order: [
+                [1, "asc"]
+            ],
+            columns: [{"orderable": false}, null, null, {"orderable": false}],
+            lengthMenu: [
+                [15, 30, 45, -1],
+                [15, 30, 45, "Tout"]
+            ],
+            pageLength: {{ app.user.preferenceNbElementsTableaux }}, <!-- Pour que le nombre d'éléments affichés par défaut soit celui de la préference de l'utilisateur -->
+            info: false,
+        });
+        //Activation de Datatables sur le tableau de suppression des étudiants
+        var tableSuppr = $('#tableSupprimer').DataTable({
+            language: {
+                // Suppression du label Rechercher et ajout du placeholder
+                search: "_INPUT_",
+                searchPlaceholder: "Rechercher...",
+                "url": "{{ asset('tradfr.json') }}"
+            },
+            order: [
+                [1, "asc"]
+            ],
+            columns: [{"orderable": false}, null, null, {"orderable": false}],
+            lengthMenu: [
+                [15, 30, 45, -1],
+                [15, 30, 45, "Tout"]
+            ],
+            pageLength: {{ app.user.preferenceNbElementsTableaux }}, <!-- Pour que le nombre d'éléments affichés par défaut soit celui de la préference de l'utilisateur -->
+            info: false,
+        });
+        //La fonction sera enclenchée lors de la soumission du formulaire
+        $("[name='groupe_etudiant_edit']").on('submit', function () {
+            tableAjout.search("").draw(); //Pour annuler la recherche effectuée dans le champ en haut à droite du tableau
+            tableSuppr.search("").draw(); //Pour annuler la recherche effectuée dans le champ en haut à droite du tableau
+            tableAjout.rows().nodes().page.len(-1).draw(); // Cette fonction permet, avant la soumission du formulaire, d'afficher dans le DOM toutes les lignes du tableau pour qu'aucune ne soit ignorée
+            tableSuppr.rows().nodes().page.len(-1).draw();
+        });
+    </script>
 {% endblock %}

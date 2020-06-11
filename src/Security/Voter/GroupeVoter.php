@@ -17,13 +17,10 @@ class GroupeVoter extends Voter
     protected function voteOnAttribute($attribute, $subject, TokenInterface $token)
     {
         $user = $token->getUser();
-
         if (!$user instanceof UserInterface) {
             return false;
         }
-
         $accesAutorise = false;
-
         switch ($attribute) {
             case 'GROUPE_NEW' :
             case 'GROUPE_NEW_SOUS_GROUPE':
@@ -38,7 +35,6 @@ class GroupeVoter extends Voter
                 $accesAutorise = true;
                 break;
         }
-
         return $accesAutorise;
     }
 }

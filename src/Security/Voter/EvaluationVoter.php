@@ -17,11 +17,9 @@ class EvaluationVoter extends Voter
     protected function voteOnAttribute($attribute, $subject, TokenInterface $token)
     {
         $user = $token->getUser();
-
         if (!$user instanceof UserInterface) {
             return false;
         }
-
         $accesAutorise = true;
         switch ($attribute) {
             case 'EVALUATION_PREVISUALISATION_MAIL':
@@ -33,7 +31,6 @@ class EvaluationVoter extends Voter
                 $accesAutorise = in_array("ROLE_ADMIN", $user->getRoles()) || $subject->getEnseignant()->getId() == $user->getId();
                 break;
         }
-
         return $accesAutorise;
     }
 }

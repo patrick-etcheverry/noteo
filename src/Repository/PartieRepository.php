@@ -29,12 +29,12 @@ class PartieRepository extends ServiceEntityRepository
             ->andWhere('p.rgt = p.lft + 1')
             ->setParameter('idEval', $evaluation)
             ->getQuery()
-            ->getResult()
-            ;
+            ->getResult();
     }
 
     //Cette fonction renvoie toute les parties d'une évaluation par parties dont la note doit être calculée (la note des parties les plus basses est déjà connue
-    public function findHighestByEvaluation($idEvaluation) {
+    public function findHighestByEvaluation($idEvaluation)
+    {
         return $this->createQueryBuilder('p')
             ->join('p.evaluation', 'e')
             ->where('e.id = :idEval')
@@ -42,8 +42,7 @@ class PartieRepository extends ServiceEntityRepository
             ->orderBy('p.rgt')
             ->setParameter('idEval', $idEvaluation)
             ->getQuery()
-            ->getResult()
-            ;
+            ->getResult();
     }
 
     // /**

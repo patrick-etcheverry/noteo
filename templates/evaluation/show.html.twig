@@ -12,116 +12,116 @@
 {% block collapsed %}{% endblock %}
 
 {% block contenu %}
-<div class='bouton' align=center>
-{% if evaluation.enseignant == app.user or is_granted('ROLE_ADMIN') %}
-  <a class="d-sm-inline-block btn btn-sm btn-primary shadow-sm" href="{{ path('evaluation_edit', {'slug': evaluation.slug}) }}">Modifier {{ evaluation.nom }}</a>
-{% endif %}
-<a class="d-sm-inline-block btn btn-sm btn-primary shadow-sm" {% if evaluation.parties|length > 1 %}href="{{path('statistiques_classiques_choisir_groupes_parties_statuts', {'slug' : evaluation.slug, 'typeStat':'classique-avec-parties'})}}"{% else %}href="{{path('statistiques_classiques_choisir_groupes_parties_statuts', {'slug' : evaluation.slug, 'typeStat':'classique'})}}"{% endif %}>Consulter les statistiques pour {{ evaluation.nom }}</a>
-</div>
-<div class="table-responsive">
-    <table class="table">
-        <tbody>
+    <div class='bouton' align=center>
+        {% if evaluation.enseignant == app.user or is_granted('ROLE_ADMIN') %}
+            <a class="d-sm-inline-block btn btn-sm btn-primary shadow-sm"
+               href="{{ path('evaluation_edit', {'slug': evaluation.slug}) }}">Modifier {{ evaluation.nom }}</a>
+        {% endif %}
+        <a class="d-sm-inline-block btn btn-sm btn-primary shadow-sm"
+           {% if evaluation.parties|length > 1 %}href="{{ path('statistiques_classiques_choisir_groupes_parties_statuts', {'slug' : evaluation.slug, 'typeStat':'classique-avec-parties'}) }}"
+           {% else %}href="{{ path('statistiques_classiques_choisir_groupes_parties_statuts', {'slug' : evaluation.slug, 'typeStat':'classique'}) }}"{% endif %}>Consulter
+            les statistiques pour {{ evaluation.nom }}</a>
+    </div>
+    <div class="table-responsive">
+        <table class="table">
+            <tbody>
             <tr>
                 <th class="intitule">Date de l'évaluation</th>
-                <td >{{ evaluation.date | date("d/m/Y") }}</td>
+                <td>{{ evaluation.date | date("d/m/Y") }}</td>
             </tr>
             <tr>
                 <th class="intitule">Groupe évalué</th>
-                <td >{{ evaluation.groupe.nom }}</td>
+                <td>{{ evaluation.groupe.nom }}</td>
             </tr>
             <tr>
-              <th class="intitule">Créateur</th>
-              <td>{{ evaluation.enseignant.prenom }} {{ evaluation.enseignant.nom }}</td>
+                <th class="intitule">Créateur</th>
+                <td>{{ evaluation.enseignant.prenom }} {{ evaluation.enseignant.nom }}</td>
             </tr>
-        <tr>
-            <th class="intitule">Télécharger l'évaluation au format CSV</th>
-            <td ><a id="export" href="javascript:exportTableToCSV('{{evaluation.nom}}.csv')"><i style="font-size: 25px;" data-toggle='tooltip' title="Exporter les statistiques au format CSV" class="icon-file-excel"></i> </a></td>
-        </tr>
-        </tbody>
-    </table>
-</div>
-<br><h1 class="h4 mb-0 text-gray-800">Notes des étudiants</h1> <br>
-<div class="table-responsive table-hover">
-      <table data-cols-width="25,25, 10" class="table" id="etud">
-        <thead>
-          <th>Nom</th>
-          <th>Prénom</th>
-          {% if evaluation.parties|length != 1 %}
-          {% for partie in evaluation.parties %}
-              <th>{{ partie.intitule }} (/{{ partie.bareme }})</th>
-          {% endfor %}
-          {% else %}
-              <th>Note (/20)</th>
-          {% endif %}
-        </thead>
-        <tbody>
-        {% if notes is not empty %}
-            {% set premiereNoteAAfficher = 0 %}
-            {% set derniereNoteAAfficher = (premiereNoteAAfficher +  evaluation.parties|length) -1  %}
-            {% for etudiant in evaluation.groupe.etudiants %}
-                <tr>
-                    <td>{{ etudiant.nom }}</td>
-                    <td>{{ etudiant.prenom }}</td>
-                    {# Pour chaque étudiant, on affiche les x notes suivantes du tableau de notes passé (x étant le nombre de parties) #}
-                    {% for i in premiereNoteAAfficher..derniereNoteAAfficher %}
-                        <td>
-                            {% if notes[i].valeur == -1 %}
-                                Absent
-                            {% else %}
-                                {{ notes[i].valeur }}
-                            {% endif %}
-                        </td>
+            <tr>
+                <th class="intitule">Télécharger l'évaluation au format CSV</th>
+                <td><a id="export" href="javascript:exportTableToCSV('{{ evaluation.nom }}.csv')"><i
+                                style="font-size: 25px;" data-toggle='tooltip'
+                                title="Exporter les statistiques au format CSV" class="icon-file-excel"></i> </a></td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+    <br><h1 class="h4 mb-0 text-gray-800">Notes des étudiants</h1> <br>
+    <div class="table-responsive table-hover">
+        <table data-cols-width="25,25, 10" class="table" id="etud">
+            <thead>
+            <th>Nom</th>
+            <th>Prénom</th>
+            {% if evaluation.parties|length != 1 %}
+                {% for partie in evaluation.parties %}
+                    <th>{{ partie.intitule }} (/{{ partie.bareme }})</th>
+                {% endfor %}
+            {% else %}
+                <th>Note (/20)</th>
+            {% endif %}
+            </thead>
+            <tbody>
+                {% if notes is not empty %}
+                    {% set premiereNoteAAfficher = 0 %}
+                    {% set derniereNoteAAfficher = (premiereNoteAAfficher +  evaluation.parties|length) -1 %}
+                    {% for etudiant in evaluation.groupe.etudiants %}
+                        <tr>
+                            <td>{{ etudiant.nom }}</td>
+                            <td>{{ etudiant.prenom }}</td>
+                            {# Pour chaque étudiant, on affiche les x notes suivantes du tableau de notes passé (x étant le nombre de parties) #}
+                            {% for i in premiereNoteAAfficher..derniereNoteAAfficher %}
+                                <td>
+                                    {% if notes[i].valeur == -1 %}
+                                        Absent
+                                    {% else %}
+                                        {{ notes[i].valeur }}
+                                    {% endif %}
+                                </td>
+                            {% endfor %}
+                            {% set premiereNoteAAfficher = premiereNoteAAfficher + evaluation.parties|length %}
+                            {% set derniereNoteAAfficher = (derniereNoteAAfficher + evaluation.parties|length) %}
+                        </tr>
                     {% endfor %}
-                    {% set premiereNoteAAfficher = premiereNoteAAfficher + evaluation.parties|length %}
-                    {% set derniereNoteAAfficher = (derniereNoteAAfficher + evaluation.parties|length) %}
-                </tr>
-            {% endfor %}
-        {% endif %}
-        </tbody>
-      </table>
-</div>
+                {% endif %}
+            </tbody>
+        </table>
+    </div>
 {% endblock %}
 
 {% block datatables %}
-
-<script type="text/javascript">
-
-    {#  Définition dynamique en fonction du nombre de parties d'un tableau qui permet à Datatables de déterminer si les colonnes sont triables ou non #}
-    {% set tableauColonnes = [null,null] %}
-    {% if evaluation.parties|length != 1 %}
+    <script type="text/javascript">
+        {#  Définition dynamique en fonction du nombre de parties d'un tableau qui permet à Datatables de déterminer si les colonnes sont triables ou non #}
+        {% set tableauColonnes = [null,null] %}
+        {% if evaluation.parties|length != 1 %}
         {% for partie in evaluation.parties %}
-            {% set tableauColonnes = tableauColonnes |merge([{orderable: false}]) %}
+        {% set tableauColonnes = tableauColonnes |merge([{orderable: false}]) %}
         {% endfor %}
-    {% else%}
-    {% set tableauColonnes = [null,null, {orderable: false}] %}
-    {% endif %}
-
-var table = $('#etud').DataTable({
-                language: {
-                  // Suppression du label Rechercher et ajout du placeholder
-                  search: "_INPUT_",
-                  searchPlaceholder: "Rechercher...",
-                  "url": "{{asset('tradfr.json')}}"
-                },
-                order: [
-                  [0, "asc"]
-                ],
-                columns: {{ tableauColonnes | json_encode | raw }},
-                lengthMenu: [
-                    [15, 30, 45, -1],
-                    [15, 30, 45, "Tout"]
-                ],
-                pageLength : {{ app.user.preferenceNbElementsTableaux }}, <!-- Pour que le nombre d'éléments affichés par défaut soit celui de la préference de l'utilisateur -->
-                info: false,
-              });
-
-//La fonction sera enclenchée lors de la création du fichier csv
-$("#export").on('click', function () {
-    table.rows().nodes().page.len(-1).draw(); // Cette fonction permet, avant la création du fichier csv, d'afficher dans le DOM toutes les lignes du tableau pour qu'aucune ne soit ignorée
-
-});
-</script>
-
+        {% else %}
+        {% set tableauColonnes = [null,null, {orderable: false}] %}
+        {% endif %}
+        var table = $('#etud').DataTable({
+            language: {
+                // Suppression du label Rechercher et ajout du placeholder
+                search: "_INPUT_",
+                searchPlaceholder: "Rechercher...",
+                "url": "{{ asset('tradfr.json') }}"
+            },
+            order: [
+                [0, "asc"]
+            ],
+            columns: {{ tableauColonnes | json_encode | raw }},
+            lengthMenu: [
+                [15, 30, 45, -1],
+                [15, 30, 45, "Tout"]
+            ],
+            pageLength: {{ app.user.preferenceNbElementsTableaux }}, <!-- Pour que le nombre d'éléments affichés par défaut soit celui de la préference de l'utilisateur -->
+            info: false,
+        });
+        //La fonction sera enclenchée lors de la création du fichier csv
+        $("#export").on('click', function () {
+            table.rows().nodes().page.len(-1).draw(); // Cette fonction permet, avant la création du fichier csv, d'afficher dans le DOM toutes les lignes du tableau pour qu'aucune ne soit ignorée
+        });
+    </script>
 {% endblock %}
 
 {% block javascripts %}
@@ -133,7 +133,7 @@ $("#export").on('click', function () {
             var downloadLink;
 
             // CSV file
-            csvFile = new Blob(["\uFEFF"+csv], {type: "text/csv; charset=utf-18"}); // Export en csv en utilisant UTF-8 pour les accents
+            csvFile = new Blob(["\uFEFF" + csv], {type: "text/csv; charset=utf-18"}); // Export en csv en utilisant UTF-8 pour les accents
 
             // Download link
             downloadLink = document.createElement("a");
@@ -153,7 +153,6 @@ $("#export").on('click', function () {
             // Click download link
             downloadLink.click();
         }
-
         function exportTableToCSV(filename) {
             var csv = [];
             var rows = document.querySelectorAll("table tr");
@@ -162,12 +161,12 @@ $("#export").on('click', function () {
                 var row = [], cols = rows[i].querySelectorAll("td, th");
 
                 for (var j = 0; j < cols.length; j++) {
-                        row.push(cols[j].innerText);
+                    row.push(cols[j].innerText);
                 }
                 csv.push(row.join(";"));
             }
             //Exemple syntaxe : csv.splice(2,1) <=> on enlève 1 élément du tableau en partant du deuxième élément du tableau
-            csv.splice(3,1); // On enleve du csv la ligne "Télécharger les notes" qui est la 5e en partant du début dans tous les cas
+            csv.splice(3, 1); // On enleve du csv la ligne "Télécharger les notes" qui est la 5e en partant du début dans tous les cas
             // Download CSV file
             downloadCSV(csv.join("\n"), filename);
         }

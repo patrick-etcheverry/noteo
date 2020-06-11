@@ -17,12 +17,12 @@ class GroupeEtudiantRepository extends NestedTreeRepository
 {
     public function __construct(EntityManagerInterface $em)
     {
-        parent::__construct($em,$em->getClassMetaData(GroupeEtudiant::class));
+        parent::__construct($em, $em->getClassMetaData(GroupeEtudiant::class));
     }
 
     /**
-    * @return GroupeEtudiant[] Returns an array of GroupeEtudiant objects
-    */
+     * @return GroupeEtudiant[] Returns an array of GroupeEtudiant objects
+     */
 
     public function findAllWithoutNonEvaluableGroups()
     {
@@ -35,8 +35,7 @@ class GroupeEtudiantRepository extends NestedTreeRepository
             ->setParameter('param', true)
             ->orderBy('g.lft', 'asc')
             ->getQuery()
-            ->getResult()
-        ;
+            ->getResult();
     }
 
     /**
@@ -57,8 +56,7 @@ class GroupeEtudiantRepository extends NestedTreeRepository
             ->setParameter('left', $node->getLft())
             ->orderBy('g.lft', 'asc')
             ->getQuery()
-            ->getResult()
-            ;
+            ->getResult();
     }
 
     /**
@@ -74,10 +72,9 @@ class GroupeEtudiantRepository extends NestedTreeRepository
             ->leftJoin('g.etudiants', 'et')
             ->where('et.id = :IDetudiant')
             ->orderBy('g.lft', 'asc')
-            ->setParameter('IDetudiant',$etudiant->getId())
+            ->setParameter('IDetudiant', $etudiant->getId())
             ->getQuery()
-            ->getResult()
-            ;
+            ->getResult();
     }
 
     /**
@@ -94,19 +91,18 @@ class GroupeEtudiantRepository extends NestedTreeRepository
             ->where('g.slug != \'etudiants-non-affectes\'')
             ->orderBy('g.lft', 'asc')
             ->getQuery()
-            ->getResult()
-            ;
+            ->getResult();
     }
 
-    public function findHighestEvaluableWith1EvalOrMore() {
+    public function findHighestEvaluableWith1EvalOrMore()
+    {
         return $this->createQueryBuilder('g')
             ->addSelect('ev')
             ->join('g.evaluations', 'ev')
             ->leftJoin('g.etudiants', 'et')
             ->where('g.estEvaluable = 1 ')
             ->getQuery()
-            ->getResult()
-            ;
+            ->getResult();
     }
 
     public function findAllHavingStudents()
@@ -115,8 +111,7 @@ class GroupeEtudiantRepository extends NestedTreeRepository
             ->addSelect('e')
             ->join('g.etudiants', 'e')
             ->getQuery()
-            ->getResult()
-            ;
+            ->getResult();
     }
 
 

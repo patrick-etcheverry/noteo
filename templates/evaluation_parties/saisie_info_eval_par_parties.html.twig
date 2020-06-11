@@ -14,11 +14,11 @@
             <table align="center" class="table">
                 <tbody>
                 <tr>
-                    <th class="intitule"><label for="evaluation_nom" >Nom de l'évaluation</label></th>
+                    <th class="intitule"><label for="evaluation_nom">Nom de l'évaluation</label></th>
                     <td>{{ form_help(form.nom) }}{{ form_errors(form.nom) }}{{ form_widget(form.nom) }}</td>
                 </tr>
                 <tr>
-                    <th class="intitule"><label for="evaluation_date" >Date de l'évaluation</label></th>
+                    <th class="intitule"><label for="evaluation_date">Date de l'évaluation</label></th>
                     <td>{{ form_errors(form.date) }}{{ form_widget(form.date) }}</td>
                 </tr>
                 </tbody>
@@ -28,6 +28,4 @@
             <button class="d-sm-inline-block btn btn-sm btn-primary shadow-sm">Suivant</button>
         </div>
     {{ form_end(form) }}
-
-
 {% endblock %}

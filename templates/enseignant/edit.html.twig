@@ -5,12 +5,10 @@
 {% block enseignants %}active{% endblock %}
 
 {% block contenu %}
-{% if enseignant != app.user %}
-
-<div class='bouton' align=center>
-  <a class="d-sm-inline-block btn btn-sm btn-primary shadow-sm" href="{{ path('enseignant_edit_password', {'id': enseignant.id}) }}">Modifier le mot de passe de {{ enseignant.prenom }} {{ enseignant.nom }}</a>
-</div>
-{% endif %}
-
+    {% if enseignant != app.user %}
+        <div class='bouton' align=center>
+          <a class="d-sm-inline-block btn btn-sm btn-primary shadow-sm" href="{{ path('enseignant_edit_password', {'id': enseignant.id}) }}">Modifier le mot de passe de {{ enseignant.prenom }} {{ enseignant.nom }}</a>
+        </div>
+    {% endif %}
     {{ include('enseignant/_form.html.twig', {'button_label': 'Enregistrer'}) }}
 {% endblock %}

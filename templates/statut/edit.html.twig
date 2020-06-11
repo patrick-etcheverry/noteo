@@ -55,8 +55,11 @@
 
   //La fonction sera enclenchée lors de la soumission du formulaire
   $("[name='statut_edit']").on('submit', function () {
+    tableAjout.search("").draw(); //Pour annuler la recherche effectuée dans le champ en haut à droite du tableau
+    tableSuppr.search("").draw(); //Pour annuler la recherche effectuée dans le champ en haut à droite du tableau
     tableAjout.rows().nodes().page.len(-1).draw(); // Cette fonction permet, avant la soumission du formulaire, d'afficher dans le DOM toutes les lignes du tableau pour qu'aucune ne soit ignorée
     tableSuppr.rows().nodes().page.len(-1).draw();
+
   });
 
 </script>

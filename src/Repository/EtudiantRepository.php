@@ -20,8 +20,8 @@ class EtudiantRepository extends ServiceEntityRepository
     }
 
     /**
-    * @return Etudiant[] Returns an array of Etudiant objects
-    */
+     * @return Etudiant[] Returns an array of Etudiant objects
+     */
 
     public function findAllFromGroupParentButNotCurrent($parent, $current)
     {
@@ -32,9 +32,9 @@ class EtudiantRepository extends ServiceEntityRepository
         WHERE g.slug = :slugGroupeParent AND
         e.id NOT IN (SELECT e2.id FROM App\Entity\Etudiant e2 JOIN e2.groupes g2 WHERE g2.slug = :slugGroupeCourant) 
         ')
-        ->setParameter('slugGroupeParent', $parent->getSlug())
-        ->setParameter('slugGroupeCourant', $current->getSlug())
-        ->execute();
+            ->setParameter('slugGroupeParent', $parent->getSlug())
+            ->setParameter('slugGroupeCourant', $current->getSlug())
+            ->execute();
     }
 
     /**
@@ -49,8 +49,8 @@ class EtudiantRepository extends ServiceEntityRepository
         LEFT JOIN e.statuts s
         WHERE e.id NOT IN (SELECT e2.id FROM App\Entity\Etudiant e2 JOIN e2.statuts s2 WHERE s2.slug = :slugStatutCourant) 
         ')
-        ->setParameter('slugStatutCourant', $current->getSlug())
-        ->execute();
+            ->setParameter('slugStatutCourant', $current->getSlug())
+            ->execute();
     }
 
     /**
@@ -64,7 +64,7 @@ class EtudiantRepository extends ServiceEntityRepository
         FROM App\Entity\Etudiant e
         JOIN e.points p
         ')
-        ->execute();
+            ->execute();
     }
 
     /**

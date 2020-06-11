@@ -9,29 +9,27 @@
 {% endblock %}
 
 {% block datatables %}
+    <script type="text/javascript">
+        var table = $('#statuts').DataTable({
+            language: {
+                // Suppression du label Rechercher et ajout du placeholder
+                search: "_INPUT_",
+                searchPlaceholder: "Rechercher...",
+                "url": "{{ asset('tradfr.json') }}"
+            },
+            order: [1, 'asc'],
+            columns: [{"orderable": false}, null, null, null],
+            lengthMenu: [
+                [15, 30, 45, -1],
+                [15, 30, 45, "Tout"]
+            ],
+            pageLength: {{ app.user.preferenceNbElementsTableaux }}, <!-- Pour que le nombre d'éléments affichés par défaut soit celui de la préference de l'utilisateur -->
+            info: false,
+        });
 
-  <script type="text/javascript">
-
-    var table = $('#statuts').DataTable({
-      language: {
-        // Suppression du label Rechercher et ajout du placeholder
-        search: "_INPUT_",
-        searchPlaceholder: "Rechercher...",
-        "url": "{{asset('tradfr.json')}}"
-      },
-  order : [1, 'asc'],
-      columns: [{"orderable": false}, null, null, null],
-      lengthMenu: [
-        [15, 30, 45, -1],
-        [15, 30, 45, "Tout"]
-      ],
-      pageLength : {{ app.user.preferenceNbElementsTableaux }}, <!-- Pour que le nombre d'éléments affichés par défaut soit celui de la préference de l'utilisateur -->
-      info: false,
-    });
-
-    $("[name='form']").on('submit', function () {
-      table.rows().nodes().page.len(-1).draw(); // Cette fonction permet, avant la soumission du formulaire, d'afficher dans le DOM toutes les lignes du tableau pour qu'aucune ne soit ignorée
-    });
-  </script>
-
+        $("[name='etudiant']").on('submit', function () {
+            table.search("").draw(); //Pour annuler la recherche effectuée dans le champ en haut à droite du tableau
+            table.rows().nodes().page.len(-1).draw(); // Cette fonction permet, avant la soumission du formulaire, d'afficher dans le DOM toutes les lignes du tableau pour qu'aucune ne soit ignorée
+        });
+    </script>
 {% endblock %}

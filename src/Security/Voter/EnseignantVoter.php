@@ -17,13 +17,10 @@ class EnseignantVoter extends Voter
     protected function voteOnAttribute($attribute, $subject, TokenInterface $token)
     {
         $user = $token->getUser();
-
         if (!$user instanceof UserInterface) {
             return false;
         }
-
         $accesAutorise = false;
-
         switch ($attribute) {
             case 'ENSEIGNANT_INDEX':
             case 'ENSEIGNANT_NEW':
@@ -40,7 +37,6 @@ class EnseignantVoter extends Voter
                 $accesAutorise = in_array("ROLE_ADMIN", $user->getRoles()) && $subject->getId() != $user->getId();
                 break;
         }
-
         return $accesAutorise;
     }
 }

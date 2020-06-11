@@ -5,93 +5,89 @@
 {% block etudiants %}active{% endblock %}
 
 {% block contenu %}
-
-<div class='bouton' align=center>
-  <a class="d-sm-inline-block btn btn-sm btn-primary shadow-sm" href="{{ path('etudiant_edit', {'id': etudiant.id}) }}">Modifier {{ etudiant.prenom }} {{ etudiant.nom }}</a>
-</div>
-<div class="table-responsive">
-    <table class="table">
-        <tbody>
+    <div class='bouton' align=center>
+        <a class="d-sm-inline-block btn btn-sm btn-primary shadow-sm"
+           href="{{ path('etudiant_edit', {'id': etudiant.id}) }}">Modifier {{ etudiant.prenom }} {{ etudiant.nom }}</a>
+    </div>
+    <div class="table-responsive">
+        <table class="table">
+            <tbody>
             <tr>
                 <th class="intitule">Nom</th>
-                <td >{{ etudiant.nom }}</td>
+                <td>{{ etudiant.nom }}</td>
             </tr>
             <tr>
                 <th class="intitule">Prénom</th>
-                <td >{{ etudiant.prenom }}</td>
+                <td>{{ etudiant.prenom }}</td>
             </tr>
             <tr>
                 <th class="intitule">Mail</th>
-                <td >{{ etudiant.mail }}</td>
+                <td>{{ etudiant.mail }}</td>
             </tr>
             <tr>
                 <th class="intitule">Démissionaire</th>
-                <td >{{ etudiant.estDemissionaire ? 'Oui' : 'Non' }}</td>
+                <td>{{ etudiant.estDemissionaire ? 'Oui' : 'Non' }}</td>
             </tr>
             <tr>
-              <th class="intitule">Statut(s)</th>
-              <td >
-                {% for statut in etudiant.statuts %}
-                  <font size=4><span class="badge badge-primary">{{statut.nom}}</span></font>
-                {% endfor %}
-              </td>
+                <th class="intitule">Statut(s)</th>
+                <td>
+                    {% for statut in etudiant.statuts %}
+                        <font size=4><span class="badge badge-primary">{{ statut.nom }}</span></font>
+                    {% endfor %}
+                </td>
             </tr>
-        </tbody>
-    </table>
-</div>
+            </tbody>
+        </table>
+    </div>
     <br> <h1 class="h4 mb-0 text-gray-800">Groupe(s) au(x)quel(s) appartient l'étudiant</h1> <br>
-<div class="table-responsive">
-    <table class="table" id="groupes">
-        <thead>
+    <div class="table-responsive">
+        <table class="table" id="groupes">
+            <thead>
             <tr>
                 <th>Nom</th>
                 <th>Description</th>
                 <th>Créateur</th>
             </tr>
-        </thead>
-
-        <tbody>
-        {% for groupe in groupes %}
-            <tr>
-                <td>
-                    {% if groupe.lvl > 0 %}
-                        {% for i in 1.. groupe.lvl %}
-                            &emsp;
-                        {% endfor %}
-                    {% endif %}
-                    {{ groupe.nom }}
-                </td>
-                <td>{{ groupe.description }}</td>
-                <td>{{ groupe.enseignant.nom }} {{groupe.enseignant.prenom}}</td>
-            </tr>
-        {% endfor %}
-        </tbody>
-    </table>
-</div>
+            </thead>
+            <tbody>
+                {% for groupe in groupes %}
+                    <tr>
+                        <td>
+                            {% if groupe.lvl > 0 %}
+                                {% for i in 1.. groupe.lvl %}
+                                    &emsp;
+                                {% endfor %}
+                            {% endif %}
+                            {{ groupe.nom }}
+                        </td>
+                        <td>{{ groupe.description }}</td>
+                        <td>{{ groupe.enseignant.nom }} {{ groupe.enseignant.prenom }}</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
 {% endblock %}
 
 {% block datatables %}
-
-<script type="text/javascript">
-
-$(document).ready(function() {
-  $('#groupes').dataTable({
-    aaSorting : [], //Désactivation du tri automatique
-    language: {
-      // Suppression du label Rechercher et ajout du placeholder
-      search: "_INPUT_",
-      searchPlaceholder: "Rechercher...",
-      "url": "{{asset('tradfr.json')}}"
-    },
-    columns: [null, null, {"orderable": false}],
-    lengthMenu: [
-        [15, 30, 45, -1],
-        [15, 30, 45, "Tout"]
-    ],
-    pageLength : {{ app.user.preferenceNbElementsTableaux }}, <!-- Pour que le nombre d'éléments affichés par défaut soit celui de la préference de l'utilisateur -->
-    info: false,
-  });
-});
-</script>
-
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $('#groupes').dataTable({
+                aaSorting: [], //Désactivation du tri automatique
+                language: {
+                    // Suppression du label Rechercher et ajout du placeholder
+                    search: "_INPUT_",
+                    searchPlaceholder: "Rechercher...",
+                    "url": "{{ asset('tradfr.json') }}"
+                },
+                columns: [null, null, {"orderable": false}],
+                lengthMenu: [
+                    [15, 30, 45, -1],
+                    [15, 30, 45, "Tout"]
+                ],
+                pageLength: {{ app.user.preferenceNbElementsTableaux }}, <!-- Pour que le nombre d'éléments affichés par défaut soit celui de la préference de l'utilisateur -->
+                info: false,
+            });
+        });
+    </script>
 {% endblock %}

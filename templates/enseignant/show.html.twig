@@ -5,48 +5,48 @@
 {% block enseignants %}active{% endblock %}
 
 {% block contenu %}
-<div class='bouton' align=center>
-  <a class="d-sm-inline-block btn btn-sm btn-primary shadow-sm" href="{{ path('enseignant_edit', {'id': enseignant.id}) }}">Modifier {% if enseignant == app.user %}mon profil{% else %}{{ enseignant.prenom }} {{ enseignant.nom }}{% endif %}</a>
-  {% if enseignant != app.user %}
-  <a class="d-sm-inline-block btn btn-sm btn-primary shadow-sm" href="{{ path('enseignant_edit_password', {'id': enseignant.id}) }}">Modifier le mot de passe de {{ enseignant.prenom }} {{ enseignant.nom }}</a>
-  {% endif %}
-</div>
-<div class="table-responsive">
-    <table class="table">
-        <tbody>
-            <tr>
-                <th class="intitule">Nom</th>
-                <td >{{ enseignant.nom }}</td>
-            </tr>
-            <tr>
-                <th class="intitule">Prénom</th>
-                <td >{{ enseignant.prenom }}</td>
-            </tr>
-            <tr>
-                <th class="intitule">Mail</th>
-                <td >{{ enseignant.email }}</td>
-            </tr>
-            <tr>
-                <th class="intitule">Administrateur</th>
-                <td>
-                {% if 'ROLE_ADMIN' in enseignant.roles %}
-                    Oui
-                {% else %}
-                    Non
-                {% endif %}
-                </td>
-            </tr>
-        <tr>
-            <th class="intitule">Préférence du nombre d'éléments affichés dans les tableaux</th>
-            <td>
-                {% if enseignant.preferenceNbElementsTableaux != -1 %}
-                    {{ enseignant.preferenceNbElementsTableaux }} éléments
-                {% else %}
-                   Tous les éléments
-                {% endif %}
-            </td>
-        </tr>
-        </tbody>
-    </table>
-  </div>
+    <div class='bouton' align=center>
+        <a class="d-sm-inline-block btn btn-sm btn-primary shadow-sm" href="{{ path('enseignant_edit', {'id': enseignant.id}) }}">Modifier {% if enseignant == app.user %}mon profil{% else %}{{ enseignant.prenom }} {{ enseignant.nom }}{% endif %}</a>
+        {% if enseignant != app.user %}
+            <a class="d-sm-inline-block btn btn-sm btn-primary shadow-sm" href="{{ path('enseignant_edit_password', {'id': enseignant.id}) }}">Modifier le mot de passe de {{ enseignant.prenom }} {{ enseignant.nom }}</a>
+        {% endif %}
+    </div>
+    <div class="table-responsive">
+        <table class="table">
+            <tbody>
+                <tr>
+                    <th class="intitule">Nom</th>
+                    <td >{{ enseignant.nom }}</td>
+                </tr>
+                <tr>
+                    <th class="intitule">Prénom</th>
+                    <td >{{ enseignant.prenom }}</td>
+                </tr>
+                <tr>
+                    <th class="intitule">Mail</th>
+                    <td >{{ enseignant.email }}</td>
+                </tr>
+                <tr>
+                    <th class="intitule">Administrateur</th>
+                    <td>
+                        {% if 'ROLE_ADMIN' in enseignant.roles %}
+                            Oui
+                        {% else %}
+                            Non
+                        {% endif %}
+                    </td>
+                </tr>
+                <tr>
+                    <th class="intitule">Préférence du nombre d'éléments affichés dans les tableaux</th>
+                    <td>
+                        {% if enseignant.preferenceNbElementsTableaux != -1 %}
+                            {{ enseignant.preferenceNbElementsTableaux }} éléments
+                        {% else %}
+                            Tous les éléments
+                        {% endif %}
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
 {% endblock %}

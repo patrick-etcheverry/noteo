@@ -17,20 +17,16 @@ class NoteoVoter extends Voter
     protected function voteOnAttribute($attribute, $subject, TokenInterface $token)
     {
         $user = $token->getUser();
-
         if (!$user instanceof UserInterface) {
             return false;
         }
-
         $accesAutorise = false;
-
         switch ($attribute) {
             case 'RESET_APPLICATION' :
                 //Il faut être admin pour pouvoir réinitialiser l'application
                 $accesAutorise = in_array("ROLE_ADMIN", $user->getRoles());
                 break;
         }
-
         return $accesAutorise;
     }
 }

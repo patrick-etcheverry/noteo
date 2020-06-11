@@ -29,8 +29,7 @@ class PointsRepository extends ServiceEntityRepository
             ->setParameter('idPartie', $idPartie)
             ->setParameter('idEtudiant', $idEtudiant)
             ->getQuery()
-            ->getSingleResult()
-            ;
+            ->getSingleResult();
     }
 
     public function findAllByEvaluation($idEvaluation)
@@ -44,8 +43,7 @@ class PointsRepository extends ServiceEntityRepository
             ->addOrderBy('et.id', 'ASC')
             ->addOrderBy('p.id', 'ASC')
             ->getQuery()
-            ->getResult()
-            ;
+            ->getResult();
     }
 
     public function findNotesAndEtudiantByEvaluation($evaluation)
@@ -66,8 +64,8 @@ class PointsRepository extends ServiceEntityRepository
     }
 
     /**
-    * @return Points[] Returns an array of Points objects
-    */
+     * @return Points[] Returns an array of Points objects
+     */
 
     public function findAllFromLowestParties($idEvaluation)
     {

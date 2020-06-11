@@ -17,13 +17,10 @@ class StatutVoter extends Voter
     protected function voteOnAttribute($attribute, $subject, TokenInterface $token)
     {
         $user = $token->getUser();
-
         if (!$user instanceof UserInterface) {
             return false;
         }
-
         $accesAutorise = false;
-
         switch ($attribute) {
             case 'STATUT_EDIT':
             case 'STATUT_DELETE':
@@ -31,7 +28,6 @@ class StatutVoter extends Voter
                 $accesAutorise = in_array("ROLE_ADMIN", $user->getRoles()) || $subject->getEnseignant()->getId() == $user->getId();
                 break;
         }
-
         return $accesAutorise;
     }
 }

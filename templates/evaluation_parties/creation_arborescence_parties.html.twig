@@ -25,33 +25,46 @@
             background-color: #0275d8;
             border-radius: 10px;
         }
-        div .blue {color:#0275d8}
-        div .red {color:red}
+        div .blue {
+            color: #0275d8
+        }
+        div .red {
+            color: red
+        }
     </style>
 {% endblock %}
 
 {% block contenu %}
-    <h1 class="h4 mb-0 text-gray-800">Selectionnez une partie pour ajouter une sous-partie, modifier une partie, ou supprimer une partie</h1> <br>
+    <h1 class="h4 mb-0 text-gray-800">Selectionnez une partie pour ajouter une sous-partie, modifier une partie, ou
+        supprimer une partie</h1> <br>
     <div class="row">
         <div class="col-lg-4">
         </div>
         <div class="col-lg-4">
             <div class='bouton' align=center>
-                <button class="btn btn-success" onclick="onCreerPartie()" title="Créer une sous-partie pour la partie sélectionnée" data-toggle="tooltip"><i class="icon-plus"></i></button>
-                <button id="boutonModifier" class="btn btn-primary" onclick="onModifierPartie()" title="Modifier la partie sélectionnée" data-toggle="tooltip"><i class="icon-pencil-1"></i> </button>
-                <button id="boutonSupprimer" class="btn btn-danger" onclick="onSupprimerPartie()" title="Supprimer la partie sélectionnée" data-toggle="tooltip"><i class="icon-trash"></i> </button>
+                <button class="btn btn-success" onclick="onCreerPartie()"
+                        title="Créer une sous-partie pour la partie sélectionnée" data-toggle="tooltip"><i
+                            class="icon-plus"></i></button>
+                <button id="boutonModifier" class="btn btn-primary" onclick="onModifierPartie()"
+                        title="Modifier la partie sélectionnée" data-toggle="tooltip"><i class="icon-pencil-1"></i>
+                </button>
+                <button id="boutonSupprimer" class="btn btn-danger" onclick="onSupprimerPartie()"
+                        title="Supprimer la partie sélectionnée" data-toggle="tooltip"><i class="icon-trash"></i>
+                </button>
             </div>
             <div id="arbre_boot">
             </div>
             <div class='bouton' align=center>
-                <button id="boutonConfirmation" onclick='onConfirmerCreation()' class="d-sm-inline-block btn btn-sm btn-primary shadow-sm">Suivant</button>
+                <button id="boutonConfirmation" onclick='onConfirmerCreation()'
+                        class="d-sm-inline-block btn btn-sm btn-primary shadow-sm">Suivant
+                </button>
             </div>
         </div>
         <div class="col-lg-4">
         </div>
     </div>
-
-    <div class="modal fade" id="modalePartie" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal fade" id="modalePartie" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+         aria-hidden="true">
         <div class="modal-dialog" role="document">
             <div class="modal-content">
                 <div class="modal-header">
@@ -61,29 +74,34 @@
                     </button>
                 </div>
                 <form name="form" id="formPartie">
-                <div class="modal-body">
-                    <table align="center" class="table">
-                        <tbody>
+                    <div class="modal-body">
+                        <table align="center" class="table">
+                            <tbody>
                             <tr>
-                                <th class="intitule"><label for="statut_nom" class="required">Intitulé de la partie</label></th>
-                                <td><input type="text" id="champIntitule" required maxlength="255" minlength="4" class="form-control"></td>
+                                <th class="intitule"><label for="statut_nom" class="required">Intitulé de la
+                                        partie</label></th>
+                                <td><input type="text" id="champIntitule" required maxlength="255" minlength="4"
+                                           class="form-control"></td>
                             </tr>
                             <tr>
-                                <th class="intitule"><label for="statut_description" class="required">Barème de la partie</label></th>
-                                <td > <input type="number" id="champBareme" required min="0" step="0.1" class="form-control"></td>
+                                <th class="intitule"><label for="statut_description" class="required">Barème de la
+                                        partie</label></th>
+                                <td><input type="number" id="champBareme" required min="0" step="0.1"
+                                           class="form-control"></td>
                             </tr>
-                        </tbody>
-                    </table>
-                </div>
-                <div class="modal-footer">
-                    <button type="submit" class="d-sm-inline-block btn btn-sm btn-primary shadow-sm">Valider</button>
-                </div>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="submit" class="d-sm-inline-block btn btn-sm btn-primary shadow-sm">Valider
+                        </button>
+                    </div>
                 </form>
             </div>
         </div>
     </div>
-
-    <div class="modal fade" id="modalePasDePartieSelectionnee" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal fade" id="modalePasDePartieSelectionnee" tabindex="-1" role="dialog"
+         aria-labelledby="exampleModalLabel" aria-hidden="true">
         <div class="modal-dialog" role="document">
             <div class="modal-content">
                 <div class="modal-header">
@@ -96,23 +114,26 @@
                     <div style="text-align: center; font-weight: bold">Vous n'avez pas selectionné de partie</div>
                     <br>
                     <ul>
-                        <li>Pour ajouter une nouvelle partie, veuillez cliquer sur une partie dans le tableau à laquelle vous voulez ajouter une sous-partie</li>
+                        <li>Pour ajouter une nouvelle partie, veuillez cliquer sur une partie dans le tableau à laquelle
+                            vous voulez ajouter une sous-partie
+                        </li>
                         <li>Pour modifier une partie, veuillez cliquer sur une partie que vous désirez modifier</li>
                         <li>Pour supprimer une partie, veuillez cliquer sur une partie que vous désirez supprimer</li>
                     </ul>
                 </div>
                 <div class="modal-footer">
-                    <button class="d-sm-inline-block btn btn-sm btn-primary" type="button" data-dismiss="modal">Ok</button>
+                    <button class="d-sm-inline-block btn btn-sm btn-primary" type="button" data-dismiss="modal">Ok
+                    </button>
                 </div>
             </div>
         </div>
     </div>
-
-    <div class="modal fade" id="modaleValidationCreation" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal fade" id="modaleValidationCreation" tabindex="-1" role="dialog"
+         aria-labelledby="exampleModalLabel" aria-hidden="true">
         <div class="modal-dialog" role="document">
             <div class="modal-content">
                 <div class="modal-header">
-                        <h5 class="modal-title">Attention</h5>
+                    <h5 class="modal-title">Attention</h5>
                     <button class="close" type="button" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">x</span>
                     </button>
@@ -131,7 +152,7 @@
                 <div class="modal-footer">
                     {{ form_start(form) }}
                     {{ form_widget(form.arbre) }}
-                        <button class="d-sm-inline-block btn btn-sm btn-primary">Suivant</button>
+                    <button class="d-sm-inline-block btn btn-sm btn-primary">Suivant</button>
                     {{ form_end(form) }}
                 </div>
             </div>
@@ -143,29 +164,24 @@
     <script>
         var tree = [{{ app.session.get("arbre_json") | json_encode | raw }}] // Variable venant du serveur
         window.onload = chargerArbre();
-
         //Cet écouteur d'évenement permet d'attendre la validation de création des parties puis de mettre le tableau encodé sous forme d'url dans le champ hidden du formulaire
         // pour le passer coté serveur et le décoder ensuite
         $("[name='form']").on('submit', function () {
             $("[name='form[arbre]']").val(encodeURIComponent(JSON.stringify(tree)))
         })
-
         function onConfirmerCreation() {
             $("#modaleValidationCreation").modal();
             //On cache par défaut le message d'erreur si aucune partie n'a été créée pour ensuite le faire apparaitre si les conditions sont vérifiées (si l'évaluation n'a aucune partie
             $("#erreur-pas-de-parties").css("display", "none")
             $("#erreur-une-seule-partie").css("display", "none")
-            if(tree[0].nodes == undefined) {
+            if (tree[0].nodes == undefined) {
                 $("#erreur-pas-de-parties").css("display", "block")
-            }
-            else {
-                if(tree[0].nodes.length == 1) {
+            } else {
+                if (tree[0].nodes.length == 1) {
                     $("#erreur-une-seule-partie").css("display", "block")
                 }
             }
-
         }
-
         function onCreerPartie() {
             var partieSelectionnee = $('#arbre_boot').treeview('getSelected');
             if (partieSelectionnee.length != 0) {
@@ -179,12 +195,10 @@
                     $('#modalePartie').modal('hide');
                     ajouterUnePartie(partieSelectionnee[0].id, $('#champIntitule').val(), parseFloat($('#champBareme').val()));
                 })
-            }
-            else {
+            } else {
                 $('#modalePasDePartieSelectionnee').modal();
             }
         }
-
         function onSupprimerPartie() {
             var partieSelectionnee = $('#arbre_boot').treeview('getSelected');
             if (partieSelectionnee.length != 0) {
@@ -192,12 +206,10 @@
                     var parent = $('#arbre_boot').treeview('getParent', partieSelectionnee);
                     supprimerUnePartie(parent.id, partieSelectionnee[0]);
                 }
-            }
-            else {
+            } else {
                 $('#modalePasDePartieSelectionnee').modal();
             }
         }
-
         function onModifierPartie() {
             var partieSelectionnee = $('#arbre_boot').treeview('getSelected');
             if (partieSelectionnee.length != 0) {
@@ -213,8 +225,7 @@
                         modifierUnePartie(partieSelectionnee[0].id, $('#champIntitule').val(), parseFloat($('#champBareme').val()));
                     })
                 }
-            }
-            else {
+            } else {
                 $('#modalePasDePartieSelectionnee').modal();
             }
         }

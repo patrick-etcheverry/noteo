@@ -6,9 +6,9 @@
 
 {% block stylesheets %}
     <style>
-        .card:hover{
-            -webkit-box-shadow: -1px 9px 40px -12px rgba(0,0,0,0.75);
-            -moz-box-shadow: -1px 9px 40px -12px rgba(0,0,0,0.75);
+        .card:hover {
+            -webkit-box-shadow: -1px 9px 40px -12px rgba(0, 0, 0, 0.75);
+            -moz-box-shadow: -1px 9px 40px -12px rgba(0, 0, 0, 0.75);
             box-shadow: -1px 9px 40px -12px rgba(0, 0, 0, 0.75);
         }
         /* Style the Image Used to Trigger the Modal */
@@ -17,7 +17,9 @@
             cursor: pointer;
             transition: 0.3s;
         }
-        .imageAAgrandir:hover {opacity: 0.7;}
+        .imageAAgrandir:hover {
+            opacity: 0.7;
+        }
         /* The Modal (background) */
         .modaleImage {
             display: none; /* Hidden by default */
@@ -29,8 +31,8 @@
             width: 100%; /* Full width */
             height: 100%; /* Full height */
             overflow: auto; /* Enable scroll if needed */
-            background-color: rgb(0,0,0); /* Fallback color */
-            background-color: rgba(0,0,0,0.9); /* Black w/ opacity */
+            background-color: rgb(0, 0, 0); /* Fallback color */
+            background-color: rgba(0, 0, 0, 0.9); /* Black w/ opacity */
         }
         /* Modal Content (Image) */
         .modaleImage-content {
@@ -44,8 +46,12 @@
             animation-duration: 0.6s;
         }
         @keyframes zoom {
-            from {transform:scale(0)}
-            to {transform:scale(1)}
+            from {
+                transform: scale(0)
+            }
+            to {
+                transform: scale(1)
+            }
         }
         /* The Close Button */
         .close-modaleImage {
@@ -64,7 +70,7 @@
             cursor: pointer;
         }
         /* 100% Image Width on Smaller Screens */
-        @media only screen and (max-width: 700px){
+        @media only screen and (max-width: 700px) {
             .modal-content {
                 width: 100%;
             }
@@ -79,55 +85,83 @@
             Analyse d’une évaluation simple
         </li>
         <div class="card-body">
-            Obtenez des statistiques sur une évaluation spécifique dans laquelle l’enseignant a saisi une note sur 20 pour chaque étudiant.
+            Obtenez des statistiques sur une évaluation spécifique dans laquelle l’enseignant a saisi une note sur 20
+            pour chaque étudiant.
             <hr>
             <div class="card-deck">
                 <div class="card">
-                    <img class="card-img-top imageAAgrandir" {% if statsClassiquesDispo %}src="{{ asset('img/statistiques/classiques/histo.png') }}"{% else %}src="{{ asset('img/statistiques/classiques/histo_black.png') }}"{% endif %} alt="Card image cap">
+                    <img class="card-img-top imageAAgrandir"
+                         {% if statsClassiquesDispo %}src="{{ asset('img/statistiques/classiques/histo.png') }}"
+                         {% else %}src="{{ asset('img/statistiques/classiques/histo_black.png') }}"{% endif %}
+                         alt="Card image cap">
                     <div class="card-body">
                         <hr>
                         <h5 class="card-title">Répartition des notes (histogramme)</h5>
                         <p class="card-text">
                             Obtenez, pour des groupes donnés (groupes de TD/TP par exemple) et/ou des profils donnés,
-                            (étudiants ayant le statut de boursier, redoublant...), la répartition des notes sous forme <b>d'histogramme</b>.
+                            (étudiants ayant le statut de boursier, redoublant...), la répartition des notes sous forme
+                            <b>d'histogramme</b>.
                         </p>
                         {% if not statsClassiquesDispo %}
-                            <span style="font-size:15px; color: #0275d8"><i class="icon-attention-circled"></i>Statistique indisponible : <a href="{{ path("evaluation_choose_group", {"typeEval" : "simple"}) }}">Créez des évaluations simples</a></span>
+                            <span style="font-size:15px; color: #0275d8"><i class="icon-attention-circled"></i>Statistique indisponible : <a
+                                        href="{{ path("evaluation_choose_group", {"typeEval" : "simple"}) }}">Créez des évaluations simples</a></span>
                             <br><br>
                         {% endif %}
-                        <button {% if not statsClassiquesDispo %}disabled{% endif %} onclick="location.href='{{ path('statistiques_choix_evaluation', {'typeStat' : 'classique', 'typeGraph' : 'histogramme'}) }}'" class="btn {% if statsClassiquesDispo %}btn-primary{% else %}btn-secondary{% endif %}">Consulter ce type de statistiques</button>
+                        <button {% if not statsClassiquesDispo %}disabled{% endif %}
+                                onclick="location.href='{{ path('statistiques_choix_evaluation', {'typeStat' : 'classique', 'typeGraph' : 'histogramme'}) }}'"
+                                class="btn {% if statsClassiquesDispo %}btn-primary{% else %}btn-secondary{% endif %}">
+                            Consulter ce type de statistiques
+                        </button>
                     </div>
                 </div>
                 <div class="card">
-                    <img class="card-img-top imageAAgrandir" id="myImg" {% if statsClassiquesDispo %}src="{{ asset('img/statistiques/classiques/bam.png') }}"{% else %}src="{{ asset('img/statistiques/classiques/bam_black.png') }}"{% endif %}  alt="Card image cap">
+                    <img class="card-img-top imageAAgrandir" id="myImg"
+                         {% if statsClassiquesDispo %}src="{{ asset('img/statistiques/classiques/bam.png') }}"
+                         {% else %}src="{{ asset('img/statistiques/classiques/bam_black.png') }}"{% endif %}
+                         alt="Card image cap">
                     <div class="card-body">
                         <hr>
                         <h5 class="card-title">Répartition des notes (boîte à moustache)</h5>
                         <p class="card-text">
                             Obtenez, pour des groupes donnés (groupes de TD/TP par exemple) et/ou des profils donnés,
-                            (étudiants ayant le statut de boursier, redoublant...), la répartition des notes sous forme de <b>boîte à moustache</b>.
+                            (étudiants ayant le statut de boursier, redoublant...), la répartition des notes sous forme
+                            de <b>boîte à moustache</b>.
                         </p>
                         {% if not statsClassiquesDispo %}
-                            <span style="font-size:15px; color: #0275d8"><i class="icon-attention-circled"></i>Statistique indisponible : <a href="{{ path("evaluation_choose_group", {"typeEval" : "simple"}) }}">Créez des évaluations simples</a></span>
+                            <span style="font-size:15px; color: #0275d8"><i class="icon-attention-circled"></i>Statistique indisponible : <a
+                                        href="{{ path("evaluation_choose_group", {"typeEval" : "simple"}) }}">Créez des évaluations simples</a></span>
                             <br><br>
                         {% endif %}
-                        <button {% if not statsClassiquesDispo %}disabled{% endif %} onclick="location.href='{{ path('statistiques_choix_evaluation', {'typeStat' : 'classique', 'typeGraph' : 'boite-moustache'}) }}'" class="btn {% if statsClassiquesDispo %}btn-primary{% else %}btn-secondary{% endif %}">Consulter ce type de statistiques</button>
+                        <button {% if not statsClassiquesDispo %}disabled{% endif %}
+                                onclick="location.href='{{ path('statistiques_choix_evaluation', {'typeStat' : 'classique', 'typeGraph' : 'boite-moustache'}) }}'"
+                                class="btn {% if statsClassiquesDispo %}btn-primary{% else %}btn-secondary{% endif %}">
+                            Consulter ce type de statistiques
+                        </button>
                     </div>
                 </div>
                 <div class="card">
-                    <img class="card-img-top imageAAgrandir" {% if statsClassiquesDispo %}src="{{ asset('img/statistiques/classiques/moy.png') }}"{% else %}src="{{ asset('img/statistiques/classiques/moy_black.png') }}"{% endif %} alt="Card image cap">
+                    <img class="card-img-top imageAAgrandir"
+                         {% if statsClassiquesDispo %}src="{{ asset('img/statistiques/classiques/moy.png') }}"
+                         {% else %}src="{{ asset('img/statistiques/classiques/moy_black.png') }}"{% endif %}
+                         alt="Card image cap">
                     <div class="card-body">
                         <hr>
                         <h5 class="card-title">Moyenne et écart-type (histogramme)</h5>
                         <p class="card-text">
                             Obtenez, pour des groupes donnés (groupes de TD/TP par exemple) et/ou des profils donnés,
-                            (étudiants ayant le statut de boursier, redoublant...),la moyenne et l’écart-type sous forme <b>d'histogramme</b>.
+                            (étudiants ayant le statut de boursier, redoublant...),la moyenne et l’écart-type sous forme
+                            <b>d'histogramme</b>.
                         </p>
                         {% if not statsClassiquesDispo %}
-                            <span style="font-size:15px; color: #0275d8"><i class="icon-attention-circled"></i>Statistique indisponible : <a href="{{ path("evaluation_choose_group", {"typeEval" : "simple"}) }}">Créez des évaluations simples</a></span>
+                            <span style="font-size:15px; color: #0275d8"><i class="icon-attention-circled"></i>Statistique indisponible : <a
+                                        href="{{ path("evaluation_choose_group", {"typeEval" : "simple"}) }}">Créez des évaluations simples</a></span>
                             <br><br>
                         {% endif %}
-                        <button {% if not statsClassiquesDispo %}disabled{% endif %} onclick="location.href='{{ path('statistiques_choix_evaluation', {'typeStat' : 'classique', 'typeGraph' : 'moyenne'}) }}'" class="btn {% if statsClassiquesDispo %}btn-primary{% else %}btn-secondary{% endif %}">Consulter ce type de statistiques</button>
+                        <button {% if not statsClassiquesDispo %}disabled{% endif %}
+                                onclick="location.href='{{ path('statistiques_choix_evaluation', {'typeStat' : 'classique', 'typeGraph' : 'moyenne'}) }}'"
+                                class="btn {% if statsClassiquesDispo %}btn-primary{% else %}btn-secondary{% endif %}">
+                            Consulter ce type de statistiques
+                        </button>
                     </div>
                 </div>
             </div>
@@ -140,58 +174,87 @@
             Analyse d’une évaluation par parties
         </li>
         <div class="card-body">
-            Obtenez des statistiques sur une évaluation spécifique dans laquelle l’enseignant a saisi pour chaque étudiant une note sur les différentes parties composant son évaluation (Question de cours, exercice 1, exercice 2 par exemple).
+            Obtenez des statistiques sur une évaluation spécifique dans laquelle l’enseignant a saisi pour chaque
+            étudiant une note sur les différentes parties composant son évaluation (Question de cours, exercice 1,
+            exercice 2 par exemple).
             <hr>
             <div class="card-deck">
                 <div class="card">
-                    <img class="card-img-top imageAAgrandir" {% if statsClassiquesParPartiesDispo %}src="{{ asset('img/statistiques/classiques-avec-parties/histo.png') }}"{% else %}src="{{ asset('img/statistiques/classiques-avec-parties/histo_black.png') }}"{% endif %} alt="Card image cap">
+                    <img class="card-img-top imageAAgrandir"
+                         {% if statsClassiquesParPartiesDispo %}src="{{ asset('img/statistiques/classiques-avec-parties/histo.png') }}"
+                         {% else %}src="{{ asset('img/statistiques/classiques-avec-parties/histo_black.png') }}"{% endif %}
+                         alt="Card image cap">
                     <div class="card-body">
                         <hr>
                         <h5 class="card-title">Répartition des notes (histogramme)</h5>
                         <p class="card-text">
                             Obtenez, pour des groupes donnés (groupes de TD/TP par exemple) et/ou des profils donnés,
-                            (étudiants ayant le statut de boursier, redoublant...), et pour chaque partie de l’évaluation,
+                            (étudiants ayant le statut de boursier, redoublant...), et pour chaque partie de
+                            l’évaluation,
                             la répartition des notes sous forme <b>d'histogramme</b>.
                         </p>
                         {% if not statsClassiquesParPartiesDispo %}
-                            <span style="font-size:15px; color: #0275d8"><i class="icon-attention-circled"></i>Statistique indisponible : <a href="{{ path("evaluation_choose_group", {"typeEval" : "avec-parties"}) }}">Créez des évaluations par parties</a></span>
+                            <span style="font-size:15px; color: #0275d8"><i class="icon-attention-circled"></i>Statistique indisponible : <a
+                                        href="{{ path("evaluation_choose_group", {"typeEval" : "avec-parties"}) }}">Créez des évaluations par parties</a></span>
                             <br><br>
                         {% endif %}
-                        <button {% if not statsClassiquesParPartiesDispo %}disabled{% endif %} onclick="location.href='{{ path('statistiques_choix_evaluation', {'typeStat' : 'classique-avec-parties', 'typeGraph' : 'histogramme'}) }}'" class="btn {% if statsClassiquesParPartiesDispo %}btn-primary{% else %}btn-secondary{% endif %}">Consulter ce type de statistiques</button>
+                        <button {% if not statsClassiquesParPartiesDispo %}disabled{% endif %}
+                                onclick="location.href='{{ path('statistiques_choix_evaluation', {'typeStat' : 'classique-avec-parties', 'typeGraph' : 'histogramme'}) }}'"
+                                class="btn {% if statsClassiquesParPartiesDispo %}btn-primary{% else %}btn-secondary{% endif %}">
+                            Consulter ce type de statistiques
+                        </button>
                     </div>
                 </div>
                 <div class="card">
-                    <img class="card-img-top imageAAgrandir" id="myImg" {% if statsClassiquesParPartiesDispo %}src="{{ asset('img/statistiques/classiques-avec-parties/bam.png') }}"{% else %}src="{{ asset('img/statistiques/classiques-avec-parties/bam_black.png') }}"{% endif %} alt="Card image cap">
+                    <img class="card-img-top imageAAgrandir" id="myImg"
+                         {% if statsClassiquesParPartiesDispo %}src="{{ asset('img/statistiques/classiques-avec-parties/bam.png') }}"
+                         {% else %}src="{{ asset('img/statistiques/classiques-avec-parties/bam_black.png') }}"{% endif %}
+                         alt="Card image cap">
                     <div class="card-body">
                         <hr>
                         <h5 class="card-title">Répartition des notes (boîte à moustache)</h5>
                         <p class="card-text">
                             Obtenez, pour des groupes donnés (groupes de TD/TP par exemple) et/ou des profils donnés,
-                            (étudiants ayant le statut de boursier, redoublant...), et pour chaque partie de l’évaluation,
+                            (étudiants ayant le statut de boursier, redoublant...), et pour chaque partie de
+                            l’évaluation,
                             la répartition des notes sous forme de <b>boîte à moustache</b>.
                         </p>
                         {% if not statsClassiquesParPartiesDispo %}
-                            <span style="font-size:15px; color: #0275d8"><i class="icon-attention-circled"></i>Statistique indisponible : <a href="{{ path("evaluation_choose_group", {"typeEval" : "avec-parties"}) }}">Créez des évaluations par parties</a></span>
+                            <span style="font-size:15px; color: #0275d8"><i class="icon-attention-circled"></i>Statistique indisponible : <a
+                                        href="{{ path("evaluation_choose_group", {"typeEval" : "avec-parties"}) }}">Créez des évaluations par parties</a></span>
                             <br><br>
                         {% endif %}
-                        <button {% if not statsClassiquesParPartiesDispo %}disabled{% endif %} onclick="location.href='{{ path('statistiques_choix_evaluation', {'typeStat' : 'classique-avec-parties', 'typeGraph' : 'boite-moustache'}) }}'" class="btn {% if statsClassiquesParPartiesDispo %}btn-primary{% else %}btn-secondary{% endif %}">Consulter ce type de statistiques</button>
+                        <button {% if not statsClassiquesParPartiesDispo %}disabled{% endif %}
+                                onclick="location.href='{{ path('statistiques_choix_evaluation', {'typeStat' : 'classique-avec-parties', 'typeGraph' : 'boite-moustache'}) }}'"
+                                class="btn {% if statsClassiquesParPartiesDispo %}btn-primary{% else %}btn-secondary{% endif %}">
+                            Consulter ce type de statistiques
+                        </button>
                     </div>
                 </div>
                 <div class="card">
-                    <img class="card-img-top imageAAgrandir" {% if statsClassiquesParPartiesDispo %}src="{{ asset('img/statistiques/classiques-avec-parties/moy.png') }}"{% else %}src="{{ asset('img/statistiques/classiques-avec-parties/moy_black.png') }}"{% endif %} alt="Card image cap">
+                    <img class="card-img-top imageAAgrandir"
+                         {% if statsClassiquesParPartiesDispo %}src="{{ asset('img/statistiques/classiques-avec-parties/moy.png') }}"
+                         {% else %}src="{{ asset('img/statistiques/classiques-avec-parties/moy_black.png') }}"{% endif %}
+                         alt="Card image cap">
                     <div class="card-body">
                         <hr>
                         <h5 class="card-title">Moyenne et écart-type (histogramme)</h5>
                         <p class="card-text">
                             Obtenez, pour des groupes donnés (groupes de TD/TP par exemple) et/ou des profils donnés,
-                            (étudiants ayant le statut de boursier, redoublant...), et pour chaque partie de l’évaluation,
+                            (étudiants ayant le statut de boursier, redoublant...), et pour chaque partie de
+                            l’évaluation,
                             la moyenne et l’écart-type sous forme <b>d'histogramme</b>.
                         </p>
                         {% if not statsClassiquesParPartiesDispo %}
-                            <span style="font-size:15px; color: #0275d8"><i class="icon-attention-circled"></i>Statistique indisponible : <a href="{{ path("evaluation_choose_group", {"typeEval" : "avec-parties"}) }}">Créez des évaluations par parties</a></span>
+                            <span style="font-size:15px; color: #0275d8"><i class="icon-attention-circled"></i>Statistique indisponible : <a
+                                        href="{{ path("evaluation_choose_group", {"typeEval" : "avec-parties"}) }}">Créez des évaluations par parties</a></span>
                             <br><br>
                         {% endif %}
-                        <button {% if not statsClassiquesParPartiesDispo %}disabled{% endif %} onclick="location.href='{{ path('statistiques_choix_evaluation', {'typeStat' : 'classique-avec-parties', 'typeGraph' : 'moyenne'}) }}'" class="btn {% if statsClassiquesParPartiesDispo %}btn-primary{% else %}btn-secondary{% endif %}">Consulter ce type de statistiques</button>
+                        <button {% if not statsClassiquesParPartiesDispo %}disabled{% endif %}
+                                onclick="location.href='{{ path('statistiques_choix_evaluation', {'typeStat' : 'classique-avec-parties', 'typeGraph' : 'moyenne'}) }}'"
+                                class="btn {% if statsClassiquesParPartiesDispo %}btn-primary{% else %}btn-secondary{% endif %}">
+                            Consulter ce type de statistiques
+                        </button>
                     </div>
                 </div>
             </div>
@@ -208,53 +271,86 @@
             <hr>
             <div class="card-deck">
                 <div class="card">
-                    <img class="card-img-top imageAAgrandir" {% if statsPlusieursEvalsGroupeDispo %}src="{{ asset('img/statistiques/plusieurs-evals-groupe/histo.png') }}"{% else %}src="{{ asset('img/statistiques/plusieurs-evals-groupe/histo_black.png') }}"{% endif %} alt="Card image cap">
+                    <img class="card-img-top imageAAgrandir"
+                         {% if statsPlusieursEvalsGroupeDispo %}src="{{ asset('img/statistiques/plusieurs-evals-groupe/histo.png') }}"
+                         {% else %}src="{{ asset('img/statistiques/plusieurs-evals-groupe/histo_black.png') }}"{% endif %}
+                         alt="Card image cap">
                     <div class="card-body">
                         <hr>
                         <h5 class="card-title">Répartition des notes (histogramme)</h5>
                         <p class="card-text">
-                            Sélectionnez plusieurs évaluations (par exemple toutes les évaluations en anglais) et obtenez, sous
-                            forme <b>d'histogramme</b>, la répartition globale des notes pour un ou plusieurs groupes d’étudiants donnés (groupes de TD/TP par exemple).
+                            Sélectionnez plusieurs évaluations (par exemple toutes les évaluations en anglais) et
+                            obtenez, sous
+                            forme <b>d'histogramme</b>, la répartition globale des notes pour un ou plusieurs groupes
+                            d’étudiants donnés (groupes de TD/TP par exemple).
                         </p>
                         {% if not statsPlusieursEvalsGroupeDispo %}
-                            <span style="font-size:15px; color: #0275d8"><i class="icon-attention-circled"></i>Statistique indisponible : {% if is_granted('ROLE_ADMIN') %}<a href="{{ path("groupe_etudiant_new") }}">Créez un groupe</a> ou {% endif %}<a href="{{ path("evaluation_choose_group", {"typeEval" : "simple"}) }}"> Créez des évaluations</a></span>
+                            <span style="font-size:15px; color: #0275d8"><i class="icon-attention-circled"></i>Statistique indisponible : {% if is_granted('ROLE_ADMIN') %}<a
+                                href="{{ path("groupe_etudiant_new") }}">Créez un groupe</a> ou {% endif %}<a
+                                        href="{{ path("evaluation_choose_group", {"typeEval" : "simple"}) }}"> Créez des évaluations</a></span>
                             <br><br>
                         {% endif %}
-                        <button {% if not statsPlusieursEvalsGroupeDispo %}disabled{% endif %} onclick="location.href='{{ path('stats_choisir_groupe_haut_niveau_evaluable', {'typeGraph': 'histogramme'}) }}'" class="btn {% if statsPlusieursEvalsGroupeDispo %}btn-primary{% else %}btn-secondary{% endif %}">Consulter ce type de statistiques</button>
+                        <button {% if not statsPlusieursEvalsGroupeDispo %}disabled{% endif %}
+                                onclick="location.href='{{ path('stats_choisir_groupe_haut_niveau_evaluable', {'typeGraph': 'histogramme'}) }}'"
+                                class="btn {% if statsPlusieursEvalsGroupeDispo %}btn-primary{% else %}btn-secondary{% endif %}">
+                            Consulter ce type de statistiques
+                        </button>
 
                     </div>
                 </div>
                 <div class="card">
-                    <img class="card-img-top imageAAgrandir" id="myImg" {% if statsPlusieursEvalsGroupeDispo %}src="{{ asset('img/statistiques/plusieurs-evals-groupe/bam.png') }}"{% else %}src="{{ asset('img/statistiques/plusieurs-evals-groupe/bam_black.png') }}"{% endif %} alt="Card image cap">
+                    <img class="card-img-top imageAAgrandir" id="myImg"
+                         {% if statsPlusieursEvalsGroupeDispo %}src="{{ asset('img/statistiques/plusieurs-evals-groupe/bam.png') }}"
+                         {% else %}src="{{ asset('img/statistiques/plusieurs-evals-groupe/bam_black.png') }}"{% endif %}
+                         alt="Card image cap">
                     <div class="card-body">
                         <hr>
                         <h5 class="card-title">Répartition des notes (boîte à moustache)</h5>
                         <p class="card-text">
-                            Sélectionnez plusieurs évaluations (par exemple toutes les évaluations en anglais) et obtenez,
-                            sous forme de <b>boîte à moustaches</b>, la répartition globale des notes pour un ou plusieurs groupes d’étudiants donnés
+                            Sélectionnez plusieurs évaluations (par exemple toutes les évaluations en anglais) et
+                            obtenez,
+                            sous forme de <b>boîte à moustaches</b>, la répartition globale des notes pour un ou
+                            plusieurs groupes d’étudiants donnés
                             (groupes de TD/TP par exemple).
                         </p>
                         {% if not statsPlusieursEvalsGroupeDispo %}
-                            <span style="font-size:15px; color: #0275d8"><i class="icon-attention-circled"></i>Statistique indisponible : {% if is_granted('ROLE_ADMIN') %}<a href="{{ path("groupe_etudiant_new") }}">Créez un groupe</a> ou {% endif %}<a href="{{ path("evaluation_choose_group", {"typeEval" : "simple"}) }}"> Créez des évaluations</a></span>
+                            <span style="font-size:15px; color: #0275d8"><i class="icon-attention-circled"></i>Statistique indisponible : {% if is_granted('ROLE_ADMIN') %}<a
+                                href="{{ path("groupe_etudiant_new") }}">Créez un groupe</a> ou {% endif %}<a
+                                        href="{{ path("evaluation_choose_group", {"typeEval" : "simple"}) }}"> Créez des évaluations</a></span>
                             <br><br>
                         {% endif %}
-                        <button {% if not statsPlusieursEvalsGroupeDispo %}disabled{% endif %} onclick="location.href='{{ path('stats_choisir_groupe_haut_niveau_evaluable', {'typeGraph': 'boite-moustache'}) }}'" class="btn {% if statsPlusieursEvalsGroupeDispo %}btn-primary{% else %}btn-secondary{% endif %}">Consulter ce type de statistiques</button>
+                        <button {% if not statsPlusieursEvalsGroupeDispo %}disabled{% endif %}
+                                onclick="location.href='{{ path('stats_choisir_groupe_haut_niveau_evaluable', {'typeGraph': 'boite-moustache'}) }}'"
+                                class="btn {% if statsPlusieursEvalsGroupeDispo %}btn-primary{% else %}btn-secondary{% endif %}">
+                            Consulter ce type de statistiques
+                        </button>
                     </div>
                 </div>
                 <div class="card">
-                    <img class="card-img-top imageAAgrandir" {% if statsPlusieursEvalsGroupeDispo %}src="{{ asset('img/statistiques/plusieurs-evals-groupe/moy.png') }}"{% else %}src="{{ asset('img/statistiques/plusieurs-evals-groupe/moy_black.png') }}"{% endif %} alt="Card image cap">
+                    <img class="card-img-top imageAAgrandir"
+                         {% if statsPlusieursEvalsGroupeDispo %}src="{{ asset('img/statistiques/plusieurs-evals-groupe/moy.png') }}"
+                         {% else %}src="{{ asset('img/statistiques/plusieurs-evals-groupe/moy_black.png') }}"{% endif %}
+                         alt="Card image cap">
                     <div class="card-body">
                         <hr>
                         <h5 class="card-title">Moyenne et écart-type (histogramme)</h5>
                         <p class="card-text">
-                            Sélectionnez plusieurs évaluations (par exemple toutes les évaluations en anglais) et obtenez, sous
-                            forme <b>d'histogramme</b>, la moyenne globale et l’écart-type pour des groupes donnés (groupes de TD/TP).
+                            Sélectionnez plusieurs évaluations (par exemple toutes les évaluations en anglais) et
+                            obtenez, sous
+                            forme <b>d'histogramme</b>, la moyenne globale et l’écart-type pour des groupes donnés
+                            (groupes de TD/TP).
                         </p>
                         {% if not statsPlusieursEvalsGroupeDispo %}
-                            <span style="font-size:15px; color: #0275d8"><i class="icon-attention-circled"></i>Statistique indisponible : {% if is_granted('ROLE_ADMIN') %}<a href="{{ path("groupe_etudiant_new") }}">Créez un groupe</a> ou {% endif %}<a href="{{ path("evaluation_choose_group", {"typeEval" : "simple"}) }}"> Créez des évaluations</a></span>
+                            <span style="font-size:15px; color: #0275d8"><i class="icon-attention-circled"></i>Statistique indisponible : {% if is_granted('ROLE_ADMIN') %}<a
+                                href="{{ path("groupe_etudiant_new") }}">Créez un groupe</a> ou {% endif %}<a
+                                        href="{{ path("evaluation_choose_group", {"typeEval" : "simple"}) }}"> Créez des évaluations</a></span>
                             <br><br>
                         {% endif %}
-                        <button {% if not statsPlusieursEvalsGroupeDispo %}disabled{% endif %} onclick="location.href='{{ path('stats_choisir_groupe_haut_niveau_evaluable', {'typeGraph': 'moyenne'}) }}'" class="btn {% if statsPlusieursEvalsGroupeDispo %}btn-primary{% else %}btn-secondary{% endif %}">Consulter ce type de statistiques</button>
+                        <button {% if not statsPlusieursEvalsGroupeDispo %}disabled{% endif %}
+                                onclick="location.href='{{ path('stats_choisir_groupe_haut_niveau_evaluable', {'typeGraph': 'moyenne'}) }}'"
+                                class="btn {% if statsPlusieursEvalsGroupeDispo %}btn-primary{% else %}btn-secondary{% endif %}">
+                            Consulter ce type de statistiques
+                        </button>
                     </div>
                 </div>
             </div>
@@ -267,55 +363,89 @@
             Analyse des résultats d’un statut d’étudiants sur plusieurs évaluations
         </li>
         <div class="card-body">
-            Observez les résultats d'un groupe d’étudiants ayant un statut particulier (boursiers, redoublants...) sur plusieurs évaluations.
+            Observez les résultats d'un groupe d’étudiants ayant un statut particulier (boursiers, redoublants...) sur
+            plusieurs évaluations.
             <hr>
             <div class="card-deck">
                 <div class="card">
-                    <img class="card-img-top imageAAgrandir" {% if statsPlusieursEvalsStatutDispo %}src="{{ asset('img/statistiques/plusieurs-evals-statut/histo.png') }}"{% else %}src="{{ asset('img/statistiques/plusieurs-evals-statut/histo_black.png') }}"{% endif %} alt="Card image cap">
+                    <img class="card-img-top imageAAgrandir"
+                         {% if statsPlusieursEvalsStatutDispo %}src="{{ asset('img/statistiques/plusieurs-evals-statut/histo.png') }}"
+                         {% else %}src="{{ asset('img/statistiques/plusieurs-evals-statut/histo_black.png') }}"{% endif %}
+                         alt="Card image cap">
                     <div class="card-body">
                         <hr>
                         <h5 class="card-title">Répartition des notes (histogramme)</h5>
                         <p class="card-text">
-                            Sélectionnez plusieurs évaluations (par exemple toutes les évaluations en mathématiques) et obtenez, sous forme <b>d'histogramme</b>,
-                            la répartition globale des notes pour un ou plusieurs statut d’étudiants (boursiers, redoublants...).
+                            Sélectionnez plusieurs évaluations (par exemple toutes les évaluations en mathématiques) et
+                            obtenez, sous forme <b>d'histogramme</b>,
+                            la répartition globale des notes pour un ou plusieurs statut d’étudiants (boursiers,
+                            redoublants...).
                         </p>
                         {% if not statsPlusieursEvalsStatutDispo %}
-                            <span style="font-size:15px; color: #0275d8"><i class="icon-attention-circled"></i>Statistique indisponible : <a href="{{ path("statut_new") }}">Créez un statut</a> ou <a href="{{ path("evaluation_choose_group", {"typeEval" : "simple"}) }}"> Créez des évaluations</a></span>
+                            <span style="font-size:15px; color: #0275d8"><i class="icon-attention-circled"></i>Statistique indisponible : <a
+                                        href="{{ path("statut_new") }}">Créez un statut</a> ou <a
+                                        href="{{ path("evaluation_choose_group", {"typeEval" : "simple"}) }}"> Créez des évaluations</a></span>
                             <br><br>
                         {% endif %}
-                        <button {% if not statsPlusieursEvalsStatutDispo %}disabled{% endif %} onclick="location.href='{{ path('stats_choisir_statut', {'typeGraph': 'histogramme'}) }}'" class="btn {% if statsPlusieursEvalsStatutDispo %}btn-primary{% else %}btn-secondary{% endif %}">Consulter ce type de statistiques</button>
+                        <button {% if not statsPlusieursEvalsStatutDispo %}disabled{% endif %}
+                                onclick="location.href='{{ path('stats_choisir_statut', {'typeGraph': 'histogramme'}) }}'"
+                                class="btn {% if statsPlusieursEvalsStatutDispo %}btn-primary{% else %}btn-secondary{% endif %}">
+                            Consulter ce type de statistiques
+                        </button>
                     </div>
                 </div>
                 <div class="card">
-                    <img class="card-img-top imageAAgrandir" id="myImg" {% if statsPlusieursEvalsStatutDispo %}src="{{ asset('img/statistiques/plusieurs-evals-statut/bam.png') }}"{% else %}src="{{ asset('img/statistiques/plusieurs-evals-statut/bam_black.png') }}"{% endif %} alt="Card image cap">
+                    <img class="card-img-top imageAAgrandir" id="myImg"
+                         {% if statsPlusieursEvalsStatutDispo %}src="{{ asset('img/statistiques/plusieurs-evals-statut/bam.png') }}"
+                         {% else %}src="{{ asset('img/statistiques/plusieurs-evals-statut/bam_black.png') }}"{% endif %}
+                         alt="Card image cap">
                     <div class="card-body">
                         <hr>
                         <h5 class="card-title">Répartition des notes (boîte à moustache)</h5>
                         <p class="card-text">
-                            Sélectionnez plusieurs évaluations (par exemple toutes les évaluations en mathématiques) et obtenez,
-                            sous forme de <b>boîte à moustaches</b>,la répartition globale des notes pour un ou plusieurs statuts d’étudiants (boursiers, redoublants...).
+                            Sélectionnez plusieurs évaluations (par exemple toutes les évaluations en mathématiques) et
+                            obtenez,
+                            sous forme de <b>boîte à moustaches</b>,la répartition globale des notes pour un ou
+                            plusieurs statuts d’étudiants (boursiers, redoublants...).
                         </p>
                         {% if not statsPlusieursEvalsStatutDispo %}
-                            <span style="font-size:15px; color: #0275d8"><i class="icon-attention-circled"></i>Statistique indisponible : <a href="{{ path("statut_new") }}">Créez un statut</a> ou <a href="{{ path("evaluation_choose_group", {"typeEval" : "simple"}) }}"> Créez des évaluations</a></span>
+                            <span style="font-size:15px; color: #0275d8"><i class="icon-attention-circled"></i>Statistique indisponible : <a
+                                        href="{{ path("statut_new") }}">Créez un statut</a> ou <a
+                                        href="{{ path("evaluation_choose_group", {"typeEval" : "simple"}) }}"> Créez des évaluations</a></span>
                             <br><br>
                         {% endif %}
-                        <button {% if not statsPlusieursEvalsStatutDispo %}disabled{% endif %} onclick="location.href='{{ path('stats_choisir_statut', {'typeGraph': 'boite-moustache'}) }}'" class="btn {% if statsPlusieursEvalsStatutDispo %}btn-primary{% else %}btn-secondary{% endif %}">Consulter ce type de statistiques</button>
+                        <button {% if not statsPlusieursEvalsStatutDispo %}disabled{% endif %}
+                                onclick="location.href='{{ path('stats_choisir_statut', {'typeGraph': 'boite-moustache'}) }}'"
+                                class="btn {% if statsPlusieursEvalsStatutDispo %}btn-primary{% else %}btn-secondary{% endif %}">
+                            Consulter ce type de statistiques
+                        </button>
                     </div>
                 </div>
                 <div class="card">
-                    <img class="card-img-top imageAAgrandir" {% if statsPlusieursEvalsStatutDispo %}src="{{ asset('img/statistiques/plusieurs-evals-statut/moy.png') }}"{% else %}src="{{ asset('img/statistiques/plusieurs-evals-statut/moy_black.png') }}"{% endif %} alt="Card image cap">
+                    <img class="card-img-top imageAAgrandir"
+                         {% if statsPlusieursEvalsStatutDispo %}src="{{ asset('img/statistiques/plusieurs-evals-statut/moy.png') }}"
+                         {% else %}src="{{ asset('img/statistiques/plusieurs-evals-statut/moy_black.png') }}"{% endif %}
+                         alt="Card image cap">
                     <div class="card-body">
                         <hr>
                         <h5 class="card-title">Moyenne et écart-type (histogramme)</h5>
                         <p class="card-text">
-                            Sélectionnez plusieurs évaluations (par exemple toutes les évaluations en mathématiques) et obtenez,
-                            sous forme <b>d'histogramme</b>,la moyenne et l’écart-type pour un ou plusieurs profils d’étudiants (boursiers, redoublants...).
+                            Sélectionnez plusieurs évaluations (par exemple toutes les évaluations en mathématiques) et
+                            obtenez,
+                            sous forme <b>d'histogramme</b>,la moyenne et l’écart-type pour un ou plusieurs profils
+                            d’étudiants (boursiers, redoublants...).
                         </p>
                         {% if not statsPlusieursEvalsStatutDispo %}
-                            <span style="font-size:15px; color: #0275d8"><i class="icon-attention-circled"></i>Statistique indisponible : <a href="{{ path("statut_new") }}">Créez un statut</a> ou <a href="{{ path("evaluation_choose_group", {"typeEval" : "simple"}) }}"> Créez des évaluations</a></span>
+                            <span style="font-size:15px; color: #0275d8"><i class="icon-attention-circled"></i>Statistique indisponible : <a
+                                        href="{{ path("statut_new") }}">Créez un statut</a> ou <a
+                                        href="{{ path("evaluation_choose_group", {"typeEval" : "simple"}) }}"> Créez des évaluations</a></span>
                             <br><br>
                         {% endif %}
-                        <button {% if not statsPlusieursEvalsStatutDispo %}disabled{% endif %} onclick="location.href='{{ path('stats_choisir_statut', {'typeGraph': 'moyenne'}) }}'" class="btn {% if statsPlusieursEvalsStatutDispo %}btn-primary{% else %}btn-secondary{% endif %}">Consulter ce type de statistiques</button>
+                        <button {% if not statsPlusieursEvalsStatutDispo %}disabled{% endif %}
+                                onclick="location.href='{{ path('stats_choisir_statut', {'typeGraph': 'moyenne'}) }}'"
+                                class="btn {% if statsPlusieursEvalsStatutDispo %}btn-primary{% else %}btn-secondary{% endif %}">
+                            Consulter ce type de statistiques
+                        </button>
                     </div>
                 </div>
             </div>
@@ -337,20 +467,31 @@
             <hr>
             <div class="card-deck">
                 <div class="card">
-                    <img class="card-img-top imageAAgrandir" {% if ficheEtudiantDispo %}src="{{ asset('img/statistiques/fiche-etudiant/courbe.png') }}"{% else %}src="{{ asset('img/statistiques/fiche-etudiant/courbe_black.png') }}"{% endif %} alt="Card image cap">
+                    <img class="card-img-top imageAAgrandir"
+                         {% if ficheEtudiantDispo %}src="{{ asset('img/statistiques/fiche-etudiant/courbe.png') }}"
+                         {% else %}src="{{ asset('img/statistiques/fiche-etudiant/courbe_black.png') }}"{% endif %}
+                         alt="Card image cap">
                     <div class="card-body">
                         <hr>
                         <h5 class="card-title">Fiche étudiant</h5>
                         <p class="card-text">
-                            Sélectionnez un étudiant et obtenez une page récapitulative de ses résultats sur toutes les évaluations auxquelles il a participé sous
-                            forme de <b>courbes d'évolution</b> chronologiques, <b>d'histogrammes</b>, et de <b>classements</b> parmis les groupes ou statuts d'étudiants
+                            Sélectionnez un étudiant et obtenez une page récapitulative de ses résultats sur toutes les
+                            évaluations auxquelles il a participé sous
+                            forme de <b>courbes d'évolution</b> chronologiques, <b>d'histogrammes</b>, et de <b>classements</b>
+                            parmis les groupes ou statuts d'étudiants
                             auxquels il appartient.
                         </p>
                         {% if not ficheEtudiantDispo %}
-                            <span style="font-size:15px; color: #0275d8"><i class="icon-attention-circled"></i>Statistique indisponible : {% if is_granted('ROLE_ADMIN') %}<a href="{{ path("groupe_etudiant_new") }}">Créez des étudiants</a> ou {% endif %}<a href="{{ path("evaluation_choose_group", {"typeEval" : "simple"}) }}">Créez des évaluations</a></span>
+                            <span style="font-size:15px; color: #0275d8"><i class="icon-attention-circled"></i>Statistique indisponible : {% if is_granted('ROLE_ADMIN') %}<a
+                                href="{{ path("groupe_etudiant_new") }}">Créez des étudiants</a> ou {% endif %}<a
+                                        href="{{ path("evaluation_choose_group", {"typeEval" : "simple"}) }}">Créez des évaluations</a></span>
                             <br><br>
                         {% endif %}
-                        <button {% if not ficheEtudiantDispo %}disabled{% endif %} onclick="location.href='{{ path('statistiques_fiche_etudiant_choisir_etudiant') }}'" class="btn {% if ficheEtudiantDispo %}btn-primary{% else %}btn-secondary{% endif %}">Consulter ce type de statistiques</button>
+                        <button {% if not ficheEtudiantDispo %}disabled{% endif %}
+                                onclick="location.href='{{ path('statistiques_fiche_etudiant_choisir_etudiant') }}'"
+                                class="btn {% if ficheEtudiantDispo %}btn-primary{% else %}btn-secondary{% endif %}">
+                            Consulter ce type de statistiques
+                        </button>
                     </div>
                 </div>
             </div>
@@ -363,19 +504,30 @@
             Comparaison des résultats d’une évaluation spécifique à un ensemble d’évaluations
         </li>
         <div class="card-body">
-            Comparez les résultats obtenus à une évaluation par rapport à un ensemble d’évaluations (par exemple: comparer les résultats obtenus par les étudiants à une évaluation d’algorithmique par rapport à l’ensemble des évaluations en informatique).
-            La comparaison peut porter sur des groupes spécifiques (groupes de TD/TP par exemple) et/ou des étudiants ayant un statut particulier (boursiers, redoublants...).
+            Comparez les résultats obtenus à une évaluation par rapport à un ensemble d’évaluations (par exemple:
+            comparer les résultats obtenus par les étudiants à une évaluation d’algorithmique par rapport à l’ensemble
+            des évaluations en informatique).
+            La comparaison peut porter sur des groupes spécifiques (groupes de TD/TP par exemple) et/ou des étudiants
+            ayant un statut particulier (boursiers, redoublants...).
             <hr>
             <div class="card-deck">
                 <div class="card">
-                    <img class="card-img-top imageAAgrandir" {% if statsComparaisonDispo %}src="{{ asset('img/statistiques/comparaison/moy.png') }}"{% else %}src="{{ asset('img/statistiques/comparaison/moy_black.png') }}"{% endif %} alt="Card image cap">
+                    <img class="card-img-top imageAAgrandir"
+                         {% if statsComparaisonDispo %}src="{{ asset('img/statistiques/comparaison/moy.png') }}"
+                         {% else %}src="{{ asset('img/statistiques/comparaison/moy_black.png') }}"{% endif %}
+                         alt="Card image cap">
                     <div class="card-body">
                         <hr>
                         {% if not statsComparaisonDispo %}
-                            <span style="font-size:15px; color: #0275d8"><i class="icon-attention-circled"></i>Statistique indisponible : <a href="{{ path("evaluation_choose_group", {"typeEval" : "simple"}) }}"> Créez des évaluations</a></span>
+                            <span style="font-size:15px; color: #0275d8"><i class="icon-attention-circled"></i>Statistique indisponible : <a
+                                        href="{{ path("evaluation_choose_group", {"typeEval" : "simple"}) }}"> Créez des évaluations</a></span>
                             <br><br>
                         {% endif %}
-                        <button {% if not statsComparaisonDispo %}disabled{% endif %} onclick="location.href='{{ path('statistiques_choix_evaluation', {'typeStat' : 'comparaison', 'typeGraph' : 'moyenne'}) }}'" class="btn {% if statsComparaisonDispo %}btn-primary{% else %}btn-secondary{% endif %}">Consulter ce type de statistiques</button>
+                        <button {% if not statsComparaisonDispo %}disabled{% endif %}
+                                onclick="location.href='{{ path('statistiques_choix_evaluation', {'typeStat' : 'comparaison', 'typeGraph' : 'moyenne'}) }}'"
+                                class="btn {% if statsComparaisonDispo %}btn-primary{% else %}btn-secondary{% endif %}">
+                            Consulter ce type de statistiques
+                        </button>
                     </div>
                 </div>
             </div>
@@ -389,7 +541,6 @@
 {% endblock %}
 
 {% block javascripts %}
-
     <script>
         //Event listener pour agrandir l'image lorsqu'on clique dessus
         //La fonction va afficher dans la fenêtre l'image, non réduite à la taille de la carte
@@ -402,6 +553,4 @@
             $("#modale-images").css("display", "none");
         })
     </script>
-
-
 {% endblock %}

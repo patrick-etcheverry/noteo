@@ -36,11 +36,10 @@ class StatsController extends AbstractController
         //On définit quelles fonctionnalités seront disponibles à l'utilisateur
         $statsClassiquesDispo = count($repoEval->findAllWithOnePart()) >= 1; //Si plus d'une éval simple dans l'appli
         $statsClassiquesParPartiesDispo = count($repoEval->findAllWithSeveralParts()) >= 1;  //Si plus d'une éval avec partie dans l'appli
-        $statsPlusieursEvalsGroupeDispo = count($repoGroupe->findAllHavingStudents()) >=1 && count($repoEval->findAll()) >= 2;  //Si plus d'un groupe avec des étudiants et plus de 2 évals dans l'appli
-        $statsPlusieursEvalsStatutDispo = count($repoStatut->findAllHavingStudents()) >=1 && count($repoEval->findAll()) >= 2; //Si plus d'un statut avec des étudiants et plus de 2 évals dans l'appli
+        $statsPlusieursEvalsGroupeDispo = count($repoGroupe->findAllHavingStudents()) >= 1 && count($repoEval->findAll()) >= 2;  //Si plus d'un groupe avec des étudiants et plus de 2 évals dans l'appli
+        $statsPlusieursEvalsStatutDispo = count($repoStatut->findAllHavingStudents()) >= 1 && count($repoEval->findAll()) >= 2; //Si plus d'un statut avec des étudiants et plus de 2 évals dans l'appli
         $statsComparaisonDispo = count($repoEval->findAll()) >= 2; //Si plus de 2 évals dans l'appli
         $ficheEtudiantDispo = count($repoEtudiant->findAllConcernedByAtLeastOneEvaluation()) >= 1; //Si il y a au moins 1 étudiant concerné par une évaluation dans l'appli
-
         return $this->render('statistiques/choix_statistiques.html.twig', [
             'statsClassiquesDispo' => $statsClassiquesDispo,
             'statsClassiquesParPartiesDispo' => $statsClassiquesParPartiesDispo,
@@ -58,7 +57,7 @@ class StatsController extends AbstractController
     {
         //On met en sesssion le type de graphique choisi par l'utilisateur pour afficher l'onglet correspondant lors de l'affichage des stats
         $request->getSession()->set('typeGraphique', $typeGraph);
-        switch($typeStat) {
+        switch ($typeStat) {
             case 'classique':
                 $evaluations = $repoEval->findAllWithOnePart();
                 $titrePage = "Analyse d’une évaluation simple";
@@ -87,9 +86,8 @@ class StatsController extends AbstractController
                 'choices' => $evaluations
             ])
             ->getForm();
-
         $form->handleRequest($request);
-        if ($form->isSubmitted()  && $form->isValid()) {
+        if ($form->isSubmitted() && $form->isValid()) {
             switch ($typeStat) {
                 case 'classique':
                 case 'classique-avec-parties' :
@@ -115,9 +113,9 @@ class StatsController extends AbstractController
     /**
      * @Route("/comparaison/{slug}/choisir-autres-evals", name="statistiques_comparaison_choisir_autres_evals", methods={"GET","POST"})
      */
-    public function choisirEvalsComparaison(Request $request, Evaluation $evaluation, EvaluationRepository $repoEval ): Response
+    public function choisirEvalsComparaison(Request $request, Evaluation $evaluation, EvaluationRepository $repoEval): Response
     {
-        $evaluationsDispos = $repoEval->findAllOverAGroupExceptCurrentOne($evaluation->getGroupe()->getId(),$evaluation->getId());
+        $evaluationsDispos = $repoEval->findAllOverAGroupExceptCurrentOne($evaluation->getGroupe()->getId(), $evaluation->getId());
         $form = $this->createFormBuilder()
             ->add('evaluations', EntityType::class, [
                 'constraints' => [new NotNull],
@@ -131,9 +129,9 @@ class StatsController extends AbstractController
             ])
             ->getForm();
         $form->handleRequest($request);
-        if($form->isSubmitted() && $form->isValid()) {
-            if(count($form->get('evaluations')->getData()) > 0) {
-                $evaluationsChoisies =  $form->get('evaluations')->getData();
+        if ($form->isSubmitted() && $form->isValid()) {
+            if (count($form->get('evaluations')->getData()) > 0) {
+                $evaluationsChoisies = $form->get('evaluations')->getData();
             }
             $session = $request->getSession();
             $session->set('evaluationsChoisies', $evaluationsChoisies);
@@ -152,7 +150,7 @@ class StatsController extends AbstractController
     /**
      * @Route("/comparaison/{slug}/choisir-groupes-et-statuts", name="statistiques_comparaison_choisir_groupes_statuts", methods={"GET","POST"})
      */
-    public function choisirGroupesEtStatutscomparaison(Request $request, Evaluation $evaluation, StatutRepository $repoStatut,GroupeEtudiantRepository $repoGroupe, PointsRepository $repoPoints): Response
+    public function choisirGroupesEtStatutscomparaison(Request $request, Evaluation $evaluation, StatutRepository $repoStatut, GroupeEtudiantRepository $repoGroupe, PointsRepository $repoPoints): Response
     {
         $session = $request->getSession();
         $evaluationsChoisies = $session->get('evaluationsChoisies');
@@ -181,87 +179,84 @@ class StatsController extends AbstractController
             ])
             ->getForm();
         $form->handleRequest($request);
-        if ($form->isSubmitted()  && $form->isValid()) {
-          $groupes = $form->get('groupes')->getData();
-          $statuts = $form->get('statuts')->getData();
-
-                /// GENERATION DES STATISTIQUES
-          $tabStatsComparaison = array();
-          foreach ($groupes as $groupe) {
-            // déterminer la moyenne du groupe courant à l'évaluation de référence
-            $pointsEvaluationGroupe = $repoPoints->findAllNotesByGroupe($evaluation->getId(), $groupe->getId());
-            $moyenneEvaluationCouranteGroupe = array();
-            foreach ($pointsEvaluationGroupe as $note) {
-              $moyenneEvaluationGroupe[] = $note["valeur"];
+        if ($form->isSubmitted() && $form->isValid()) {
+            $groupes = $form->get('groupes')->getData();
+            $statuts = $form->get('statuts')->getData();
+            /// GENERATION DES STATISTIQUES
+            $tabStatsComparaison = array();
+            foreach ($groupes as $groupe) {
+                // déterminer la moyenne du groupe courant à l'évaluation de référence
+                $pointsEvaluationGroupe = $repoPoints->findAllNotesByGroupe($evaluation->getId(), $groupe->getId());
+                $moyenneEvaluationCouranteGroupe = array();
+                foreach ($pointsEvaluationGroupe as $note) {
+                    $moyenneEvaluationGroupe[] = $note["valeur"];
+                }
+                $moyenneEvaluationCouranteGroupe = $this->moyenne($moyenneEvaluationGroupe);
+                //déterminer la moyenne des moyennes aux évaluations
+                $moyennesGroupeTmp = array();
+                foreach ($evaluationsChoisies as $evaluationCourante) { // pour chaque évaluation, on détermine sa moyenne pour le groupe courant
+                    //determiner la moyenne de l'évaluation courante
+                    $tabPoints = $repoPoints->findAllNotesByGroupe($evaluationCourante->getId(), $groupe->getId()); // on récupère les notes
+                    //on crée un tableau temporaire ou on stoque séparement chaque note
+                    $copieTab = array();
+                    foreach ($tabPoints as $note) {
+                        $copieTab[] = $note["valeur"];
+                    }
+                    $moyenneEvaluationCourante = $this->moyenne($copieTab); // on determine la moyenne du controle courant
+                    array_push($moyennesGroupeTmp, $moyenneEvaluationCourante);
+                }
+                //on détermine la moyenne des moyennes
+                $moyenneDesMoyennesEvaluations = $this->moyenne($moyennesGroupeTmp);
+                $tabStatsComparaison[] = [
+                    "nom" => $groupe->getNom(),
+                    "moyenneControleCourant" => $moyenneEvaluationCouranteGroupe,
+                    "moyenneAutresControles" => $moyenneDesMoyennesEvaluations,
+                ];
             }
-            $moyenneEvaluationCouranteGroupe = $this->moyenne($moyenneEvaluationGroupe);
+            ///on traite les statistiques pour tous les statuts
+            foreach ($statuts as $statut) {
+                /// déterminer la moyenne du groupe courant à l'évaluation
+                $pointsEvaluationStatut = $repoPoints->findAllNotesByStatut($evaluation->getId(), $statut->getId());
+                $moyenneEvaluationCouranteStatut = array();
+                foreach ($pointsEvaluationStatut as $note) {
+                    $moyenneEvaluationCouranteStatut[] = $note["valeur"];
+                }
+                $moyenneEvaluationCouranteStatut = $this->moyenne($moyenneEvaluationCouranteStatut);
+                /// déterminer la moyenne des moyennes aux évaluations
+                $moyennesTmp = array();
 
-            //déterminer la moyenne des moyennes aux évaluations
-            $moyennesGroupeTmp = array();
-
-            foreach ($evaluationsChoisies as $evaluationCourante) { // pour chaque évaluation, on détermine sa moyenne pour le groupe courant
-              //determiner la moyenne de l'évaluation courante
-              $tabPoints = $repoPoints->findAllNotesByGroupe($evaluationCourante->getId(), $groupe->getId()); // on récupère les notes
-              //on crée un tableau temporaire ou on stoque séparement chaque note
-              $copieTab = array();
-              foreach ($tabPoints as $note) {
-                $copieTab[] = $note["valeur"];
-              }
-              $moyenneEvaluationCourante = $this->moyenne($copieTab); // on determine la moyenne du controle courant
-              array_push($moyennesGroupeTmp, $moyenneEvaluationCourante);
+                foreach ($evaluationsChoisies as $evaluationCourante) { // pour chaque évaluation, on détermine sa moyenne pour le groupe courant
+                    //determiner la moyenne de l'évaluation courante
+                    $tabPoints = $repoPoints->findAllNotesByStatut($evaluationCourante->getId(), $statut->getId()); // on récupère les notes
+                    //on crée un tableau temporaire ou on stoque séparement chaque note
+                    $copieTab = array();
+                    foreach ($tabPoints as $note) {
+                        $copieTab[] = $note["valeur"];
+                    }
+                    $moyenneEvaluationCourante = $this->moyenne($copieTab); // on determine la moyenne du controle courant
+                    array_push($moyennesTmp, $moyenneEvaluationCourante);
+                }
+                //on détermine la moyenne des moyennes
+                $moyenneDesMoyennesEvaluations = $this->moyenne($moyennesTmp);
+                $tabStatsComparaison[] = [
+                    "nom" => $statut->getNom(),
+                    "moyenneControleCourant" => $moyenneEvaluationCouranteStatut,
+                    "moyenneAutresControles" => $moyenneDesMoyennesEvaluations,
+                ];
             }
-            //on détermine la moyenne des moyennes
-            $moyenneDesMoyennesEvaluations = $this->moyenne($moyennesGroupeTmp);
-            $tabStatsComparaison[] = [
-              "nom" => $groupe->getNom(),
-              "moyenneControleCourant" => $moyenneEvaluationCouranteGroupe,
-              "moyenneAutresControles" => $moyenneDesMoyennesEvaluations,
-            ];
-          }
-          ///on traite les statistiques pour tous les statuts
-          foreach ($statuts as $statut) {
-            /// déterminer la moyenne du groupe courant à l'évaluation
-            $pointsEvaluationStatut = $repoPoints->findAllNotesByStatut($evaluation->getId(), $statut->getId());
-            $moyenneEvaluationCouranteStatut = array();
-            foreach ($pointsEvaluationStatut as $note) {
-              $moyenneEvaluationCouranteStatut[] = $note["valeur"];
-            }
-            $moyenneEvaluationCouranteStatut = $this->moyenne($moyenneEvaluationCouranteStatut);
-            /// déterminer la moyenne des moyennes aux évaluations
-            $moyennesTmp = array();
-
-            foreach ($evaluationsChoisies as $evaluationCourante) { // pour chaque évaluation, on détermine sa moyenne pour le groupe courant
-              //determiner la moyenne de l'évaluation courante
-              $tabPoints = $repoPoints->findAllNotesByStatut($evaluationCourante->getId(), $statut->getId()); // on récupère les notes
-              //on crée un tableau temporaire ou on stoque séparement chaque note
-              $copieTab = array();
-              foreach ($tabPoints as $note) {
-                $copieTab[] = $note["valeur"];
-              }
-              $moyenneEvaluationCourante = $this->moyenne($copieTab); // on determine la moyenne du controle courant
-              array_push($moyennesTmp, $moyenneEvaluationCourante);
-            }
-            //on détermine la moyenne des moyennes
-            $moyenneDesMoyennesEvaluations = $this->moyenne($moyennesTmp);
-            $tabStatsComparaison[] = [
-              "nom" => $statut->getNom(),
-              "moyenneControleCourant" => $moyenneEvaluationCouranteStatut,
-              "moyenneAutresControles" => $moyenneDesMoyennesEvaluations,
-            ];
-          }
-          $formatAdapteALaVue = [[
-            "nom" => "Comparaison de " . $evaluation->getNom() . " à " . (count($evaluationsChoisies)) . ' évaluation(s)',
-            "stats" => $tabStatsComparaison
+            $formatAdapteALaVue = [[
+                "nom" => "Comparaison de " . $evaluation->getNom() . " à " . (count($evaluationsChoisies)) . ' évaluation(s)',
+                "stats" => $tabStatsComparaison
             ]
-          ];
-          return $this->render('statistiques/statsComparaison.html.twig', [
-            'evaluations' => $evaluationsChoisies,
-            'evaluationConcernee' => $evaluation,
-            'groupes' => $groupes,
-            "parties" => $formatAdapteALaVue,
-            'titre' => "Comparer " . $evaluation->getNom() . " à " . (count($evaluationsChoisies)) . ' évaluation(s)',
-            'plusieursEvals' => true,
-          ]);
+            ];
+            return $this->render('statistiques/statsComparaison.html.twig', [
+                'evaluations' => $evaluationsChoisies,
+                'evaluationConcernee' => $evaluation,
+                'groupes' => $groupes,
+                "parties" => $formatAdapteALaVue,
+                'titre' => "Comparer " . $evaluation->getNom() . " à " . (count($evaluationsChoisies)) . ' évaluation(s)',
+                'plusieursEvals' => true,
+            ]);
         }
         return $this->render('statistiques/choix_groupes_et_parties.html.twig', [
             'form' => $form->createView(),
@@ -275,9 +270,9 @@ class StatsController extends AbstractController
     /**
      * @Route("/{typeStat}/{slug}/choisir-groupes-et-statuts", name="statistiques_classiques_choisir_groupes_parties_statuts", methods={"GET","POST"})
      */
-    public function choisirGroupesPartiesEtStatuts(Request $request, $typeStat, Evaluation $evaluation, StatutRepository $repoStatut, GroupeEtudiantRepository $repoGroupe, PointsRepository $repoPoints ): Response
+    public function choisirGroupesPartiesEtStatuts(Request $request, $typeStat, Evaluation $evaluation, StatutRepository $repoStatut, GroupeEtudiantRepository $repoGroupe, PointsRepository $repoPoints): Response
     {
-        switch($typeStat) {
+        switch ($typeStat) {
             case 'classique':
                 $titrePage = "Analyse d’une évaluation simple";
                 break;
@@ -290,17 +285,17 @@ class StatsController extends AbstractController
         //On récupère la liste de tous les enfants (directs et indirects) du groupe concerné pour choisir ceux sur lesquels on veut des statistiques
         $choixGroupe = $repoGroupe->findAllOrderedFromNode($groupeConcerne);
         $formBuilder = $this->createFormBuilder();
-        if(count($evaluation->getParties()) > 1) {
+        if (count($evaluation->getParties()) > 1) {
             $formBuilder
                 ->add('parties', EntityType::class, [
-                'class' => Partie::Class,
-                'choice_label' => false,
-                'label' => false,
-                'mapped' => false,
-                'expanded' => true,
-                'multiple' => true,
-                'choices' => $evaluation->getParties() // On choisira parmis le groupe concerné et ses enfants
-            ]);
+                    'class' => Partie::Class,
+                    'choice_label' => false,
+                    'label' => false,
+                    'mapped' => false,
+                    'expanded' => true,
+                    'multiple' => true,
+                    'choices' => $evaluation->getParties() // On choisira parmis le groupe concerné et ses enfants
+                ]);
         }
         $formBuilder
             ->add('groupes', EntityType::class, [
@@ -322,19 +317,18 @@ class StatsController extends AbstractController
                 'choices' => $repoStatut->findByEvaluation($evaluation->getId()) // On choisira parmis les statuts qui possède au moins 1 étudiant ayant participé à l'évaluation
             ]);
         $form = $formBuilder->getForm()->handleRequest($request);
-        if ($form->isSubmitted()  && $form->isValid()) {
+        if ($form->isSubmitted() && $form->isValid()) {
             $groupesChoisis = $form->get("groupes")->getData();
             $statutsChoisis = $form->get("statuts")->getData();
-            if(count($groupesChoisis) >0 || count($statutsChoisis) > 0) {
-                if(count($evaluation->getParties()) > 1) {
+            if (count($groupesChoisis) > 0 || count($statutsChoisis) > 0) {
+                if (count($evaluation->getParties()) > 1) {
                     $partiesChoisies = $form->get("parties")->getData();
-                }
-                else {
+                } else {
                     $partiesChoisies = $evaluation->getParties();
                 }
                 $toutesLesStats = [];
                 //Calcul des stats pour toutes les parties
-                foreach($partiesChoisies as $partie) {
+                foreach ($partiesChoisies as $partie) {
                     $statsDuGroupePourLaPartie = [];
                     foreach ($groupesChoisis as $groupe) {
                         $notesGroupe = $repoPoints->findByGroupeAndPartie($evaluation->getId(), $groupe->getId(), $partie->getId());
@@ -347,12 +341,12 @@ class StatsController extends AbstractController
                             "nom" => $groupe->getNom(),
                             "repartition" => $this->repartition($copieTabPoints),
                             "listeNotes" => $copieTabPoints,
-                            "moyenne" =>$this->moyenne($copieTabPoints),
-                            "ecartType" =>$this->ecartType($copieTabPoints),
-                            "minimum"=>$this->minimum($copieTabPoints),
-                            "maximum"=>$this->maximum($copieTabPoints),
-                            "mediane"=>$this->mediane($copieTabPoints),
-                        ] ;
+                            "moyenne" => $this->moyenne($copieTabPoints),
+                            "ecartType" => $this->ecartType($copieTabPoints),
+                            "minimum" => $this->minimum($copieTabPoints),
+                            "maximum" => $this->maximum($copieTabPoints),
+                            "mediane" => $this->mediane($copieTabPoints),
+                        ];
                     }
                     $statsDuStatutPourLaPartie = [];
                     foreach ($statutsChoisis as $statut) {
@@ -366,11 +360,11 @@ class StatsController extends AbstractController
                             "nom" => $statut->getNom(),
                             "repartition" => $this->repartition($copieTabPoints),
                             "listeNotes" => $copieTabPoints,
-                            "moyenne" =>$this->moyenne($copieTabPoints),
-                            "ecartType" =>$this->ecartType($copieTabPoints),
-                            "minimum"=>$this->minimum($copieTabPoints),
-                            "maximum"=>$this->maximum($copieTabPoints),
-                            "mediane"=>$this->mediane($copieTabPoints),
+                            "moyenne" => $this->moyenne($copieTabPoints),
+                            "ecartType" => $this->ecartType($copieTabPoints),
+                            "minimum" => $this->minimum($copieTabPoints),
+                            "maximum" => $this->maximum($copieTabPoints),
+                            "mediane" => $this->mediane($copieTabPoints),
                         ];
                     }
                     //Ajout des stats de la partie (groupe + statut) dans le tableau général
@@ -381,7 +375,7 @@ class StatsController extends AbstractController
                     ];
                 }
                 //Mise en session des stats pour le mail et la page de visualisation
-                $session->set('stats',$toutesLesStats);
+                $session->set('stats', $toutesLesStats);
                 return $this->render('statistiques/stats.html.twig', [
                     'titrePage' => 'Statistiques pour ' . $evaluation->getNom(),
                     'plusieursEvals' => false,
@@ -401,7 +395,7 @@ class StatsController extends AbstractController
     /**
      * @Route("/previsualisation-mail/{slug}", name="previsualisation_mail", methods={"GET", "POST"})
      */
-    public function envoiMail(Evaluation $evaluation, Request $request, PointsRepository $pointsRepository,  \Swift_Mailer $mailer,  Filesystem $filesystem): Response
+    public function envoiMail(Evaluation $evaluation, Request $request, PointsRepository $pointsRepository, \Swift_Mailer $mailer, Filesystem $filesystem): Response
     {
         $nbEtudiants = count($evaluation->getGroupe()->getEtudiants());
         $nomGroupe = $evaluation->getGroupe()->getNom();
@@ -422,14 +416,14 @@ class StatsController extends AbstractController
             ])
             ->getForm();
         $form->handleRequest($request);
-        if($form->isSubmitted() && $form->isValid()) {
+        if ($form->isSubmitted() && $form->isValid()) {
             $fichier = $form->get('fichierPDF')->getData();
             $filesystem->remove(['symlink', "pdf_temp", 'activity.log']); //Pour vider le stockage temporaire du précédent pdf envoyé
             //Pour ne traiter le fichier optionnel que si il est déposé
             if ($fichier) {
                 $originalFilename = pathinfo($fichier->getClientOriginalName(), PATHINFO_FILENAME);
                 //Rajout de l'extension au nom de fichier
-                $newFilename = $originalFilename.'.'.$fichier->guessExtension();
+                $newFilename = $originalFilename . '.' . $fichier->guessExtension();
                 //Déplacement du fichier
                 $fichier->move(
                     "pdf_temp", //Déplacé dans le dossier pdf_temp dans public
@@ -440,29 +434,29 @@ class StatsController extends AbstractController
             // Récupération des stats mises en session
             $stats = $session->get('stats');
             $notesEtudiants = $pointsRepository->findNotesAndEtudiantByEvaluation($evaluation);
-            $tabRang = $pointsRepository->findAllNotesByGroupe($evaluation->getId(),$evaluation->getGroupe()->getId());
+            $tabRang = $pointsRepository->findAllNotesByGroupe($evaluation->getId(), $evaluation->getGroupe()->getId());
             $copieTabRang = array();
             foreach ($tabRang as $element) {
                 $copieTabRang[] = $element["valeur"];
             }
             $effectif = sizeof($copieTabRang);
             $mailAdmin = $_ENV['MAIL_ADMINISTRATEUR'];
-            for ($i=0; $i < count($notesEtudiants); $i++) {
+            for ($i = 0; $i < count($notesEtudiants); $i++) {
                 $noteEtudiant = $notesEtudiants[$i]->getValeur();
                 $position = array_search($noteEtudiant, $copieTabRang) + 1;
                 $message = (new \Swift_Message('Noteo - ' . $evaluation->getNom()))
                     ->setFrom($_ENV['UTILISATEUR_SMTP'])
                     ->setTo($notesEtudiants[$i]->getEtudiant()->getMail())
                     ->setBody(
-                        $this->renderView('evaluation/mailEnvoye.html.twig',[
+                        $this->renderView('evaluation/mailEnvoye.html.twig', [
                             'etudiantsEtNotes' => $notesEtudiants[$i],
                             'stats' => $stats,
                             'position' => $position,
                             'effectif' => $effectif,
                             'mailAdmin' => $mailAdmin
-                        ]),'text/html');
-                if($fichier) { //Si le pdf est ajouté on le joint au mail
-                    $message->attach(\Swift_Attachment::fromPath('pdf_temp/'.$newFilename));
+                        ]), 'text/html');
+                if ($fichier) { //Si le pdf est ajouté on le joint au mail
+                    $message->attach(\Swift_Attachment::fromPath('pdf_temp/' . $newFilename));
                 }
                 $mailer->send($message);
             }
@@ -478,7 +472,7 @@ class StatsController extends AbstractController
             ]);
 
         }
-        return $this->render('evaluation/previsualisationMail.html.twig',[
+        return $this->render('evaluation/previsualisationMail.html.twig', [
             'evaluation' => $evaluation,
             'nbEtudiants' => $nbEtudiants,
             'nomGroupe' => $nomGroupe,
@@ -497,7 +491,7 @@ class StatsController extends AbstractController
         // Récupération des stats mises en session
         $stats = $session->get('stats');
         $notesEtudiants = $pointsRepository->findNotesAndEtudiantByEvaluation($evaluation);
-        $tabRang = $pointsRepository->findAllNotesByGroupe($evaluation->getId(),$evaluation->getGroupe()->getId());
+        $tabRang = $pointsRepository->findAllNotesByGroupe($evaluation->getId(), $evaluation->getGroupe()->getId());
         $copieTabRang = array();
         foreach ($tabRang as $element) {
             $copieTabRang[] = $element["valeur"];
@@ -506,12 +500,12 @@ class StatsController extends AbstractController
         $noteEtudiant = $notesEtudiants[0]->getValeur();
         $position = array_search($noteEtudiant, $copieTabRang) + 1;
         $mailAdmin = $_ENV['MAIL_ADMINISTRATEUR'];
-        return $this->render('evaluation/mailEnvoye.html.twig',[
+        return $this->render('evaluation/mailEnvoye.html.twig', [
             'etudiantsEtNotes' => $notesEtudiants[0],
             'stats' => $stats,
             'position' => $position,
             'effectif' => $effectif,
-            'mailAdmin' =>  $mailAdmin
+            'mailAdmin' => $mailAdmin
         ]);
     }
 
@@ -525,6 +519,7 @@ class StatsController extends AbstractController
         $form = $this->createFormBuilder()
             ->add('groupes', EntityType::class, [
                 'class' => GroupeEtudiant::Class,
+                'constraints' => [new NotBlank()],
                 'choice_label' => false,
                 'label' => false,
                 'expanded' => true,
@@ -533,8 +528,7 @@ class StatsController extends AbstractController
             ])
             ->getForm();
         $form->handleRequest($request);
-        if ($form->isSubmitted()  && $form->isValid())
-        {
+        if ($form->isSubmitted() && $form->isValid()) {
             return $this->redirectToRoute('statistiques_choisir_sous_groupes', ['slug' => $form->get('groupes')->getData()->getSlug()]);
         }
         return $this->render('statistiques/choix_groupes_plusieurs_evals.html.twig', [
@@ -566,8 +560,7 @@ class StatsController extends AbstractController
 
         $form->handleRequest($request);
 
-        if ($form->isSubmitted()  && $form->isValid())
-        {
+        if ($form->isSubmitted() && $form->isValid()) {
             $sousGroupes = $form->get('groupes')->getData();
             $request->getSession()->set('sousGroupes', $sousGroupes);
             return $this->redirectToRoute('statistiques_groupes_choisir_plusieurs_evaluations', ['slug' => $groupe->getSlug()]);
@@ -596,32 +589,26 @@ class StatsController extends AbstractController
 
         $form->handleRequest($request);
 
-        if ($form->isSubmitted()  && $form->isValid())
-        {
-            if(count($form->get('evaluations')->getData()) > 0) {
+        if ($form->isSubmitted() && $form->isValid()) {
+            if (count($form->get('evaluations')->getData()) > 0) {
                 $evaluations = $form->get('evaluations')->getData();
                 $listeStatsParGroupe = array(); // On initialise un tableau vide qui contiendra les statistiques des groupes choisis
                 $lesGroupes = array(); // On regroupe le groupe principal et les sous groupes pour faciliter la requete
                 array_push($lesGroupes, $groupe);
-                foreach ($request->getSession()->get('sousGroupes') as $sousGroupe)
-                {
+                foreach ($request->getSession()->get('sousGroupes') as $sousGroupe) {
                     array_push($lesGroupes, $sousGroupe);
                 }
                 foreach ($lesGroupes as $groupe) // On récupère les notes du groupe principal et des sous groupes sur toutes les évaluations choisis
                 {
                     $tabPoints = array();
-                    foreach ($evaluations as $eval)
-                    {
+                    foreach ($evaluations as $eval) {
                         array_push($tabPoints, $repoPoints->findAllNotesByGroupe($eval->getId(), $groupe->getId()));
                     }
                     //On crée une copie de tabPoints qui contiendra les valeurs des notes pour simplifier le tableau renvoyé par la requete
                     $copieTabPoints = array();
-                    foreach ($tabPoints as $element)
-                    {
-                        foreach ($element as $point)
-                        {
-                            foreach ($point as $note)
-                            {
+                    foreach ($tabPoints as $element) {
+                        foreach ($element as $point) {
+                            foreach ($point as $note) {
                                 $copieTabPoints[] = $note;
                             }
                         }
@@ -642,12 +629,11 @@ class StatsController extends AbstractController
                     'parties' => $formatStatsPourLaVue,
                     'evaluations' => $evaluations,
                     'groupes' => $lesGroupes,
-                    'titrePage' => 'Consulter les statistiques sur '. count($evaluations) . ' évaluation(s)',
+                    'titrePage' => 'Consulter les statistiques sur ' . count($evaluations) . ' évaluation(s)',
                     'plusieursEvals' => true,
                 ]);
             }
         }
-
         return $this->render('statistiques/choix_evals_plusieurs_evals_groupes.html.twig', ['form' => $form->createView()]);
     }
 
@@ -661,6 +647,7 @@ class StatsController extends AbstractController
         $form = $this->createFormBuilder()
             ->add('groupes', EntityType::class, [
                 'class' => Statut::Class, //On veut choisir des statut
+                'constraints' => [new NotBlank()],
                 'choice_label' => false, // On n'affichera pas d'attribut de l'entité à côté du bouton pour aider au choix car on liste les entités en utilisant les variables du champ
                 'label' => false, // On n'affiche pas le label du champ
                 'expanded' => true, // Pour avoir des boutons
@@ -668,16 +655,12 @@ class StatsController extends AbstractController
                 'choices' => $repoStatut->findAllWith1EvalOrMore() // On choisira parmis les groupes de plus haut niveau évaluables qui ont au moins 1 évaluation que les concernent
             ])
             ->getForm();
-
         $form->handleRequest($request);
-
-        if ($form->isSubmitted()  && $form->isValid())
-        {
+        if ($form->isSubmitted() && $form->isValid()) {
             return $this->redirectToRoute('statistiques_statuts_choisir_plusieurs_evaluations', [
                 'slug' => $form->get('groupes')->getData()->getSlug()
             ]);
         }
-
         return $this->render('statistiques/choix_statut_plusieurs_evals.html.twig', [
             'form' => $form->createView(),
             'pasDIndentation' => true
@@ -702,27 +685,20 @@ class StatsController extends AbstractController
                 'choices' => $repoEval->findAllByStatut($statut->getId()) // On choisira parmis les evaluations du groupe principal
             ])
             ->getForm();
-
         $form->handleRequest($request);
-
-        if ($form->isSubmitted()  && $form->isValid())
-        {
-            if(count($form->get('evaluations')->getData()) > 0) {
+        if ($form->isSubmitted() && $form->isValid()) {
+            if (count($form->get('evaluations')->getData()) > 0) {
                 $evaluations = $form->get('evaluations')->getData();
                 $listeStatsParStatut = array(); // On initialise un tableau vide qui contiendra les statistiques du statut choisi
                 $tabPoints = array();
-                foreach ($evaluations as $eval)
-                {
+                foreach ($evaluations as $eval) {
                     array_push($tabPoints, $repoPoints->findAllNotesByStatut($eval->getId(), $statut->getId()));
                 }
                 //On crée une copie de tabPoints qui contiendra les valeurs des notes pour simplifier le tableau renvoyé par la requete
                 $copieTabPoints = array();
-                foreach ($tabPoints as $element)
-                {
-                    foreach ($element as $point)
-                    {
-                        foreach ($point as $note)
-                        {
+                foreach ($tabPoints as $element) {
+                    foreach ($element as $point) {
+                        foreach ($point as $note) {
                             $copieTabPoints[] = $note;
                         }
                     }
@@ -737,18 +713,16 @@ class StatsController extends AbstractController
                     "maximum" => $this->maximum($copieTabPoints),
                     "mediane" => $this->mediane($copieTabPoints)
                 );
-
                 $formatStatsPourLaVue = [["nom" => "Évaluations", "bareme" => 20, "stats" => $listeStatsParStatut]];
                 return $this->render('statistiques/stats.html.twig', [
                     'parties' => $formatStatsPourLaVue,
                     'evaluations' => $evaluations,
                     'groupes' => $statut,
-                    'titre' => 'Consulter les statistiques sur '. count($evaluations) . ' évaluation(s)',
+                    'titre' => 'Consulter les statistiques sur ' . count($evaluations) . ' évaluation(s)',
                     'plusieursEvals' => true,
                 ]);
             }
         }
-
         return $this->render('statistiques/choix_evals_plusieurs_evals_statut.html.twig', [
             'form' => $form->createView(),
             'statut' => $statut
@@ -761,75 +735,59 @@ class StatsController extends AbstractController
     public function choisirEtudiantFicheEtudiant(Request $request, EvaluationRepository $repoEval, EtudiantRepository $repoEtudiant, PointsRepository $repoPoint): Response
     {
         $form = $this->createFormBuilder()
-        ->add('etudiants', EntityType::class, [
-            'class' => Etudiant::Class, //On veut choisir un étudiant
-            'choice_label' => false, // On n'affichera pas d'attribut de l'entité à côté du bouton pour aider au choix car on liste les entités en utilisant les variables du champ
-            'label' => false, // On n'affiche pas le label du champ
-            'expanded' => true, // Pour avoir des boutons
-            'multiple' => false, // radios
-            'choices' => $repoEtudiant->findAllConcernedByAtLeastOneEvaluation(), // On choisira parmis tous les étudiants
-            'constraints' => [new NotBlank()]
-        ])
-        ->getForm();
-
+            ->add('etudiants', EntityType::class, [
+                'class' => Etudiant::Class, //On veut choisir un étudiant
+                'choice_label' => false, // On n'affichera pas d'attribut de l'entité à côté du bouton pour aider au choix car on liste les entités en utilisant les variables du champ
+                'label' => false, // On n'affiche pas le label du champ
+                'expanded' => true, // Pour avoir des boutons
+                'multiple' => false, // radios
+                'choices' => $repoEtudiant->findAllConcernedByAtLeastOneEvaluation(), // On choisira parmis tous les étudiants
+                'constraints' => [new NotBlank()]
+            ])
+            ->getForm();
         $form->handleRequest($request);
-
-        if ($form->isSubmitted()  && $form->isValid())
-        {
+        if ($form->isSubmitted() && $form->isValid()) {
             $etudiant = $form->get('etudiants')->getData();
             $evaluations = $repoEval->findAllByEtudiant($etudiant->getId());
             $groupesEtStatuts = array();
             $groupes = array();
             $statuts = array();
-            foreach ($etudiant->getGroupes() as $groupe)
-            {
-                if ($groupe->getEstEvaluable() == true)
-                {
+            foreach ($etudiant->getGroupes() as $groupe) {
+                if ($groupe->getEstEvaluable() == true) {
                     array_push($groupesEtStatuts, $groupe);
                     array_push($groupes, $groupe);
                 }
             }
-            foreach ($etudiant->getStatuts() as $statut)
-            {
+            foreach ($etudiant->getStatuts() as $statut) {
                 array_push($groupesEtStatuts, $statut);
                 array_push($statuts, $statut);
             }
             $toutesLesStats = array();
-
-            foreach ($evaluations as $eval)
-            {
+            foreach ($evaluations as $eval) {
                 $notesEtudiants = $repoPoint->findNotesAndEtudiantByEvaluation($eval);
-                foreach ($groupes as $groupe)
-                {
+                foreach ($groupes as $groupe) {
                     // On récupère le classement de l'étudiant dans le groupe et sa note
                     $tabRang = $repoPoint->findAllNotesByGroupe($eval->getId(), $groupe->getId());
                     $copieTabRang = array();
-                    foreach ($tabRang as $element) 
-                    {
+                    foreach ($tabRang as $element) {
                         $copieTabRang[] = $element["valeur"];
                     }
                     $effectif = sizeof($copieTabRang);
                     $noteEtudiant = $repoPoint->findNoteByEvalAndStudent($eval->getId(), $etudiant->getId())[0]['valeur'];
                     $position = array_search($noteEtudiant, $copieTabRang) + 1;
                     $classement = strval($position) . " / " . strval($effectif);
-
                     //On récupère la moyenne du groupe
                     $tabPoints = array();
                     array_push($tabPoints, $repoPoint->findAllNotesByGroupe($eval->getId(), $groupe->getId()));
-                    
                     //On crée une copie de tabPoints qui contiendra les valeurs des notes pour simplifier le tableau renvoyé par la requete
                     $copieTabPoints = array();
-                    foreach ($tabPoints as $element)
-                    {
-                        foreach ($element as $point)
-                        {
-                            foreach ($point as $note)
-                            {
+                    foreach ($tabPoints as $element) {
+                        foreach ($element as $point) {
+                            foreach ($point as $note) {
                                 $copieTabPoints[] = $note;
                             }
                         }
                     }
-
                     $toutesLesStats[] = array(
                         "eval" => $eval->getNom(),
                         "groupe" => $groupe->getNom(),
@@ -838,38 +796,29 @@ class StatsController extends AbstractController
                         "noteEtudiant" => $noteEtudiant
                     );
                 }
-
-                foreach ($statuts as $statut)
-                {
+                foreach ($statuts as $statut) {
                     // On récupère le classement de l'étudiant dans le groupe et sa note
                     $tabRang = $repoPoint->findAllNotesByStatut($eval->getId(), $statut->getId());
                     $copieTabRang = array();
-                    foreach ($tabRang as $element) 
-                    {
+                    foreach ($tabRang as $element) {
                         $copieTabRang[] = $element["valeur"];
                     }
                     $effectif = sizeof($copieTabRang);
                     $noteEtudiant = $repoPoint->findNoteByEvalAndStudent($eval->getId(), $etudiant->getId())[0]['valeur'];
                     $position = array_search($noteEtudiant, $copieTabRang) + 1;
                     $classement = strval($position) . " / " . strval($effectif);
-
                     //On récupère la moyenne du groupe
                     $tabPoints = array();
                     array_push($tabPoints, $repoPoint->findAllNotesByStatut($eval->getId(), $statut->getId()));
-
                     //On crée une copie de tabPoints qui contiendra les valeurs des notes pour simplifier le tableau renvoyé par la requete
                     $copieTabPoints = array();
-                    foreach ($tabPoints as $element)
-                    {
-                        foreach ($element as $point)
-                        {
-                            foreach ($point as $note)
-                            {
+                    foreach ($tabPoints as $element) {
+                        foreach ($element as $point) {
+                            foreach ($point as $note) {
                                 $copieTabPoints[] = $note;
                             }
                         }
                     }
-
                     $toutesLesStats[] = array(
                         "eval" => $eval->getNom(),
                         "groupe" => $groupe->getNom(),
@@ -878,26 +827,23 @@ class StatsController extends AbstractController
                         "noteEtudiant" => $noteEtudiant
                     );
                 }
-
-                
             }
             return $this->render('statistiques/statsFicheEtudiant.html.twig', [
                 'etudiant' => $etudiant,
                 'evaluations' => $evaluations,
                 'groupesEtStatuts' => $groupesEtStatuts,
                 'stats' => $toutesLesStats,
-                'titre' => 'Fiche de l\'étudiant '. $etudiant->getPrenom() .' '. $etudiant->getNom()
+                'titre' => 'Fiche de l\'étudiant ' . $etudiant->getPrenom() . ' ' . $etudiant->getNom()
             ]);
         }
-
         return $this->render('statistiques/choix_etudiant_fiche_etudiant.html.twig', [
             'form' => $form->createView()
         ]);
-    
     }
 
-    public function repartition($tabPoints) {
-        $repartition = array(0,0,0,0,0);
+    public function repartition($tabPoints)
+    {
+        $repartition = array(0, 0, 0, 0, 0);
         foreach ($tabPoints as $note) {
             if ($note >= 0 && $note < 4) {
                 $repartition[0]++;
@@ -922,19 +868,16 @@ class StatsController extends AbstractController
     {
         $moyenne = 0;
         $nbNotes = 0;
-        foreach($tabPoints as $note)
-        {
+        foreach ($tabPoints as $note) {
             $nbNotes++;
             $moyenne += $note;
         }
-        if($nbNotes != 0){
-            $moyenne = $moyenne/$nbNotes;
-        }
-        else {
+        if ($nbNotes != 0) {
+            $moyenne = $moyenne / $nbNotes;
+        } else {
             $moyenne = 0;
         }
-
-        return round($moyenne,2);
+        return round($moyenne, 2);
     }
 
     public function ecartType($tabPoints)
@@ -942,47 +885,38 @@ class StatsController extends AbstractController
         $moyenne = $this->moyenne($tabPoints);
         $nbNotes = 0;
         $ecartType = 0;
-        foreach($tabPoints as $note)
-        {
+        foreach ($tabPoints as $note) {
             $ecartType = $ecartType + pow(($note - $moyenne), 2);
             $nbNotes++;
         }
         if ($nbNotes != 0) {
-            $ecartType = sqrt($ecartType/$nbNotes);
-        }
-        else {
+            $ecartType = sqrt($ecartType / $nbNotes);
+        } else {
             $ecartType = 0;
         }
-
-        return round($ecartType,2);
+        return round($ecartType, 2);
     }
 
     public function minimum($tabPoints)
     {
         if (!empty($tabPoints)) {
             $min = 20;
-            foreach($tabPoints as $note)
-            {
-                if ($note < $min)
-                {
+            foreach ($tabPoints as $note) {
+                if ($note < $min) {
                     $min = $note;
                 }
             }
-        }
-        else {
+        } else {
             $min = 0;
         }
-
         return $min;
     }
 
     public function maximum($tabPoints)
     {
         $max = 0;
-        foreach($tabPoints as $note)
-        {
-            if ($note > $max)
-            {
+        foreach ($tabPoints as $note) {
+            if ($note > $max) {
                 $max = $note;
             }
         }
@@ -993,17 +927,15 @@ class StatsController extends AbstractController
     {
         $mediane = 0;
         $nbValeurs = count($tabPoints);
-        if(!empty($tabPoints)) {
+        if (!empty($tabPoints)) {
             if ($nbValeurs % 2 == 1) //Si il y a un nombre impair de valeurs, la médiane vaut la valeur au milieu du tableau
             {
-                $mediane = $tabPoints[intval($nbValeurs/2)];
-            }
-            else //Si c'est pair, la mediane vaut la demi-somme des 2 valeurs centrales
+                $mediane = $tabPoints[intval($nbValeurs / 2)];
+            } else //Si c'est pair, la mediane vaut la demi-somme des 2 valeurs centrales
             {
-                $mediane = ($tabPoints[($nbValeurs-1)/2] + $tabPoints[($nbValeurs)/2])/2;
+                $mediane = ($tabPoints[($nbValeurs - 1) / 2] + $tabPoints[($nbValeurs) / 2]) / 2;
             }
-        }
-        else {
+        } else {
             $mediane = 0;
         }
         return $mediane;

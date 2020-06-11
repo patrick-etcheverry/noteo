@@ -21,8 +21,8 @@ class EvaluationRepository extends ServiceEntityRepository
     }
 
     /**
-    * @return Evaluation[] Returns an array of Evaluation objects
-    */
+     * @return Evaluation[] Returns an array of Evaluation objects
+     */
 
     public function findOtherEvaluationsWithGradesAndCreatorAndGroup($enseignant)
     {
@@ -39,8 +39,7 @@ class EvaluationRepository extends ServiceEntityRepository
             ->andWhere('n.valeur >= 0')
             ->setParameter('enseignant', $enseignant)
             ->getQuery()
-            ->getResult()
-        ;
+            ->getResult();
     }
 
     public function findMyEvaluationsWithGradesAndCreatorAndGroup($enseignant)
@@ -58,8 +57,7 @@ class EvaluationRepository extends ServiceEntityRepository
             ->andWhere('n.valeur >= 0')
             ->setParameter('enseignant', $enseignant)
             ->getQuery()
-            ->getResult()
-            ;
+            ->getResult();
     }
 
     public function findAllWithOnePart()
@@ -73,7 +71,7 @@ class EvaluationRepository extends ServiceEntityRepository
             GROUP BY e,g, en
             HAVING count(pa.id) = 1
         ')
-        ->execute();
+            ->execute();
     }
 
     public function findAllWithSeveralParts()
@@ -90,7 +88,8 @@ class EvaluationRepository extends ServiceEntityRepository
             ->execute();
     }
 
-    public function findAllByStatut($idStatut) {
+    public function findAllByStatut($idStatut)
+    {
         return $this->getEntityManager()->createQuery('
             SELECT e
             FROM App\Entity\Evaluation e
@@ -103,7 +102,8 @@ class EvaluationRepository extends ServiceEntityRepository
             ->execute();
     }
 
-    public function findAllByEtudiant($idEtudiant) {
+    public function findAllByEtudiant($idEtudiant)
+    {
         return $this->getEntityManager()->createQuery('
             SELECT e
             FROM App\Entity\Evaluation e
@@ -117,8 +117,8 @@ class EvaluationRepository extends ServiceEntityRepository
     }
 
 
-
-    public function findAllOverAGroupExceptCurrentOne($idGroupe, $idEvalCourante) {
+    public function findAllOverAGroupExceptCurrentOne($idGroupe, $idEvalCourante)
+    {
         return $this->getEntityManager()->createQuery('
             SELECT e
             FROM App\Entity\Evaluation e
@@ -161,7 +161,6 @@ class EvaluationRepository extends ServiceEntityRepository
         ;
     }
     */
-
 
 
 }

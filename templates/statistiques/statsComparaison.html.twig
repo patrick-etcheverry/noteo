@@ -6,18 +6,17 @@
 
 {% block stylesheets %}
     <style>
-        .card:hover{
-            -webkit-box-shadow: -1px 9px 40px -12px rgba(0,0,0,0.75);
-            -moz-box-shadow: -1px 9px 40px -12px rgba(0,0,0,0.75);
+        .card:hover {
+            -webkit-box-shadow: -1px 9px 40px -12px rgba(0, 0, 0, 0.75);
+            -moz-box-shadow: -1px 9px 40px -12px rgba(0, 0, 0, 0.75);
             box-shadow: -1px 9px 40px -12px rgba(0, 0, 0, 0.75);
         }
-        span.notBold{
-          font-weight: normal;
+        span.notBold {
+            font-weight: normal;
         }
-        span.bold{
-          font-weight: bold;
+        span.bold {
+            font-weight: bold;
         }
-
     </style>
 {% endblock %}
 
@@ -28,17 +27,19 @@
             {% if plusieursEvals %}
                 <tr>
                     <th><p>Évaluation de référence</p>
-                      <p><span class="notBold"> {{ evaluationConcernee.nom }} ({{ evaluationConcernee.date|date("d/m/Y")}})</span></p></li>
+                        <p>
+                            <span class="notBold"> {{ evaluationConcernee.nom }} ({{ evaluationConcernee.date|date("d/m/Y") }})</span>
+                        </p>
                     </th>
                     <td>
                         <ul>
-                        <p><span class="bold"> Évaluations comparées à l'évaluation de référence</span></p>
+                            <p><span class="bold"> Évaluations comparées à l'évaluation de référence</span></p>
                             {% if evaluations|length > 1 %}
                                 {% for evaluation in evaluations %}
                                     <li>{{ evaluation.nom }} ({{ evaluation.date|date("d/m/Y") }})</li>
                                 {% endfor %}
                             {% else %}
-                                    {{ evaluations[0].nom }} ({{ evaluations[0].date|date("d/m/Y") }})</li>
+                                {{ evaluations[0].nom }} ({{ evaluations[0].date|date("d/m/Y") }})</li>
                             {% endif %}
 
                         </ul>
@@ -49,28 +50,32 @@
                     <td>
                         <ul>
                             {% for groupe in parties[0].stats %}
-                              <li>{{ groupe.nom }}</li>
+                                <li>{{ groupe.nom }}</li>
                             {% endfor %}
                         </ul>
                     </td>
                 </tr>
             {% else %}
                 <tr>
-                    <th class="intitule"><label for="evaluation_groupe" >Groupe évalué</label></th>
-                    <td >{{evaluation.groupe.nom}}</td>
+                    <th class="intitule"><label for="evaluation_groupe">Groupe évalué</label></th>
+                    <td>{{ evaluation.groupe.nom }}</td>
                 </tr>
                 <tr>
-                    <th class="intitule"><label for="evaluation_date" >Date de l'évaluation</label></th>
-                    <td >{{evaluation.date | date("d/m/Y")}}</td>
+                    <th class="intitule"><label for="evaluation_date">Date de l'évaluation</label></th>
+                    <td>{{ evaluation.date | date("d/m/Y") }}</td>
                 </tr>
             {% endif %}
             <tr>
-                <th class="intitule"><label >Actions</label></th>
+                <th class="intitule"><label>Actions</label></th>
                 <td>
-                    <a href="#"><i style="font-size: 25px;" data-toggle='tooltip' title="Exporter les statistiques au format PDF" class="icon-file-pdf" onclick="genPDF()"></i></a>
+                    <a href="#"><i style="font-size: 25px;" data-toggle='tooltip'
+                                   title="Exporter les statistiques au format PDF" class="icon-file-pdf"
+                                   onclick="genPDF()"></i></a>
                     {% if not plusieursEvals %}
                         {% if (evaluation.enseignant.id == app.user.id or is_granted('ROLE_ADMIN')) %}
-                            <a href="{{path("previsualisation_mail", {slug:evaluation.slug})}}"><i style="font-size: 25px;"  data-toggle='tooltip' title="Envoyer les statistiques aux étudiants"  class="icon-mail"></i></a>
+                            <a href="{{ path("previsualisation_mail", {slug:evaluation.slug}) }}"><i
+                                        style="font-size: 25px;" data-toggle='tooltip'
+                                        title="Envoyer les statistiques aux étudiants" class="icon-mail"></i></a>
                         {% endif %}
                     {% endif %}
                 </td>
@@ -100,8 +105,11 @@
                                         {% set tabCounter = 0 %}
                                         {% for groupe in parties[0].stats %}
                                             <div class="form-check form-check-inline">
-                                                <input class="form-check-input" type="checkbox" id="{{groupe.nom}}" checked onChange="changement(this.id, this.checked, '{{ loop.parent.loop.index -1 }}', 'moy')">
-                                                <label class="form-check-label" for="inlineCheckbox1" name="label_{{groupe.nom}}_moy">{{groupe.nom}}</label>
+                                                <input class="form-check-input" type="checkbox" id="{{ groupe.nom }}"
+                                                       checked
+                                                       onChange="changement(this.id, this.checked, '{{ loop.parent.loop.index -1 }}', 'moy')">
+                                                <label class="form-check-label" for="inlineCheckbox1"
+                                                       name="label_{{ groupe.nom }}_moy">{{ groupe.nom }}</label>
                                             </div>
                                             {% set tabCounter = tabCounter + 1 %}
                                         {% endfor %}
@@ -110,7 +118,7 @@
                             </div>
                             <br>
                             <div class="container-fluid">
-                                <span style="font-size:15px"><i class="icon-attention-circled"></i>Survolez le graphique pour plus d'informations, cliquez sur un label pour masquer les données</span>
+                                <span style="font-size:15px"><i class="icon-attention-circled"></i>Survolez le graphique pour plus d'informations, cliquez sur un label de la légende pour masquer les données</span>
                                 <canvas align=center id="comparaisonMoyennes"></canvas>
                             </div>
                         </div>
@@ -121,32 +129,31 @@
         {% endfor %}
     {% else %}
         <div class="info">
-            <h2 class="h4 mb-0 text-gray-800">Veuillez sélectionner des parties de l'évaluations sur lesquelles voir des statistiques </h2>
+            <h2 class="h4 mb-0 text-gray-800">Veuillez sélectionner des parties de l'évaluations sur lesquelles voir des
+                statistiques </h2>
         </div>
     {% endif %}
 {% endblock %}
 
 {% block javascripts %}
 
-<script type="text/javascript" src="{{asset("js/jspdf.min.js")}}"></script>
-<script type="text/javascript" src="{{asset("js/html2canvas.min.js")}}"></script>
-<script type="text/javascript" src="{{asset("js/boxplot.js")}}"></script>
+<script type="text/javascript" src="{{ asset("js/jspdf.min.js") }}"></script>
+<script type="text/javascript" src="{{ asset("js/html2canvas.min.js") }}"></script>
+<script type="text/javascript" src="{{ asset("js/boxplot.js") }}"></script>
 
 <!-- Script pour la génération des graphiques -->
 <script type="text/javascript">
 
     // ----- VARIABLES GLOBALES ---------
     {% if plusieursEvals %}
-    var nomEvaluation = "Synthèse des {{evaluations.count}} evaluation(s)"
+    var nomEvaluation = "Synthèse des {{ evaluations.count }} evaluation(s)"
     {% else %}
-    var nomEvaluation = "{{evaluation.nom}}";
+    var nomEvaluation = "{{ evaluation.nom }}";
     {% endif %}
-
     var fontSize = 16;
-
     // Liste de couleurs communes
-    var noir = "#000000", jaune = "#FFFF00", bleu = "#0000FF", rouge = "#FF0000", vert = "#00FF00", violet = "#EE82EE", blanc = "#FFFFFF", gris = "#808080";
-
+    var noir = "#000000", jaune = "#FFFF00", bleu = "#0000FF", rouge = "#FF0000", vert = "#00FF00", violet = "#EE82EE",
+        blanc = "#FFFFFF", gris = "#808080";
     // Pallette de couleurs (valeurs rgb)
     var couleurs = [
         [192, 57, 43],
@@ -169,14 +176,13 @@
         [149, 165, 166],
         [52, 73, 94],
     ];
-
-    var groupes = "{{parties[0].stats|json_encode()}}";
+    var groupes = "{{ parties[0].stats|json_encode() }}";
     groupes = groupes.replace(/&quot;/g, "\""); // remplacement de toutes les itérations de ' &quot; ' par ' " '
     groupes = JSON.parse(groupes);
 
     // Groupes sélectionés (avec les cases à cocher) par graphique
     var groupesChecked = [];
-    groupesChecked['histo']= [];
+    groupesChecked['histo'] = [];
     groupesChecked['bam'] = [];
     groupesChecked['moy'] = [];
 
@@ -185,7 +191,6 @@
         labels: [],
         datasets: undefined,
     };
-
     //Contiendra les variables des graphiques pour les mettre à jour
     var graphiques = [];
     // Objet options du graphique
@@ -235,17 +240,15 @@
             displayColors: true,
             caretPadding: 10
         },
-        plugins : {
+        plugins: {
             labels: {
                 render: 'value'
             }
         }
     }
-
     // --------- CODE ------------
-
     // Création des graphiques au chargement de la fenètre
-    window.onload = function(){
+    window.onload = function () {
 
         window.chartMoy = new Chart(document.getElementById("comparaisonMoyennes").getContext('2d'), {
             type: 'bar',
@@ -254,7 +257,7 @@
         });
         //Pour que tout soit coché par défaut
         {% for groupe in parties[0].stats %}
-            changement("{{ groupe.nom }}", true, 0, 'moy')
+        changement("{{ groupe.nom }}", true, 0, 'moy')
         {% endfor %}
 
     }
@@ -262,14 +265,13 @@
     //------ FONCTIONS -----
 
     // Met à jour le graphique en fonction des cases qui sont cochées
-    function changement(nom, value, partieConcernee, typeStat){
+    function changement(nom, value, partieConcernee, typeStat) {
         // Gère l'addition et la suppression des groupes à afficher dans le graphe
-        if(value){ // la case à été cochée
+        if (value) { // la case à été cochée
             groupesChecked[typeStat].push(nom); // Ajout dans la liste cochée
-        }
-        else { // la case à été décochée
+        } else { // la case à été décochée
             var index = contains(groupesChecked[typeStat], nom); // index au quel se trouve le groupe dans le tableau groupes s'il existe
-            if(index != -1){
+            if (index != -1) {
                 groupesChecked[typeStat].splice(index, 1); // Suppression de la liste cochée
             }
         }
@@ -288,7 +290,7 @@
         }
         // Génération des datasets des groupes sélectionés pour chartJS en fonction du graphique sélectioné
         // Remplacement des données du graphe par les nouvelles données générées
-        switch(typeStat){
+        switch (typeStat) {
             case 'moy':
                 chartDonnees.datasets = genDataMoyenneEcart(partieConcernee);
                 break;
@@ -307,11 +309,11 @@
     }
 
     // Génère les données requises par Chart.js pour le graphique 'Moyenne & écart-type'
-    function genDataMoyenneEcart(partieConcernee){
+    function genDataMoyenneEcart(partieConcernee) {
         var liste = getGroupesData(groupesChecked['moy'], partieConcernee); // Récupération des données
         var moyenneControleCourant = [];
         var moyenneAnciensControles = [];
-        for(var i = 0; i < liste.length; i++){ // Choix des informations requises
+        for (var i = 0; i < liste.length; i++) { // Choix des informations requises
             moyenneControleCourant.push(liste[i].moyenneControleCourant);
             moyenneAnciensControles.push(liste[i].moyenneAutresControles);
         }
@@ -320,15 +322,15 @@
         data = [ // Création des objets datasets de Chart.js avec nos données
             {
                 label: 'Moyenne à {{ evaluationConcernee.nom }}',
-                backgroundColor: "rgb("+couleurMoyenne[0]+","+couleurMoyenne[1]+","+couleurMoyenne[2]+")",
-                hoverBackgroundColor: "rgb("+couleurMoyenne[0]+","+couleurMoyenne[1]+","+couleurMoyenne[2]+")",
+                backgroundColor: "rgb(" + couleurMoyenne[0] + "," + couleurMoyenne[1] + "," + couleurMoyenne[2] + ")",
+                hoverBackgroundColor: "rgb(" + couleurMoyenne[0] + "," + couleurMoyenne[1] + "," + couleurMoyenne[2] + ")",
                 borderColor: gris,
                 data: moyenneControleCourant
             },
             {
                 label: 'Moyenne aux autres évaluations choisies',
-                backgroundColor: "rgb("+couleurEcartType[0]+","+couleurEcartType[1]+","+couleurEcartType[2]+")",
-                hoverBackgroundColor: "rgb("+couleurEcartType[0]+","+couleurEcartType[1]+","+couleurEcartType[2]+")",
+                backgroundColor: "rgb(" + couleurEcartType[0] + "," + couleurEcartType[1] + "," + couleurEcartType[2] + ")",
+                hoverBackgroundColor: "rgb(" + couleurEcartType[0] + "," + couleurEcartType[1] + "," + couleurEcartType[2] + ")",
                 borderColor: gris,
                 data: moyenneAnciensControles
             }
@@ -337,11 +339,11 @@
     }
 
     // Retourne un tableau d'objets groupe avec leurs données en fonction d'une liste de noms de groupes
-    function getGroupesData(listeGroupes, partieConcernee){
+    function getGroupesData(listeGroupes, partieConcernee) {
         groupesAvecDonnees = [];
-        for(var i = 0; i < listeGroupes.length; i++){
-            for (var j = 0; j < groupes.length ; j++) {
-                if(groupes[j].nom == listeGroupes[i]) {
+        for (var i = 0; i < listeGroupes.length; i++) {
+            for (var j = 0; j < groupes.length; j++) {
+                if (groupes[j].nom == listeGroupes[i]) {
                     groupesAvecDonnees.push(groupes[j])
                 }
             }
@@ -350,16 +352,16 @@
     }
 
     // génère des codes couleurs rgb aléatoires
-    function genRandomColor(){
+    function genRandomColor() {
         return "rgb(" + Math.floor(Math.random() * Math.floor(255)) + ","
             + Math.floor(Math.random() * Math.floor(255)) + ","
             + Math.floor(Math.random() * Math.floor(255)) + ")";
     }
 
     // retourne l'index au quel se trouve l'élément dans array, s'il n'y est pas renvoie -1
-    function contains(array, element){
-        for(var i = 0; i < array.length; i++){
-            if(array[i] == element){
+    function contains(array, element) {
+        for (var i = 0; i < array.length; i++) {
+            if (array[i] == element) {
                 return i;
             }
         }

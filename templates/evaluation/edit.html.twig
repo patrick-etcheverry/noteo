@@ -12,93 +12,89 @@
 {% block collapsed %}{% endblock %}
 
 {% block contenu %}
-
     {{ include('evaluation/_form.html.twig', {'button_label': 'Enregistrer'}) }}
-
 {% endblock %}
 
 {% block datatables %}
-  {#  Définition dynamique en fonction du nombre de parties d'un tableau qui permet à Datatables de déterminer si les colonnes sont triables ou non #}
-  {% set tableauColonnes = [null,null] %}
-  {% if evaluation.parties|length != 1 %}
-    {% for partie in parties %}
-      {% set tableauColonnes = tableauColonnes |merge([{orderable: false}]) %}
-    {% endfor %}
-    {% set tableauColonnes = tableauColonnes |merge([{orderable: false}]) %}
-  {% else%}
-    {% set tableauColonnes = [null,null, {orderable: false}] %}
-  {% endif %}
-<script type="text/javascript">
-  //Activation de Datatables sur le tableau d'ajout des étudiants
-  var table = $('#etudiants').DataTable({
-    language: {
-      // Suppression du label Rechercher et ajout du placeholder
-      search: "_INPUT_",
-      searchPlaceholder: "Rechercher...",
-      "url": "{{asset('tradfr.json')}}"
-    },
-    order: [
-      [0, "asc"]
-    ],
-    columns: {{ tableauColonnes | json_encode | raw }},
-    lengthMenu: [
-      [15, 30, 45, -1],
-      [15, 30, 45, "Tout"]
-    ],
-    pageLength : {{ app.user.preferenceNbElementsTableaux }}, <!-- Pour que le nombre d'éléments affichés par défaut soit celui de la préference de l'utilisateur -->
-    info: false,
-  });
-  //La fonction sera enclenchée lors de la soumission du formulaire
-  $("[name='form']").on('submit', function () {
-    table.rows().nodes().page.len(-1).draw(); // Cette fonction permet, avant la soumission du formulaire, d'afficher dans le DOM toutes les lignes du tableau pour qu'aucune ne soit ignorée
-  });
-</script>
+    {#  Définition dynamique en fonction du nombre de parties d'un tableau qui permet à Datatables de déterminer si les colonnes sont triables ou non #}
+    {% set tableauColonnes = [null,null] %}
+    {% if evaluation.parties|length != 1 %}
+        {% for partie in parties %}
+            {% set tableauColonnes = tableauColonnes |merge([{orderable: false}]) %}
+        {% endfor %}
+        {% set tableauColonnes = tableauColonnes |merge([{orderable: false}]) %}
+    {% else %}
+        {% set tableauColonnes = [null,null, {orderable: false}] %}
+    {% endif %}
+    <script type="text/javascript">
+        //Activation de Datatables sur le tableau d'ajout des étudiants
+        var table = $('#etudiants').DataTable({
+            language: {
+                // Suppression du label Rechercher et ajout du placeholder
+                search: "_INPUT_",
+                searchPlaceholder: "Rechercher...",
+                "url": "{{ asset('tradfr.json') }}"
+            },
+            order: [
+                [0, "asc"]
+            ],
+            columns: {{ tableauColonnes | json_encode | raw }},
+            lengthMenu: [
+                [15, 30, 45, -1],
+                [15, 30, 45, "Tout"]
+            ],
+            pageLength: {{ app.user.preferenceNbElementsTableaux }}, <!-- Pour que le nombre d'éléments affichés par défaut soit celui de la préference de l'utilisateur -->
+            info: false,
+        });
+        //La fonction sera enclenchée lors de la soumission du formulaire
+        $("[name='form']").on('submit', function () {
+            table.rows().nodes().page.len(-1).draw(); // Cette fonction permet, avant la soumission du formulaire, d'afficher dans le DOM toutes les lignes du tableau pour qu'aucune ne soit ignorée
+            table.search("").draw(); //Pour annuler la recherche effectuée dans le champ en haut à droite du tableau
+        });
+    </script>
 {% endblock %}
 
 {% block javascripts %}
-  {% if parties|length != 1 %}
-    <script>
-
-      window.onload = function () {
-        //Pour que les totaux s'affichent au chargement de la page
-        truc = $("#etudiants :input");
-        for (var i =0; i < truc.length ; i++) {
-          totalLigne(truc[i])
-        }
-      }
-      //Cet écouteur d'évenement va attendre qu'un champ input text de la page soit changé.
-      //Quand ce sera le cas, il va mettre à jour le total de la ligne correspondante
-      $("input[type='text']").change(function() {
-        totalLigne(this)
-      })
-
-      function totalLigne(element) {
-        elementsAEtudier = $(element).parent().parent().children(); //On récupère tous les td de la ligne
-        //Si le premier élement n'est pas un th (car ici il y a également le tableau dans la partie supérieure de la page, qu'on ne veut pas traiter
-        if(!($(elementsAEtudier[0]).is("th"))) {
-          totalPts = 0;
-          //On étudie pas les deux premiers td (nom et prénom de l'étudiant) ni le dernier (qui contiendra la note mise à jour)
-          for (var i = 2; i <= elementsAEtudier.length - 2; i++) {
-            pointsARajouter = parseFloat(elementsAEtudier[i].children[elementsAEtudier[i].children.length - 1].value);
-            //On teste si la valeur rentrée n'est pas composée de caractères
-            if (!isNaN(pointsARajouter)) {
-              if (pointsARajouter != -1) {
-                totalPts += pointsARajouter;
-              }
+    {% if parties|length != 1 %}
+        <script>
+            window.onload = function () {
+                //Pour que les totaux s'affichent au chargement de la page
+                truc = $("#etudiants :input");
+                for (var i = 0; i < truc.length; i++) {
+                    totalLigne(truc[i])
+                }
             }
-          }
-          //Mise à jour du total
-          if(totalPts > 20) {
-            $(elementsAEtudier[elementsAEtudier.length - 1]).html(totalPts)
-            $(elementsAEtudier[elementsAEtudier.length - 1]).css('color', 'red')
-            $(elementsAEtudier[elementsAEtudier.length - 1]).append("<i class='icon-attention-circled'></i>")
-          }
-          else {
-            $(elementsAEtudier[elementsAEtudier.length - 1]).html(totalPts)
-            $(elementsAEtudier[elementsAEtudier.length - 1]).css('color', '')
-          }
-        }
-      }
-    </script>
-  {% endif %}
+            //Cet écouteur d'évenement va attendre qu'un champ input text de la page soit changé.
+            //Quand ce sera le cas, il va mettre à jour le total de la ligne correspondante
+            $("input[type='text']").change(function () {
+                totalLigne(this)
+            })
+            function totalLigne(element) {
+                elementsAEtudier = $(element).parent().parent().children(); //On récupère tous les td de la ligne
+                //Si le premier élement n'est pas un th (car ici il y a également le tableau dans la partie supérieure de la page, qu'on ne veut pas traiter
+                if (!($(elementsAEtudier[0]).is("th"))) {
+                    totalPts = 0;
+                    //On étudie pas les deux premiers td (nom et prénom de l'étudiant) ni le dernier (qui contiendra la note mise à jour)
+                    for (var i = 2; i <= elementsAEtudier.length - 2; i++) {
+                        pointsARajouter = parseFloat(elementsAEtudier[i].children[elementsAEtudier[i].children.length - 1].value);
+                        //On teste si la valeur rentrée n'est pas composée de caractères
+                        if (!isNaN(pointsARajouter)) {
+                            if (pointsARajouter != -1) {
+                                totalPts += pointsARajouter;
+                            }
+                        }
+                    }
+                    //Mise à jour du total
+                    if (totalPts > 20) {
+                        $(elementsAEtudier[elementsAEtudier.length - 1]).html(totalPts)
+                        $(elementsAEtudier[elementsAEtudier.length - 1]).css('color', 'red')
+                        $(elementsAEtudier[elementsAEtudier.length - 1]).append("<i class='icon-attention-circled'></i>")
+                    } else {
+                        $(elementsAEtudier[elementsAEtudier.length - 1]).html(totalPts)
+                        $(elementsAEtudier[elementsAEtudier.length - 1]).css('color', '')
+                    }
+                }
+            }
+        </script>
+    {% endif %}
 {% endblock %}

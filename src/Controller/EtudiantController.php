@@ -36,51 +36,47 @@ class EtudiantController extends AbstractController
     /**
      * @Route("/nouveau", name="etudiant_new", methods={"GET","POST"})
      */
-     public function new(Request $request, StatutRepository $repository): Response
-     {
-         $groupeRepository = $this->getDoctrine()->getRepository(GroupeEtudiant::class);
-         $groupeEtudiantsNonAffectes = $groupeRepository->findOneBySlug('etudiants-non-affectes');
-         $statuts = $repository->findAll();
+    public function new(Request $request, StatutRepository $repository): Response
+    {
+        $groupeRepository = $this->getDoctrine()->getRepository(GroupeEtudiant::class);
+        $groupeEtudiantsNonAffectes = $groupeRepository->findOneBySlug('etudiants-non-affectes');
+        $statuts = $repository->findAll();
+        $etudiant = new Etudiant();
+        $form = $this->createForm(EtudiantType::class, $etudiant);
+        $form->handleRequest($request);
+        $formStatut = $this->createFormBuilder()
+            ->add('statuts', EntityType::class, [
+                'class' => Statut::Class, //On veut choisir des groupes
+                'choice_label' => false, // On n'affichera pas d'attribut de l'entité à côté du bouton pour aider au choix car on liste les entités en utilisant les variables du champ
+                'label' => false, // On n'affiche pas le label du champ
+                'mapped' => false, // Pour que l'attribut ne soit pas immédiatement mis en BD mais soit récupérable après soumission du formulaire
+                'expanded' => true, // Pour avoir des cases
+                'multiple' => true, // à cocher
+                'choices' => $statuts // On choisira parmis le groupe concerné et ses enfants
+            ])
+            ->getForm();
+        $formStatut->handleRequest($request);
+        if ($form->isSubmitted() && $form->isValid()) {
+            if ($formStatut->get('statuts')->getData() != null) {
+                foreach ($formStatut->get('statuts')->getData() as $statut) {
+                    $statut->addEtudiant($etudiant);
+                }
+            }
+            $etudiant->addGroupe($groupeEtudiantsNonAffectes);
+            $etudiant->setEstDemissionaire(false);
+            $entityManager = $this->getDoctrine()->getManager();
+            $entityManager->persist($etudiant);
+            $entityManager->flush();
+            return $this->redirectToRoute('etudiant_index');
+        }
 
-         $etudiant = new Etudiant();
-         $form = $this->createForm(EtudiantType::class, $etudiant);
-         $form->handleRequest($request);
-
-         $formStatut = $this->createFormBuilder()
-             ->add('statuts', EntityType::class, [
-               'class' => Statut::Class, //On veut choisir des groupes
-               'choice_label' => false, // On n'affichera pas d'attribut de l'entité à côté du bouton pour aider au choix car on liste les entités en utilisant les variables du champ
-               'label' => false, // On n'affiche pas le label du champ
-               'mapped' => false, // Pour que l'attribut ne soit pas immédiatement mis en BD mais soit récupérable après soumission du formulaire
-               'expanded' => true, // Pour avoir des cases
-               'multiple' => true, // à cocher
-               'choices' => $statuts // On choisira parmis le groupe concerné et ses enfants
-             ])
-             ->getForm();
-             $formStatut->handleRequest($request);
-
-         if ($form->isSubmitted() && $form->isValid()) {
-           if ($formStatut->get('statuts')->getData() != null) {
-             foreach ($formStatut->get('statuts')->getData() as $statut) {
-               $statut->addEtudiant($etudiant);
-             }
-           }
-             $etudiant->addGroupe($groupeEtudiantsNonAffectes);
-             $etudiant->setEstDemissionaire(false);
-             $entityManager = $this->getDoctrine()->getManager();
-             $entityManager->persist($etudiant);
-             $entityManager->flush();
-
-             return $this->redirectToRoute('etudiant_index');
-         }
-
-         return $this->render('etudiant/new.html.twig', [
-             'etudiant' => $etudiant,
-             'form' => $form->createView(),
-             'formStatut' => $formStatut->createView(),
-             'edit'=> false
-         ]);
-     }
+        return $this->render('etudiant/new.html.twig', [
+            'etudiant' => $etudiant,
+            'form' => $form->createView(),
+            'formStatut' => $formStatut->createView(),
+            'edit' => false
+        ]);
+    }
 
     /**
      * @Route("/consulter/{id}", name="etudiant_show", methods={"GET"})
@@ -99,20 +95,16 @@ class EtudiantController extends AbstractController
      */
     public function edit(Request $request, Etudiant $etudiant): Response
     {
-
         $estDemissionaire = $etudiant->getEstDemissionaire();
-
         $form = $this->createForm(EtudiantEditType::class, $etudiant, ['estDemissionaire' => $estDemissionaire]);
         $form->handleRequest($request);
-
         if ($form->isSubmitted() && $form->isValid()) {
             $this->getDoctrine()->getManager()->flush();
 
             return $this->redirectToRoute('etudiant_show', [
-              'id' => $etudiant->getId()
+                'id' => $etudiant->getId()
             ]);
         }
-
         return $this->render('etudiant/edit.html.twig', [
             'etudiant' => $etudiant,
             'form' => $form->createView(),
@@ -126,22 +118,17 @@ class EtudiantController extends AbstractController
     public function delete(Etudiant $etudiant): Response
     {
         $manager = $this->getDoctrine()->getManager();
-
         //On supprime toutes les notes associées à l'étudiant
         foreach ($etudiant->getPoints() as $point) {
-          $manager->remove($point);
+            $manager->remove($point);
         }
-
         //On retire l'étudiant des status auxquels il était associé
         foreach ($etudiant->getStatuts() as $statut) {
-          $statut->removeEtudiant($etudiant);
+            $statut->removeEtudiant($etudiant);
         }
-
         //Puis on supprime l'étudiant
         $manager->remove($etudiant);
-
         $manager->flush();
-
         return $this->redirectToRoute('etudiant_index');
     }
 }
