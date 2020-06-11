@@ -558,13 +558,21 @@ class StatsController extends AbstractController
                 'choices' => $groupesAChoisir // On choisira parmis les sous groupes du groupe choisi au préalable
             ])
             ->getForm();
-
         $form->handleRequest($request);
-
         if ($form->isSubmitted() && $form->isValid()) {
-            $sousGroupes = $form->get('groupes')->getData();
-            $request->getSession()->set('sousGroupes', $sousGroupes);
-            return $this->redirectToRoute('statistiques_groupes_choisir_plusieurs_evaluations', ['slug' => $groupe->getSlug()]);
+            if($request->getSession()->get('typeGraphique') == "courbes") {
+                if(count($form->get('groupes')->getData()) > 0) {
+                    $sousGroupes = $form->get('groupes')->getData();
+                    $request->getSession()->set('sousGroupes', $sousGroupes);
+                    return $this->redirectToRoute('statistiques_groupes_choisir_plusieurs_evaluations', ['slug' => $groupe->getSlug()]);
+                }
+            }
+            else {
+                $sousGroupes = $form->get('groupes')->getData();
+                $request->getSession()->set('sousGroupes', $sousGroupes);
+                return $this->redirectToRoute('statistiques_groupes_choisir_plusieurs_evaluations', ['slug' => $groupe->getSlug()]);
+            }
+
         }
         return $this->render('statistiques/choix_sous-groupes_plusieurs_evals.html.twig', [
             'groupe' => $groupe,

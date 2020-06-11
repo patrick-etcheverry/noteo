@@ -40,36 +40,36 @@
     </script>
 {% endblock %}
 
-{% if typeGraphique == "courbes" %}
-    {% block javascripts %}
-        <script>
-            window.onload = function() {
-                $("#valider").attr('disabled', true)
-                checkCasesCocheesPage()
-            }
-            $("[name='checkbox']").on('click', function () {
-                checkCasesCocheesPage()
-            })
-            //Event listerner pour déclencher le check à chaque case cochée
-            $("[name='form[groupes][]']").on('click', function () {
-                checkCasesCocheesPage()
-            })
-            function checkCasesCocheesPage() {
-                groupesCheck = false; //Au moins une évaluation coché
-                $("#valider").attr('disabled', true)
-                $("[name='form[groupes][]']").each( function () {
-                    if (this.checked) {
-                        groupesCheck = true;
-                        return false; //Equivalent d'un break, car un seul coché suffit
-                    }
-                })
-                if(groupesCheck) { //Si une une évaluation cochée
-                    $("#valider").attr('disabled', false)
+{% block javascripts %}
+    {% if typeGraphique == "courbes" %}
+    <script>
+        window.onload = function() {
+            $("#valider").attr('disabled', true)
+            checkCasesCocheesPage()
+        }
+        $("[name='checkbox']").on('click', function () {
+            checkCasesCocheesPage()
+        })
+        //Event listerner pour déclencher le check à chaque case cochée
+        $("[name='form[groupes][]']").on('click', function () {
+            checkCasesCocheesPage()
+        })
+        function checkCasesCocheesPage() {
+            groupesCheck = false; //Au moins une évaluation coché
+            $("#valider").attr('disabled', true)
+            $("[name='form[groupes][]']").each( function () {
+                if (this.checked) {
+                    groupesCheck = true;
+                    return false; //Equivalent d'un break, car un seul coché suffit
                 }
+            })
+            if(groupesCheck) { //Si une une évaluation cochée
+                $("#valider").attr('disabled', false)
             }
-        </script>
-    {% endblock %}
+        }
+    </script>
+    {% endif %}
+{% endblock %}
 
-{% endif %}
 
 
