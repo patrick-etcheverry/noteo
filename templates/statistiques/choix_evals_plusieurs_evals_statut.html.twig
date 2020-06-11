@@ -21,12 +21,16 @@
                 searchPlaceholder: "Rechercher...",
                 "url": "{{asset('tradfr.json')}}"
             },
-            order: [2, 'asc'],
+            order: [2, 'desc'],
             columns: [{"orderable": false}, null, null, {"orderable": false}, null],
             lengthMenu: [
                 [15, 30, 45, -1],
                 [15, 30, 45, "Tout"]
             ],
+            columnDefs: [{
+                "sType": "date-eu",
+                targets: 2
+            }],
             pageLength : {{ app.user.preferenceNbElementsTableaux }}, <!-- Pour que le nombre d'éléments affichés par défaut soit celui de la préference de l'utilisateur -->
             info: false,
         });
@@ -45,7 +49,6 @@
             $("#valider").attr('disabled', true)
             checkCasesCocheesPage()
         }
-
         $("[name='checkbox']").on('click', function () {
             checkCasesCocheesPage()
         })
@@ -53,7 +56,6 @@
         $("[name='form[evaluations][]']").on('click', function () {
             checkCasesCocheesPage()
         })
-
         function checkCasesCocheesPage() {
             evalCheck = false; //Au moins une évaluation coché
             $("#valider").attr('disabled', true)
