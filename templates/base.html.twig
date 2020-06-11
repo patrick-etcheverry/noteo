@@ -1,249 +1,246 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <meta charset="utf-8">
-  <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-  <meta name="description" content="">
-  <meta name="author" content="">
-  <title>Noteo</title>
-  <!-- icones et polices personnalsiées -->
-  <link href="{{asset("vendor/fontawesome-free/css/all.min.css")}}" rel="stylesheet" type="text/css">
-  <link rel="stylesheet" href="{{asset('/css/fontello.css')}}">
-  <link rel="shortcut icon" href="{{asset('/ico/logo_noteo.ico')}}" />
-  <link href="https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i" rel="stylesheet">
-  <!-- CSS personnalisés -->
-  <link href="{{asset("css/sb-admin-2.min.css")}}" rel="stylesheet">
-  <link href="{{asset('vendor/datatables/dataTables.bootstrap4.css')}}" rel="stylesheet">
-  <link rel="stylesheet" href="{{ asset('css/css_perso.css') }}">
-
-  {% block stylesheets %}
-  {% endblock %}
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <title>Noteo</title>
+    <!-- icones et polices personnalsiées -->
+    <link href="{{ asset("vendor/fontawesome-free/css/all.min.css") }}" rel="stylesheet" type="text/css">
+    <link rel="stylesheet" href="{{ asset('/css/fontello.css') }}">
+    <link rel="shortcut icon" href="{{ asset('/ico/logo_noteo.ico') }}"/>
+    <link href="https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i"
+          rel="stylesheet">
+    <!-- CSS personnalisés -->
+    <link href="{{ asset("css/sb-admin-2.min.css") }}" rel="stylesheet">
+    <link href="{{ asset('vendor/datatables/dataTables.bootstrap4.css') }}" rel="stylesheet">
+    <link rel="stylesheet" href="{{ asset('css/css_perso.css') }}">
+    {% block stylesheets %}
+    {% endblock %}
 </head>
 
 <body id="page-top">
-  <!-- Page Wrapper -->
-  <div id="wrapper">
+<!-- Page Wrapper -->
+<div id="wrapper">
     <!-- Sidebar -->
     <ul class="navbar-nav bg-gradient-primary sidebar sidebar-dark accordion" id="accordionSidebar">
-      <!-- Sidebar - Brand -->
-      <a class="sidebar-brand d-flex align-items-center justify-content-center" href="{{path('evaluation_enseignant')}}">
-        <div class="sidebar-brand-icon">
-          <i id = "logoSite" class="icon-logo-noteo"></i>
-        </div>
-        <div class="sidebar-brand-text mx-3" id="nomAppli">Noteo</div>
-      </a>
-      <!-- Divider -->
-      <hr class="sidebar-divider my-0">
-      <!-- Nav Item - Groupes -->
-      <li class="nav-item {% block groupes %}{% endblock %}">
-        <a class="nav-link" href="{{path('groupe_etudiant_index')}}">
-          <i class="icon-users"></i>
-          <span>Groupes</span></a>
-      </li>
-      <!-- Divider -->
-      <hr class="sidebar-divider my-0">
-      <!-- Nav Item - Statuts étudiants -->
-      <li class="nav-item {% block statutsEtudiants %}{% endblock %}">
-        <a class="nav-link" href="{{path('statut_index')}}">
-          <i class="icon-tags"></i>
-          <span>Statuts étudiants</span></a>
-      </li>
-      {% if is_granted('ROLE_ADMIN') %}
-      <!-- Divider -->
-      <hr class="sidebar-divider my-0">
-      <!-- Nav Item - Étudiants -->
-      <li class="nav-item {% block etudiants %}{% endblock %}">
-        <a class="nav-link" href="{{path('etudiant_index')}}">
-          <i class="icon-user"></i>
-          <span>Étudiants</span></a>
-      </li>
-      {% endif %}
-      {% if is_granted('ROLE_ADMIN') %}
-      <!-- Divider -->
-      <hr class="sidebar-divider my-0">
-      <!-- Nav Item - Enseignants -->
-      <li class="nav-item {% block enseignants %}{% endblock %}">
-        <a class="nav-link" href="{{path('enseignant_index')}}">
-          <i class="icon-teacher"></i>
-          <span>Enseignants</span></a>
-      </li>
-      {% endif %}
-      <!-- Divider -->
-      <hr class="sidebar-divider my-0">
-      <!-- Nav Item - Pages Collapse Menu -->
-      <li class="nav-item {% block evaluations %}{% endblock %}">
-        <a class="nav-link {% block collapsed %}collapsed{% endblock %}" href="#" data-toggle="collapse" data-target="#collapseTwo" aria-expanded="true" aria-controls="collapseTwo">
-          <i class="icon-evaluation"></i>
-          <span>Évaluations</span>
+        <!-- Sidebar - Brand -->
+        <a class="sidebar-brand d-flex align-items-center justify-content-center"
+           href="{{ path('evaluation_enseignant') }}">
+            <div class="sidebar-brand-icon">
+                <i id="logoSite" class="icon-logo-noteo"></i>
+            </div>
+            <div class="sidebar-brand-text mx-3" id="nomAppli">Noteo</div>
         </a>
-        <div id="collapseTwo" class="collapse {% block show %}{% endblock %}" aria-labelledby="headingTwo" data-parent="#accordionSidebar">
-          <div class="bg-white py-2 collapse-inner rounded">
-            <a class="collapse-item {% block mesEvaluations %}{% endblock %}" href="{{path('evaluation_enseignant')}}">Mes évaluations</a>
-            <a class="collapse-item {% block autresEvaluations %}{% endblock %}" href="{{path('evaluation_autres')}}">Autres évaluations</a>
-          </div>
-        </div>
-      </li>
-      <!-- Divider -->
-      <hr class="sidebar-divider my-0">
-      <!-- Nav Item - Enseignants -->
-      <li class="nav-item {% block statistiques %}{% endblock %}">
-        <a class="nav-link" href="{{path('choix_statistiques')}}">
-          <i class="icon-logo-noteo"></i>
-          <span>Statistiques</span></a>
-      </li>
-      {% if is_granted("ROLE_ADMIN") %}
+        <!-- Divider -->
+        <hr class="sidebar-divider my-0">
+        <!-- Nav Item - Groupes -->
+        <li class="nav-item {% block groupes %}{% endblock %}">
+            <a class="nav-link" href="{{ path('groupe_etudiant_index') }}">
+                <i class="icon-users"></i>
+                <span>Groupes</span></a>
+        </li>
+        <!-- Divider -->
+        <hr class="sidebar-divider my-0">
+        <!-- Nav Item - Statuts étudiants -->
+        <li class="nav-item {% block statutsEtudiants %}{% endblock %}">
+            <a class="nav-link" href="{{ path('statut_index') }}">
+                <i class="icon-tags"></i>
+                <span>Statuts étudiants</span></a>
+        </li>
+        {% if is_granted('ROLE_ADMIN') %}
+            <!-- Divider -->
+            <hr class="sidebar-divider my-0">
+            <!-- Nav Item - Étudiants -->
+            <li class="nav-item {% block etudiants %}{% endblock %}">
+                <a class="nav-link" href="{{ path('etudiant_index') }}">
+                    <i class="icon-user"></i>
+                    <span>Étudiants</span></a>
+            </li>
+        {% endif %}
+        {% if is_granted('ROLE_ADMIN') %}
+            <!-- Divider -->
+            <hr class="sidebar-divider my-0">
+            <!-- Nav Item - Enseignants -->
+            <li class="nav-item {% block enseignants %}{% endblock %}">
+                <a class="nav-link" href="{{ path('enseignant_index') }}">
+                    <i class="icon-teacher"></i>
+                    <span>Enseignants</span></a>
+            </li>
+        {% endif %}
+        <!-- Divider -->
+        <hr class="sidebar-divider my-0">
+        <!-- Nav Item - Pages Collapse Menu -->
+        <li class="nav-item {% block evaluations %}{% endblock %}">
+            <a class="nav-link {% block collapsed %}collapsed{% endblock %}" href="#" data-toggle="collapse"
+               data-target="#collapseTwo" aria-expanded="true" aria-controls="collapseTwo">
+                <i class="icon-evaluation"></i>
+                <span>Évaluations</span>
+            </a>
+            <div id="collapseTwo" class="collapse {% block show %}{% endblock %}" aria-labelledby="headingTwo"
+                 data-parent="#accordionSidebar">
+                <div class="bg-white py-2 collapse-inner rounded">
+                    <a class="collapse-item {% block mesEvaluations %}{% endblock %}"
+                       href="{{ path('evaluation_enseignant') }}">Mes évaluations</a>
+                    <a class="collapse-item {% block autresEvaluations %}{% endblock %}"
+                       href="{{ path('evaluation_autres') }}">Autres évaluations</a>
+                </div>
+            </div>
+        </li>
         <!-- Divider -->
         <hr class="sidebar-divider my-0">
         <!-- Nav Item - Enseignants -->
-        <li class="nav-item {% block optionsAppli %}{% endblock %}">
-          <a class="nav-link" data-toggle='modal' data-target='#validationVidageBD' href="#validationVidageBD">
-            <i class="fas fa-database"></i>
-            <span>Réinitialiser l'application</span></a>
+        <li class="nav-item {% block statistiques %}{% endblock %}">
+            <a class="nav-link" href="{{ path('choix_statistiques') }}">
+                <i class="icon-logo-noteo"></i>
+                <span>Statistiques</span></a>
         </li>
-      {% endif %}
-      <!-- Divider -->
-      <hr class="sidebar-divider d-none d-md-block">
-      <!-- Sidebar Toggler (Sidebar) -->
-      <div class="text-center d-none d-md-inline">
-        <button class="rounded-circle border-0" id="sidebarToggle"></button>
-      </div>
+        {% if is_granted("ROLE_ADMIN") %}
+            <!-- Divider -->
+            <hr class="sidebar-divider my-0">
+            <!-- Nav Item - Enseignants -->
+            <li class="nav-item {% block optionsAppli %}{% endblock %}">
+                <a class="nav-link" data-toggle='modal' data-target='#validationVidageBD' href="#validationVidageBD">
+                    <i class="fas fa-database"></i>
+                    <span>Réinitialiser l'application</span></a>
+            </li>
+        {% endif %}
+        <!-- Divider -->
+        <hr class="sidebar-divider d-none d-md-block">
+        <!-- Sidebar Toggler (Sidebar) -->
+        <div class="text-center d-none d-md-inline">
+            <button class="rounded-circle border-0" id="sidebarToggle"></button>
+        </div>
     </ul>
     <!-- End of Sidebar -->
     <!-- Content Wrapper -->
     <div id="content-wrapper" class="d-flex flex-column">
-      <!-- Main Content -->
-      <div id="content">
-        <!-- Topbar -->
-        <nav class="navbar navbar-expand navbar-light bg-white topbar mb-4 static-top shadow">
-          <!-- Sidebar Toggle (Topbar) -->
-          <button id="sidebarToggleTop" class="btn btn-link d-md-none rounded-circle mr-3">
-            <i class="fa fa-bars"></i>
-          </button>
-          <!-- Page Heading -->
-          <h1 class="h3 mb-0 text-gray-800 d-none d-sm-block">{% block titrePage %}{% endblock %}</h1>
-          <!-- Topbar Navbar -->
-          <ul class="navbar-nav ml-auto">
-            <!-- Nav Item - User Information -->
-            <li class="nav-item dropdown no-arrow">
-              <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                <span class="mr-2 d-none d-lg-inline text-gray-600 small">{{ app.user.prenom }} {{ app.user.nom }}</span>
-                <i class="icon-down-open"></i>
-              </a>
-              <!-- Dropdown - User Information -->
-              <div class="dropdown-menu dropdown-menu-right shadow animated--grow-in" aria-labelledby="userDropdown">
-                <a class="dropdown-item" href="{{ path('enseignant_show', {'id': app.user.id}) }}">
-                  <i class="fas fa-user fa-sm fa-fw mr-2 text-gray-400"></i>
-                  Consulter mon profil
-                </a>
-                <a class="dropdown-item" href="{{ path('enseignant_edit_password', {'id': app.user.id}) }}">
-                  <i class="icon-key-1 mr-2 text-gray-400"></i>
-                  Modifier mon mot de passe
-                </a>
-                <div class="dropdown-divider"></div>
-                <a class="dropdown-item" href="{{path('app_logout')}}">
-                  <i class="fas fa-sign-out-alt fa-sm fa-fw mr-2 text-gray-400"></i>
-                  Déconnexion
-                </a>
-              </div>
-            </li>
-          </ul>
-        </nav>
-        <!-- End of Topbar -->
-        <!-- Begin Page Content -->
-        <div class="container-fluid" id="pageContent">
-        <!-- Page content -->
-        {% block contenu %}
+        <!-- Main Content -->
+        <div id="content">
+            <!-- Topbar -->
+            <nav class="navbar navbar-expand navbar-light bg-white topbar mb-4 static-top shadow">
+                <!-- Sidebar Toggle (Topbar) -->
+                <button id="sidebarToggleTop" class="btn btn-link d-md-none rounded-circle mr-3">
+                    <i class="fa fa-bars"></i>
+                </button>
+                <!-- Page Heading -->
+                <h1 class="h3 mb-0 text-gray-800 d-none d-sm-block">{% block titrePage %}{% endblock %}</h1>
+                <!-- Topbar Navbar -->
+                <ul class="navbar-nav ml-auto">
+                    <!-- Nav Item - User Information -->
+                    <li class="nav-item dropdown no-arrow">
+                        <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button"
+                           data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            <span class="mr-2 d-none d-lg-inline text-gray-600 small">{{ app.user.prenom }} {{ app.user.nom }}</span>
+                            <i class="icon-down-open"></i>
+                        </a>
+                        <!-- Dropdown - User Information -->
+                        <div class="dropdown-menu dropdown-menu-right shadow animated--grow-in"
+                             aria-labelledby="userDropdown">
+                            <a class="dropdown-item" href="{{ path('enseignant_show', {'id': app.user.id}) }}">
+                                <i class="fas fa-user fa-sm fa-fw mr-2 text-gray-400"></i>
+                                Consulter mon profil
+                            </a>
+                            <a class="dropdown-item" href="{{ path('enseignant_edit_password', {'id': app.user.id}) }}">
+                                <i class="icon-key-1 mr-2 text-gray-400"></i>
+                                Modifier mon mot de passe
+                            </a>
+                            <div class="dropdown-divider"></div>
+                            <a class="dropdown-item" href="{{ path('app_logout') }}">
+                                <i class="fas fa-sign-out-alt fa-sm fa-fw mr-2 text-gray-400"></i>
+                                Déconnexion
+                            </a>
+                        </div>
+                    </li>
+                </ul>
+            </nav>
+            <!-- End of Topbar -->
+            <!-- Begin Page Content -->
+            <div class="container-fluid" id="pageContent">
+                <!-- Page content -->
+                {% block contenu %}
 
-        {% endblock %}
+                {% endblock %}
+            </div>
         </div>
-      </div>
-      <!-- End of Main Content -->
-      <!-- Footer -->
-      <footer class="sticky-footer bg-white custom-footer">
-        <div class="container my-auto">
-          <div class="copyright text-center my-auto">
-            <span>Copyright &copy; IUT de Bayonne et du Pays Basque 2020</span>
-          </div>
-        </div>
-      </footer>
-      <!-- End of Footer -->
+        <!-- End of Main Content -->
+        <!-- Footer -->
+        <footer class="sticky-footer bg-white custom-footer">
+            <div class="container my-auto">
+                <div class="copyright text-center my-auto">
+                    <span>Copyright &copy; IUT de Bayonne et du Pays Basque 2020</span>
+                </div>
+            </div>
+        </footer>
+        <!-- End of Footer -->
     </div>
     <!-- End of Content Wrapper -->
-  </div>
-  <!-- End of Page Wrapper -->
-  <!-- Scroll to Top Button-->
-  <a class="scroll-to-top rounded" href="#page-top">
+</div>
+<!-- End of Page Wrapper -->
+<!-- Scroll to Top Button-->
+<a class="scroll-to-top rounded" href="#page-top">
     <i class="fas fa-angle-up"></i>
-  </a>
-
-
-  <!-- Modale du de confirmation de réinitialisation -->
-  <div class="modal fade" id="validationVidageBD" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+</a>
+<!-- Modale du de confirmation de réinitialisation -->
+<div class="modal fade" id="validationVidageBD" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+     aria-hidden="true">
     <div class="modal-dialog" role="document">
-      <div class="modal-content">
-        <div class="modal-header">
-          <h5 class="modal-title" id="exampleModalLabel">Attention</h5>
-          <button class="close" type="button" data-dismiss="modal" aria-label="Close">
-            <span aria-hidden="true">x</span>
-          </button>
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Attention</h5>
+                <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">x</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                Réinitialiser l'application aura pour effet de supprimer de l'application :
+                <ul>
+                    <li>Tous les groupes</li>
+                    <li>Tous les groupes d'étudiants ayant un statut particulier</li>
+                    <li>Toutes les évaluations</li>
+                    <li>Tous les étudiants</li>
+                </ul>
+                Les profils des enseignants ne seront pas supprimés et les statistiques ne seront plus consultables.
+            </div>
+            <div class="modal-footer">
+                <a class="d-sm-inline-block btn btn-sm btn-primary shadow-sm" href="{{ path('app_reset') }}">Valider</a>
+            </div>
         </div>
-        <div class="modal-body">
-          Réinitialiser l'application aura pour effet de supprimer de l'application :
-          <ul>
-            <li>Tous les groupes</li>
-            <li>Tous les groupes d'étudiants ayant un statut particulier</li>
-            <li>Toutes les évaluations</li>
-            <li>Tous les étudiants</li>
-          </ul>
-          Les profils des enseignants ne seront pas supprimés et les statistiques ne seront plus consultables.
-        </div>
-        <div class="modal-footer">
-          <a class="d-sm-inline-block btn btn-sm btn-primary shadow-sm" href="{{ path('app_reset') }}">Valider</a>
-        </div>
-      </div>
     </div>
-  </div>
-  <!-- Bootstrap et Jquery-->
-  <script src="{{asset("vendor/jquery/jquery.min.js")}}"></script>
-  <script src="{{asset("vendor/bootstrap/js/bootstrap.bundle.min.js")}}"></script>
-  <script src="{{asset("vendor/jquery-easing/jquery.easing.min.js")}}"></script>
-
-  <!-- Javascript du template -->
-  <script src="{{asset("js/sb-admin-2.min.js")}}"></script>
-
-  <!-- Datatables et Chart JS -->
-  <script src="{{asset("vendor/chart.js/Chart.min.js")}}"></script>
-  <script src="{{asset('vendor/datatables/jquery.dataTables.js')}}"></script>
-  <script src="{{asset('vendor/datatables/dataTables.bootstrap4.js')}}"></script>
-  <script src="{{asset('vendor/datatables/pluginDate.js')}}"></script>
-  <script src="{{asset('vendor/datatables/fnSortPlugin.js')}}"></script>
-  <script type="text/javascript" src="{{asset("js/boxplot.js")}}"></script>
-
-  <!-- PDFMake -->
-  <script type="text/javascript" src="{{asset("js/pdfmake.min.js")}}"></script>
-  <script type="text/javascript" src="{{asset("js/vfs_fonts.js")}}"></script>
-
-  <!-- Boostrap Treeview et js contenant les fonctionnalités de manipulation -->
-  <script src="{{ asset('vendor/BoostrapTreeView/js/bootstrap-treeview.js') }}"></script>
-  <script src="{{ asset('vendor/BoostrapTreeView/js/manipulationTreeView.js') }}"></script>
-
-  {% block javascripts %}
-  {% endblock %}
-
-  <script type="text/javascript">
-  function cocherToutesLesCases(nameCases, caseCochee){
-    $("input[name='"+ nameCases +"']").each(function(){
-      if (!this.disabled) {
-        this.checked = caseCochee;
-      }
-    })
-  }
-  </script>
-
-  {% block datatables %}
-  {% endblock %}
-
+</div>
+<!-- Bootstrap et Jquery-->
+<script src="{{ asset("vendor/jquery/jquery.min.js") }}"></script>
+<script src="{{ asset("vendor/bootstrap/js/bootstrap.bundle.min.js") }}"></script>
+<script src="{{ asset("vendor/jquery-easing/jquery.easing.min.js") }}"></script>
+<!-- Javascript du template -->
+<script src="{{ asset("js/sb-admin-2.min.js") }}"></script>
+<!-- Datatables et Chart JS -->
+<script src="{{ asset("vendor/chart.js/Chart.min.js") }}"></script>
+<script src="{{ asset('vendor/datatables/jquery.dataTables.js') }}"></script>
+<script src="{{ asset('vendor/datatables/dataTables.bootstrap4.js') }}"></script>
+<script src="{{ asset('vendor/datatables/pluginDate.js') }}"></script>
+<script src="{{ asset('vendor/datatables/fnSortPlugin.js') }}"></script>
+<script type="text/javascript" src="{{ asset("js/boxplot.js") }}"></script>
+<!-- PDFMake -->
+<script type="text/javascript" src="{{ asset("js/pdfmake.min.js") }}"></script>
+<script type="text/javascript" src="{{ asset("js/vfs_fonts.js") }}"></script>
+<!-- Boostrap Treeview et js contenant les fonctionnalités de manipulation -->
+<script src="{{ asset('vendor/BoostrapTreeView/js/bootstrap-treeview.js') }}"></script>
+<script src="{{ asset('vendor/BoostrapTreeView/js/manipulationTreeView.js') }}"></script>
+{% block javascripts %}
+{% endblock %}
+<script type="text/javascript">
+    function cocherToutesLesCases(nameCases, caseCochee) {
+        $("input[name='" + nameCases + "']").each(function () {
+            if (!this.disabled) {
+                this.checked = caseCochee;
+            }
+        })
+    }
+</script>
+{% block datatables %}
+{% endblock %}
 </body>
-
 </html>
