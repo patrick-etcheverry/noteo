@@ -7,11 +7,13 @@ use App\Entity\GroupeEtudiant;
 use App\Entity\Etudiant;
 use App\Entity\Partie;
 use App\Entity\Statut;
+use App\Entity\Etudiant;
 use App\Repository\EvaluationRepository;
 use App\Repository\GroupeEtudiantRepository;
 use App\Repository\EtudiantRepository;
 use App\Repository\PointsRepository;
 use App\Repository\StatutRepository;
+use App\Repository\EtudiantRepository;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Form\Extension\Core\Type\FileType;
@@ -542,6 +544,7 @@ class StatsController extends AbstractController
      */
     public function choisirSousGroupesStatsPlusieursEvals(Request $request, GroupeEtudiant $groupe, GroupeEtudiantRepository $repoGroupe): Response
     {
+        $typeGraphique = $request->getSession()->get('typeGraphique');   // Récupération du type de stat dans la session
         $groupesAChoisir = $repoGroupe->findAllOrderedFromNode($groupe);
         array_shift($groupesAChoisir); //On ne veut pas avoir le groupe choisi dans le choix
         $form = $this->createFormBuilder()
@@ -568,7 +571,90 @@ class StatsController extends AbstractController
         return $this->render('statistiques/choix_sous-groupes_plusieurs_evals.html.twig', [
             'groupe' => $groupe,
             'pasDIndentation' => false,
-            'form' => $form->createView()]);
+            'form' => $form->createView(),
+            'typeGraphique' => $typeGraphique
+          ]);
+    }
+
+    /**
+     * @Route("/plusieurs-eval/groupes/{slug}/", name="determiner_evolution_etudiants_groupe")
+     */
+    public function determinerEvolutionEtudiantGroupes(Request $request, GroupeEtudiant $groupe, PointsRepository $repoPoints, GroupeEtudiantRepository $repoGroupe, EtudiantRepository $repoEtudiant, EvaluationRepository $repoEval): Response
+    {
+      $type = "groupe";
+      $session = $request->getSession();
+      $evaluations = $session->get('evaluations'); // récupération des évaluations passées en session
+      $tabEvaluations = array();
+      foreach ($evaluations as $evaluation) {
+        array_push($tabEvaluations, $repoEval->find ($evaluation->getId()));
+      }
+      $groupes = $session->get('lesGroupes'); // récupération des groupes passés en session
+      $tabGroupes = array();
+      foreach ($groupes as $groupe) {
+          array_push($tabGroupes, $repoGroupe->find($groupe->getId()));
+        }
+
+
+
+  usort($tabEvaluations, function ( $a, $b ) {
+      if ($a->getdate() == $b->getdate()) {
+        return 0;
+    }
+    return ($a->getdate() < $b->getdate()) ? -1 : 1;
+  }
+);
+      /// génération des données de statistiques
+      $stats = array(); // le tableau qui contiendra toutes les données exploitables par le typeGraphique
+      $stats["type"] = $type;
+      $stats["evaluations"] = $tabEvaluations;
+        /// génération des statistiques
+        $stats = array(); // le tableau qui contiendra toutes les données exploitables par le typeGraphique
+        $grouepsStats = array();
+        $stats["type"] = $type;
+        $stats["evaluations"] = $tabEvaluations;
+
+        foreach ($tabGroupes as $groupe) {
+           $groupeEtudiant = array();
+           $etudiants = array();
+           $recupEtudiantsGroupe = $groupe->getEtudiants();
+           $groupeEtudiant["nom"] = $groupe->getNom();
+
+           foreach ($recupEtudiantsGroupe as $etudiant) {
+            $notesEtudiant = array();
+            $etudiantCourant = array();
+            $etudiantCourant["nomPrenom"] = strval( $etudiant->getNom()." ".$etudiant->getPrenom());
+
+            foreach ($tabEvaluations as $evaluation) {
+              $notesEtEtudiants = $repoPoints->findNotesAndEtudiantByEvaluation($evaluation);
+              $etudiantsEvaluation = array();
+              foreach ($notesEtEtudiants as $note) {
+                array_push($etudiantsEvaluation, $note->getEtudiant());
+              }
+
+              foreach ($notesEtEtudiants as $points) {
+                if( in_array ( $etudiant, $etudiantsEvaluation) and $points->getEtudiant() == $etudiant){
+                  array_push($notesEtudiant, $points->getValeur());
+                }
+              }
+              if (!in_array ( $etudiant, $etudiantsEvaluation)) {
+                array_push($notesEtudiant,"NaN");
+              }
+              $etudiantCourant["notes"] = $notesEtudiant; // on pousse les notes de l'étudiant courant
+            }
+            array_push($etudiants, $etudiantCourant); //on pousse l'étudiant
+          }
+          $groupeEtudiant["etudiants"] = $etudiants;
+          array_push($stats, $groupeEtudiant);
+        }
+
+
+
+      return $this->render('statistiques/statsEvolution.html.twig', [
+        'evaluations' => $tabEvaluations,
+        'groupes' => $tabGroupes,
+        'titre' => "Évolution de résultats ",
+        'stats' => $stats
+      ]);
     }
 
     /**
@@ -576,6 +662,9 @@ class StatsController extends AbstractController
      */
     public function choisirEvalsGroupePlusieursEvals(Request $request, GroupeEtudiant $groupe, PointsRepository $repoPoints): Response
     {
+
+      $typeGraphique = $request->getSession()->get('typeGraphique');   // Récupération du type de stat dans la session
+
         $form = $this->createFormBuilder()
             ->add('evaluations', EntityType::class, [
                 'class' => Evaluation::Class,

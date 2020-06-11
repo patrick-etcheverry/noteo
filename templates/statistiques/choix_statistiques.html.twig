@@ -531,6 +531,34 @@
                     </div>
                 </div>
             </div>
+        {% endif %}
+          <!-- STATS EVOLUTION,  GROUPE -->
+        {% if statsPlusieursEvalsGroupeDispo %}
+          <div class="card">
+              <img class="card-img-top imageAAgrandir" src="{{ asset('https://cdn.discordapp.com/attachments/701780712847704154/717006548353941514/unnamed.png') }}" alt="Card image cap">
+              <div class="card-body">
+                  <hr>
+                  <h5 class="card-title">Évolution des résultats de chaque étudiant de groupes sur plusieurs évaluations </h5>
+                  <p class="card-text">Générations de graphiques en courbes détaillant l'évolution des résultats de chaque étudiant de groupes préalablements sélectionnées. <br>
+                    L'évolution est déterminée pour un ensemble d'évaluations sélectionnée et est réprésenté de facon chronologique.</p>
+                  <a href="{{ path('stats_choisir_groupe_haut_niveau_evaluable', {'typeGraph': 'courbes'}) }}" class="btn btn-primary">Consulter ce type de statistiques</a>
+              </div>
+          </div>
+        {% endif %}
+        <!-- STATS EVOLUTION, STATUT -->
+        {% if statsPlusieursEvalsStatutDispo %}
+          <div class="card">
+              <img class="card-img-top imageAAgrandir" src="{{ asset('https://cdn.discordapp.com/attachments/701780712847704154/717006548353941514/unnamed.png') }}" alt="Card image cap">
+              <div class="card-body">
+                  <hr>
+                  <h5 class="card-title">Évolution des résultats de chaque étudiant de groupes d'étudiants <br>
+                      ayant un statut particulier sur plusieurs évaluations</h5>
+                      <p class="card-text">Générations de graphiques en courbes détaillant l'évolution des résultats de chaque étudiant de groupes ayant un statut particulier préalablements sélectionnées. <br>
+                        L'évolution est déterminée pour un ensemble d'évaluations sélectionnée et est réprésenté de facon chronologique.</p>
+                  <a href="{{ path('stats_choisir_statut', {'typeGraph': 'courbes'}) }}" class="btn btn-primary">Consulter ce type de statistiques</a>
+              </div>
+          </div>
+        {% endif %}
         </div>
     </div>
     <!-- Modale dans laquelle les photos agrandies sont affichées -->

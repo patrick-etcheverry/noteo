@@ -1,5 +1,6 @@
 {{form_start(form)}}
 {% set route = app.request.attributes.get('_route') %}
+{% set route = app.request.attributes.get('_route') %}
 <div class="table-responsive table-hover">
     <table class="table" id= "groupes">
         <thead>
@@ -14,13 +15,17 @@
         <th>Créateur</th>
         </thead>
         <tbody>
+
+
         {% for groupe in form.groupes %}
             {# store index of the category in a variable #}
             {% set index = groupe.vars.value %}
             {# get entity object from its index in the Categories Field #}
             {% set entity = form.groupes.vars.choices[index].data %}
             <tr>
-                <td>{{form_widget(form.groupes[index])}}</td>
+                <td>
+                  {{form_widget(form.groupes[index])}}
+                </td>
                 <td>
                     {% if not pasDIndentation %}
                         {% if entity.lvl > 0 %}
