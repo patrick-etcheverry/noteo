@@ -33,7 +33,7 @@
 
 {% if formStatut.statuts is defined %}
 {% if formStatut.statuts is not empty %}
-<br><h1 class="h4 mb-0 text-gray-800">Ajouter l'étudiant à un groupe d'étudiants ayant un statut particulier (facultatif)</h1> <br>
+<br><h1 class="h4 mb-0 text-gray-800">Ajouter l'étudiant à un groupe d'étudiants ayant un statut particulier (optionnel)</h1> <br>
 <div class="table-responsive table-hover">
 <table class="table" id= "statuts">
 <thead>
@@ -69,7 +69,6 @@
 {% endif %}
 
 <div class='bouton' align=center>
-  <a href="{{ path('etudiant_index') }}" class="d-sm-inline-block btn btn-sm btn-secondary shadow-sm">Annuler</a>
   <button class="d-sm-inline-block btn btn-sm btn-primary shadow-sm">{{ button_label|default('Enregistrer') }}</button>
 </div>
 
