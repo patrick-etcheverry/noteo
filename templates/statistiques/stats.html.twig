@@ -406,9 +406,9 @@ function changement(nom, value, partieConcernee, typeStat){
       break;
     case 'bam': // Boîte à moustache
       // Changement des labels + de l'échelle de l'axe Y
-      chartDonnees.labels = [nomEvaluation];
+      chartDonnees.labels = [parties[partieConcernee].nom];
       chartOptions.scales.yAxes[0].ticks.min = 0;
-      chartOptions.scales.yAxes[0].ticks.max = undefined;
+      chartOptions.scales.yAxes[0].ticks.max = parties[partieConcernee].bareme;
       break;
     case 'moy':
       chartDonnees.labels = groupesChecked[partieConcernee][typeStat];
@@ -576,9 +576,9 @@ function getImages(largeur, longueur, callback){
           options.scales.yAxes[0].ticks.max = undefined;
           break;
         case 'bam': // Boîte à moustache
-          chartDonnees.labels = [nomEvaluation];
+          chartDonnees.labels = [parties[indexPartie].nom]; // Nom de la partie
           options.scales.yAxes[0].ticks.min = 0;
-          options.scales.yAxes[0].ticks.max = undefined;
+          options.scales.yAxes[0].ticks.max = parties[indexPartie].bareme; // Maximum du graphique étant la note max de la partie
           break;
         case 'moy':
           chartDonnees.labels = groupesChecked[indexPartie][clef];
