@@ -575,7 +575,6 @@ class StatsController extends AbstractController
            $recupEtudiantsGroupe = $groupe->getEtudiants();
            $groupeEtudiant["nom"] = $groupe->getNom();
 
-
            foreach ($recupEtudiantsGroupe as $etudiant) {
             $notesEtudiant = array();
             $etudiantCourant = array();
@@ -583,11 +582,18 @@ class StatsController extends AbstractController
 
             foreach ($tabEvaluations as $evaluation) {
               $notesEtEtudiants = $repoPoints->findNotesAndEtudiantByEvaluation($evaluation);
+              $etudiantsEvaluation = array();
+              foreach ($notesEtEtudiants as $note) {
+                array_push($etudiantsEvaluation, $note->getEtudiant());
+              }
 
               foreach ($notesEtEtudiants as $points) {
-                if ($points->getEtudiant() == $etudiant) {
+                if( in_array ( $etudiant, $etudiantsEvaluation) and $points->getEtudiant() == $etudiant){
                   array_push($notesEtudiant, $points->getValeur());
                 }
+              }
+              if (!in_array ( $etudiant, $etudiantsEvaluation)) {
+                array_push($notesEtudiant,"NaN");
               }
               $etudiantCourant["notes"] = $notesEtudiant; // on pousse les notes de l'étudiant courant
             }
@@ -596,6 +602,7 @@ class StatsController extends AbstractController
           $groupeEtudiant["etudiants"] = $etudiants;
           array_push($stats, $groupeEtudiant);
         }
+
 
 
       return $this->render('statistiques/statsEvolution.html.twig', [

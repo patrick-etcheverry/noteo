@@ -84,13 +84,38 @@
 
 <script type="text/javascript">
   var tabColors = [];
+  // Pallette de couleurs (valeurs rgb)
+  var couleurs = [
+    [192, 57, 43],
+    [155, 89, 182],
+    [41, 128, 185],
+    [22, 160, 133],
+    [46, 204, 113],
+    [243, 156, 18],
+    [211, 84, 0],
+    [189, 195, 199],
+    [127, 140, 141],
+    [44, 62, 80],
+    [231, 76, 60],
+    [142, 68, 173],
+    [26, 188, 156],
+    [39, 174, 96],
+    [241, 196, 15],
+    [230, 126, 34],
+    [236, 240, 241],
+    [149, 165, 166],
+    [52, 73, 94],
+  ];
+
+
 {% for i in 0..stats|length - 3 %}
 {% for graphCourant in  1..stats[i] %}
 {% set idGraph = "diagrammeEvolutionResultat" ~ stats[i].nom %}
 {% set nbEtudiantsGroupeCourant = stats[i]["etudiants"]|length %}
-for (var i = 0; i < {{nbEtudiantsGroupeCourant}}; i++) {
-  tabColors.push(getRandomAndUniqueColor());
-}
+
+
+fillTabOfColors(tabColors, {{nbEtudiantsGroupeCourant}});
+
 var diagrammeEvolutionResultat = document.getElementById( "{{ idGraph }}" ).getContext('2d');
 var myLineChart = new Chart(diagrammeEvolutionResultat, {
           type: 'line',
@@ -113,6 +138,13 @@ var myLineChart = new Chart(diagrammeEvolutionResultat, {
           options: {
             scales: {
               xAxes: [{
+                ticks: {
+                  {% if evaluations|length <= 5 %}
+                  display: true
+                  {% else %}
+                  display: false
+                  {% endif %}
+                },
                 display: true,
                 scaleLabel: {
                   display: true
@@ -132,12 +164,12 @@ var myLineChart = new Chart(diagrammeEvolutionResultat, {
             },
             legend: {
             display: true
-        }
+        },
+        spanGaps: true
           },
       });
 
-
-  function getRandomAndUniqueColor()
+  function getRandomColor()
   {
     var min = 0;
     var max = 255;
@@ -146,6 +178,19 @@ var myLineChart = new Chart(diagrammeEvolutionResultat, {
     var blue = Math.random() * (max - min) + min;
     var string = "rgba("+red.toString()+", "+green.toString()+", "+blue.toString()+")"
   return string;
+  }
+  function fillTabOfColors(tab, nbLoop)
+  {
+    var composantes = []
+    for (var i = 0; i < couleurs.length-1; i++) {
+      for (var j = 0; j <= 2; j++) {
+        composantes[j] = couleurs[i][j]
+      }
+      tab.push("rgba("+composantes[0].toString()+", "+composantes[1].toString()+", "+composantes[2].toString()+")");
+    }
+    for (var i = 0; i < nbLoop - couleurs.length; i++) {
+      tab.push(getRandomColor());
+    }
   }
 
 {% endfor %}
