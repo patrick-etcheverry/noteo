@@ -452,7 +452,7 @@
         </div>
     </div>
     <br>
-    <!-- FICHE ETUDIANT -->
+    <!-- EVOLUTION ETUDIANTS -->
     <div class="card">
         <li class="list-group-item text-white" style="background-color:#bdc3c7;">
             Évolution chronologique des résultats d’un étudiant ou d’un ensemble d’étudiants
@@ -494,6 +494,49 @@
                         </button>
                     </div>
                 </div>
+                    <div class="card">
+                        <img class="card-img-top imageAAgrandir"
+                             {% if ficheEtudiantDispo %}src="{{ asset('img/statistiques/evolution-groupe/courbes.png') }}"
+                             {% else %}src="{{ asset('img/statistiques/evolution-groupe/courbes_black.png') }}"{% endif %}
+                             alt="Card image cap">
+                        <div class="card-body">
+                            <hr>
+                            <h5 class="card-title">Évolution des résultats des étudiants d'un groupe sur plusieurs évaluations</h5>
+                            <p class="card-text">Sélectionnez un groupe d'étudiants, une suite d'évaluations et obtenez, pour chaque étudiant, une courbe détaillant l'évolution des résultats
+                                des l'étudiant aux évaluations choisies, de manière chronologique.</p>
+                            {% if not statsPlusieursEvalsGroupeDispo %}
+                                <span style="font-size:15px; color: #0275d8"><i class="icon-attention-circled"></i>Statistique indisponible : {% if is_granted('ROLE_ADMIN') %}<a
+                                    href="{{ path("groupe_etudiant_new") }}">Créez un groupe</a> ou {% endif %}<a
+                                            href="{{ path("evaluation_choose_group", {"typeEval" : "simple"}) }}"> Créez des évaluations</a></span>
+                                <br><br>
+                            {% endif %}
+                            <button {% if not statsPlusieursEvalsGroupeDispo %}disabled{% endif %}
+                                    onclick="location.href='{{ path('stats_choisir_groupe_haut_niveau_evaluable', {'typeGraph': 'courbes'}) }}'"
+                                    class="btn {% if statsPlusieursEvalsGroupeDispo %}btn-primary{% else %}btn-secondary{% endif %}">
+                                Consulter ce type de statistiques
+                            </button>
+                        </div>
+                    </div>
+{#                    <div class="card">#}
+{#                        <img class="card-img-top imageAAgrandir" src="{{ asset('https://cdn.discordapp.com/attachments/701780712847704154/717006548353941514/unnamed.png') }}" alt="Card image cap">#}
+{#                        <div class="card-body">#}
+{#                            <hr>#}
+{#                            <h5 class="card-title">Évolution des résultats des étudiants d'un statut sur plusieurs évaluations</h5>#}
+{#                            <p class="card-text">Sélectionnez un groupe d'étudiants ayant un statut particulier, une suite d'évaluations et obtenez, pour chaque étudiant, une courbe détaillant l'évolution des résultats#}
+{#                                des l'étudiant aux évaluations choisies, de manière chronologique.</p>#}
+{#                            {% if not statsPlusieursEvalsStatutDispo %}#}
+{#                                <span style="font-size:15px; color: #0275d8"><i class="icon-attention-circled"></i>Statistique indisponible : <a#}
+{#                                            href="{{ path("statut_new") }}">Créez un statut</a> ou <a#}
+{#                                            href="{{ path("evaluation_choose_group", {"typeEval" : "simple"}) }}"> Créez des évaluations</a></span>#}
+{#                                <br><br>#}
+{#                            {% endif %}#}
+{#                            <button {% if not statsPlusieursEvalsStatutDispo %}disabled{% endif %}#}
+{#                                    onclick="location.href='{{ path('stats_choisir_statut', {'typeGraph': 'courbes'}) }}'"#}
+{#                                    class="btn {% if statsPlusieursEvalsStatutDispo %}btn-primary{% else %}btn-secondary{% endif %}">#}
+{#                                Consulter ce type de statistiques#}
+{#                            </button>#}
+{#                        </div>#}
+{#                    </div>#}
             </div>
         </div>
     </div>

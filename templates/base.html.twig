@@ -232,19 +232,13 @@
   {% endblock %}
 
   <script type="text/javascript">
-    /*
-    * Fonction permettant de cocher toutes les cases d'une liste de casses à cocher
-    * 1er paramètre : le nom qui lie toutes les cases à cocher (l'attribut name)
-    * 2eme paramètre : est ce que la case 'tout cocher' a été cochée ou non (true ou false)
-    */
-    function cocherToutesLesCases(nameCases, caseCochee)
-    {
-      $("input[name='"+ nameCases +"']").each(
-              function()
-              {
-                this.checked = caseCochee;
-              })
-    }
+  function cocherToutesLesCases(nameCases, caseCochee){
+    $("input[name='"+ nameCases +"']").each(function(){
+      if (!this.disabled) {
+        this.checked = caseCochee;
+      }
+    })
+  }
   </script>
 
   {% block datatables %}

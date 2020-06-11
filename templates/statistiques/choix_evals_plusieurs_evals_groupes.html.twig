@@ -5,7 +5,6 @@
 {% block statistiques %} active {% endblock %}
 
 {% block contenu %}
-
     <h1 class="h4 mb-0 text-gray-800">Selectionner les évaluations pour lesquelles vous souhaitez voir des statistiques</h1> <br>
     {{ include('statistiques/_choix_evals_form.html.twig', {'titre' : 'Consulter les statistiques'}) }}
 {% endblock %}
@@ -21,12 +20,16 @@
                 searchPlaceholder: "Rechercher...",
                 "url": "{{asset('tradfr.json')}}"
             },
-            order: [2, 'asc'],
+            order: [2, 'desc'],
             columns: [{"orderable": false}, null, null, {"orderable": false}, null],
             lengthMenu: [
                 [15, 30, 45, -1],
                 [15, 30, 45, "Tout"]
             ],
+            columnDefs: [{
+                "sType": "date-eu",
+                targets: 2
+            }],
             pageLength : {{ app.user.preferenceNbElementsTableaux }}, <!-- Pour que le nombre d'éléments affichés par défaut soit celui de la préference de l'utilisateur -->
             info: false,
         });
@@ -39,14 +42,12 @@
 
 {% endblock %}
 
-
 {% block javascripts %}
     <script>
         window.onload = function() {
             $("#valider").attr('disabled', true)
             checkCasesCocheesPage()
         }
-
         $("[name='checkbox']").on('click', function () {
             checkCasesCocheesPage()
         })
@@ -54,7 +55,6 @@
         $("[name='form[evaluations][]']").on('click', function () {
             checkCasesCocheesPage()
         })
-
         function checkCasesCocheesPage() {
             evalCheck = false; //Au moins une évaluation coché
             $("#valider").attr('disabled', true)
