@@ -34,11 +34,6 @@
 </table>
 </div>
 <div class='bouton' align=center>
-  {% if edit %}
-    <a href="{{ path('enseignant_show', {id: app.user.id}) }}" class="d-sm-inline-block btn btn-sm btn-secondary shadow-sm">Annuler</a>
-  {% else %}
-    <a href="{{ path('enseignant_index') }}" class="d-sm-inline-block btn btn-sm btn-secondary shadow-sm">Annuler</a>
-  {% endif %}
   <button class="d-sm-inline-block btn btn-sm btn-primary shadow-sm">{{ button_label|default('Enregistrer') }}</button>
 </div>
 
