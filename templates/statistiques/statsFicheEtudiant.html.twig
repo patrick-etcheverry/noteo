@@ -60,7 +60,7 @@
     {% if evaluations|length > 1 %}
         <h1 class="h4 mb-0 text-gray-800">Historique des notes</h1><br>
         <div class="container-fluid">
-            <span style="font-size:15px"><i class="icon-attention-circled"></i>Survolez le graphique pour plus d'informations, cliquez sur un label de la légende pour masquer les données</span>
+            <span style="font-size:15px"><i class="icon-attention-circled"></i>Survolez le graphique pour plus d'informations, cliquez sur un point du graphique pour afficher plus de détail</span>
             <canvas align=center id="graphLine"></canvas>
         </div>
     {% endif %}
@@ -98,7 +98,7 @@
                                 </div>
                             </div>
                             <div class="container-fluid">
-                                <br><span style="font-size:15px"><i class="icon-attention-circled"></i>Survolez le graphique pour plus d'informations, cliquez sur un label de la légende pour masquer les données</span><br>
+                                <br><span style="font-size:15px"><i class="icon-attention-circled"></i>Survolez le graphique pour plus d'informations, cliquez sur un point du graphique pour afficher plus de détail</span><br>
                                 <canvas align=center id="graphBar_{{ evaluation.nom }}_{{ groupe.nom }}"
                                         aria-label="Hello ARIA World" role="img"></canvas>
                             </div>
@@ -121,7 +121,7 @@
                             </div>
                         </div>
                         <div class="container-fluid">
-                            <br><span style="font-size:15px"><i class="icon-attention-circled"></i>Survolez le graphique pour plus d'informations, cliquez sur un label de la légende pour masquer les données</span><br>
+                            <br><span style="font-size:15px"><i class="icon-attention-circled"></i>Survolez le graphique pour plus d'informations, cliquez sur un point du graphique pour afficher plus de détail</span><br>
                             <canvas align=center id="graphBar_{{ evaluation.nom }}_{{ groupe.nom }}"
                                     aria-label="Hello ARIA World" role="img"></canvas>
                         </div>
