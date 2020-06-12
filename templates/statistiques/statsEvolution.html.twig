@@ -41,7 +41,7 @@
           <tr>
               <th class="intitule"><label >Actions</label></th>
               <td>
-                  <a href="#"><i style="font-size: 25px;" data-toggle='tooltip' title="Exporter les statistiques au format PDF" class="icon-file-pdf" onclick="genPDF()"></i></a>
+                  <a href="#"><i style="font-size: 25px;" data-toggle='tooltip' title="Exporter les statistiques au format PDF" class="icon-file-pdf" onclick=""></i></a>
               </td>
           </tr>
         </tbody>
@@ -67,8 +67,9 @@
             <div>
                 <br>
                 <div class="container-fluid">
-                    <span style="font-size:15px"><i class="icon-attention-circled"></i>Survolez le graphique pour plus d'informations, cliquez sur un label de la légende pour masquer les données</span>
-                    <br>
+                    <span style="font-size:15px"><i class="icon-attention-circled"></i>Survolez le graphique pour plus d'informations, cliquez sur un label de la légende pour afficher / masquer les données</span>
+                    <br/>
+                    <br/>
                     <canvas id="{{idGraph}}"></canvas>
                 </div>
             </div>
@@ -83,30 +84,48 @@
 {% block javascripts %}
 
 <script type="text/javascript">
-  var tabColors = [];
+  // Liste de couleurs communes
+  var noir = "#000000", jaune = "#FFFF00", bleu = "#0000FF", rouge = "#FF0000", vert = "#00FF00",
+      violet = "#EE82EE", blanc = "#FFFFFF", gris = "#808080";
   // Pallette de couleurs (valeurs rgb)
   var couleurs = [
-    [192, 57, 43],
-    [155, 89, 182],
-    [41, 128, 185],
-    [22, 160, 133],
-    [46, 204, 113],
-    [243, 156, 18],
-    [211, 84, 0],
-    [189, 195, 199],
-    [127, 140, 141],
-    [44, 62, 80],
-    [231, 76, 60],
-    [142, 68, 173],
-    [26, 188, 156],
-    [39, 174, 96],
-    [241, 196, 15],
-    [230, 126, 34],
-    [236, 240, 241],
-    [149, 165, 166],
-    [52, 73, 94],
+      [192, 57, 43], [155, 89, 182], [41, 128, 185], [22, 160, 133], [46, 204, 113], [243, 156, 18], [211, 84, 0], [189, 195, 199], [127, 140, 141],
+      [44, 62, 80], [231, 76, 60], [142, 68, 173], [26, 188, 156], [39, 174, 96], [241, 196, 15], [230, 126, 34], [236, 240, 241], [149, 165, 166],
+      [52, 73, 94],
   ];
 
+  var optionsGraph = {
+    scales: {
+      xAxes: [{
+        ticks: {
+          {% if evaluations|length <= 5 %}
+          display: true
+          {% else %}
+          display: false
+          {% endif %}
+        },
+        display: true,
+        scaleLabel: {
+          display: true
+        }
+      }],
+      yAxes: [{
+        display: true,
+        scaleLabel: {
+          display: false,
+          labelString: 'Value'
+        },
+        ticks: {
+            suggestedMin: 0,
+            suggestedMax: 20
+        }
+      }]
+    },
+    legend: {
+    display: true
+},
+spanGaps: true
+};
 
 {% for i in 0..stats|length - 3 %}
 {% for graphCourant in  1..stats[i] %}
@@ -114,7 +133,7 @@
 {% set nbEtudiantsGroupeCourant = stats[i]["etudiants"]|length %}
 
 
-fillTabOfColors(tabColors, {{nbEtudiantsGroupeCourant}});
+fillTabOfColors({{nbEtudiantsGroupeCourant}});
 
 var diagrammeEvolutionResultat = document.getElementById( "{{ idGraph }}" ).getContext('2d');
 var myLineChart = new Chart(diagrammeEvolutionResultat, {
@@ -122,74 +141,29 @@ var myLineChart = new Chart(diagrammeEvolutionResultat, {
           data: {
               labels: [{% for evaluation in evaluations %} '{{evaluation.nom}}', {% endfor %}],
               datasets: [
-        {% for etudiant in stats[i]["etudiants"] %}
-          {
-  					label: '{{etudiant.nomPrenom}}',
-  					data: [{% for note in etudiant.notes %} {{note}}, {% endfor %}],
-  					borderColor: tabColors[{{loop.index}}],
-  					backgroundColor: tabColors[{{loop.index}}],
-  					fill: false,
-  					lineTension: 0
-  				},
-        {% endfor %}
-
-        ]
-    				},
-          options: {
-            scales: {
-              xAxes: [{
-                ticks: {
-                  {% if evaluations|length <= 5 %}
-                  display: true
-                  {% else %}
-                  display: false
-                  {% endif %}
-                },
-                display: true,
-                scaleLabel: {
-                  display: true
-                }
-              }],
-              yAxes: [{
-                display: true,
-                scaleLabel: {
-                  display: false,
-                  labelString: 'Value'
-                },
-                ticks: {
-                    suggestedMin: 0,
-                    suggestedMax: 20
-                }
-              }]
-            },
-            legend: {
-            display: true
-        },
-        spanGaps: true
-          },
+                          {% for etudiant in stats[i]["etudiants"] %}
+                            {
+                    					label: '{{etudiant.nomPrenom}}',
+                    					data: [{% for note in etudiant.notes %} {{note}}, {% endfor %}],
+                    					borderColor: "rgb(" + couleurs[{{loop.index}}][0] + "," + couleurs[{{loop.index}}][1] + "," + couleurs[{{loop.index}}][2] + ")",
+                    					backgroundColor: "rgb(" + couleurs[{{loop.index}}][0] + "," + couleurs[{{loop.index}}][1] + "," + couleurs[{{loop.index}}][2] + ")",
+                    					fill: false,
+                    					lineTension: 0
+                    				},
+                          {% endfor %}
+                        ]
+        				},
+          options: optionsGraph,
       });
 
-  function getRandomColor()
+  function fillTabOfColors(nbLoop)
   {
-    var min = 0;
-    var max = 255;
-    var red = Math.random() * (max - min) + min;
-    var green = Math.random() * (max - min) + min;
-    var blue = Math.random() * (max - min) + min;
-    var string = "rgba("+red.toString()+", "+green.toString()+", "+blue.toString()+")"
-  return string;
-  }
-  function fillTabOfColors(tab, nbLoop)
-  {
-    var composantes = []
-    for (var i = 0; i < couleurs.length-1; i++) {
-      for (var j = 0; j <= 2; j++) {
-        composantes[j] = couleurs[i][j]
-      }
-      tab.push("rgba("+composantes[0].toString()+", "+composantes[1].toString()+", "+composantes[2].toString()+")");
-    }
-    for (var i = 0; i < nbLoop - couleurs.length; i++) {
-      tab.push(getRandomColor());
+    if (nbLoop > couleurs.length) {
+        var gap = nbLoop - couleurs.length;
+        for (var i = 0; i <= gap ; i++) {
+            var coul = couleurs[i];
+            couleurs.push([(coul[0] + 60) % 255, (coul[1] - 60) % 255, coul[2]]);
+        }
     }
   }
 

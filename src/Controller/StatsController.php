@@ -560,7 +560,7 @@ class StatsController extends AbstractController
             ->getForm();
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
-            if($request->getSession()->get('typeGraphique') == "courbes") {
+            if($request->getSession()->get('typeGraphique') == "EvolutionGroupe") {
                 if(count($form->get('groupes')->getData()) > 0) {
                     $sousGroupes = $form->get('groupes')->getData();
                     $request->getSession()->set('sousGroupes', $sousGroupes);
@@ -682,7 +682,7 @@ class StatsController extends AbstractController
             $listeStatsParGroupe = array(); // On initialise un tableau vide qui contiendra les statistiques des groupes choisis
 
             $lesGroupes = array(); // On regroupe le groupe principal et les sous groupes pour faciliter la requete
-            if($typeGraphique != "courbes"){
+            if($typeGraphique != "evolutionGroupe"){
                 array_push($lesGroupes, $groupe);
             }
 
@@ -690,7 +690,7 @@ class StatsController extends AbstractController
             {
                 array_push($lesGroupes, $sousGroupe);
             }
-            if ($typeGraphique == "courbes") {
+            if ($typeGraphique == "evolutionGroupe") {
                 $request->getSession()->set('evaluations', $evaluations);
                 $request->getSession()->set('lesGroupes', $lesGroupes);
                 return $this->redirectToRoute("determiner_evolution_etudiants_groupe",[

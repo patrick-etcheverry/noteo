@@ -511,7 +511,7 @@
                                 <br><br>
                             {% endif %}
                             <button {% if not statsPlusieursEvalsGroupeDispo %}disabled{% endif %}
-                                    onclick="location.href='{{ path('stats_choisir_groupe_haut_niveau_evaluable', {'typeGraph': 'courbes'}) }}'"
+                                    onclick="location.href='{{ path('stats_choisir_groupe_haut_niveau_evaluable', {'typeGraph': 'evolutionGroupe'}) }}'"
                                     class="btn {% if statsPlusieursEvalsGroupeDispo %}btn-primary{% else %}btn-secondary{% endif %}">
                                 Consulter ce type de statistiques
                             </button>
