@@ -534,6 +534,7 @@ class StatsController extends AbstractController
         return $this->render('statistiques/choix_groupes_plusieurs_evals.html.twig', [
             'form' => $form->createView(),
             'pasDIndentation' => true,
+            'typeGraphique' => $typeGraph
         ]);
     }
 
@@ -561,6 +562,7 @@ class StatsController extends AbstractController
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
             if($request->getSession()->get('typeGraphique') == "courbes") {
+                //Comme pour l'évolution d'un groupe on DOIT choisir des groupes, on ne peut pas continuer si aucun n'a été selectionné
                 if(count($form->get('groupes')->getData()) > 0) {
                     $sousGroupes = $form->get('groupes')->getData();
                     $request->getSession()->set('sousGroupes', $sousGroupes);
@@ -739,7 +741,8 @@ class StatsController extends AbstractController
             }
         }
         return $this->render('statistiques/choix_evals_plusieurs_evals_groupes.html.twig', [
-            'form' => $form->createView()
+            'form' => $form->createView(),
+            'typeGraphique' => $typeGraphique
         ]);
     }
 
