@@ -707,6 +707,43 @@ class StatsController extends AbstractController
         ]);
     }
 
+    // public function repartitionEtLabels($listeNotes, $bareme) {
+    //     $repartition = array(0,0,0,0,0);
+    //       // Calcul de l'intervalle
+    //       $intervalle = $bareme / 5;
+    //       $intervalles = array(0, $intervalle, $intervalle*2, $intervalle*3, $intervalle*4, $bareme);
+    //       // Rangement des notes dans ces intervalles
+    //       foreach ($tabPoints as $note) {
+    //           if ($note >= $intervalles[0] && $note < $intervalles[1]) {
+    //               $repartition[0]++;
+    //           }
+    //           if ($note >= $intervalles[1] && $note < $intervalles[2]) {
+    //               $repartition[1]++;
+    //           }
+    //           if ($note >= $intervalles[2] && $note < $intervalles[3]) {
+    //               $repartition[2]++;
+    //           }
+    //           if ($note >= $intervalles[3] && $note < $intervalles[4]) {
+    //               $repartition[3]++;
+    //           }
+    //           if ($note >= $intervalles[4] && $note <= $bareme) {
+    //               $repartition[4]++;
+    //           }
+    //       }
+    //       // Génération des labels lié à ces intervalles
+    //       $labels = array();
+    //       for($i = 0; $i < 5; $i){
+    //         //$labels[$i] = "[".$intervalles[$i].";".$intervalles[$i+1].($i == 4 ? "]" : "[");
+    //         $label = "[";
+    //         $label .= $intervalles[$i];
+    //         $label .= ";";
+    //         $label .= ("".$intervalles[$i+1]);
+    //         $label .= "[";
+    //         $labels[$i] = $label;
+    //       }
+    //     return $repartition;
+    // }
+
     public function repartition($tabPoints) {
         $repartition = array(0,0,0,0,0);
         foreach ($tabPoints as $note) {
