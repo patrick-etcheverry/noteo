@@ -534,7 +534,7 @@
                                 <br><br>
                             {% endif %}
                             <button {% if not statsPlusieursEvalsStatutDispo %}disabled{% endif %}
-                                    onclick="location.href='{{ path('stats_choisir_statut', {'typeGraph': 'courbes'}) }}'"
+                                    onclick="location.href='{{ path('stats_choisir_statut', {'typeGraph': 'evolutionStatut'}) }}'"
                                     class="btn {% if statsPlusieursEvalsStatutDispo %}btn-primary{% else %}btn-secondary{% endif %}">
                                 Consulter ce type de statistiques
                             </button>

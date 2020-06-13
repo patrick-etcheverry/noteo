@@ -45,7 +45,7 @@
         </table>
     </div>
     <div class='bouton' align=center>
-        <button class="d-sm-inline-block btn btn-sm btn-primary shadow-sm">Créer l'évaluation pour ce groupe</button>
+        <button class="d-sm-inline-block btn btn-sm btn-primary shadow-sm">{{ labelBoutonSuivant  | default ("Créer l'évaluation pour ce groupe")}}</button>
     </div>
     {{ form_end(form) }}
 {% endblock %}

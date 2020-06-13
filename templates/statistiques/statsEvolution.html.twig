@@ -1,3 +1,4 @@
+
 {% extends 'base.html.twig' %}
 
 {% block titrePage %}{{ titre }}{% endblock %}
@@ -15,6 +16,7 @@
 {% endblock %}
 
 {% block contenu %}
+
 <div class="table-responsive">
     <table align="center" class="table">
         <tbody>
@@ -29,6 +31,7 @@
               </td>
           </tr>
           <tr>
+          {% if stats.type == "groupe" %}
               <th>Groupes sélectionnés</th>
               <td>
                   <ul>
@@ -37,6 +40,12 @@
                       {% endfor %}
                   </ul>
               </td>
+          {% else %}
+            <th>Groupe d'étudiants observé ayant un statut particulier</th>
+            <td>
+              {{ groupes[0].nom }}
+            </td>
+          {% endif %}
           </tr>
           <tr>
               <th class="intitule"><label >Actions</label></th>
