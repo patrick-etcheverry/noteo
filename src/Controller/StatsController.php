@@ -594,9 +594,16 @@ class StatsController extends AbstractController
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
             if($request->getSession()->get('typeGraphique') == "evolutionGroupe") {
-              $sousGroupes = $form->get('groupes')->getData();
-              $request->getSession()->set('sousGroupes', $sousGroupes);
-              return $this->redirectToRoute('statistiques_groupes_choisir_plusieurs_evaluations', ['slug' => $groupe->getSlug()]);
+                if(count($form->get('groupes')->getData()) > 0) {
+                    $sousGroupes = $form->get('groupes')->getData();
+                    $request->getSession()->set('sousGroupes', $sousGroupes);
+                    return $this->redirectToRoute('statistiques_groupes_choisir_plusieurs_evaluations', ['slug' => $groupe->getSlug()]);
+                }
+            }
+            else {
+                $sousGroupes = $form->get('groupes')->getData();
+                $request->getSession()->set('sousGroupes', $sousGroupes);
+                return $this->redirectToRoute('statistiques_groupes_choisir_plusieurs_evaluations', ['slug' => $groupe->getSlug()]);
             }
         }
         return $this->render('statistiques/choix_sous-groupes_plusieurs_evals.html.twig', [
