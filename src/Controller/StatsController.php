@@ -33,20 +33,45 @@ class StatsController extends AbstractController
      */
     public function choixStatistiques(EvaluationRepository $repoEval, StatutRepository $repoStatut, GroupeEtudiantRepository $repoGroupe, EtudiantRepository $repoEtudiant): Response
     {
-        //On définit quelles fonctionnalités seront disponibles à l'utilisateur
-        $statsClassiquesDispo = count($repoEval->findAllWithOnePart()) >= 1; //Si plus d'une éval simple dans l'appli
-        $statsClassiquesParPartiesDispo = count($repoEval->findAllWithSeveralParts()) >= 1;  //Si plus d'une éval avec partie dans l'appli
-        $statsPlusieursEvalsGroupeDispo = count($repoGroupe->findAllHavingStudents()) >= 1 && count($repoEval->findAll()) >= 2;  //Si plus d'un groupe avec des étudiants et plus de 2 évals dans l'appli
-        $statsPlusieursEvalsStatutDispo = count($repoStatut->findAllHavingStudents()) >= 1 && count($repoEval->findAll()) >= 2; //Si plus d'un statut avec des étudiants et plus de 2 évals dans l'appli
-        $statsComparaisonDispo = count($repoEval->findAll()) >= 2; //Si plus de 2 évals dans l'appli
-        $ficheEtudiantDispo = count($repoEtudiant->findAllConcernedByAtLeastOneEvaluation()) >= 1; //Si il y a au moins 1 étudiant concerné par une évaluation dans l'appli
+        //Ce tableau est utilisé dans la vue pour déterminer si un type de stat est disponible ou non, et si non pourquoi
+        //Le tableau contient un tableau par type de stats. Le tableau correspondant à un type de stats contient un booléen indiquant
+        //si la statistique est disponible et, si le critère de disponibilité est double (par exemple si pour qu'un type de stats
+        //soit disponible il faut plusieurs groupes ET plusieurs évals, contient le nombre de chaque critère pour pouvoir indiquer
+        //à l'utilisateur ce qu'il manque (des groupes ou des évals ou les deux)
+        $nombreEvalsSimples = count($repoEval->findAllWithOnePart());
+        $nombreEvalsAvecParties = count($repoEval->findAllWithSeveralParts());
+        $nombreEvaluationsTotal = count($repoEval->findAll());
+        $nombreGroupes = count($repoGroupe->findAllHavingStudents());
+        $nombreStatuts = count($repoStatut->findAllHavingStudents());
+        $nombreEtudiantsConcerneParUneEvalOuPlus = count($repoEtudiant->findAllConcernedByAtLeastOneEvaluation());
+        $statsDispo = [
+          "evalSimple" => [
+              "disponible" => $nombreEvalsSimples >= 1
+          ],
+          "evalParties" => [
+              "disponible" => $nombreEvalsAvecParties >= 1
+          ],
+          "plusieursEvalsGroupes" => [
+              "disponible" => $nombreGroupes >= 1 && $nombreEvaluationsTotal >= 2,
+              "nombreGroupes" => $nombreGroupes,
+              "nombreEvals" => $nombreEvaluationsTotal
+          ],
+          "plusieursEvalsStatuts" => [
+              "disponible" => $nombreStatuts >= 1 && $nombreEvaluationsTotal >= 2,
+              "nombreStatuts" => $nombreStatuts,
+              "nombreEvals" => $nombreEvaluationsTotal
+          ],
+          "ficheEtudiant" => [
+              "disponible" => $nombreEtudiantsConcerneParUneEvalOuPlus >= 1 && $nombreEvaluationsTotal >= 2,
+              "nombreEtudiants" => $nombreEtudiantsConcerneParUneEvalOuPlus,
+              "nombreEvals" => $nombreEvaluationsTotal
+          ],
+          "comparaison" => [
+              "disponible" => $nombreEvaluationsTotal >= 2
+          ]
+        ];
         return $this->render('statistiques/choix_statistiques.html.twig', [
-            'statsClassiquesDispo' => $statsClassiquesDispo,
-            'statsClassiquesParPartiesDispo' => $statsClassiquesParPartiesDispo,
-            'statsPlusieursEvalsGroupeDispo' => $statsPlusieursEvalsGroupeDispo,
-            'statsPlusieursEvalsStatutDispo' => $statsPlusieursEvalsStatutDispo,
-            'statsComparaisonDispo' => $statsComparaisonDispo,
-            'ficheEtudiantDispo' => $ficheEtudiantDispo
+            "statistiques" => $statsDispo
         ]);
     }
 
@@ -534,6 +559,7 @@ class StatsController extends AbstractController
         return $this->render('statistiques/choix_groupes_plusieurs_evals.html.twig', [
             'form' => $form->createView(),
             'pasDIndentation' => true,
+            'typeGraphique' => $typeGraph
         ]);
     }
 
@@ -567,10 +593,25 @@ class StatsController extends AbstractController
             ->getForm();
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
+<<<<<<< HEAD
             if($request->getSession()->get('typeGraphique') == "evolutionGroupe") {
               $sousGroupes = $form->get('groupes')->getData();
               $request->getSession()->set('sousGroupes', $sousGroupes);
               return $this->redirectToRoute('statistiques_groupes_choisir_plusieurs_evaluations', ['slug' => $groupe->getSlug()]);
+=======
+            if($request->getSession()->get('typeGraphique') == "courbes") {
+                //Comme pour l'évolution d'un groupe on DOIT choisir des groupes, on ne peut pas continuer si aucun n'a été selectionné
+                if(count($form->get('groupes')->getData()) > 0) {
+                    $sousGroupes = $form->get('groupes')->getData();
+                    $request->getSession()->set('sousGroupes', $sousGroupes);
+                    return $this->redirectToRoute('statistiques_groupes_choisir_plusieurs_evaluations', ['slug' => $groupe->getSlug()]);
+                }
+            }
+            else {
+                $sousGroupes = $form->get('groupes')->getData();
+                $request->getSession()->set('sousGroupes', $sousGroupes);
+                return $this->redirectToRoute('statistiques_groupes_choisir_plusieurs_evaluations', ['slug' => $groupe->getSlug()]);
+>>>>>>> 247c43a30304548783535aeb220015caf27d6c9a
             }
         }
         return $this->render('statistiques/choix_sous-groupes_plusieurs_evals.html.twig', [
@@ -798,7 +839,8 @@ class StatsController extends AbstractController
             }
         }
         return $this->render('statistiques/choix_evals_plusieurs_evals_groupes.html.twig', [
-            'form' => $form->createView()
+            'form' => $form->createView(),
+            'typeGraphique' => $typeGraphique
         ]);
     }
 
