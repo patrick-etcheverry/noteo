@@ -593,25 +593,10 @@ class StatsController extends AbstractController
             ->getForm();
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
-<<<<<<< HEAD
             if($request->getSession()->get('typeGraphique') == "evolutionGroupe") {
               $sousGroupes = $form->get('groupes')->getData();
               $request->getSession()->set('sousGroupes', $sousGroupes);
               return $this->redirectToRoute('statistiques_groupes_choisir_plusieurs_evaluations', ['slug' => $groupe->getSlug()]);
-=======
-            if($request->getSession()->get('typeGraphique') == "courbes") {
-                //Comme pour l'évolution d'un groupe on DOIT choisir des groupes, on ne peut pas continuer si aucun n'a été selectionné
-                if(count($form->get('groupes')->getData()) > 0) {
-                    $sousGroupes = $form->get('groupes')->getData();
-                    $request->getSession()->set('sousGroupes', $sousGroupes);
-                    return $this->redirectToRoute('statistiques_groupes_choisir_plusieurs_evaluations', ['slug' => $groupe->getSlug()]);
-                }
-            }
-            else {
-                $sousGroupes = $form->get('groupes')->getData();
-                $request->getSession()->set('sousGroupes', $sousGroupes);
-                return $this->redirectToRoute('statistiques_groupes_choisir_plusieurs_evaluations', ['slug' => $groupe->getSlug()]);
->>>>>>> 247c43a30304548783535aeb220015caf27d6c9a
             }
         }
         return $this->render('statistiques/choix_sous-groupes_plusieurs_evals.html.twig', [

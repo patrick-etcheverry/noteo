@@ -590,25 +590,16 @@
                             {% if statistiques.plusieursEvalsGroupes.nombreGroupes < 1 and statistiques.plusieursEvalsGroupes.nombreEvals < 2 %}
                                 puis
                             {% endif %}
-<<<<<<< HEAD
-                            <button {% if not statsPlusieursEvalsGroupeDispo %}disabled{% endif %}
-                                    onclick="location.href='{{ path('stats_choisir_groupe_haut_niveau_evaluable', {'typeGraph': 'evolutionGroupe'}) }}'"
-                                    class="btn {% if statsPlusieursEvalsGroupeDispo %}btn-primary{% else %}btn-secondary{% endif %}">
-                                Consulter ce type de statistiques
-                            </button>
-                        </div>
-=======
                             {% if statistiques.plusieursEvalsGroupes.nombreEvals < 2 %}
                                 <a href="{{ path("evaluation_choose_group", {"typeEval" : "simple"}) }}"> Créez des évaluations</a></span>
                             {% endif %}
                             <br><br>
                         {% endif %}
                         <button {% if not statistiques.plusieursEvalsGroupes.disponible %}disabled{% endif %}
-                                onclick="location.href='{{ path('stats_choisir_groupe_haut_niveau_evaluable', {'typeGraph': 'courbes'}) }}'"
+                                onclick="location.href='{{ path('stats_choisir_groupe_haut_niveau_evaluable', {'typeGraph': 'evolutionGroupe'}) }}'"
                                 class="btn {% if statistiques.plusieursEvalsGroupes.disponible %}btn-primary{% else %}btn-secondary{% endif %}">
                             Consulter ce type de statistiques
                         </button>
->>>>>>> 247c43a30304548783535aeb220015caf27d6c9a
                     </div>
                 </div>
                 <div class="card">
@@ -633,25 +624,16 @@
                             {% if statistiques.plusieursEvalsStatuts.nombreStatuts < 1 and statistiques.plusieursEvalsStatuts.nombreEvals < 2 %}
                                 et
                             {% endif %}
-<<<<<<< HEAD
-                            <button {% if not statsPlusieursEvalsStatutDispo %}disabled{% endif %}
-                                    onclick="location.href='{{ path('stats_choisir_statut', {'typeGraph': 'evolutionStatut'}) }}'"
-                                    class="btn {% if statsPlusieursEvalsStatutDispo %}btn-primary{% else %}btn-secondary{% endif %}">
-                                Consulter ce type de statistiques
-                            </button>
-                        </div>
-=======
                             {% if statistiques.plusieursEvalsStatuts.nombreEvals < 2 %}
                                 <a href="{{ path("evaluation_choose_group", {"typeEval" : "simple"}) }}"> Créez des évaluations</a></span>
                             {% endif %}
                             <br><br>
                         {% endif %}
                         <button {% if not statistiques.plusieursEvalsStatuts.disponible %}disabled{% endif %}
-                                onclick="location.href='{{ path('stats_choisir_statut', {'typeGraph': 'courbes'}) }}'"
+                                onclick="location.href='{{ path('stats_choisir_statut', {'typeGraph': 'evolutionStatut'}) }}'"
                                 class="btn {% if statistiques.plusieursEvalsStatuts.disponible %}btn-primary{% else %}btn-secondary{% endif %}">
                             Consulter ce type de statistiques
                         </button>
->>>>>>> 247c43a30304548783535aeb220015caf27d6c9a
                     </div>
                 </div>
             </div>
