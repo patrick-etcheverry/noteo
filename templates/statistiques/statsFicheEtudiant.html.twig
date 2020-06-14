@@ -57,6 +57,9 @@
             </tbody>
         </table>
     </div>
+    <div class='bouton' align=center>
+        <span style="font-size:15px" class="badge badge-pill badge-primary"><i class="icon-attention-circled"></i> Les statistiques ne prennent pas en compte les évaluations auxquelles l'étudiant était absent</span>
+    </div>
     {% if evaluations|length > 1 %}
         <h1 class="h4 mb-0 text-gray-800">Historique des notes</h1><br>
         <div class="container-fluid">
@@ -67,6 +70,7 @@
     <br><h1 class="h4 mb-0 text-gray-800">Classement par rapport aux groupes/statuts</h1><br>
     {% set nbCard = 0 %}
     {% for evaluation in evaluations %}
+    {% if stats[nbCard]['noteEtudiant'] != -1 %} <!-- Si l'étudiant n'était pas absent -->
         <div class="card">
             <ul class="list-group list-group-flush">
                 <li class="list-group-item text-white" style="background-color:#bdc3c7;" id="date_{{ loop.index }}">
@@ -82,13 +86,12 @@
                     {% endif %}
                     {% if groupe.estEvaluable is defined %}
                         {% if groupe.estEvaluable %}
-                            <div class="card">
+                            <div class="card shadow-none p-4 mb-4 bg-light">
                                 <div class="card-body">
                                     <h5 class="card-title">{{ groupe.nom }}</h5>
                                     <p class="card-text">
                                     <ul>
-                                        <li{% if loop.first %} id="{{ loop.parent.loop.index }}" {% endif %}>Classement
-                                            : {{ stats[nbCard]['position'] }}</li>
+                                        <li{% if loop.first %} id="{{ loop.parent.loop.index }}" {% endif %}>Classement : {{ stats[nbCard]['position'] }}</li>
                                         <li id="moyGpe_{{ evaluation.nom }}_{{ groupe.nom }}">Moyenne du groupe
                                             : {{ stats[nbCard]['moyenneGroupe'] }}</li>
                                         <li id="noteEtu_{{ evaluation.nom }}_{{ groupe.nom }}">Note de l'étudiant
@@ -105,13 +108,12 @@
                             {% set nbCard = nbCard + 1 %}
                         {% endif %}
                     {% else %}
-                        <div class="card">
+                        <div class="card shadow-none p-4 mb-4 bg-light">
                             <div class="card-body">
                                 <h5 class="card-title">{{ groupe.nom }}</h5>
                                 <p class="card-text">
                                 <ul>
-                                    <li{% if loop.first %} id="{{ loop.parent.loop.index }}" {% endif %}>Classement
-                                        : {{ stats[nbCard]['position'] }}</li>
+                                    <li{% if loop.first %} id="{{ loop.parent.loop.index }}" {% endif %}>Classement : {{ stats[nbCard]['position'] }}</li>
                                     <li id="moyGpe_{{ evaluation.nom }}_{{ groupe.nom }}">Moyenne du groupe
                                         : {{ stats[nbCard]['moyenneGroupe'] }}</li>
                                     <li id="noteEtu_{{ evaluation.nom }}_{{ groupe.nom }}">Note de l'étudiant
@@ -134,6 +136,7 @@
         </div>
         <br>
         {% set nbLoop = nbLoop + 1 %}
+    {% endif %}
     {% endfor %}
     <br>
 {% endblock %}
@@ -234,11 +237,13 @@
                 {% set passageEvalSuivante = groupesEtStatuts|length * loop.index %}
                 {% set noteEtu = stats[passageEvalSuivante - 1]['noteEtudiant'] %}
                 {% set classement = stats[passageEvalSuivante - 1]['position'] %}
-                var nomEval = {{ evaluation.nom|json_encode|raw }};
-                nomEvals.push(nomEval);
-                notesEtu.push({{ noteEtu }});
-                classements.push({{ classement }});
-                dates.push({{ evaluation.date|date("d/m/Y") }});
+                {% if noteEtu != -1 %} // Si l'étudiant n'était pas absent
+                    var nomEval = {{ evaluation.nom|json_encode|raw }};
+                    nomEvals.push(nomEval);
+                    notesEtu.push({{ noteEtu }});
+                    classements.push({{ classement }});
+                    dates.push({{ evaluation.date|date("d/m/Y") }});
+                {% endif %}
             {% endfor %}
             var chartLine = new Chart(document.getElementById("graphLine").getContext('2d'), {
                 type: 'line',
@@ -247,6 +252,7 @@
                     datasets: [{
                         data: notesEtu,
                         label: 'Notes de l\'étudiant',
+                        lineTension: 0,
                         borderColor: "#0275d8",
                         fill: false
                     }]
