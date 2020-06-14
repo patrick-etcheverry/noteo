@@ -50,8 +50,6 @@ class EnseignantController extends AbstractController
             }
             $mdpEncode = $encoder->encodePassword($enseignant, $enseignant->getPassword());
             $enseignant->setPassword($mdpEncode);
-            $enseignant->setNom(ucfirst(strtolower($enseignant->getNom())));
-            $enseignant->setPrenom(ucfirst(strtolower($enseignant->getPrenom())));
             $manager->persist($enseignant);
             $manager->flush();
             return $this->redirectToRoute('enseignant_index');

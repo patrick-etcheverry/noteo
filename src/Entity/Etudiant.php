@@ -81,7 +81,9 @@ class Etudiant
 
     public function setNom(?string $nom): self
     {
-        $this->nom = trim($nom);
+        $leNom = ucwords(strtoupper(trim($nom)));
+
+        $this->nom = $leNom;
 
         return $this;
     }
@@ -93,7 +95,16 @@ class Etudiant
 
     public function setPrenom(?string $prenom): self
     {
-        $this->prenom = trim($prenom);
+        $lePrenom = ucwords(strtolower(trim($prenom)));
+        foreach (array('-', '\'', ' ') as $delimiter)
+        {
+            if (strpos($lePrenom, $delimiter)!==false) 
+            {
+                $lePrenom =implode($delimiter, array_map('ucfirst', explode($delimiter, $lePrenom)));
+            }
+        }
+        
+        $this->prenom = $lePrenom;
 
         return $this;
     }

@@ -64,8 +64,6 @@ class EtudiantController extends AbstractController
             }
             $etudiant->addGroupe($groupeEtudiantsNonAffectes);
             $etudiant->setEstDemissionaire(false);
-            $etudiant->setNom(ucfirst(strtolower($etudiant->getNom())));
-            $etudiant->setPrenom(ucfirst(strtolower($etudiant->getPrenom())));
             $entityManager = $this->getDoctrine()->getManager();
             $entityManager->persist($etudiant);
             $entityManager->flush();
