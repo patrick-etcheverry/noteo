@@ -175,10 +175,9 @@ class Enseignant implements UserInterface
 
     public function setNom(?string $nom): self
     {
-        $leNom = ucwords(strtoupper(trim($nom)));
-
+        setlocale(LC_TIME, "fr_FR"); // Pour que les carctères è é à soient bien mis en majuscule
+        $leNom = mb_strtoupper(trim($nom)); //Met en majuscules en fonction de la locale
         $this->nom = $leNom;
-
         return $this;
     }
 
@@ -189,17 +188,9 @@ class Enseignant implements UserInterface
 
     public function setPrenom(?string $prenom): self
     {
-        $lePrenom = ucwords(strtolower(trim($prenom)));
-        foreach (array('-', '\'', ' ') as $delimiter)
-        {
-            if (strpos($lePrenom, $delimiter)!==false) 
-            {
-                $lePrenom =implode($delimiter, array_map('ucfirst', explode($delimiter, $lePrenom)));
-            }
-        }
-        
+        setlocale(LC_TIME, "fr_FR"); // Pour que les carctères è é à soient bien mis en minuscule
+        $lePrenom = ucwords(mb_strtolower(trim($prenom)), "- '");
         $this->prenom = $lePrenom;
-
         return $this;
     }
 
