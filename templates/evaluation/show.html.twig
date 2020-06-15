@@ -17,6 +17,10 @@
             <a class="d-sm-inline-block btn btn-sm btn-primary shadow-sm"
                href="{{ path('evaluation_edit', {'slug': evaluation.slug}) }}">Modifier {{ evaluation.nom }}</a>
         {% endif %}
+        <a class="d-sm-inline-block btn btn-sm btn-primary shadow-sm"
+           {% if evaluation.parties|length > 1 %}{{ app.session.set('typeGraphique', 'histogramme') }}href="{{ path('statistiques_classiques_choisir_groupes_parties_statuts', {'slug' : evaluation.slug, 'typeStat':'classique-avec-parties'}) }}"
+           {% else %}{{ app.session.set('typeGraphique', 'histogramme') }}href="{{ path('statistiques_classiques_choisir_groupes_parties_statuts', {'slug' : evaluation.slug, 'typeStat':'classique'}) }}"{% endif %}>Consulter
+            les statistiques pour {{ evaluation.nom }}</a>
     </div>
     <div class="table-responsive">
         <table class="table">
@@ -57,28 +61,28 @@
             {% endif %}
             </thead>
             <tbody>
-                {% if notes is not empty %}
-                    {% set premiereNoteAAfficher = 0 %}
-                    {% set derniereNoteAAfficher = (premiereNoteAAfficher +  evaluation.parties|length) -1 %}
-                    {% for etudiant in evaluation.groupe.etudiants %}
-                        <tr>
-                            <td>{{ etudiant.nom }}</td>
-                            <td>{{ etudiant.prenom }}</td>
-                            {# Pour chaque étudiant, on affiche les x notes suivantes du tableau de notes passé (x étant le nombre de parties) #}
-                            {% for i in premiereNoteAAfficher..derniereNoteAAfficher %}
-                                <td>
-                                    {% if notes[i].valeur == -1 %}
-                                        Absent
-                                    {% else %}
-                                        {{ notes[i].valeur }}
-                                    {% endif %}
-                                </td>
-                            {% endfor %}
-                            {% set premiereNoteAAfficher = premiereNoteAAfficher + evaluation.parties|length %}
-                            {% set derniereNoteAAfficher = (derniereNoteAAfficher + evaluation.parties|length) %}
-                        </tr>
-                    {% endfor %}
-                {% endif %}
+            {% if notes is not empty %}
+                {% set premiereNoteAAfficher = 0 %}
+                {% set derniereNoteAAfficher = (premiereNoteAAfficher +  evaluation.parties|length) -1 %}
+                {% for etudiant in evaluation.groupe.etudiants %}
+                    <tr>
+                        <td>{{ etudiant.nom }}</td>
+                        <td>{{ etudiant.prenom }}</td>
+                        {# Pour chaque étudiant, on affiche les x notes suivantes du tableau de notes passé (x étant le nombre de parties) #}
+                        {% for i in premiereNoteAAfficher..derniereNoteAAfficher %}
+                            <td>
+                                {% if notes[i].valeur == -1 %}
+                                    Absent
+                                {% else %}
+                                    {{ notes[i].valeur }}
+                                {% endif %}
+                            </td>
+                        {% endfor %}
+                        {% set premiereNoteAAfficher = premiereNoteAAfficher + evaluation.parties|length %}
+                        {% set derniereNoteAAfficher = (derniereNoteAAfficher + evaluation.parties|length) %}
+                    </tr>
+                {% endfor %}
+            {% endif %}
             </tbody>
         </table>
     </div>
@@ -149,6 +153,7 @@
             // Click download link
             downloadLink.click();
         }
+
         function exportTableToCSV(filename) {
             var csv = [];
             var rows = document.querySelectorAll("table tr");
