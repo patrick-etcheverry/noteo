@@ -555,6 +555,7 @@ function getLabels(bareme){
   if(bareme != 0){
     var interval = bareme / 5;
     var liste = [0, interval, interval*2, interval*3, interval*4, bareme];
+    liste = liste.map(x => Math.round(x*100)/100); // Arrondi à 2 chiffres après la virgule
     for(var i = 0; i < 5; i++){
       labels[i] = ("["+liste[i]+";"+liste[i+1]+(i == 4 ? "]" : "["));
     }
@@ -685,8 +686,9 @@ function genPDF(callback, portrait){
         width: (portrait ? imageWidthPortrait : imageWidthPaysage),
       },
       { // PAGE DE GARDE
-  			text: '{{evaluation.nom}}\n({{evaluation.date|date("d/m/Y")}})\n',
+  			text: (nomEvaluation+'\n({{evaluation.date|date("d/m/Y")}})\n'),
   			style: 'header',
+        pageBreak: (portrait ? '' : 'after'),
   		},
       { // TABLES DES MATIERES
         toc: {
