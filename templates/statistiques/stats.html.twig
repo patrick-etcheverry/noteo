@@ -33,7 +33,7 @@
                     <td>
                         <ul>
                             {% for groupe in parties[0].stats %}
-                                <li>{{ groupe.nom }} ({{ groupe.listeNotes|length }} notes étudiées)</li>
+                                <li>{{ groupe.nom }}</li>
                             {% endfor %}
                         </ul>
                     </td>
@@ -224,7 +224,7 @@
 
   // ----- VARIABLES GLOBALES ---------
   {% if plusieursEvals %}
-    var nomEvaluation = "Synthèse des {{evaluations.count}} evaluation(s)"
+    var nomEvaluation = "Synthèse des {{evaluations.count}} evaluation(s)";
   {% else %}
     var nomEvaluation = "{{evaluation.nom|e('js')|raw}}";
   {% endif %}
@@ -237,7 +237,6 @@
   // Liste de couleurs communes
   var noir = "#000000", jaune = "#FFFF00", bleu = "#0000FF", rouge = "#FF0000", vert = "#00FF00", violet = "#EE82EE", blanc = "#FFFFFF", gris = "#808080";
 
-  // Pallette de couleurs (valeurs rgb)
   // Pallette de couleurs (valeurs rgb)
   var couleurs = [
     [192, 57, 43], [155, 89, 182], [41, 128, 185], [22, 160, 133], [46, 204, 113], [243, 156, 18], [211, 84, 0], [189, 195, 199], [127, 140, 141],
@@ -715,9 +714,23 @@ function genPDF(callback, portrait){
         width: (portrait ? imageWidthPortrait : imageWidthPaysage),
       },
       { // PAGE DE GARDE
-  			text: (nomEvaluation+'\n({{evaluation.date|date("d/m/Y")}})\n'),
+        {% if plusieursEvals %}
+          text: nomEvaluation,
+          style: 'header',
+        },
+        {
+    			ul: [
+            {% for evaluation in evaluations %}
+              '{{ evaluation.nom|e('js')|raw }} ({{ evaluation.date|date("d/m/Y") }})',
+          {% endfor %}
+        ],
+        style: (portrait ? 'liste_evals' : 'liste_evals_paysage'),
+        pageBreak: (portrait ? '' : 'after'),
+      {% else %}
+        text: (nomEvaluation +'\n({{evaluation.date|date("d/m/Y")}})\n'),
   			style: 'header',
         pageBreak: (portrait ? '' : 'after'),
+      {% endif %}
   		},
       { // TABLES DES MATIERES
         toc: {
@@ -765,6 +778,14 @@ function genPDF(callback, portrait){
       },
       texte_header_tableau_paysage: {
         margin: 10,
+      },
+      liste_evals: {
+        margin: [30, 5],
+        fontSize: 14,
+      },
+      liste_evals_paysage: {
+        margin: [65, 5],
+        fontSize: 14,
       },
 	   }
   };

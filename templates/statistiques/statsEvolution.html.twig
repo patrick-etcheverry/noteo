@@ -50,7 +50,13 @@
           <tr>
               <th class="intitule"><label >Actions</label></th>
               <td>
-                  <a href="#"><i style="font-size: 25px;" data-toggle='tooltip' title="Exporter les statistiques au format PDF" class="icon-file-pdf" onclick=""></i></a>
+              <a href="#"><i style="font-size: 25px;" data-toggle='tooltip'
+                             title="Exporter les statistiques au format PDF (Portrait)" class="icon-file-pdf"
+                             onclick="genPDF(onChartReady, true)"></i></a>
+              <a href="#"><i style="font-size: 25px;" data-toggle='tooltip'
+                             title="Exporter les statistiques au format PDF (Paysage)"
+                             class="fas icon-file-pdf fa-rotate-270"
+                             onclick="genPDF(onChartReady, false)"></i></a>
               </td>
           </tr>
         </tbody>
@@ -136,6 +142,8 @@
 spanGaps: true
 };
 
+var graphiques = [];
+
 {% for i in 0..stats|length - 3 %}
 {% for graphCourant in  1..stats[i] %}
 {% set idGraph = "diagrammeEvolutionResultat" ~ stats[i].nom %}
@@ -145,10 +153,10 @@ spanGaps: true
 fillTabOfColors({{nbEtudiantsGroupeCourant}});
 
 var diagrammeEvolutionResultat = document.getElementById( "{{ idGraph }}" ).getContext('2d');
-var myLineChart = new Chart(diagrammeEvolutionResultat, {
+graphiques[{{i}}] = new Chart(diagrammeEvolutionResultat, {
           type: 'line',
           data: {
-              labels: [{% for evaluation in evaluations %} '{{evaluation.nom}}', {% endfor %}],
+              labels: [{% for evaluation in evaluations %} '{{evaluation.nom|e('js')|raw}}', {% endfor %}],
               datasets: [
                           {% for etudiant in stats[i]["etudiants"] %}
                             {
@@ -178,6 +186,13 @@ var myLineChart = new Chart(diagrammeEvolutionResultat, {
 
 {% endfor %}
 {% endfor %}
+
+// -----------------------------------------------------------------------------
+// -----------------------  PARTIE GENERATION DE PDF ---------------------------
+// -----------------------------------------------------------------------------
+
+
+
 
 </script>
 
