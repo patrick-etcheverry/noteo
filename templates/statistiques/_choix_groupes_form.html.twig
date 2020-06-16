@@ -1,6 +1,5 @@
 {{form_start(form)}}
 {% set route = app.request.attributes.get('_route') %}
-{% set route = app.request.attributes.get('_route') %}
 <div class="table-responsive table-hover">
     <table class="table" id= "groupes">
         <thead>
@@ -10,7 +9,12 @@
           {% endif %}
         </th>
         <th>Nom</th>
-        <th>Effectif</th>
+        <th>Effectif
+        {% if typeGraphique is defined and typeGraphique == "evolutionGroupe" or typeGraphique == "evolutionStatut"  %}
+          {% if route == "statistiques_choisir_sous_groupes" %}<a href="" class="fontSized" data-toggle="tooltip" data-placement="top" title="La couleur de l'effectif indique la facilité de lecture des graphiques qui seront générés pa"><i
+                          class="icon-help-circled"></i></a></th> {% endif %}
+        {% endif %}
+
         <th>Description</th>
         <th>Créateur</th>
         </thead>
@@ -36,7 +40,16 @@
                     {% endif %}
                     {{entity.nom}}
                 </td>
-                <td>{{entity.etudiants.count}}</td>
+                <td><span class="
+                {% if route == "statistiques_choisir_sous_groupes" and entity.etudiants.count <= 16 %}
+                  green
+                {% elseif route == "statistiques_choisir_sous_groupes" and entity.etudiants.count > 16 and entity.etudiants.count <= 30 %}
+                  orange
+                {% elseif route == "statistiques_choisir_sous_groupes" and entity.etudiants.count > 30 %}
+                  red
+                {% endif %}"
+
+                >{{entity.etudiants.count}}</span></td>
                 <td>{{entity.description}}</td>
                 <td>{{ entity.enseignant.prenom }} {{ entity.enseignant.nom }}</td>
             </tr>
@@ -48,3 +61,19 @@
     </div>
 </div>
 {{form_end(form)}}
+{% block stylesheets %}
+    <style>
+        span.green {
+            color: green;
+        }
+        span.orange {
+            color: orange;
+        }
+        span.red{
+            color: red;
+        }
+        .fontSized{
+          font-size: 1.2em;
+        }
+    </style>
+{% endblock %}
