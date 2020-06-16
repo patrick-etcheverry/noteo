@@ -4,10 +4,35 @@
 
 {% block titrePage %}Visionner les tutoriels de l'application{% endblock %}
 
-{% block contenu %}
-    <h1 class="h4 mb-0 text-gray-800">Consulter les statistiques sur une évaluation simple</h1> <br>
-    <div style="text-align: center">
-        <iframe width="560" height="315" src="https://www.youtube.com/embed/GOnInLA9GEg" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
-    </div>
+{% block stylesheets %}
+    <style>
+        .card:hover {
+            -webkit-box-shadow: -1px 9px 40px -12px rgba(0, 0, 0, 0.75);
+            -moz-box-shadow: -1px 9px 40px -12px rgba(0, 0, 0, 0.75);
+            box-shadow: -1px 9px 40px -12px rgba(0, 0, 0, 0.75);
+        }
+    </style>
+{% endblock %}
 
+{% block contenu %}
+    <div class="card-deck">
+        <div class="card">
+            <div class="card-body">
+                <h5 style="font-weight: bold" class="card-title">Analyse d’une évaluation simple</h5>
+                <hr>
+                <p class="card-text">
+                    Obtenez des statistiques sur une évaluation spécifique dans laquelle l’enseignant a saisi une note
+                    sur 20
+                    pour chaque étudiant.
+                </p>
+                <!-- 16:9 aspect ratio -->
+                <div class="embed-responsive embed-responsive-16by9">
+                    <iframe class="embed-responsive-item" src="https://www.youtube.com/embed/GOnInLA9GEg"
+                            frameborder="0"
+                            allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture"
+                            allowfullscreen></iframe>
+                </div>
+            </div>
+        </div>
+    </div>
 {% endblock %}
