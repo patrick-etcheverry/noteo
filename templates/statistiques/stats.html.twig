@@ -79,7 +79,7 @@
         <span style="font-size:15px" class="badge badge-pill badge-primary"><i class="icon-attention-circled"></i> Les statistiques ne prennent pas en compte les étudiants démissionaires ou absents</span>
     </div>
     {# récupération du type de graphique récupéré à la première étape #}
-    {% set tabActive = app.session.get('typeGraphique') %}
+    {% set tabActive = app.session.get('typeGraph') %}
     {% if parties is not empty %}
         {% for partie in parties %}
             <div class="card">
