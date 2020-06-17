@@ -213,7 +213,7 @@
                     return false;
                 }
             })
-            {% if pasDeChoixParties %}
+            {% if pasDeChoixParties or evaluation.parties | length == 1 %}
             if (groupesCheck || statutsCheck) { //Si un groupe ou statut coché
                 $("#valider").attr('disabled', false)
             }
