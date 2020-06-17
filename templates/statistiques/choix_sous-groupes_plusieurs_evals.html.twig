@@ -14,9 +14,6 @@
     <h1 class="h4 mb-0 text-gray-800">
         Selectionner les sous-groupes de {{ groupe.nom }} pour lesquels vous souhaitez
         voir des statistiques
-        {% if typeGraphique != "evolutionGroupe" %}
-            (optionnel)
-        {% endif %}
     </h1> <br>
     {{ include('statistiques/_choix_groupes_form.html.twig') }}
 {% endblock %}

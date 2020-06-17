@@ -570,6 +570,7 @@ class StatsController extends AbstractController
     {
         $typeGraphique = $request->getSession()->get('typeGraphique');   // Récupération du type de stat dans la session
         $groupesAChoisir = array();
+        array_push($groupesAChoisir, $groupe);
         $sousGroupes = $repoGroupe->findAllOrderedFromNode($groupe);
         foreach ($sousGroupes as $sousGroupe) {
           array_push($groupesAChoisir, $sousGroupe );
