@@ -191,7 +191,74 @@ graphiques[{{i}}] = new Chart(diagrammeEvolutionResultat, {
 // -----------------------  PARTIE GENERATION DE PDF ---------------------------
 // -----------------------------------------------------------------------------
 
+// Contien les image de tous les graphiques regénérés à la bonne taille
+var images = [];
+// Faux, si le graphique est en cours de création -> Vrai une fois que le graphique est prêt à être exporté en Image pour le pdf
+var wait_for_chart_ready = false;
 
+// Fonction appelée par une fois le graphique généré, permet au programme de savoir quand demander la valeur PNG du graphique
+function onChartReady(){
+  wait_for_chart_ready = true;
+  console.log("chart done!");
+}
+
+function getImages(largeur, longueur, callback){
+
+  // Taille de police d'écriture pour les graphiques exportés dans le fichier PDF
+  const pdfChartFontSize = 24;
+  // options du graphique pour la génération de graphiques pour le pdf.
+  const pdfChartOptions = {animation:{
+    onComplete: callback,
+    duration: false, },scales:{xAxes:[{gridLines:{display:!1},ticks:{fontSize:pdfChartFontSize,},maxBarThickness:100,stacked:!1,}],yAxes:[{ticks:{beginAtZero:!0,max:undefined,min:0,fontSize:pdfChartFontSize},stacked:!1,}],},legend:{position:'top',labels:{fontSize:pdfChartFontSize,},},aspectRatio:3,maintainAspectRatio:!0,responsive:!1,tooltips:{intersect:!1,titleMarginBottom:10,titleFontColor:'#6e707e',titleFontSize:pdfChartFontSize,backgroundColor:"#FFFFFF",bodyFontColor:"#858796",borderColor:'#dddfeb',borderWidth:1,xPadding:15,yPadding:15,displayColors:!0,caretPadding:10,},plugins:{labels:{render:'value'}}};
+
+  // Pour chaque graphique présent sur la page
+  for(var i = 0; i < graphiques.length; i++){
+    //récupération des données du graphique
+    var donnees = graphiques[i].config.data.datasets;
+    var donneesFiltrees = []; // Données sans les personnes décochées
+    for(var j = 0; j < donnees.length; j++){
+      if(!graphiques[i].legend.legendItems[j].hidden){ // Si la personne n'as pas été décochée
+        donneesFiltrees.push(donnees[j]);
+      }
+    }
+
+    // Génération du graphique avec les données épurées
+    // Création du canvas caché
+    var canvas = document.createElement("canvas");
+    canvas.setAttribute('id', 'hiddenGraph');
+    canvas.style.display = 'none'; // N'affiche pas l'élément
+    canvas.style.width = largeur+'px';
+    canvas.style.height = longueur+'px';
+    document.body.appendChild(canvas);
+
+    var chartDonnees = {datasets: donneesFiltrees, labels: graphiques[i].config.data.labels};
+    var options = pdfChartOptions;
+
+    // Création du chart dans le canvas caché
+    window.hiddenGraph = new Chart(document.getElementById("hiddenGraph").getContext('2d'), {
+      type: 'line',
+      data: chartDonnees,
+      options: options,
+    });
+
+    // Attente de la génération du graphique, le booléen change d'état dans la fonction callback
+    while(!wait_for_chart_ready){};
+    wait_for_chart_ready = !wait_for_chart_ready;
+
+    // Ajout de l'image à l'array
+    images.push(window.hiddenGraph.toBase64Image());
+
+    // Supression de l'instance du graphique
+    window.hiddenGraph.destroy();
+
+    // Suppression du canvas caché de l'arborescence de la page
+    document.body.removeChild(canvas);
+    console.log("Graphique n°" + (i+1) + " ajouté");
+  }
+
+  console.log("Done");
+
+}
 
 
 </script>
