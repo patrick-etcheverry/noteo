@@ -935,7 +935,7 @@ class StatsController extends AbstractController
                     'parties' => $formatStatsPourLaVue,
                     'evaluations' => $evaluations,
                     'groupes' => $statut,
-                    'titre' => 'Consulter les statistiques sur ' . count($evaluations) . ' évaluation(s)',
+                    'titrePage' => 'Consulter les statistiques sur ' . count($evaluations) . ' évaluation(s)',
                     'plusieursEvals' => true,
                 ]);
             }
