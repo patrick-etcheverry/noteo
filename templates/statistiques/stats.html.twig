@@ -837,12 +837,12 @@ function genPDF(callback, portrait){
 
 // Génère les tableaux de données déstinés au fichier pdf
 function getDataForPdfTable(clef, partieConcernee, portrait){
-  var donnees = []; // Donées du tableau
+  var donnees = []; // Données du tableau
   var groupesData = getGroupesData(groupesChecked[partieConcernee][clef], partieConcernee);
   switch(clef){
     case 'histo':
       var header = [];
-      header.push({text: 'Groupe', style: (portrait ? 'texte_header_tableau_portrait' : 'texte_header_tableau_paysage')}); // Case vide en haut à gauche
+      header.push({text: 'Groupe', style: (portrait ? 'texte_header_tableau_portrait' : 'texte_header_tableau_paysage')});
       // Création du header du tableau en fonction des labels du graphique
       // graphiques[partieConcernee][0] est le graphique de Répartion (Histogramme) de la partie partieConcernée
       for(var i = 0; i < graphiques[partieConcernee][0].data.labels.length; i++){
