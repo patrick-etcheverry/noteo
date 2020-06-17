@@ -76,7 +76,7 @@
                     totalPts = 0;
                     //On étudie pas les deux premiers td (nom et prénom de l'étudiant) ni le dernier (qui contiendra la note mise à jour)
                     for (var i = 2; i <= elementsAEtudier.length - 2; i++) {
-                        pointsARajouter = parseFloat(elementsAEtudier[i].children[elementsAEtudier[i].children.length - 1].value);
+                        pointsARajouter = parseFloat(elementsAEtudier[i].children[elementsAEtudier[i].children.length - 1].value.replace(',','.'));
                         //On teste si la valeur rentrée n'est pas composée de caractères
                         if (!isNaN(pointsARajouter)) {
                             if (pointsARajouter != -1) {
