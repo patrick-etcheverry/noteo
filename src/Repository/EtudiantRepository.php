@@ -3,6 +3,7 @@
 namespace App\Repository;
 
 use App\Entity\Etudiant;
+use App\Entity\Statut;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Common\Persistence\ManagerRegistry;
 
@@ -57,7 +58,7 @@ class EtudiantRepository extends ServiceEntityRepository
      * @return Etudiant[] Returns an array of Etudiant objects
      */
 
-    public function findAllConcernedByAtLeastOneEvaluation()
+    public function findAllConcernedByAtLeastOneEvaluation() // ne retourne que les statuts qui ont des étudiants
     {
         return $this->getEntityManager()->createQuery('
         SELECT e
@@ -71,7 +72,7 @@ class EtudiantRepository extends ServiceEntityRepository
      * @return Etudiant[] Returns an array of Etudiant objects
      */
 
-    public function findAllWithStatut()
+    public function findAllWithStatut() // retourne les statuts, meme ceux qui n'ont pas d'étudiants
     {
         return $this->getEntityManager()->createQuery('
         SELECT e, s
@@ -80,6 +81,23 @@ class EtudiantRepository extends ServiceEntityRepository
         ')
             ->execute();
     }
+
+    /**
+     * @return Etudiant[] Returns an array of Etudiant objects
+     */
+
+     public function findAllByOneStatutAndOneGroupe ($statut, $groupe)
+     {
+       return $this->getEntityManager()->createQuery('
+       SELECT e
+       FROM App\Entity\Etudiant e
+       WHERE e.id IN (SELECT e2.id FROM App\Entity\Etudiant e2 JOIN e2.groupes g2 WHERE g2.slug = :slugGroupe) AND
+       e.id IN (SELECT e3.id FROM App\Entity\Etudiant e3 JOIN e3.statuts s WHERE s.slug = :slugStatut)
+        ')
+            ->setParameter('slugStatut', $statut->getSlug())
+            ->setParameter('slugGroupe', $groupe->getSlug())
+            ->execute();
+     }
 
     // /**
     //  * @return Etudiant[] Returns an array of Etudiant objects

@@ -11,6 +11,9 @@
         </th>
         <th>Nom</th>
         <th>Effectif</th>
+        {% if typeGraph == "evolutionStatut"%}
+          <th>Effectif statut</th>
+        {% endif %}
         <th>Description</th>
         <th>Créateur</th>
         </thead>
@@ -37,6 +40,9 @@
                     {{entity.nom}}
                 </td>
                 <td>{{entity.etudiants.count}}</td>
+                {% if (typeGraph == "evolutionStatut" and route == "stats_choisir_groupe_haut_niveau_evaluable") or (route == "statistiques_choisir_sous_groupes" and typeGraph == "evolutionStatut") %}
+                <td>{{effectifsParStatut[loop.index -1]}}</td>
+                {% endif %}
                 <td>{{entity.description}}</td>
                 <td>{{ entity.enseignant.prenom }} {{ entity.enseignant.nom }}</td>
             </tr>

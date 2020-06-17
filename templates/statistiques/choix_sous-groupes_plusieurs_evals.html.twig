@@ -1,7 +1,7 @@
 {% extends 'base.html.twig' %}
 
 {% block titrePage %}
-    {% if typeGraphique == 'evolutionGroupe' %}
+    {% if typeGraph == 'evolutionGroupe' %}
         Évolution chronologique des résultats d’un ensemble d’étudiants
     {% else %}
         Analyse des résultats de groupe(s) d’étudiant(s) sur plusieurs évaluations
@@ -28,7 +28,7 @@
                 "url": "{{ asset('tradfr.json') }}"
             },
             aaSorting: [],
-            columns: [{"orderable": false}, null, null, null, {"orderable": false}],
+            columns: [{"orderable": false}, null, null, null, null, {"orderable": false}],
             lengthMenu: [
                 [15, 30, 45, -1],
                 [15, 30, 45, "Tout"]
@@ -44,7 +44,7 @@
 {% endblock %}
 
 {% block javascripts %}
-    {% if typeGraphique == "evolutionGroupe" %}
+    {% if typeGraph == "evolutionGroupe" %}
     <script>
         window.onload = function() {
             $("#valider").attr('disabled', true)
