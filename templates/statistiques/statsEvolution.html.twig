@@ -16,7 +16,6 @@
 {% endblock %}
 
 {% block contenu %}
-
 <div class="table-responsive">
     <table align="center" class="table">
         <tbody>
@@ -31,7 +30,7 @@
               </td>
           </tr>
           <tr>
-          {% if stats.type == "groupe" %}
+          {% if stats.typeGroupe["type"] == "groupe" %}
               <th>Groupes sélectionnés</th>
               <td>
                   <ul>
@@ -68,9 +67,7 @@
 <div class="card">
     <ul class="list-group list-group-flush">
         <li class="list-group-item text-white" style="background-color:#bdc3c7;">
-          {{stats[i].nom}}
-          {% for groupe in groupes %}
-          {% endfor %}
+      Étudiant(s) du groupe {{stats[i].nom}} {% if stats.typeGroupe["type"] == "statut" %}ayant le statut "{{stats.typeGroupe[0].nom}}"{% endif %}
         </li>
         <li class="list-group-item">
             <div>
