@@ -937,12 +937,6 @@ class StatsController extends AbstractController
             if (count($form->get('evaluations')->getData()) > 0) {
                 $evaluations = $form->get('evaluations')->getData();
                 }
-                  if ($typeGraph == "evolutionStatut") {
-                  $request->getSession()->set('evaluations', $evaluations);
-                  return $this->redirectToRoute("determiner_evolution_etudiants_groupe",[
-                      'slug' => $statut->getSlug()
-                  ]);
-                }
                 $listeStatsParStatut = array(); // On initialise un tableau vide qui contiendra les statistiques du statut choisi
                 $tabPoints = array();
                 foreach ($evaluations as $eval) {
