@@ -1,23 +1,25 @@
 {{form_start(form)}}
 {% set route = app.request.attributes.get('_route') %}
 <div class="table-responsive table-hover">
+    {% if typeGraph is defined and typeGraph == "evolutionGroupe" or typeGraph == "evolutionStatut"  %}
+        <span style="font-size:15px"><i class="icon-attention-circled"></i>La couleur de l'effectif d'un groupe indique la facilité de lecture du graphique qui sera généré pour ce groupe.</span>
+    {% endif %}
     <table class="table" id= "groupes">
         <thead>
         <th>
-          {% if route != "stats_choisir_groupe_haut_niveau_evaluable" and route != "stats_choisir_statut" %}
+          {% if route != "stats_choisir_groupe_haut_niveau_evaluable" and route != "stats_choisir_statut" %} {# Dans ces cas le widget est un bouton radio donc pas de case tout cocher #}
             <input type="checkbox" onclick= "cocherToutesLesCases('form[groupes][]', this.checked)" name="checkbox" title="Tout cocher"/>
           {% endif %}
         </th>
         <th>Nom</th>
         <th>Effectif</th>
-        {% if typeGraph == "evolutionStatut"%}
+        {% if (typeGraph == "evolutionStatut" and route == "stats_choisir_groupe_haut_niveau_evaluable") or (route == "statistiques_choisir_sous_groupes" and typeGraph == "evolutionStatut") %}
           <th>Effectif statut</th>
         {% endif %}
         <th>Description</th>
         <th>Créateur</th>
         </thead>
         <tbody>
-
         {% for groupe in form.groupes %}
             {# store index of the category in a variable #}
             {% set index = groupe.vars.value %}
@@ -38,25 +40,23 @@
                     {{entity.nom}}
                 </td>
                 <td><span class="
-                {% if route == "statistiques_choisir_sous_groupes" and entity.etudiants.count <= 16 %}
+                {% if (typeGraph == "evolutionStatut" or typeGraph == "evolutionGroupe") and entity.etudiants.count <= 16 %}
                   green
-                {% elseif route == "statistiques_choisir_sous_groupes" and entity.etudiants.count > 16 and entity.etudiants.count <= 30 %}
+                {% elseif (typeGraph == "evolutionStatut" or typeGraph == "evolutionGroupe") and entity.etudiants.count > 16 and entity.etudiants.count <= 30 %}
                   orange
-                {% elseif route == "statistiques_choisir_sous_groupes" and entity.etudiants.count > 30 %}
+                {% elseif (typeGraph == "evolutionStatut" or typeGraph == "evolutionGroupe") and entity.etudiants.count > 30 %}
                   red
                 {% endif %}"
-
                 >{{entity.etudiants.count}}</span></td>
+                {% if (typeGraph == "evolutionStatut" and route == "stats_choisir_groupe_haut_niveau_evaluable") or (route == "statistiques_choisir_sous_groupes" and typeGraph == "evolutionStatut") %}
+                    <td>{{effectifsParStatut[loop.index -1]}}</td>
+                {% endif %}
                 <td>{{entity.description}}</td>
                 <td>{{ entity.enseignant.prenom }} {{ entity.enseignant.nom }}</td>
             </tr>
         {% endfor %}
         </tbody>
     </table>
-    {% if typeGraphique is defined and typeGraphique == "evolutionGroupe" or typeGraphique == "evolutionStatut"  %}
-      {% if route == "statistiques_choisir_sous_groupes" %}<a class="fontSized"><i
-    class="icon-help-circled"></i>La couleur de l'effectif indique la facilité de lecture des graphiques qui seront générés pour chaque groupe.</a></th> {% endif %}
-    {% endif %}
     <div class='bouton' align=center>
         <button class="d-sm-inline-block btn btn-sm btn-primary shadow-sm" id="valider">Suivant</button>
     </div>
