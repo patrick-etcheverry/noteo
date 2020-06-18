@@ -2,7 +2,7 @@
 {% set route = app.request.attributes.get('_route') %}
 <div class="table-responsive table-hover">
     {% if typeGraph is defined and typeGraph == "evolutionGroupe" or typeGraph == "evolutionStatut"  %}
-        <span style="font-size:15px"><i class="icon-attention-circled"></i>La couleur de l'effectif d'un groupe indique la facilité de lecture du graphique qui sera généré pour ce groupe.</span>
+        <span style="font-size:15px"><i class="icon-attention-circled"></i>La couleur de l'effectif d'un groupe indique la facilité de lecture du graphique qui sera généré pour ce groupe.</span></br></br>
     {% endif %}
     <table class="table" id= "groupes">
         <thead>
