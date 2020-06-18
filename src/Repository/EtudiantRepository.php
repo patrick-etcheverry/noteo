@@ -91,8 +91,10 @@ class EtudiantRepository extends ServiceEntityRepository
        return $this->getEntityManager()->createQuery('
        SELECT e
        FROM App\Entity\Etudiant e
-       WHERE e.id IN (SELECT e2.id FROM App\Entity\Etudiant e2 JOIN e2.groupes g2 WHERE g2.slug = :slugGroupe) AND
-       e.id IN (SELECT e3.id FROM App\Entity\Etudiant e3 JOIN e3.statuts s WHERE s.slug = :slugStatut)
+       LEFT JOIN e.statuts s
+       LEFT JOIN e.groupes g
+       WHERE g.slug = :slugGroupe
+       AND s.slug = :slugStatut
         ')
             ->setParameter('slugStatut', $statut->getSlug())
             ->setParameter('slugGroupe', $groupe->getSlug())

@@ -582,18 +582,10 @@ class StatsController extends AbstractController
         $session = $request->getSession();
         $typeGraph = $request->getSession()->get('typeGraph');   // Récupération du type de stat dans la session
         $groupesAChoisir = array();
-        array_push($groupesAChoisir, $groupe);
         $sousGroupes = $repoGroupe->findAllOrderedFromNode($groupe);
         foreach ($sousGroupes as $sousGroupe) {
           array_push($groupesAChoisir, $sousGroupe );
         }
-        if ($typeGraph != "evolutionGroupe" and $typeGraph != "evolutionStatut" )
-        {
-          array_shift($groupesAChoisir); //On ne veut pas avoir le groupe choisi dans le choix
-        }
-
-
-
         $form = $this->createFormBuilder()
             ->add('groupes', EntityType::class, [
                 'constraints' => [
