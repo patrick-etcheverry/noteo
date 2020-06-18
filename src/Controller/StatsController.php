@@ -776,15 +776,17 @@ class StatsController extends AbstractController
       }
       if ($type == "groupe") {
         $groupes = $tabGroupes;
+        $titre = "Évolution chronologique des résultats d’un ensemble d’étudiants";
       }
       else
       {
         $groupes = $tabStatut;
+        $titre = "Évolution chronologique des résultats d’un ensemble d’étudiants appartenant à un statut";
       }
       return $this->render('statistiques/statsEvolution.html.twig', [
         'evaluations' => $tabEvaluations,
         'groupes' => $groupes,
-        'titre' => "Évolution de résultats ",
+        'titre' => $titre,
         'stats' => $stats
       ]);
     }
