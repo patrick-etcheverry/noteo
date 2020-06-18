@@ -1,13 +1,13 @@
 {% extends 'base.html.twig' %}
 
 {% block titrePage %}
-{% if typeGraph is defined and typeGraph == 'evolutionGroupe' %}
-    Évolution chronologique des résultats d’un ensemble d’étudiants
-{% elseif typeGraph is defined and typeGraph == 'evolutionStatut' %}
-    Évolution chronologique des résultats d’un ensemble d’étudiants appartenant à un statut
-{% else %}
-    Analyse des résultats de groupe(s) d’étudiant(s) sur plusieurs évaluations
-{% endif %}
+  {% if typeGraph is defined and typeGraph == 'evolutionGroupe' %}
+      Évolution chronologique des résultats d’un ensemble d’étudiants
+  {% elseif typeGraph is defined and typeGraph == 'evolutionStatut' %}
+      Évolution chronologique des résultats d’un ensemble d’étudiants appartenant à un statut
+  {% else %}
+      Analyse des résultats de groupe(s) d’étudiant(s) sur plusieurs évaluations
+  {% endif %}
 {% endblock %}
 
 {% block statistiques %}active{% endblock %}
