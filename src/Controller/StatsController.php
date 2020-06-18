@@ -581,6 +581,7 @@ class StatsController extends AbstractController
     {
         $session = $request->getSession();
         $typeGraph = $request->getSession()->get('typeGraph');   // Récupération du type de stat dans la session
+        $statut = $request->getSession()->get('statut');
         $groupesAChoisir = array();
         $sousGroupes = $repoGroupe->findAllOrderedFromNode($groupe);
         foreach ($sousGroupes as $sousGroupe) {
@@ -590,9 +591,6 @@ class StatsController extends AbstractController
         {
           array_shift($groupesAChoisir); //On ne veut pas avoir le groupe choisi dans le choix
         }
-
-
-
         $form = $this->createFormBuilder()
             ->add('groupes', EntityType::class, [
                 'constraints' => [
@@ -642,7 +640,9 @@ class StatsController extends AbstractController
             'pasDIndentation' => false,
             'form' => $form->createView(),
             'effectifsParStatut' => $effectifsParStatut,
-            'typeGraph' => $typeGraph
+            'typeGraph' => $typeGraph,
+            'statut' => $statut
+
           ]);
     }
 
@@ -796,7 +796,10 @@ class StatsController extends AbstractController
     public function choisirEvalsGroupePlusieursEvals(Request $request, GroupeEtudiant $groupe, PointsRepository $repoPoints): Response
     {
         $typeGraph = $request->getSession()->get('typeGraph');   // Récupération du type de stat dans la session
-
+        $statut; //initialisation de la variable qui herbergera le stautut si le type de stat le requiert
+        if ($typeGraph == "evolutionStatut") {
+            $statut = $request->getSession()->get('statut');
+        }
         $form = $this->createFormBuilder()
             ->add('evaluations', EntityType::class, [
                 'class' => Evaluation::Class,
@@ -870,7 +873,8 @@ class StatsController extends AbstractController
         }
         return $this->render('statistiques/choix_evals_plusieurs_evals_groupes.html.twig', [
             'form' => $form->createView(),
-            'typeGraph' => $typeGraph
+            'typeGraph' => $typeGraph,
+            'statut' => $statut
         ]);
     }
 
