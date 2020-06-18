@@ -1,8 +1,10 @@
 {% extends 'base.html.twig' %}
 
 {% block titrePage %}
-    {% if typeGraph == 'evolutionGroupe' %}
+    {% if typeGraph is defined and  typeGraph == 'evolutionGroupe' %}
         Évolution chronologique des résultats d’un ensemble d’étudiants
+    {% elseif typeGraph is defined and typeGraph == 'evolutionStatut' %}
+        Évolution chronologique des résultats d’un ensemble d’étudiants appartenant à un statut
     {% else %}
         Analyse des résultats de groupe(s) d’étudiant(s) sur plusieurs évaluations
     {% endif %}
@@ -14,7 +16,7 @@
     <h1 class="h4 mb-0 text-gray-800">
         Selectionner les sous-groupes de {{ groupe.nom }} pour lesquels vous souhaitez
         voir des statistiques
-        {% if typeGraph != "evolutionGroupe" or typeGraph != "evolutionStatut" %}
+        {% if typeGraph != "evolutionGroupe" and typeGraph != "evolutionStatut" %}
             (optionnel)
         {% endif %}
     </h1> <br>
