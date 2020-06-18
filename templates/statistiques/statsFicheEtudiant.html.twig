@@ -57,6 +57,21 @@
             </tbody>
         </table>
     </div>
+
+    {% set absentATout = true %}
+
+    {% if evaluations|length > 0 %}
+    {% for evaluation in evaluations %}
+    {% for groupe in groupesEtStatuts %}
+    {% set index = loop.index * loop.parent.loop.index %}
+    {% if stats[index - 1]['noteEtudiant'] != -1 %}
+    {% set absentATout = false %}
+    {% endif %}
+    {% endfor %}
+    {% endfor %}
+    {% endif %}
+
+    {% if absentATout == false and evaluations|length > 0 %} <!-- Si l'étudiant n'à pas été absent a toute les evals et si il à participé a au moins 1 eval, on affiche les stats -->
     <div class='bouton' align=center>
         <span style="font-size:15px" class="badge badge-pill badge-primary"><i class="icon-attention-circled"></i> Les statistiques ne prennent pas en compte les évaluations auxquelles l'étudiant était absent et excusé</span>
     </div>
@@ -138,6 +153,11 @@
         {% set nbLoop = nbLoop + 1 %}
     {% endif %}
     {% endfor %}
+    {% else %}
+    <div class="info">
+        <h1 class="h4 mb-0 text-gray-800">L'étudiant n'a participé à aucune évaluation</h1>
+    </div>
+    {% endif %}
     <br>
 {% endblock %}
 
