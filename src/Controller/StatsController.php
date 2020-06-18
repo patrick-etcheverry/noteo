@@ -81,7 +81,7 @@ class StatsController extends AbstractController
     public function choixEvaluation($typeStat, EvaluationRepository $repoEval, Request $request, $typeGraph): Response
     {
         //On met en sesssion le type de graphique choisi par l'utilisateur pour afficher l'onglet correspondant lors de l'affichage des stats
-        $request->getSession()->set('typeGraphique', $typeGraph);
+        $request->getSession()->set('typeGraph', $typeGraph);
         switch ($typeStat) {
             case 'classique':
                 $evaluations = $repoEval->findAllWithOnePart();
@@ -537,10 +537,12 @@ class StatsController extends AbstractController
     /**
      * @Route("/plusieurs-eval/groupes/{typeGraph}/choisir-groupe", name="stats_choisir_groupe_haut_niveau_evaluable")
      */
-    public function choisirGroupeStatsPlusieursEvals(Request $request, GroupeEtudiantRepository $repoGroupe, $typeGraph): Response
+    public function choisirGroupeStatsPlusieursEvals(Request $request, GroupeEtudiantRepository $repoGroupe, EtudiantRepository $repoEtudiant, $typeGraph): Response
     {
+        $session = $request->getSession();
         //On met en sesssion le type de graphique choisi par l'utilisateur pour afficher l'onglet correspondant lors de l'affichage des stats
-        $request->getSession()->set('typeGraphique', $typeGraph);
+        $request->getSession()->set('typeGraph', $typeGraph);
+        $choices = $repoGroupe->findHighestEvaluableWith1EvalOrMore();
         $form = $this->createFormBuilder()
             ->add('groupes', EntityType::class, [
                 'class' => GroupeEtudiant::Class,
@@ -549,9 +551,17 @@ class StatsController extends AbstractController
                 'label' => false,
                 'expanded' => true,
                 'multiple' => false,
-                'choices' => $repoGroupe->findHighestEvaluableWith1EvalOrMore() // On choisira parmis les groupes de plus haut niveau évaluables qui ont au moins 1 évaluation que les concernent
+                'choices' => $choices // On choisira parmis les groupes de plus haut niveau évaluables qui ont au moins 1 évaluation que les concernent
             ])
             ->getForm();
+            $effectifsParStatut = array();
+            if ($typeGraph == "evolutionStatut") {
+              $statutChoisi = $session->get('statut');
+              foreach ($choices as $groupeAChoisir) {
+                array_push($effectifsParStatut, count($repoEtudiant->findAllByOneStatutAndOneGroupe($statutChoisi, $groupeAChoisir)));
+              }
+            }
+
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
             return $this->redirectToRoute('statistiques_choisir_sous_groupes', ['slug' => $form->get('groupes')->getData()->getSlug()]);
@@ -559,26 +569,23 @@ class StatsController extends AbstractController
         return $this->render('statistiques/choix_groupes_plusieurs_evals.html.twig', [
             'form' => $form->createView(),
             'pasDIndentation' => true,
-            'typeGraphique' => $typeGraph
+            'effectifsParStatut' => $effectifsParStatut,
+            'typeGraph' => $typeGraph
         ]);
     }
 
     /**
      * @Route("/plusieurs-eval/groupes/{slug}/choisir-sous-groupes", name="statistiques_choisir_sous_groupes")
      */
-    public function choisirSousGroupesStatsPlusieursEvals(Request $request, GroupeEtudiant $groupe, GroupeEtudiantRepository $repoGroupe): Response
+    public function choisirSousGroupesStatsPlusieursEvals(Request $request, GroupeEtudiant $groupe, GroupeEtudiantRepository $repoGroupe, EtudiantRepository $repoEtudiant): Response
     {
-        $typeGraphique = $request->getSession()->get('typeGraphique');   // Récupération du type de stat dans la session
+        $session = $request->getSession();
+        $typeGraph = $request->getSession()->get('typeGraph');   // Récupération du type de stat dans la session
         $groupesAChoisir = array();
-        array_push($groupesAChoisir, $groupe);
         $sousGroupes = $repoGroupe->findAllOrderedFromNode($groupe);
         foreach ($sousGroupes as $sousGroupe) {
           array_push($groupesAChoisir, $sousGroupe );
         }
-        if ($typeGraphique != "evolutionGroupe") {
-          array_shift($groupesAChoisir); //On ne veut pas avoir le groupe choisi dans le choix
-        }
-
         $form = $this->createFormBuilder()
             ->add('groupes', EntityType::class, [
                 'constraints' => [
@@ -592,9 +599,25 @@ class StatsController extends AbstractController
                 'choices' => $groupesAChoisir // On choisira parmis les sous groupes du groupe choisi au préalable
             ])
             ->getForm();
+
+            $effectifsParStatut = array();
+            if ($typeGraph == "evolutionStatut") {
+              $statutChoisi = $session->get('statut');
+              foreach ($groupesAChoisir as $groupeAChoisir) {
+                array_push($effectifsParStatut, count($repoEtudiant->findAllByOneStatutAndOneGroupe($statutChoisi, $groupeAChoisir)));
+              }
+            }
+
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
-            if($request->getSession()->get('typeGraphique') == "evolutionGroupe") {
+            if($request->getSession()->get('typeGraph') == "evolutionGroupe") {
+                if(count($form->get('groupes')->getData()) > 0) {
+                    $sousGroupes = $form->get('groupes')->getData();
+                    $request->getSession()->set('sousGroupes', $sousGroupes);
+                    return $this->redirectToRoute('statistiques_groupes_choisir_plusieurs_evaluations', ['slug' => $groupe->getSlug()]);
+                }
+            }
+            elseif($request->getSession()->get('typeGraph') == "evolutionStatut") {
                 if(count($form->get('groupes')->getData()) > 0) {
                     $sousGroupes = $form->get('groupes')->getData();
                     $request->getSession()->set('sousGroupes', $sousGroupes);
@@ -611,7 +634,8 @@ class StatsController extends AbstractController
             'groupe' => $groupe,
             'pasDIndentation' => false,
             'form' => $form->createView(),
-            'typeGraphique' => $typeGraphique
+            'effectifsParStatut' => $effectifsParStatut,
+            'typeGraph' => $typeGraph
           ]);
     }
 
@@ -620,11 +644,10 @@ class StatsController extends AbstractController
      */
     public function determinerEvolutionEtudiantGroupes(Request $request, PointsRepository $repoPoints,StatutRepository $repoStatut, GroupeEtudiantRepository $repoGroupe, EtudiantRepository $repoEtudiant, EvaluationRepository $repoEval): Response
     {
-
         $session = $request->getSession();
-        $typeGraphique = $request->getSession()->get('typeGraphique');
+        $typeGraph = $request->getSession()->get('typeGraph');
 
-        if ($typeGraphique == "evolutionGroupe") {
+        if ($typeGraph == "evolutionGroupe") {
           $type = "groupe";
         }
         else
@@ -632,15 +655,13 @@ class StatsController extends AbstractController
           $type = "statut";
           $statut = $session->get('statut');
         }
-
-        if ($type == "groupe") {
           $groupes = $session->get('lesGroupes'); // récupération des groupes passés en session
           $tabGroupes = array();
           foreach ($groupes as $groupe) {
               array_push($tabGroupes, $repoGroupe->find($groupe->getId()));
           }
-        }
-        else
+
+        if($type == "statut")
         {
           $tabStatut = array();
           $statut = $session->get('statut');
@@ -660,13 +681,17 @@ class StatsController extends AbstractController
             return ($a->getdate() < $b->getdate()) ? -1 : 1;
         });
 
-      /// génération des données de statistiques
-      $stats = array(); // le tableau qui contiendra toutes les données exploitables par le typeGraphique
-      $stats["type"] = $type;
-      $stats["evaluations"] = $tabEvaluations;
         /// génération des statistiques
-        $stats = array(); // le tableau qui contiendra toutes les données exploitables par le typeGraphique
-        $stats["type"] = $type;
+        $stats = array(); // le tableau qui contiendra toutes les données exploitables par le typeGraph
+        $typeGroupe= array();
+        $typeGroupe["type"] = $type;
+
+        if($type == "statut")
+        {
+          array_push($typeGroupe, $tabStatut[0]);
+        }
+
+        $stats["typeGroupe"] = $typeGroupe;
         $stats["evaluations"] = $tabEvaluations;
 
         if ($type == "groupe") { // le traiteme,nt concerne un ou des groupes d'étudiants
@@ -705,22 +730,24 @@ class StatsController extends AbstractController
           }
         } else {
           foreach ($tabStatut as $statut) {
-             $groupeStatutEtudiant = array();
-             $etudiants = array();
-             $recupEtudiantsStatut = $statut->getEtudiants();
-             $groupeStatutEtudiant["nom"] = $statut->getNom();
 
-             foreach ($recupEtudiantsStatut as $etudiant) {
-              $notesEtudiant = array();
-              $etudiantCourant = array();
-              $etudiantCourant["nomPrenom"] = strval( $etudiant->getNom()." ".$etudiant->getPrenom());
+            foreach ($tabGroupes as $groupe) {
+              $groupeStatutEtudiant = array();
+              $etudiants = array();
+              $recupEtudiantsGroupeAvecStatut = $repoEtudiant->findAllByOneStatutAndOneGroupe($tabStatut[0], $groupe); /// REQUETE PERSONNALIS2
+              $groupeStatutEtudiant["nom"] = $groupe->getNom();
 
-              foreach ($tabEvaluations as $evaluation) {
-                $notesEtEtudiants = $repoPoints->findNotesAndEtudiantByEvaluation($evaluation);
-                $etudiantsEvaluation = array();
-                foreach ($notesEtEtudiants as $note) {
-                  array_push($etudiantsEvaluation, $note->getEtudiant());
-                }
+              foreach ($recupEtudiantsGroupeAvecStatut as $etudiant) {
+                $notesEtudiant = array();
+                $etudiantCourant = array();
+                $etudiantCourant["nomPrenom"] = strval( $etudiant->getNom()." ".$etudiant->getPrenom());
+
+                foreach ($tabEvaluations as $evaluation) {
+                  $notesEtEtudiants = $repoPoints->findNotesAndEtudiantByEvaluation($evaluation);
+                  $etudiantsEvaluation = array();
+                  foreach ($notesEtEtudiants as $note) {
+                    array_push($etudiantsEvaluation, $note->getEtudiant());
+                  }
 
                 foreach ($notesEtEtudiants as $points) {
                   if($points->getEtudiant() == $etudiant){
@@ -738,17 +765,20 @@ class StatsController extends AbstractController
             array_push($stats, $groupeStatutEtudiant);
           }
         }
+      }
       if ($type == "groupe") {
         $groupes = $tabGroupes;
+        $titre = "Évolution chronologique des résultats d’un ensemble d’étudiants";
       }
       else
       {
         $groupes = $tabStatut;
+        $titre = "Évolution chronologique des résultats d’un ensemble d’étudiants appartenant à un statut";
       }
       return $this->render('statistiques/statsEvolution.html.twig', [
         'evaluations' => $tabEvaluations,
         'groupes' => $groupes,
-        'titre' => "Évolution de résultats ",
+        'titre' => $titre,
         'stats' => $stats
       ]);
     }
@@ -758,7 +788,7 @@ class StatsController extends AbstractController
      */
     public function choisirEvalsGroupePlusieursEvals(Request $request, GroupeEtudiant $groupe, PointsRepository $repoPoints): Response
     {
-        $typeGraphique = $request->getSession()->get('typeGraphique');   // Récupération du type de stat dans la session
+        $typeGraph = $request->getSession()->get('typeGraph');   // Récupération du type de stat dans la session
 
         $form = $this->createFormBuilder()
             ->add('evaluations', EntityType::class, [
@@ -783,7 +813,7 @@ class StatsController extends AbstractController
             {
                 array_push($lesGroupes, $sousGroupe);
             }
-            if ($typeGraphique == "evolutionGroupe") {
+            if ($typeGraph == "evolutionGroupe" or $typeGraph == "evolutionStatut") {
                 $request->getSession()->set('evaluations', $evaluations);
                 $request->getSession()->set('lesGroupes', $lesGroupes);
                 return $this->redirectToRoute("determiner_evolution_etudiants_groupe",[
@@ -833,7 +863,7 @@ class StatsController extends AbstractController
         }
         return $this->render('statistiques/choix_evals_plusieurs_evals_groupes.html.twig', [
             'form' => $form->createView(),
-            'typeGraphique' => $typeGraphique
+            'typeGraph' => $typeGraph
         ]);
     }
 
@@ -844,7 +874,7 @@ class StatsController extends AbstractController
     {
         $session = $request->getSession();
         //On met en sesssion le type de graphique choisi par l'utilisateur pour afficher l'onglet correspondant lors de l'affichage des stats
-        $request->getSession()->set('typeGraphique', $typeGraph);
+        $request->getSession()->set('typeGraph', $typeGraph);
         $form = $this->createFormBuilder()
             ->add('groupes', EntityType::class, [
                 'class' => Statut::Class, //On veut choisir des statut
@@ -860,8 +890,8 @@ class StatsController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
           if ($typeGraph == "evolutionStatut") {
               $session->set('statut', $form->get('groupes')->getData());
-              return $this->redirectToRoute('statistiques_statut_choisir_plusieurs_evaluations',[
-                  'slug' => $form->get('groupes')->getData()->getSlug()
+              return $this->redirectToRoute('stats_choisir_groupe_haut_niveau_evaluable',[
+                'typeGraph'=> $typeGraph
               ]);
           }
           else
@@ -873,7 +903,8 @@ class StatsController extends AbstractController
         }
         return $this->render('statistiques/choix_statut_plusieurs_evals.html.twig', [
             'form' => $form->createView(),
-            'pasDIndentation' => true
+            'pasDIndentation' => true,
+            'typeGraph' => $typeGraph
         ]);
     }
 
@@ -882,7 +913,7 @@ class StatsController extends AbstractController
      */
     public function choisirEvalsStatutPlusieursEvals(Request $request, Statut $statut, EvaluationRepository $repoEval, PointsRepository $repoPoints): Response
     {
-        $typeGraphique = $request->getSession()->get('typeGraphique');
+        $typeGraph = $request->getSession()->get('typeGraph');
         $form = $this->createFormBuilder()
             ->add('evaluations', EntityType::class, [
                 'class' => Evaluation::Class, //On veut choisir des evaluations
@@ -900,12 +931,6 @@ class StatsController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             if (count($form->get('evaluations')->getData()) > 0) {
                 $evaluations = $form->get('evaluations')->getData();
-                }
-                  if ($typeGraphique == "evolutionStatut") {
-                  $request->getSession()->set('evaluations', $evaluations);
-                  return $this->redirectToRoute("determiner_evolution_etudiants_groupe",[
-                      'slug' => $statut->getSlug()
-                  ]);
                 }
                 $listeStatsParStatut = array(); // On initialise un tableau vide qui contiendra les statistiques du statut choisi
                 $tabPoints = array();

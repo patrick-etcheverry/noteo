@@ -1,6 +1,12 @@
 {% extends 'base.html.twig' %}
 
-{% block titrePage %}Analyse des résultats d’un statut d’étudiants sur plusieurs évaluations{% endblock %}
+{% block titrePage %}
+  {% if typeGraph is defined and typeGraph == 'evolutionStatut' %}
+      Évolution chronologique des résultats d’un ensemble d’étudiants appartenant à un statut
+  {% else %}
+      Analyse des résultats d’un statut d’étudiants sur plusieurs évaluations
+  {% endif %}
+{% endblock %}
 
 {% block statistiques %} active {% endblock %}
 
@@ -21,7 +27,7 @@
                 "url": "{{ asset('tradfr.json') }}"
             },
             aaSorting: [],
-            columns: [{"orderable": false}, null, null, null, {"orderable": false}],
+            columns: [{"orderable": false}, null, null, {"orderable": false}, {"orderable": false}],
             lengthMenu: [
                 [15, 30, 45, -1],
                 [15, 30, 45, "Tout"]

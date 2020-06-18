@@ -19,6 +19,14 @@ class NoteoController extends AbstractController
     }
 
     /**
+     * @Route("/tutoriels", name="tutoriels")
+     */
+    public function tutoriels()
+    {
+        return $this->render('tutoriels/pageTutoriels.html.twig');
+    }
+
+    /**
      * @Route("/reinitialiser", name="app_reset")
      */
     public function reinitialiserApplication(GroupeEtudiantRepository $repoGroupe, StatutRepository $repoStatut, EtudiantRepository $repoEtudiant)

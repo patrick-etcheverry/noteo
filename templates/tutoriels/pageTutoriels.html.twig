@@ -1,0 +1,183 @@
+{% extends 'base.html.twig' %}
+
+{% block tutoriels %}active{% endblock %}
+
+{% block titrePage %}Visionner les tutoriels de l'application{% endblock %}
+
+{% block stylesheets %}
+    <style>
+        .card:hover {
+            -webkit-box-shadow: -1px 9px 40px -12px rgba(0, 0, 0, 0.75);
+            -moz-box-shadow: -1px 9px 40px -12px rgba(0, 0, 0, 0.75);
+            box-shadow: -1px 9px 40px -12px rgba(0, 0, 0, 0.75);
+        }
+    </style>
+{% endblock %}
+
+{% block contenu %}
+    <div class="card-deck">
+        <!-- Créer évaluation par parties -->
+        <div class="card">
+            <div class="card-body">
+                <h5 style="font-weight: bold" class="card-title">Créer une évaluation par parties</h5>
+                <hr>
+                <p class="card-text">
+                    Découvrez comment créer des évaluations par parties, pour pouvoir obtenir une plus grande précision sur les statistiques.
+                </p>
+                <!-- 16:9 aspect ratio -->
+                <div class="embed-responsive embed-responsive-16by9">
+                    <iframe class="embed-responsive-item" src="https://www.youtube.com/embed/rZ1H6Ujy6Qs"
+                            frameborder="0"
+                            allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture"
+                            allowfullscreen></iframe>
+                </div>
+            </div>
+        </div>
+        <!-- Eval simple -->
+        <div class="card">
+            <div class="card-body">
+                <h5 style="font-weight: bold" class="card-title">Analyse d’une évaluation simple</h5>
+                <hr>
+                <p class="card-text">
+                    Découvrez comment obtenir des statistiques sur une évaluation spécifique dans laquelle l’enseignant a saisi une note
+                    sur 20
+                    pour chaque étudiant.
+                </p>
+                <!-- 16:9 aspect ratio -->
+                <div class="embed-responsive embed-responsive-16by9">
+                    <iframe class="embed-responsive-item" src="https://www.youtube.com/embed/AmC0aWu1lic"
+                            frameborder="0"
+                            allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture"
+                            allowfullscreen></iframe>
+                </div>
+            </div>
+        </div>
+        <!-- Eval parties -->
+        <div class="card">
+            <div class="card-body">
+                <h5 style="font-weight: bold" class="card-title">Analyse d’une évaluation par parties</h5>
+                <hr>
+                <p class="card-text">
+                    Découvrez comment obtenir des statistiques sur une évaluation spécifique dans laquelle l’enseignant a saisi pour chaque étudiant
+                    une note sur les différentes parties composant son évaluation.
+                </p>
+                <!-- 16:9 aspect ratio -->
+                <div class="embed-responsive embed-responsive-16by9">
+                    <iframe class="embed-responsive-item" src="https://www.youtube.com/embed/kNF_UK9glPg"
+                            frameborder="0"
+                            allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture"
+                            allowfullscreen></iframe>
+                </div>
+            </div>
+        </div>
+    </div>
+    <br>
+    <div class="card-deck">
+        <!-- Groupes plusieurs évals -->
+        <div class="card">
+            <div class="card-body">
+                <h5 style="font-weight: bold" class="card-title">Analyse des résultats de groupe(s) d’étudiant(s) sur plusieurs évaluations</h5>
+                <hr>
+                <p class="card-text">
+                    Découvrez comment observer les résultats de un ou plusieurs groupes d’étudiants sur plusieurs évaluations.
+                </p>
+                <!-- 16:9 aspect ratio -->
+                <div class="embed-responsive embed-responsive-16by9">
+                    <iframe class="embed-responsive-item" src="https://www.youtube.com/embed/rsfmRswfOm4"
+                            frameborder="0"
+                            allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture"
+                            allowfullscreen></iframe>
+                </div>
+            </div>
+        </div>
+        <!-- Statuts plusieurs évals -->
+        <div class="card">
+            <div class="card-body">
+                <h5 style="font-weight: bold" class="card-title">Analyse des résultats d’un statut d’étudiants sur plusieurs évaluations</h5>
+                <hr>
+                <p class="card-text">
+                    Découvrez comment observer les résultats d'un groupe d’étudiants ayant un statut particulier sur
+                    plusieurs évaluations.
+                </p>
+                <!-- 16:9 aspect ratio -->
+                <div class="embed-responsive embed-responsive-16by9">
+                    <iframe class="embed-responsive-item" src="https://www.youtube.com/embed/t5kKmjajPE4"
+                            frameborder="0"
+                            allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture"
+                            allowfullscreen></iframe>
+                </div>
+            </div>
+        </div>
+        <!-- Comparaison résultats -->
+        <div class="card">
+            <div class="card-body">
+                <h5 style="font-weight: bold" class="card-title">Analyse d’une évaluation par parties</h5>
+                <hr>
+                <p class="card-text">
+                    Découvrez comment comparer les résultats obtenus à une évaluation par rapport à un ensemble d’évaluations.
+                </p>
+                <!-- 16:9 aspect ratio -->
+                <div class="embed-responsive embed-responsive-16by9">
+                    <iframe class="embed-responsive-item" src="https://www.youtube.com/embed/yHr9ZVouTfw"
+                            frameborder="0"
+                            allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture"
+                            allowfullscreen></iframe>
+                </div>
+            </div>
+        </div>
+    </div>
+    <br>
+    <div class="card-deck">
+        <!-- Fiche étudiant -->
+        <div class="card">
+            <div class="card-body">
+                <h5 style="font-weight: bold" class="card-title">Évolution chronologique des résultats d’un étudiant</h5>
+                <hr>
+                <p class="card-text">
+                    Découvrez comment observer, à partir de plusieurs évaluations, l’évolution chronologique des notes d’un étudiant.
+                </p>
+                <!-- 16:9 aspect ratio -->
+                <div class="embed-responsive embed-responsive-16by9">
+                    <iframe class="embed-responsive-item" src="https://www.youtube.com/embed/4PdGrRzLcio"
+                            frameborder="0"
+                            allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture"
+                            allowfullscreen></iframe>
+                </div>
+            </div>
+        </div>
+        <!-- Evolution Groupes -->
+        <div class="card">
+            <div class="card-body">
+                <h5 style="font-weight: bold" class="card-title">Évolution des résultats des étudiants d'un groupe sur plusieurs évaluations</h5>
+                <hr>
+                <p class="card-text">
+                    Découvrez comment obtenir, pour chaque étudiant d'un groupe, une courbe détaillant l'évolution chronologique des résultats des l'étudiant aux évaluations choisies.
+                </p>
+                <!-- 16:9 aspect ratio -->
+                <div class="embed-responsive embed-responsive-16by9">
+                    <iframe class="embed-responsive-item" src="https://www.youtube.com/embed/xAJunHc8F0Y"
+                            frameborder="0"
+                            allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture"
+                            allowfullscreen></iframe>
+                </div>
+            </div>
+        </div>
+        <!-- Evolution Statuts -->
+        <div class="card">
+            <div class="card-body">
+                <h5 style="font-weight: bold" class="card-title">Évolution des résultats des étudiants d'un statut sur plusieurs évaluations</h5>
+                <hr>
+                <p class="card-text">
+                    Découvrez comment obtenir, pour chaque étudiant d'un statut, une courbe détaillant l'évolution chronologique des résultats des l'étudiant aux évaluations choisies.
+                </p>
+                <!-- 16:9 aspect ratio -->
+                <div class="embed-responsive embed-responsive-16by9">
+                    <iframe class="embed-responsive-item" src="https://www.youtube.com/embed/isQG-4FbU3Y"
+                            frameborder="0"
+                            allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture"
+                            allowfullscreen></iframe>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
