@@ -39,17 +39,31 @@
                     {% endif %}
                     {{entity.nom}}
                 </td>
-                <td><span class="
-                {% if (typeGraph == "evolutionStatut" or typeGraph == "evolutionGroupe") and entity.etudiants.count <= 16 %}
+                <td>
+                <span {% if (route == "stats_choisir_statut" and typeGraph == "evolutionStatut")
+                or (route == "stats_choisir_groupe_haut_niveau_evaluable" and typeGraph != "evolutionStatut")
+                or (route == "statistiques_choisir_sous_groupes" and typeGraph != "evolutionStatut")
+                or (route == "stats_choisir_groupe_haut_niveau_evaluable" and typeGraph == "evolutionGroupe")
+                or (route == "statistiques_choisir_sous_groupes" and typeGraph == "evolutionGroupe") %}
+                class="
+                {% if entity.etudiants.count <= 16 %}
                   green
-                {% elseif (typeGraph == "evolutionStatut" or typeGraph == "evolutionGroupe") and entity.etudiants.count > 16 and entity.etudiants.count <= 30 %}
+                {% elseif entity.etudiants.count > 16 and entity.etudiants.count <= 30 %}
                   orange
-                {% elseif (typeGraph == "evolutionStatut" or typeGraph == "evolutionGroupe") and entity.etudiants.count > 30 %}
+                {% elseif entity.etudiants.count > 30 %}
                   red
-                {% endif %}"
+                {% endif %}" {% endif %}
                 >{{entity.etudiants.count}}</span></td>
-                {% if (typeGraph == "evolutionStatut" and route == "stats_choisir_groupe_haut_niveau_evaluable") or (route == "statistiques_choisir_sous_groupes" and typeGraph == "evolutionStatut") %}
-                    <td>{{effectifsParStatut[loop.index -1]}}</td>
+                {% if (effectifsParStatut is defined) and typeGraph == "evolutionStatut" %}
+                <td><span class="
+                  {% if effectifsParStatut[loop.index -1] <= 16 %}
+                    green
+                  {% elseif effectifsParStatut[loop.index -1] > 16 and effectifsParStatut[loop.index -1] <= 30 %}
+                    orange
+                  {% elseif effectifsParStatut[loop.index -1] > 30 %}
+                    red
+                  {% endif %}"
+                >{{effectifsParStatut[loop.index -1]}}</span></td>
                 {% endif %}
                 <td>{{entity.description}}</td>
                 <td>{{ entity.enseignant.prenom }} {{ entity.enseignant.nom }}</td>
