@@ -565,11 +565,11 @@
             for (var i = 0; i < listeNotes.length; i++) { // test repartition [listeNotes[i] / diff]
                 if (listeNotes[i] >= 0 && listeNotes[i] <= diff) {
                     repartition[0]++;
-                } else if (listeNotes[i] >= diff && listeNotes[i] <= diff * 2) {
+                } else if (listeNotes[i] >= diff && listeNotes[i] < diff * 2) {
                     repartition[1]++;
-                } else if (listeNotes[i] >= diff * 2 && listeNotes[i] <= diff * 3) {
+                } else if (listeNotes[i] >= diff * 2 && listeNotes[i] < diff * 3) {
                     repartition[2]++;
-                } else if (listeNotes[i] >= diff * 3 && listeNotes[i] <= diff * 4) {
+                } else if (listeNotes[i] >= diff * 3 && listeNotes[i] < diff * 4) {
                     repartition[3]++;
                 } else if (listeNotes[i] >= diff * 4 && listeNotes[i] <= bareme) {
                     repartition[4]++;
@@ -873,6 +873,8 @@
             pdfMake.createPdf(docDefinition).download(nomEvaluation);
         }
 
+        var checker = undefined;
+
         // Génère les tableaux de données déstinés au fichier pdf
         function getDataForPdfTable(clef, partieConcernee, portrait) {
             var donnees = []; // Données du tableau
@@ -880,10 +882,7 @@
             switch (clef) {
                 case 'histo':
                     var header = [];
-                    header.push({
-                        text: 'Groupe',
-                        style: (portrait ? 'texte_header_tableau_portrait' : 'texte_header_tableau_paysage')
-                    });
+                    header.push({ text: 'Groupe', style: (portrait ? 'texte_header_tableau_portrait' : 'texte_header_tableau_paysage')});
                     // Création du header du tableau en fonction des labels du graphique
                     // graphiques[partieConcernee][0] est le graphique de Répartion (Histogramme) de la partie partieConcernée
                     for (var i = 0; i < graphiques[partieConcernee][0].data.labels.length; i++) {
@@ -896,6 +895,7 @@
                     for (var i = 0; i < groupesChecked[partieConcernee][clef].length; i++) {
                         var temp_row = [];
                         var repartition = getRepartition(groupesData[i].listeNotes, parties[partieConcernee].bareme);
+                        checker = repartition;
                         temp_row.push(groupesChecked[partieConcernee][clef][i]);
                         for (var j = 0; j < 5; j++) {
                             temp_row.push(repartition[j]);
