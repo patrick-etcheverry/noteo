@@ -97,6 +97,14 @@
                 <i class="icon-logo-noteo"></i>
                 <span>Statistiques</span></a>
         </li>
+        <!-- Divider -->
+        <hr class="sidebar-divider my-0">
+        <!-- Nav Item - Enseignants -->
+        <li class="nav-item {% block tutoriels %}{% endblock %}">
+            <a class="nav-link" href="{{ path('tutoriels') }}">
+                <i class="fas fa-question-circle"></i>
+                <span>Tutoriels</span></a>
+        </li>
         {% if is_granted("ROLE_ADMIN") %}
             <!-- Divider -->
             <hr class="sidebar-divider my-0">
