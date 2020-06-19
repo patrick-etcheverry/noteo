@@ -20,16 +20,10 @@
     Selectionner les sous-groupes de {{ groupe.nom }} comportant des étudiants du statut '{{statut.nom}}' et pour lesquels vous souhaitez
     voir des statistiques
     </h1>
-      {% if typeGraph != "evolutionGroupe" and typeGraph != "evolutionStatut" %}
-          (optionnel)
-      {% endif %}
     {% else %}
       <h1 class="h4 mb-0 text-gray-800">
           Selectionner les sous-groupes de {{ groupe.nom }} pour lesquels vous souhaitez
           voir des statistiques
-          {% if typeGraph != "evolutionGroupe" and typeGraph != "evolutionStatut" %}
-              (optionnel)
-          {% endif %}
       </h1>
     {% endif %}
      <br>
