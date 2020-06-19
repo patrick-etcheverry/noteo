@@ -792,7 +792,7 @@ class StatsController extends AbstractController
     public function choisirEvalsGroupePlusieursEvals(Request $request, GroupeEtudiant $groupe, PointsRepository $repoPoints): Response
     {
         $typeGraph = $request->getSession()->get('typeGraph');   // Récupération du type de stat dans la session
-        $statut; //initialisation de la variable qui herbergera le stautut si le type de stat le requiert
+        $statut = null; //initialisation de la variable qui herbergera le stautut si le type de stat le requiert
         if ($typeGraph == "evolutionStatut") {
             $statut = $request->getSession()->get('statut');
         }
