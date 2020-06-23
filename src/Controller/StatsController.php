@@ -490,7 +490,7 @@ class StatsController extends AbstractController
                 'L\'envoi des mails a été effectué avec succès.'
             );
             return $this->render('statistiques/stats.html.twig', [
-                'titrePage' => 'Consulter les statistiques pour' . $evaluation->getNom(),
+                'titrePage' => 'Consulter les statistiques pour ' . $evaluation->getNom(),
                 'plusieursEvals' => false,
                 'parties' => $stats,
                 'evaluation' => $evaluation
