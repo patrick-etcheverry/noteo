@@ -45,7 +45,7 @@
         </table>
     </div>
     <div class='bouton' align=center>
-        <button class="d-sm-inline-block btn btn-sm btn-primary shadow-sm">{{ labelBoutonSuivant  | default ("Créer l'évaluation pour ce groupe")}}</button>
+        <button id="valider" class="d-sm-inline-block btn btn-sm btn-primary shadow-sm">{{ labelBoutonSuivant  | default ("Créer l'évaluation pour ce groupe")}}</button>
     </div>
     {{ form_end(form) }}
 {% endblock %}
@@ -79,6 +79,26 @@
     <script>
         window.onload = function () {
             $("[name='form[groupes]']").first().attr('checked', true) //Pour cocher le premier choix par défaut
+            checkCasesCocheesPage()
         }
+
+        $("[name='form[groupes]']").on('click', function () {
+            checkCasesCocheesPage()
+        })
+
+        function checkCasesCocheesPage() {
+            groupesCheck = false; //Au moins un groupe coché
+            $("#valider").attr('disabled', true)
+            $("[name='form[groupes]']").each(function () {
+                if (this.checked) {
+                    groupesCheck = true;
+                    return false; //Equivalent d'un break, car un seul coché suffit
+                }
+            })
+            if (groupesCheck) { //Si un groupe ou statut coché ET une partie cochée
+                $("#valider").attr('disabled', false)
+            }
+        }
+
     </script>
 {% endblock %}
