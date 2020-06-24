@@ -545,7 +545,11 @@
                             Statistique indisponible :
                             {% if statistiques.ficheEtudiant.nombreEtudiants < 1 %}
                                 {% if is_granted('ROLE_ADMIN') %}
-                                    <a href="{{ path("groupe_etudiant_new") }}">Créez des étudiants</a>
+                                    {% if statistiques.plusieursEvalsGroupes.nombreGroupes < 1 %}
+                                        <a href="{{ path("groupe_etudiant_new") }}">Créez des étudiants</a>
+                                    {% else %}
+                                        <a href="{{ path("etudiant_new") }}">Créez des étudiants</a>
+                                    {% endif %}
                                 {% else %}
                                     Demandez à l'administrateur de créer des étudiants
                                 {% endif %}
