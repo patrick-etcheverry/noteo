@@ -16,9 +16,9 @@
 
 {% block contenu %}
     {% if typeGraph is defined and typeGraph == 'evolutionStatut' %}
-        <h1 class="h4 mb-0 text-gray-800">Selectionner le groupe pour lequel vous souhaitez voir des statistiques pour le statut concerné précédemment sélectionnés </h1> <br>
+        <h1 class="h4 mb-0 text-gray-800">Sélectionner le groupe pour lequel vous souhaitez voir des statistiques pour le statut concerné précédemment sélectionnés </h1> <br>
     {% else %}
-        <h1 class="h4 mb-0 text-gray-800">Selectionner le groupe pour lequel vous souhaitez voir des statistiques</h1> <br>
+        <h1 class="h4 mb-0 text-gray-800">Sélectionner le groupe pour lequel vous souhaitez voir des statistiques</h1> <br>
     {% endif %}
     {{ include('statistiques/_choix_groupes_form.html.twig') }}
 {% endblock %}

@@ -14,11 +14,11 @@
 
 {% block contenu %}
   {% if typeGraph is defined and typeGraph == 'evolutionGroupe' %}
-      <h1 class="h4 mb-0 text-gray-800">Selectionner les évaluations pour lesquelles vous souhaitez voir des statistiques pour les groupes précédemment sélectionnés</h1> <br>
+      <h1 class="h4 mb-0 text-gray-800">Sélectionner les évaluations pour lesquelles vous souhaitez voir des statistiques pour les groupes précédemment sélectionnés</h1> <br>
   {% elseif typeGraph is defined and typeGraph == 'evolutionStatut' %}
       <h1 class="h4 mb-0 text-gray-800">Selectionner les évaluations pour lesquelles vous souhaitez voir des statistiques pour le statut '{{statut.nom}}' et les groupes précédemment sélectionnés  </h1> <br>
   {% else %}
-      <h1 class="h4 mb-0 text-gray-800">Selectionner les évaluations pour lesquelles vous souhaitez voir des statistiques</h1> <br>
+      <h1 class="h4 mb-0 text-gray-800">Sélectionner les évaluations pour lesquelles vous souhaitez voir des statistiques</h1> <br>
   {% endif %}
 
     {{ include('statistiques/_choix_evals_form.html.twig', {'titre' : 'Consulter les statistiques'}) }}

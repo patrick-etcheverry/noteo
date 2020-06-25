@@ -78,8 +78,6 @@
     <div class='bouton' align=center>
         <span style="font-size:15px" class="badge badge-pill badge-primary"><i class="icon-attention-circled"></i> Les statistiques ne prennent pas en compte les étudiants démissionaires et les absents excusés</span>
     </div>
-    {# récupération du type de graphique récupéré à la première étape #}
-    {% set tabActive = app.session.get('typeGraph') %}
     {% if parties is not empty %}
         {% for partie in parties %}
             <div class="card">
@@ -89,16 +87,16 @@
                     </li>
                     <li class="list-group-item">
                         <ul class="nav nav-tabs">
-                            <li class="nav-item"><a class="nav-link {% if tabActive =="histogramme" %}active{% endif %}"
+                            <li class="nav-item"><a class="nav-link {% if app.session.get('typeGraphique') =="histogramme" %}active{% endif %}"
                                                     data-toggle="tab"
                                                     href="#Repartition_Histogramme_{{ partie.nom | replace({' ': '_'}) }}">Répartition
                                     (Histogramme)</a></li>
                             <li class="nav-item"><a
-                                        class="nav-link {% if tabActive =="boite-moustache" %}active{% endif %}"
+                                        class="nav-link {% if app.session.get('typeGraphique') =="boite-moustache" %}active{% endif %}"
                                         data-toggle="tab"
                                         href="#Repartition_Boites_{{ partie.nom | replace({' ': '_'}) }}">Répartition
                                     (Boîte à moustaches)</a></li>
-                            <li class="nav-item"><a class="nav-link {% if tabActive =="moyenne" %}active{% endif %}"
+                            <li class="nav-item"><a class="nav-link {% if app.session.get('typeGraphique') =="moyenne" %}active{% endif %}"
                                                     data-toggle="tab"
                                                     href="#Moyenne_ecart_{{ partie.nom | replace({' ': '_'}) }}">Moyenne
                                     & Écart-type</a></li>
@@ -106,7 +104,7 @@
                         <div class="tab-content">
                             <!-- Répartition (Histogramme) -->
                             <div id="Repartition_Histogramme_{{ partie.nom | replace({' ': '_'}) }}"
-                                 class="tab-pane {% if tabActive =="histogramme" %}active{% else %}fade{% endif %}">
+                                 class="tab-pane {% if app.session.get('typeGraphique') =="histogramme" %}active{% else %}fade{% endif %}">
                                 <div class="container-fluid">
                                     <br>
                                     <div class="card-md-auto">
@@ -137,7 +135,7 @@
                             <!-- fin Répartition (Histogramme) -->
                             <!-- Répartition (Boîte à moustache) -->
                             <div id="Repartition_Boites_{{ partie.nom | replace({' ': '_'}) }}"
-                                 class="tab-pane {% if tabActive =="boite-moustache" %}active{% else %}fade{% endif %}">
+                                 class="tab-pane {% if app.session.get('typeGraphique') =="boite-moustache" %}active{% else %}fade{% endif %}">
                                 <div class="container-fluid">
                                     <br>
                                     <div class="card-md-auto">
@@ -168,7 +166,7 @@
                             <!-- fin Répartition (Boîtes à moustache) -->
                             <!-- Moyenne & Ecart-type -->
                             <div id="Moyenne_ecart_{{ partie.nom | replace({' ': '_'}) }}"
-                                 class="tab-pane {% if tabActive =="moyenne" %}active{% else %}fade{% endif %}">
+                                 class="tab-pane {% if app.session.get('typeGraphique') =="moyenne" %}active{% else %}fade{% endif %}">
                                 <div class="container-fluid">
                                     <br>
                                     <div class="card-md-auto">

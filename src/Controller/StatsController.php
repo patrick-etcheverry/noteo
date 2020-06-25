@@ -81,7 +81,7 @@ class StatsController extends AbstractController
     public function choixEvaluation($typeStat, EvaluationRepository $repoEval, Request $request, $typeGraph): Response
     {
         //On met en sesssion le type de graphique choisi par l'utilisateur pour afficher l'onglet correspondant lors de l'affichage des stats
-        $request->getSession()->set('typeGraph', $typeGraph);
+        $request->getSession()->set('typeGraphique', $typeGraph);
         switch ($typeStat) {
             case 'classique':
                 $evaluations = $repoEval->findAllWithOnePart();
@@ -541,7 +541,7 @@ class StatsController extends AbstractController
     {
         $session = $request->getSession();
         //On met en sesssion le type de graphique choisi par l'utilisateur pour afficher l'onglet correspondant lors de l'affichage des stats
-        $request->getSession()->set('typeGraph', $typeGraph);
+        $request->getSession()->set('typeGraphique', $typeGraph);
         $choices = $repoGroupe->findHighestEvaluableWith1EvalOrMore();
         $form = $this->createFormBuilder()
             ->add('groupes', EntityType::class, [
@@ -580,7 +580,7 @@ class StatsController extends AbstractController
     public function choisirSousGroupesStatsPlusieursEvals(Request $request, GroupeEtudiant $groupe, GroupeEtudiantRepository $repoGroupe, EtudiantRepository $repoEtudiant): Response
     {
         $session = $request->getSession();
-        $typeGraph = $request->getSession()->get('typeGraph');   // Récupération du type de stat dans la session
+        $typeGraph = $request->getSession()->get('typeGraphique');   // Récupération du type de stat dans la session
         $statut = $request->getSession()->get('statut');
         $groupesAChoisir = array();
         $sousGroupes = $repoGroupe->findAllOrderedFromNode($groupe);
@@ -611,14 +611,14 @@ class StatsController extends AbstractController
 
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
-            if($request->getSession()->get('typeGraph') == "evolutionGroupe") {
+            if($request->getSession()->get('typeGraphique') == "evolutionGroupe") {
                 if(count($form->get('groupes')->getData()) > 0) {
                     $sousGroupes = $form->get('groupes')->getData();
                     $request->getSession()->set('sousGroupes', $sousGroupes);
                     return $this->redirectToRoute('statistiques_groupes_choisir_plusieurs_evaluations', ['slug' => $groupe->getSlug()]);
                 }
             }
-            elseif($request->getSession()->get('typeGraph') == "evolutionStatut") {
+            elseif($request->getSession()->get('typeGraphique') == "evolutionStatut") {
                 if(count($form->get('groupes')->getData()) > 0) {
                     $sousGroupes = $form->get('groupes')->getData();
                     $request->getSession()->set('sousGroupes', $sousGroupes);
@@ -648,7 +648,7 @@ class StatsController extends AbstractController
     public function determinerEvolutionEtudiantGroupes(Request $request, PointsRepository $repoPoints,StatutRepository $repoStatut, GroupeEtudiantRepository $repoGroupe, EtudiantRepository $repoEtudiant, EvaluationRepository $repoEval): Response
     {
         $session = $request->getSession();
-        $typeGraph = $request->getSession()->get('typeGraph');
+        $typeGraph = $request->getSession()->get('typeGraphique');
 
         if ($typeGraph == "evolutionGroupe") {
           $type = "groupe";
@@ -791,7 +791,7 @@ class StatsController extends AbstractController
      */
     public function choisirEvalsGroupePlusieursEvals(Request $request, GroupeEtudiant $groupe, PointsRepository $repoPoints): Response
     {
-        $typeGraph = $request->getSession()->get('typeGraph');   // Récupération du type de stat dans la session
+        $typeGraph = $request->getSession()->get('typeGraphique');   // Récupération du type de stat dans la session
         $statut = null; //initialisation de la variable qui herbergera le stautut si le type de stat le requiert
         if ($typeGraph == "evolutionStatut") {
             $statut = $request->getSession()->get('statut');
@@ -881,7 +881,7 @@ class StatsController extends AbstractController
     {
         $session = $request->getSession();
         //On met en sesssion le type de graphique choisi par l'utilisateur pour afficher l'onglet correspondant lors de l'affichage des stats
-        $request->getSession()->set('typeGraph', $typeGraph);
+        $request->getSession()->set('typeGraphique', $typeGraph);
         $form = $this->createFormBuilder()
             ->add('groupes', EntityType::class, [
                 'class' => Statut::Class, //On veut choisir des statut
@@ -920,7 +920,7 @@ class StatsController extends AbstractController
      */
     public function choisirEvalsStatutPlusieursEvals(Request $request, Statut $statut, EvaluationRepository $repoEval, PointsRepository $repoPoints): Response
     {
-        $typeGraph = $request->getSession()->get('typeGraph');
+        $typeGraph = $request->getSession()->get('typeGraphique');
         $form = $this->createFormBuilder()
             ->add('evaluations', EntityType::class, [
                 'class' => Evaluation::Class, //On veut choisir des evaluations
