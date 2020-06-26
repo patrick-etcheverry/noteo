@@ -697,11 +697,8 @@
                     });
 
                     // Attente de la génération du graphique, le booléen change d'état dans la fonction callback
-                    while (!wait_for_chart_ready) {
-                    }
-                    ;
+                    while (!wait_for_chart_ready){};
                     wait_for_chart_ready = !wait_for_chart_ready;
-
                     // Ajout de l'image à l'array
                     images.push(window.hiddenGraph.toBase64Image());
 
@@ -873,8 +870,6 @@
             pdfMake.createPdf(docDefinition).download(nomEvaluation);
         }
 
-        var checker = undefined;
-
         // Génère les tableaux de données déstinés au fichier pdf
         function getDataForPdfTable(clef, partieConcernee, portrait) {
             var donnees = []; // Données du tableau
@@ -895,7 +890,6 @@
                     for (var i = 0; i < groupesChecked[partieConcernee][clef].length; i++) {
                         var temp_row = [];
                         var repartition = getRepartition(groupesData[i].listeNotes, parties[partieConcernee].bareme);
-                        checker = repartition;
                         temp_row.push(groupesChecked[partieConcernee][clef][i]);
                         for (var j = 0; j < 5; j++) {
                             temp_row.push(repartition[j]);

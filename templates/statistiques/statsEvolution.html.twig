@@ -197,6 +197,13 @@ var nomGroupes = "{{tabGroupes|json_encode}}";
 nomGroupes = nomGroupes.replace(/&quot;/g, "\""); // remplacement de toutes les itérations de ' &quot; ' par ' " '
 nomGroupes = JSON.parse(nomGroupes);
 
+// passage de la liste des groupes de twig à js
+
+var stats = "{{stats|json_encode}}";
+stats = stats.replace(/&quot;/g, "\""); // remplacement de toutes les itérations de ' &quot; ' par ' " '
+stats = JSON.parse(stats);
+
+
 var nomEvaluations = [];
 
 // Contien les image de tous les graphiques regénérés à la bonne taille
@@ -218,7 +225,7 @@ function getImages(largeur, longueur, callback){
   // options du graphique pour la génération de graphiques pour le pdf.
   const pdfChartOptions = {animation:{
     onComplete: callback,
-    duration: false, },scales:{xAxes:[{gridLines:{display:!1},ticks:{fontSize:pdfChartFontSize,
+    duration: false, },spanGaps: true,scales:{xAxes:[{gridLines:{display:!1},ticks:{fontSize:pdfChartFontSize,
       {% if evaluations|length <= 5 %}
       display: true
       {% else %}
@@ -381,7 +388,7 @@ function genPDF(callback, portrait){
   for(var indexGraph = 0; indexGraph < graphiques.length; indexGraph++){
       var contenu = [
         {
-          text: nomGroupes[indexGraph] + " ("+ donneesGraphique[indexGraph].surGraphe +" étudiants sur un total de "+ donneesGraphique[indexGraph].total +" étudiants)",
+          text: stats[indexGraph].nom + " ("+ donneesGraphique[indexGraph].surGraphe +" étudiants sur un total de "+ donneesGraphique[indexGraph].total +" étudiants)",
           style: (portrait ? 'subheader' : 'subheader_paysage'),
           tocItem: 'tabMatieres',
         },
