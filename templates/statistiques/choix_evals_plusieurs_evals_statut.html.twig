@@ -1,19 +1,19 @@
 {% extends 'base.html.twig' %}
 
 {% block titrePage %}
-{% if typeGraph is defined and typeGraph == 'evolutionGroupe' %}
-    Évolution chronologique des résultats d’un ensemble d’étudiants
-{% elseif typeGraph is defined and typeGraph == 'evolutionStatut' %}
-    Évolution chronologique des résultats d’un ensemble d’étudiants appartenant à un statut
-{% else %}
-    Analyse des résultats d’un statut d’étudiants sur plusieurs évaluations ({{ statut.nom }})
-{% endif %}
+  {% if typeGraph is defined and typeGraph == 'evolutionGroupe' %}
+      Évolution chronologique des résultats d’un ensemble d’étudiants
+  {% elseif typeGraph is defined and typeGraph == 'evolutionStatut' %}
+      Évolution chronologique des résultats d’un ensemble d’étudiants appartenant à un statut
+  {% else %}
+      Analyse des résultats d’un statut d’étudiants sur plusieurs évaluations ({{ statut.nom }})
+  {% endif %}
 {% endblock %}
 
 {% block statistiques %} active {% endblock %}
 
 {% block contenu %}
-    <h1 class="h4 mb-0 text-gray-800">Selectionner les évaluations pour lesquelles vous souhaitez voir des statistiques</h1> <br>
+    <h1 class="h4 mb-0 text-gray-800">Sélectionner les évaluations pour lesquelles vous souhaitez voir des statistiques</h1> <br>
     {{ include('statistiques/_choix_evals_form.html.twig', {'titre' : 'Consulter les statistiques'}) }}
 {% endblock %}
 

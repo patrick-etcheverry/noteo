@@ -41,8 +41,7 @@
                     {{ entity.nom }}
                 </td>
                 <td>
-                <span {% if (route == "stats_choisir_statut" and typeGraph == "evolutionStatut")
-                    or (route == "stats_choisir_groupe_haut_niveau_evaluable" and typeGraph != "evolutionStatut"  and typeGraph != "histogramme" and typeGraph != "boite-moustache" and typeGraph != "moyenne")
+                <span {% if (route == "stats_choisir_groupe_haut_niveau_evaluable" and typeGraph != "evolutionStatut"  and typeGraph != "histogramme" and typeGraph != "boite-moustache" and typeGraph != "moyenne")
                     or (route == "statistiques_choisir_sous_groupes" and typeGraph != "evolutionStatut" and typeGraph != "histogramme" and typeGraph != "boite-moustache" and typeGraph != "moyenne")
                     or (route == "stats_choisir_groupe_haut_niveau_evaluable" and typeGraph == "evolutionGroupe")
                     or (route == "statistiques_choisir_sous_groupes" and typeGraph == "evolutionGroupe") %}

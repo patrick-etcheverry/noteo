@@ -3,22 +3,30 @@
 {% set route = app.request.attributes.get('_route') %}
 
 {% block titrePage %}
-    {% if typeGraph is defined and  typeGraph == 'evolutionGroupe' %}
-        Évolution chronologique des résultats d’un ensemble d’étudiants
-    {% elseif typeGraph is defined and typeGraph == 'evolutionStatut' %}
-        Évolution chronologique des résultats d’un ensemble d’étudiants appartenant à un statut
-    {% else %}
-        Analyse des résultats de groupe(s) d’étudiant(s) sur plusieurs évaluations
-    {% endif %}
+  {% if typeGraph is defined and  typeGraph == 'evolutionGroupe' %}
+      Évolution chronologique des résultats d’un ensemble d’étudiants
+  {% elseif typeGraph is defined and typeGraph == 'evolutionStatut' %}
+      Évolution chronologique des résultats d’un ensemble d’étudiants appartenant à un statut
+  {% else %}
+      Analyse des résultats de groupe(s) d’étudiant(s) sur plusieurs évaluations
+  {% endif %}
 {% endblock %}
 
 {% block statistiques %} active {% endblock %}
 
 {% block contenu %}
+    {% if typeGraph is defined and typeGraph == 'evolutionStatut' %}
     <h1 class="h4 mb-0 text-gray-800">
-        Selectionner les sous-groupes de {{ groupe.nom }} pour lesquels vous souhaitez
-        voir des statistiques
-    </h1> <br>
+    Sélectionner les sous-groupes de {{ groupe.nom }} comportant des étudiants du statut '{{statut.nom}}' et pour lesquels vous souhaitez
+    voir des statistiques
+    </h1>
+    {% else %}
+      <h1 class="h4 mb-0 text-gray-800">
+          Sélectionner les sous-groupes de {{ groupe.nom }} pour lesquels vous souhaitez
+          voir des statistiques
+      </h1>
+    {% endif %}
+     <br>
     {{ include('statistiques/_choix_groupes_form.html.twig') }}
 {% endblock %}
 
