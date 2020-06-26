@@ -400,7 +400,7 @@ function genPDF(callback, portrait){
           pageBreak: (portrait ? '' : 'after'),
         },
         {
-          text: nomGroupes[indexGraph] + " (Données chiffrées)",
+          text: stats[indexGraph].nom + " (Données chiffrées)",
           style: 'subheader',
         },
   		  {
