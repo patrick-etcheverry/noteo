@@ -45,18 +45,13 @@
             ],
             pageLength: {{ app.user.preferenceNbElementsTableaux }}, <!-- Pour que le nombre d'éléments affichés par défaut soit celui de la préference de l'utilisateur -->
             info: false,
+            "fnInitComplete": function(oSettings, json) {
+                $("[name='form[groupes]']").first().attr('checked', true)  //Pour cocher le premier choix par défaut
+            }
         });
         $("[name='form']").on('submit', function () {
             tableGroupes.search("").draw(); //Pour annuler la recherche effectuée dans le champ en haut à droite du tableau
             tableGroupes.rows().nodes().page.len(-1).draw(); // Cette fonction permet, avant la soumission du formulaire, d'afficher dans le DOM toutes les lignes du tableau pour qu'aucune ne soit ignorée
         });
-    </script>
-{% endblock %}
-
-{% block javascripts %}
-    <script>
-        window.onload = function () {
-            $("[name='form[groupes]']").first().attr('checked', true) //Pour cocher le premier choix par défaut
-        }
     </script>
 {% endblock %}

@@ -237,6 +237,8 @@
 <!-- Boostrap Treeview et js contenant les fonctionnalités de manipulation -->
 <script src="{{ asset('vendor/BoostrapTreeView/js/bootstrap-treeview.js') }}"></script>
 <script src="{{ asset('vendor/BoostrapTreeView/js/manipulationTreeView.js') }}"></script>
+{% block datatables %}
+{% endblock %}
 {% block javascripts %}
 {% endblock %}
 <script type="text/javascript">
@@ -248,7 +250,5 @@
         })
     }
 </script>
-{% block datatables %}
-{% endblock %}
 </body>
 </html>
