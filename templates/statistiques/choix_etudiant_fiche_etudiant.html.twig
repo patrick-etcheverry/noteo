@@ -38,9 +38,7 @@
 {% endblock %}
 
 {% block datatables %}
-
     <script type="text/javascript">
-
         var table = $('#evaluations').DataTable({
             language: {
                 // Suppression du label Rechercher et ajout du placeholder
@@ -56,6 +54,9 @@
             ],
             pageLength : {{ app.user.preferenceNbElementsTableaux }}, <!-- Pour que le nombre d'éléments affichés par défaut soit celui de la préference de l'utilisateur -->
             info: false,
+            "fnInitComplete": function(oSettings, json) {
+                $("[name='form[etudiants]']").first().attr('checked', true)  //Pour cocher le premier choix par défaut
+            }
         });
 
         $("[name='form']").on('submit', function () {
@@ -64,12 +65,4 @@
         });
     </script>
 
-{% endblock %}
-
-{% block javascripts %}
-    <script>
-        window.onload = function() {
-            $("[name='form[etudiants]']").first().attr('checked', true)
-        }
-    </script>
 {% endblock %}
