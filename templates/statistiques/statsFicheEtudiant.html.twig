@@ -619,7 +619,7 @@ function genPDF(callback, portrait){
     				}
     			},
           // Saut de page s'il reste encore des graphiques à ajouter au pdf
-          pageBreak: (i == (graphiques.length-1) ? '' : 'after'),
+          pageBreak: (i == (stats.length-1) ? '' : 'after'),
         },
       ];
       docDefinition.content.push(contenu);
