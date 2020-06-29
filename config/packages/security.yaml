@@ -39,4 +39,4 @@ security:
          - { path: ^/statut, roles: ROLE_USER }
          - { path: ^/partie, roles: ROLE_USER }
          - { path: ^/statistiques, roles: ROLE_USER }
-         - { path: ^/reinitialiser, roles: ROLE_USER }
+         - { path: ^/tutoriels, roles: ROLE_USER }
