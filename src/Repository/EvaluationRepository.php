@@ -104,12 +104,18 @@ class EvaluationRepository extends ServiceEntityRepository
 
     public function findAllByEtudiant($idEtudiant)
     {
+        //Cette méthode permet de ne récupèrer que les évaluations d'un étudiant auxquelles il n'était pas absent
         return $this->getEntityManager()->createQuery('
             SELECT e
             FROM App\Entity\Evaluation e
             JOIN e.groupe g
             JOIN g.etudiants et
+            JOIN e.parties p
+            JOIN p.notes n
             WHERE et.id = :idEtudiant
+            AND p.lvl = 0
+            AND n.valeur != -1
+            AND n.etudiant = et
             ORDER BY e.date
         ')
             ->setParameter('idEtudiant', $idEtudiant)
