@@ -81,13 +81,11 @@
 {% block javascripts %}
     <script>
         window.onload = function () {
-            checkCasesCocheesPage()
+            checkCasesCocheesPage();
         }
-
         $("[name='form[groupes]']").on('click', function () {
-          checkCasesCocheesPage() 
+          checkCasesCocheesPage()
         })
-
         function checkCasesCocheesPage() {
             groupesCheck = false; //Au moins un groupe coché
             $("#valider").attr('disabled', true)
@@ -101,6 +99,5 @@
                 $("#valider").attr('disabled', false)
             }
         }
-
     </script>
 {% endblock %}
