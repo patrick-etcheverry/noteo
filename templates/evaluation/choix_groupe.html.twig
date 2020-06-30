@@ -69,6 +69,7 @@
             info: false,
             "fnInitComplete": function(oSettings, json) {
                 $("[name='form[groupes]']").first().attr('checked', true)  //Pour cocher le premier choix par défaut
+                checkCasesCocheesPage();
             }
         });
         $("[name='form']").on('submit', function () {
@@ -80,9 +81,6 @@
 
 {% block javascripts %}
     <script>
-        window.onload = function () {
-            checkCasesCocheesPage();
-        }
         $("[name='form[groupes]']").on('click', function () {
           checkCasesCocheesPage()
         })

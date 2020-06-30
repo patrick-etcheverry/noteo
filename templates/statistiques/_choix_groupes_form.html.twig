@@ -1,7 +1,7 @@
 {{ form_start(form) }}
 {% set route = app.request.attributes.get('_route') %}
 <div class="table-responsive table-hover">
-    {% if typeGraph is defined and typeGraph == "evolutionGroupe" or (typeGraph == "evolutionStatut" and route != "stats_choisir_groupe_haut_niveau_evaluable" and route != "stats_choisir_statut")  %}
+    {% if typeGraph is defined and typeGraph == "evolutionGroupe" or typeGraph == "evolutionStatut" %}
         <span style="font-size:15px"><i class="icon-attention-circled"></i>La couleur de l'effectif d'un groupe indique la facilité de lecture du graphique qui sera généré pour ce groupe.</span></br></br>
     {% endif %}
     <table class="table" id="groupes">
@@ -15,7 +15,7 @@
         <th>Nom</th>
         <th>Effectif</th>
         {% if (typeGraph == "evolutionStatut" and route == "stats_choisir_groupe_haut_niveau_evaluable") or (route == "statistiques_choisir_sous_groupes" and typeGraph == "evolutionStatut") %}
-      <th>Effectif {% if typeGraph == "evolutionStatut" and route == "statistiques_choisir_sous_groupes" %}{{statut.nom}}{% endif %}</th>
+            <th>Effectif statut</th>
         {% endif %}
         <th>Description</th>
         <th>Créateur</th>
@@ -54,7 +54,7 @@
                   red
                 {% endif %}" {% endif %}
                 >{{ entity.etudiants.count }}</span></td>
-                {% if (effectifsParStatut is defined) and typeGraph == "evolutionStatut" and route != "stats_choisir_groupe_haut_niveau_evaluable" %}
+                {% if (effectifsParStatut is defined) and typeGraph == "evolutionStatut" %}
                     <td><span class="
                   {% if effectifsParStatut[loop.index -1] <= 16 %}
                     green
