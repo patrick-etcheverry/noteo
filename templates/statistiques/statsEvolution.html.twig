@@ -23,9 +23,26 @@
               <th>Évaluations Concernées</th>
               <td>
                   <ul>
-                      {% for evaluation in evaluations %}
-                          <li>{{ evaluation.nom }} ({{ evaluation.date|date("d/m/Y") }})</li>
-                      {% endfor %}
+                      {% if evaluations|length <=10 %}
+                          {% for evaluation in evaluations %}
+                              <li>{{ evaluation.nom }} ({{ evaluation.date|date("d/m/Y") }})</li>
+                          {% endfor %}
+                      {% else %}
+                          {# Si il y a plus de 10 évaluations on va afficher seulement les dix premières et les suivantes seront cachées dans un collapse#}
+                          {% for i in 0..9 %}
+                              <li>{{ evaluations[i].nom }} ({{ evaluations[i].date|date("d/m/Y") }})</li>
+                          {% endfor %}
+                          <li>
+                              <a data-toggle="collapse" href="#collapseExample" role="button" aria-expanded="false" aria-controls="collapseExample">
+                                  Voir les {{ evaluations|length-10 }} autres évaluations sélectionnées
+                              </a>
+                          </li>
+                          <div class="collapse" id="collapseExample">
+                              {% for i in 10..evaluations|length-1 %}
+                                  <li>{{ evaluations[i].nom }} ({{ evaluations[i].date|date("d/m/Y") }})</li>
+                              {% endfor %}
+                          </div>
+                      {% endif %}
                   </ul>
               </td>
           </tr>
@@ -49,6 +66,7 @@
           <tr>
               <th class="intitule"><label >Actions</label></th>
               <td>
+              <span style="font-size:15px"><i class="icon-attention-circled"></i>Des temps de chargement longs peuvent survenir si la quantité de données est élevée</span><br>
               <a href="#"><i style="font-size: 25px;" data-toggle='tooltip'
                              title="Exporter les statistiques au format PDF (Portrait)" class="icon-file-pdf"
                              onclick="genPDF(onChartReady, true)"></i></a>

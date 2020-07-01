@@ -54,9 +54,11 @@
                 </td>
             </tr>
         {% endif %}
+        {% if evaluations|length >= 1 %}
         <tr>
             <th class="intitule"><label>Actions</label></th>
             <td>
+                <span style="font-size:15px"><i class="icon-attention-circled"></i>Des temps de chargement longs peuvent survenir si la quantité de données est élevée</span><br>
                 <a href="#"><i style="font-size: 25px;" data-toggle='tooltip'
                                title="Exporter les statistiques au format PDF (Portrait)" class="icon-file-pdf"
                                onclick="genPDF(onChartReady, true)"></i></a>
@@ -66,13 +68,15 @@
                                onclick="genPDF(onChartReady, false)"></i></a>
             </td>
         </tr>
+        {% endif %}
         </tbody>
     </table>
 </div>
-
+{% if evaluations|length >= 1 %}
 <div class='bouton' align=center>
     <span style="font-size:15px" class="badge badge-pill badge-primary"><i class="icon-attention-circled"></i> Les statistiques ne prennent pas en compte les évaluations auxquelles l'étudiant était absent et excusé</span>
 </div>
+{% endif %}
 {% if evaluations|length > 1 %}
     <h1 class="h4 mb-0 text-gray-800">Historique des notes</h1><br>
     <div class="container-fluid">
@@ -159,11 +163,6 @@
             <h1 class="h4 mb-0 text-gray-800">L'étudiant n'a participé à aucune évaluation</h1>
         </div>
     {% endfor %}
-    {% else %}
-        <div class="info">
-            <h1 class="h4 mb-0 text-gray-800">L'étudiant n'a participé à aucune évaluation</h1>
-        </div>
-    {% endif %}
 <br>
 {% endblock %}
 
