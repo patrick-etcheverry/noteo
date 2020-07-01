@@ -129,7 +129,7 @@
                             </div>
                             <div class="container-fluid">
                                 <br><span style="font-size:15px"><i class="icon-attention-circled"></i>Survolez le graphique pour plus d'informations</span><br>
-                                <canvas align=center id="graphBar_{{ evaluation.nom }}_{{ groupe.nom }}"
+                                <canvas align=center id="graphBar_{{ evaluation.id }}_{{ groupe.nom }}"
                                         aria-label="Hello ARIA World" role="img"></canvas>
                             </div>
                             {% set nbCard = nbCard + 1 %}
@@ -151,7 +151,7 @@
                         </div>
                         <div class="container-fluid">
                             <br><span style="font-size:15px"><i class="icon-attention-circled"></i>Survolez le graphique pour plus d'informations</span><br>
-                            <canvas align=center id="graphBar_{{ evaluation.nom }}_{{ groupe.nom }}"
+                            <canvas align=center id="graphBar_{{ evaluation.id }}_{{ groupe.nom }}"
                                     aria-label="Hello ARIA World" role="img"></canvas>
                         </div>
                         <br>
@@ -341,7 +341,7 @@
                     var noteEtu = document.getElementById("noteEtu_{{ evaluation.nom }}_{{ groupe.nom }}").innerHTML.split(': ')[1]
                     var noteGpe = document.getElementById("moyGpe_{{ evaluation.nom }}_{{ groupe.nom }}").innerHTML.split(': ')[1]
                     var notes = [noteEtu, noteGpe]
-                    var chartBar = new Chart(document.getElementById("graphBar_{{ evaluation.nom }}_{{ groupe.nom }}").getContext('2d'), {
+                    var chartBar = new Chart(document.getElementById("graphBar_{{ evaluation.id }}_{{ groupe.nom }}").getContext('2d'), {
                         type: 'bar',
                         data: {
                             labels: ['Note de l\'étudiant', 'Moyenne du groupe'],
@@ -362,7 +362,7 @@
                     var noteEtu = document.getElementById("noteEtu_{{ evaluation.nom }}_{{ groupe.nom }}").innerHTML.split(': ')[1]
                     var noteGpe = document.getElementById("moyGpe_{{ evaluation.nom }}_{{ groupe.nom }}").innerHTML.split(': ')[1]
                     var notes = [noteEtu, noteGpe]
-                    var chartBar = new Chart(document.getElementById("graphBar_{{ evaluation.nom }}_{{ groupe.nom }}").getContext('2d'), {
+                    var chartBar = new Chart(document.getElementById("graphBar_{{ evaluation.id }}_{{ groupe.nom }}").getContext('2d'), {
                         type: 'bar',
                         data: {
                             labels: ['Note de l\'étudiant', 'Moyenne du groupe'],
