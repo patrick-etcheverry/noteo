@@ -1070,7 +1070,7 @@ class StatsController extends AbstractController
                     }
                     $toutesLesStats[] = array(
                         "eval" => $eval->getNom(),
-                        "groupe" => $groupe->getNom(),
+                        "groupe" => $statut->getNom(),
                         "position" => $classement,
                         "moyenneGroupe" => $this->moyenne($copieTabPoints),
                         "noteEtudiant" => $noteEtudiant
