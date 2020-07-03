@@ -161,6 +161,10 @@
 {% endblock %}
 
 {% block javascripts %}
+    <!-- Boostrap Treeview et js contenant les fonctionnalités de manipulation -->
+    <script src="{{ asset('vendor/BoostrapTreeView/js/bootstrap-treeview.js') }}"></script>
+    <script src="{{ asset('vendor/BoostrapTreeView/js/manipulationTreeView.js') }}"></script>
+
     <script>
         var tree = [{{ app.session.get("arbre_json") | json_encode | raw }}] // Variable venant du serveur
         window.onload = chargerArbre();

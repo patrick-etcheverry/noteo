@@ -154,8 +154,12 @@
 
 {% block javascripts %}
 
-<script type="text/javascript" src="{{ asset("js/jspdf.min.js") }}"></script>
-<script type="text/javascript" src="{{ asset("js/html2canvas.min.js") }}"></script>
+    <!-- Chart JS -->
+    <script src="{{ asset("vendor/chart.js/Chart.min.js") }}"></script>
+    <!-- PDFMake -->
+    <script type="text/javascript" src="{{ asset("js/pdfmake.min.js") }}"></script>
+    <script type="text/javascript" src="{{ asset("js/vfs_fonts.js") }}"></script>
+
 <script type="text/javascript" src="{{ asset("js/boxplot.js") }}"></script>
 
 <!-- Script pour la génération des graphiques -->
