@@ -45,7 +45,8 @@
         </table>
     </div>
     <div class='bouton' align=center>
-        <button id="valider" class="d-sm-inline-block btn btn-sm btn-primary shadow-sm">{{ labelBoutonSuivant  | default ("Créer l'évaluation pour ce groupe")}}</button>
+        <button id="valider"
+                class="d-sm-inline-block btn btn-sm btn-primary shadow-sm">{{ labelBoutonSuivant  | default ("Créer l'évaluation pour ce groupe") }}</button>
     </div>
     {{ form_end(form) }}
 {% endblock %}
@@ -67,7 +68,7 @@
             ],
             pageLength: {{ app.user.preferenceNbElementsTableaux }}, <!-- Pour que le nombre d'éléments affichés par défaut soit celui de la préference de l'utilisateur -->
             info: false,
-            "fnInitComplete": function(oSettings, json) {
+            "fnInitComplete": function (oSettings, json) {
                 $("[name='form[groupes]']").first().attr('checked', true)  //Pour cocher le premier choix par défaut
                 checkCasesCocheesPage();
             }
@@ -82,8 +83,9 @@
 {% block javascripts %}
     <script>
         $("[name='form[groupes]']").on('click', function () {
-          checkCasesCocheesPage()
+            checkCasesCocheesPage()
         })
+
         function checkCasesCocheesPage() {
             groupesCheck = false; //Au moins un groupe coché
             $("#valider").attr('disabled', true)

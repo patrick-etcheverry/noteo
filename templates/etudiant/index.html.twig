@@ -8,7 +8,7 @@
     {% if etudiants is not empty %}
         <div class='bouton' align=center>
             <a class="d-sm-inline-block btn btn-sm btn-primary shadow-sm" href="{{ path('etudiant_new') }}">
-              Ajouter un étudiant
+                Ajouter un étudiant
             </a>
         </div>
         <div class="table-responsive table-hover">
@@ -23,30 +23,30 @@
                 </tr>
                 </thead>
                 <tbody>
-                  {% for etudiant in etudiants %}
-                      <tr>
-                          <td>{{ etudiant.nom }}</td>
-                          <td>{{ etudiant.prenom }}</td>
-                          <td>
-                              {% for statut in etudiant.statuts %}
-                                  <span class="badge badge-primary">{{ statut.nom }}</span>
-                              {% endfor %}
-                          </td>
-                          <td>{{ etudiant.mail }}</td>
-                          <td>
-                              <a href="{{ path('etudiant_show', {'id': etudiant.id}) }}"><i class="icon-eye"
-                                                                                            data-toggle='tooltip'
-                                                                                            title='Consulter {{ etudiant.prenom }} {{ etudiant.nom }}'></i></a>
-                              <a href="{{ path('etudiant_edit', {'id': etudiant.id}) }}"><i class="icon-pencil-1"
-                                                                                            data-toggle='tooltip'
-                                                                                            title='Modifier {{ etudiant.prenom }} {{ etudiant.nom }}'></i></a>
-                              <a href="#"
-                                 onclick="supprimerEtudiant('{{ path('etudiant_delete', {'id': etudiant.id}) }}')"><i
-                                          class="icon-trash" data-toggle='tooltip'
-                                          title='Supprimer {{ etudiant.prenom }} {{ etudiant.nom }}'></i></a>
-                          </td>
-                      </tr>
-                  {% endfor %}
+                {% for etudiant in etudiants %}
+                    <tr>
+                        <td>{{ etudiant.nom }}</td>
+                        <td>{{ etudiant.prenom }}</td>
+                        <td>
+                            {% for statut in etudiant.statuts %}
+                                <span class="badge badge-primary">{{ statut.nom }}</span>
+                            {% endfor %}
+                        </td>
+                        <td>{{ etudiant.mail }}</td>
+                        <td>
+                            <a href="{{ path('etudiant_show', {'id': etudiant.id}) }}"><i class="icon-eye"
+                                                                                          data-toggle='tooltip'
+                                                                                          title='Consulter {{ etudiant.prenom }} {{ etudiant.nom }}'></i></a>
+                            <a href="{{ path('etudiant_edit', {'id': etudiant.id}) }}"><i class="icon-pencil-1"
+                                                                                          data-toggle='tooltip'
+                                                                                          title='Modifier {{ etudiant.prenom }} {{ etudiant.nom }}'></i></a>
+                            <a href="#"
+                               onclick="supprimerEtudiant('{{ path('etudiant_delete', {'id': etudiant.id}) }}')"><i
+                                        class="icon-trash" data-toggle='tooltip'
+                                        title='Supprimer {{ etudiant.prenom }} {{ etudiant.nom }}'></i></a>
+                        </td>
+                    </tr>
+                {% endfor %}
                 </tbody>
             </table>
         </div>
@@ -72,15 +72,15 @@
                 </div>
                 <div class="modal-body">
                     Êtes-vous sur de vouloir supprimer l'étudiant ? <br>
-                    Cette action : 
+                    Cette action :
                     <ul>
-                        <li>Retirera l'étudiant tous les groupes </li>
-                        <li>Supprimera sa note pour toutes les évaluations auxquelles il a participé </li>
+                        <li>Retirera l'étudiant tous les groupes</li>
+                        <li>Supprimera sa note pour toutes les évaluations auxquelles il a participé</li>
                     </ul>
                 </div>
                 <div class="modal-footer">
                     <a class="d-sm-inline-block btn btn-sm btn-primary shadow-sm" id="BoutonSupprimerModale" href="#">
-                      Supprimer l'étudiant
+                        Supprimer l'étudiant
                     </a>
                 </div>
             </div>

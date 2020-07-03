@@ -5,48 +5,49 @@
 {% block statutsEtudiants %}active{% endblock %}
 
 {% block contenu %}
-{% if statut.enseignant == app.user or is_granted('ROLE_ADMIN') %}
-<div class='bouton' align=center>
-  <a class="d-sm-inline-block btn btn-sm btn-primary shadow-sm" href="{{ path('statut_edit', {'slug': statut.slug}) }}">Modifier {{ statut.nom }}</a>
-</div>
-{% endif %}
-<div class="table-responsive">
-    <table class="table">
-        <tbody>
+    {% if statut.enseignant == app.user or is_granted('ROLE_ADMIN') %}
+        <div class='bouton' align=center>
+            <a class="d-sm-inline-block btn btn-sm btn-primary shadow-sm"
+               href="{{ path('statut_edit', {'slug': statut.slug}) }}">Modifier {{ statut.nom }}</a>
+        </div>
+    {% endif %}
+    <div class="table-responsive">
+        <table class="table">
+            <tbody>
             <tr>
                 <th class="intitule">Description du groupe</th>
-                <td >{{ statut.description }}</td>
+                <td>{{ statut.description }}</td>
             </tr>
             <tr>
-              <th class="intitule">Créateur</th>
-              <td>{{ statut.enseignant.prenom }} {{ statut.enseignant.nom }}</td>
+                <th class="intitule">Créateur</th>
+                <td>{{ statut.enseignant.prenom }} {{ statut.enseignant.nom }}</td>
             </tr>
-        </tbody>
-    </table>
-</div>
+            </tbody>
+        </table>
+    </div>
     <br> <h1 class="h4 mb-0 text-gray-800">Liste des étudiants du groupe</h1> <br>
     <div class="table-responsive">
-    <table class="table" id="etud">
-      <thead>
-        <tr>
-          <th>Nom</th>
-          <th>Prénom</th>
-          <th>Mail</th>
-        </tr>
-      </thead>
-      <tbody>
-        {% if etudiants is not empty %}
-        {% for etudiant in etudiants %}
-        <tr>
-          <td>{{etudiant.nom}}</td>
-          <td>{{etudiant.prenom}}</td>
-          <td>{{etudiant.mail}}</td>
-        </tr>
-        {% endfor %}
-        {% endif %}
-      </tbody>
-    </table>
-  </div>
+        <table class="table" id="etud">
+            <thead>
+            <tr>
+                <th>Nom</th>
+                <th>Prénom</th>
+                <th>Mail</th>
+            </tr>
+            </thead>
+            <tbody>
+            {% if etudiants is not empty %}
+                {% for etudiant in etudiants %}
+                    <tr>
+                        <td>{{ etudiant.nom }}</td>
+                        <td>{{ etudiant.prenom }}</td>
+                        <td>{{ etudiant.mail }}</td>
+                    </tr>
+                {% endfor %}
+            {% endif %}
+            </tbody>
+        </table>
+    </div>
 
 
 {% endblock %}
@@ -55,28 +56,28 @@
 
 {% block datatables %}
 
-<script type="text/javascript">
+    <script type="text/javascript">
 
-$(document).ready(function() {
-  $('#etud').dataTable({
-    language: {
-      // Suppression du label Rechercher et ajout du placeholder
-      search: "_INPUT_",
-      searchPlaceholder: "Rechercher...",
-      "url": "{{asset('tradfr.json')}}"
-    },
-    order: [
-      [0, "asc"]
-    ],
-    columns: [null, null, {"orderable": false}],
-    lengthMenu: [
-        [15, 30, 45, -1],
-        [15, 30, 45, "Tout"]
-    ],
-    pageLength : {{ app.user.preferenceNbElementsTableaux }}, <!-- Pour que le nombre d'éléments affichés par défaut soit celui de la préference de l'utilisateur -->
-    info: false,
-  });
-});
-</script>
+        $(document).ready(function () {
+            $('#etud').dataTable({
+                language: {
+                    // Suppression du label Rechercher et ajout du placeholder
+                    search: "_INPUT_",
+                    searchPlaceholder: "Rechercher...",
+                    "url": "{{ asset('tradfr.json') }}"
+                },
+                order: [
+                    [0, "asc"]
+                ],
+                columns: [null, null, {"orderable": false}],
+                lengthMenu: [
+                    [15, 30, 45, -1],
+                    [15, 30, 45, "Tout"]
+                ],
+                pageLength: {{ app.user.preferenceNbElementsTableaux }}, <!-- Pour que le nombre d'éléments affichés par défaut soit celui de la préference de l'utilisateur -->
+                info: false,
+            });
+        });
+    </script>
 
 {% endblock %}

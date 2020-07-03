@@ -50,20 +50,20 @@
             </tr>
             </thead>
             <tbody>
-                {% for groupe in groupes %}
-                    <tr>
-                        <td>
-                            {% if groupe.lvl > 0 %}
-                                {% for i in 1.. groupe.lvl %}
-                                    &emsp;
-                                {% endfor %}
-                            {% endif %}
-                            {{ groupe.nom }}
-                        </td>
-                        <td>{{ groupe.description }}</td>
-                        <td>{{ groupe.enseignant.nom }} {{ groupe.enseignant.prenom }}</td>
-                    </tr>
-                {% endfor %}
+            {% for groupe in groupes %}
+                <tr>
+                    <td>
+                        {% if groupe.lvl > 0 %}
+                            {% for i in 1.. groupe.lvl %}
+                                &emsp;
+                            {% endfor %}
+                        {% endif %}
+                        {{ groupe.nom }}
+                    </td>
+                    <td>{{ groupe.description }}</td>
+                    <td>{{ groupe.enseignant.nom }} {{ groupe.enseignant.prenom }}</td>
+                </tr>
+            {% endfor %}
             </tbody>
         </table>
     </div>

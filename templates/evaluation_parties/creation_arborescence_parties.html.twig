@@ -25,9 +25,11 @@
             background-color: #0275d8;
             border-radius: 10px;
         }
+
         div .blue {
             color: #0275d8
         }
+
         div .red {
             color: red
         }
@@ -173,6 +175,7 @@
         $("[name='form']").on('submit', function () {
             $("[name='form[arbre]']").val(encodeURIComponent(JSON.stringify(tree)))
         })
+
         function onConfirmerCreation() {
             $("#modaleValidationCreation").modal();
             //On cache par défaut le message d'erreur si aucune partie n'a été créée pour ensuite le faire apparaitre si les conditions sont vérifiées (si l'évaluation n'a aucune partie
@@ -186,6 +189,7 @@
                 }
             }
         }
+
         function onCreerPartie() {
             var partieSelectionnee = $('#arbre_boot').treeview('getSelected');
             if (partieSelectionnee.length != 0) {
@@ -203,6 +207,7 @@
                 $('#modalePasDePartieSelectionnee').modal();
             }
         }
+
         function onSupprimerPartie() {
             var partieSelectionnee = $('#arbre_boot').treeview('getSelected');
             if (partieSelectionnee.length != 0) {
@@ -214,6 +219,7 @@
                 $('#modalePasDePartieSelectionnee').modal();
             }
         }
+
         function onModifierPartie() {
             var partieSelectionnee = $('#arbre_boot').treeview('getSelected');
             if (partieSelectionnee.length != 0) {

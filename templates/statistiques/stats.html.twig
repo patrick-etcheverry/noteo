@@ -32,7 +32,8 @@
                                     <li>{{ evaluations[i].nom }} ({{ evaluations[i].date|date("d/m/Y") }})</li>
                                 {% endfor %}
                                 <li>
-                                    <a data-toggle="collapse" href="#collapseExample" role="button" aria-expanded="false" aria-controls="collapseExample">
+                                    <a data-toggle="collapse" href="#collapseExample" role="button"
+                                       aria-expanded="false" aria-controls="collapseExample">
                                         Voir les {{ evaluations|length-10 }} autres évaluations sélectionnées
                                     </a>
                                 </li>
@@ -105,18 +106,20 @@
                     </li>
                     <li class="list-group-item">
                         <ul class="nav nav-tabs">
-                            <li class="nav-item"><a class="nav-link {% if app.session.get('typeGraphique') =="histogramme" %}active{% endif %}"
-                                                    data-toggle="tab"
-                                                    href="#Repartition_Histogramme_{{ partie.nom | replace({' ': '_'}) }}">Répartition
+                            <li class="nav-item"><a
+                                        class="nav-link {% if app.session.get('typeGraphique') =="histogramme" %}active{% endif %}"
+                                        data-toggle="tab"
+                                        href="#Repartition_Histogramme_{{ partie.nom | replace({' ': '_'}) }}">Répartition
                                     (Histogramme)</a></li>
                             <li class="nav-item"><a
                                         class="nav-link {% if app.session.get('typeGraphique') =="boite-moustache" %}active{% endif %}"
                                         data-toggle="tab"
                                         href="#Repartition_Boites_{{ partie.nom | replace({' ': '_'}) }}">Répartition
                                     (Boîte à moustaches)</a></li>
-                            <li class="nav-item"><a class="nav-link {% if app.session.get('typeGraphique') =="moyenne" %}active{% endif %}"
-                                                    data-toggle="tab"
-                                                    href="#Moyenne_ecart_{{ partie.nom | replace({' ': '_'}) }}">Moyenne
+                            <li class="nav-item"><a
+                                        class="nav-link {% if app.session.get('typeGraphique') =="moyenne" %}active{% endif %}"
+                                        data-toggle="tab"
+                                        href="#Moyenne_ecart_{{ partie.nom | replace({' ': '_'}) }}">Moyenne
                                     & Écart-type</a></li>
                         </ul>
                         <div class="tab-content">
@@ -716,7 +719,9 @@
                     });
 
                     // Attente de la génération du graphique, le booléen change d'état dans la fonction callback
-                    while (!wait_for_chart_ready){};
+                    while (!wait_for_chart_ready) {
+                    }
+                    ;
                     wait_for_chart_ready = !wait_for_chart_ready;
                     // Ajout de l'image à l'array
                     images.push(window.hiddenGraph.toBase64Image());
@@ -896,7 +901,10 @@
             switch (clef) {
                 case 'histo':
                     var header = [];
-                    header.push({ text: 'Groupe', style: (portrait ? 'texte_header_tableau_portrait' : 'texte_header_tableau_paysage')});
+                    header.push({
+                        text: 'Groupe',
+                        style: (portrait ? 'texte_header_tableau_portrait' : 'texte_header_tableau_paysage')
+                    });
                     // Création du header du tableau en fonction des labels du graphique
                     // graphiques[partieConcernee][0] est le graphique de Répartion (Histogramme) de la partie partieConcernée
                     for (var i = 0; i < graphiques[partieConcernee][0].data.labels.length; i++) {

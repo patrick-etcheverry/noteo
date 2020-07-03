@@ -1,11 +1,11 @@
 {% extends 'base.html.twig' %}
 
 {% block titrePage %}
-  {% if typeGraph is defined and typeGraph == 'evolutionStatut' %}
-      Évolution chronologique des résultats d’un ensemble d’étudiants appartenant à un statut
-  {% else %}
-      Analyse des résultats d’un statut d’étudiants sur plusieurs évaluations
-  {% endif %}
+    {% if typeGraph is defined and typeGraph == 'evolutionStatut' %}
+        Évolution chronologique des résultats d’un ensemble d’étudiants appartenant à un statut
+    {% else %}
+        Analyse des résultats d’un statut d’étudiants sur plusieurs évaluations
+    {% endif %}
 {% endblock %}
 
 {% block statistiques %} active {% endblock %}
@@ -34,7 +34,7 @@
             ],
             pageLength: {{ app.user.preferenceNbElementsTableaux }}, <!-- Pour que le nombre d'éléments affichés par défaut soit celui de la préference de l'utilisateur -->
             info: false,
-            "fnInitComplete": function(oSettings, json) {
+            "fnInitComplete": function (oSettings, json) {
                 $("[name='form[groupes]']").first().attr('checked', true) //Pour cocher le premier choix par défaut
             }
         });

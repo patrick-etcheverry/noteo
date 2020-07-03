@@ -69,6 +69,7 @@
             $("input[type='text']").change(function () {
                 totalLigne(this)
             })
+
             function totalLigne(element) {
                 elementsAEtudier = $(element).parent().parent().children(); //On récupère tous les td de la ligne
                 //Si le premier élement n'est pas un th (car ici il y a également le tableau dans la partie supérieure de la page, qu'on ne veut pas traiter
@@ -76,7 +77,7 @@
                     totalPts = 0;
                     //On étudie pas les deux premiers td (nom et prénom de l'étudiant) ni le dernier (qui contiendra la note mise à jour)
                     for (var i = 2; i <= elementsAEtudier.length - 2; i++) {
-                        pointsARajouter = parseFloat(elementsAEtudier[i].children[elementsAEtudier[i].children.length - 1].value.replace(',','.'));
+                        pointsARajouter = parseFloat(elementsAEtudier[i].children[elementsAEtudier[i].children.length - 1].value.replace(',', '.'));
                         //On teste si la valeur rentrée n'est pas composée de caractères
                         if (!isNaN(pointsARajouter)) {
                             if (pointsARajouter != -1) {

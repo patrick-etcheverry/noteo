@@ -1,31 +1,32 @@
 {{ form_start(form) }}
-  <div class="table-responsive">
-      <table align="center" class="table">
-          <tbody>
-          <tr>
-              <th class="intitule"><label for="groupe_etudiant_nom" class="required">Nom</label></th>
-              <td>{{ form_help(form.nom) }}{{ form_errors(form.nom) }}{{ form_widget(form.nom) }}</td>
-          </tr>
-          <tr>
-              <th class="intitule"><label for="groupe_etudiant_description" class="required">Description</label></th>
-              <td>{{ form_errors(form.description) }}{{ form_widget(form.description) }}</td>
-          </tr>
-          <tr>
-              <th class="intitule"><label for="groupe_etudiant_estEvaluable" class="required">Évaluable</label> <a
-                          href="#HelpEvaluable" data-toggle='modal' data-target='#HelpEvaluable'><i
-                              class="icon-help-circled"></i></a></th>
-              <td>{{ form_errors(form.estEvaluable) }}{{ form_widget(form.estEvaluable) }}</td>
-          </tr>
-          <tr>
-              <th class="intitule"><label for="groupe_etudiant_fichier" class="required">Fichier CSV (séparateur ;)</label> <a
-                          href="/template.csv">Télécharger un modèle </a>
-              </th>
-              <td>{{ form_errors(form.fichier) }}{{ form_widget(form.fichier) }}</td>
-          </tr>
-          </tbody>
-      </table>
-  </div>
-  <div class='bouton' align=center>
-      <button class="d-sm-inline-block btn btn-sm btn-primary shadow-sm">{{ button_label|default('Créer le groupe') }}</button>
-  </div>
+<div class="table-responsive">
+    <table align="center" class="table">
+        <tbody>
+        <tr>
+            <th class="intitule"><label for="groupe_etudiant_nom" class="required">Nom</label></th>
+            <td>{{ form_help(form.nom) }}{{ form_errors(form.nom) }}{{ form_widget(form.nom) }}</td>
+        </tr>
+        <tr>
+            <th class="intitule"><label for="groupe_etudiant_description" class="required">Description</label></th>
+            <td>{{ form_errors(form.description) }}{{ form_widget(form.description) }}</td>
+        </tr>
+        <tr>
+            <th class="intitule"><label for="groupe_etudiant_estEvaluable" class="required">Évaluable</label> <a
+                        href="#HelpEvaluable" data-toggle='modal' data-target='#HelpEvaluable'><i
+                            class="icon-help-circled"></i></a></th>
+            <td>{{ form_errors(form.estEvaluable) }}{{ form_widget(form.estEvaluable) }}</td>
+        </tr>
+        <tr>
+            <th class="intitule"><label for="groupe_etudiant_fichier" class="required">Fichier CSV (séparateur
+                    ;)</label> <a
+                        href="/template.csv">Télécharger un modèle </a>
+            </th>
+            <td>{{ form_errors(form.fichier) }}{{ form_widget(form.fichier) }}</td>
+        </tr>
+        </tbody>
+    </table>
+</div>
+<div class='bouton' align=center>
+    <button class="d-sm-inline-block btn btn-sm btn-primary shadow-sm">{{ button_label|default('Créer le groupe') }}</button>
+</div>
 {{ form_end(form) }}

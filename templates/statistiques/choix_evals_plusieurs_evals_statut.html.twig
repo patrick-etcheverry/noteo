@@ -1,19 +1,20 @@
 {% extends 'base.html.twig' %}
 
 {% block titrePage %}
-  {% if typeGraph is defined and typeGraph == 'evolutionGroupe' %}
-      Évolution chronologique des résultats d’un ensemble d’étudiants
-  {% elseif typeGraph is defined and typeGraph == 'evolutionStatut' %}
-      Évolution chronologique des résultats d’un ensemble d’étudiants appartenant à un statut
-  {% else %}
-      Analyse des résultats d’un statut d’étudiants sur plusieurs évaluations ({{ statut.nom }})
-  {% endif %}
+    {% if typeGraph is defined and typeGraph == 'evolutionGroupe' %}
+        Évolution chronologique des résultats d’un ensemble d’étudiants
+    {% elseif typeGraph is defined and typeGraph == 'evolutionStatut' %}
+        Évolution chronologique des résultats d’un ensemble d’étudiants appartenant à un statut
+    {% else %}
+        Analyse des résultats d’un statut d’étudiants sur plusieurs évaluations ({{ statut.nom }})
+    {% endif %}
 {% endblock %}
 
 {% block statistiques %} active {% endblock %}
 
 {% block contenu %}
-    <h1 class="h4 mb-0 text-gray-800">Sélectionner les évaluations pour lesquelles vous souhaitez voir des statistiques</h1> <br>
+    <h1 class="h4 mb-0 text-gray-800">Sélectionner les évaluations pour lesquelles vous souhaitez voir des
+        statistiques</h1> <br>
     {{ include('statistiques/_choix_evals_form.html.twig', {'titre' : 'Consulter les statistiques'}) }}
 {% endblock %}
 
@@ -26,7 +27,7 @@
                 // Suppression du label Rechercher et ajout du placeholder
                 search: "_INPUT_",
                 searchPlaceholder: "Rechercher...",
-                "url": "{{asset('tradfr.json')}}"
+                "url": "{{ asset('tradfr.json') }}"
             },
             order: [2, 'desc'],
             columns: [{"orderable": false}, null, null, {"orderable": false}, null],
@@ -38,7 +39,7 @@
                 "sType": "date-eu",
                 targets: 2
             }],
-            pageLength : {{ app.user.preferenceNbElementsTableaux }}, <!-- Pour que le nombre d'éléments affichés par défaut soit celui de la préference de l'utilisateur -->
+            pageLength: {{ app.user.preferenceNbElementsTableaux }}, <!-- Pour que le nombre d'éléments affichés par défaut soit celui de la préference de l'utilisateur -->
             info: false,
         });
 
@@ -52,7 +53,7 @@
 
 {% block javascripts %}
     <script>
-        window.onload = function() {
+        window.onload = function () {
             $("#valider").attr('disabled', true)
             checkCasesCocheesPage()
         }
@@ -63,16 +64,17 @@
         $("[name='form[evaluations][]']").on('click', function () {
             checkCasesCocheesPage()
         })
+
         function checkCasesCocheesPage() {
             evalCheck = false; //Au moins une évaluation coché
             $("#valider").attr('disabled', true)
-            $("[name='form[evaluations][]']").each( function () {
+            $("[name='form[evaluations][]']").each(function () {
                 if (this.checked) {
                     evalCheck = true;
                     return false; //Equivalent d'un break, car un seul coché suffit
                 }
             })
-            if(evalCheck) { //Si une une évaluation cochée
+            if (evalCheck) { //Si une une évaluation cochée
                 $("#valider").attr('disabled', false)
             }
         }

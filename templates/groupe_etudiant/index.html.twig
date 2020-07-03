@@ -83,10 +83,10 @@
                 </div>
                 <div class="modal-body">
                     Êtes-vous sur de vouloir supprimer le groupe ? <br>
-                    Cette action supprimera : 
+                    Cette action supprimera :
                     <ul>
-                        <li>Tous ses sous-groupes </li>
-                        <li>Toutes les évaluations associées </li>
+                        <li>Tous ses sous-groupes</li>
+                        <li>Toutes les évaluations associées</li>
                     </ul>
                 </div>
                 <div class="modal-footer">
@@ -153,6 +153,7 @@
             pageLength: {{ app.user.preferenceNbElementsTableaux }}, <!-- Pour que le nombre d'éléments affichés par défaut soit celui de la préference de l'utilisateur -->
             info: false,
         });
+
         function onReorderTableByHierarchie() {
             table.fnSortNeutral(); //Cette fonction (importée d'un plugin) permet de réaorganiser la table html telle que quand les données sont arrivées. Dans ce cas, cela sert à afficher à nouveau
                                    // les groupes hierarchiquement car les données arrivent à la page triées hierarchiquement lors du chargement

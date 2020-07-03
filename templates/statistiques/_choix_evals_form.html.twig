@@ -1,13 +1,14 @@
 {{ form_start(form) }}
-    {{form_errors(form.evaluations)}}
+    {{ form_errors(form.evaluations) }}
     {% set route = app.request.attributes.get('_route') %}
 <div class="table-responsive table-hover">
-    <table class="table" id= "evaluations">
+    <table class="table" id="evaluations">
         <thead>
         <th>
-        {% if route == "statistiques_statuts_choisir_plusieurs_evaluations" or  route == "statistiques_statut_choisir_plusieurs_evaluations" or route == "statistiques_groupes_choisir_plusieurs_evaluations" or route == "statistiques_comparaison_choisir_autres_evals"%}
-            <input type="checkbox" onclick= "cocherToutesLesCases('form[evaluations][]', this.checked)" name="checkbox" title="Tout cocher"/>
-        {% endif %}
+            {% if route == "statistiques_statuts_choisir_plusieurs_evaluations" or  route == "statistiques_statut_choisir_plusieurs_evaluations" or route == "statistiques_groupes_choisir_plusieurs_evaluations" or route == "statistiques_comparaison_choisir_autres_evals" %}
+                <input type="checkbox" onclick="cocherToutesLesCases('form[evaluations][]', this.checked)"
+                       name="checkbox" title="Tout cocher"/>
+            {% endif %}
         </th>
         <th>Nom</th>
         <th>Date</th>
@@ -21,11 +22,11 @@
             {#get entity object from its index in the Categories Field#}
             {% set entity = form.evaluations.vars.choices[index].data %}
             <tr>
-                <td>{{form_widget(form.evaluations[index])}}</td>
-                <td>{{entity.nom}}</td>
+                <td>{{ form_widget(form.evaluations[index]) }}</td>
+                <td>{{ entity.nom }}</td>
                 <td>{{ entity.date|date("d/m/Y") }}</td>
-                <td>{{entity.groupe.nom}}</td>
-                <td>{{entity.enseignant.prenom}} {{entity.enseignant.nom}}</td>
+                <td>{{ entity.groupe.nom }}</td>
+                <td>{{ entity.enseignant.prenom }} {{ entity.enseignant.nom }}</td>
             </tr>
         {% endfor %}
         </tbody>

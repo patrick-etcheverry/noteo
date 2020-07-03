@@ -5,62 +5,58 @@
 {% block statutsEtudiants %}active{% endblock %}
 
 {% block contenu %}
-
-{{ include('statut/_form.html.twig', {'button_label': 'Enregistrer'})}}
-
+    {{ include('statut/_form.html.twig', {'button_label': 'Enregistrer'}) }}
 {% endblock %}
 
 {% block datatables %}
-<script type="text/javascript">
+    <script type="text/javascript">
+        //Activation de Datatables sur le tableau d'ajout des étudiants
+        var tableAjout = $('#etudAjout').DataTable({
+            language: {
+                // Suppression du label Rechercher et ajout du placeholder
+                search: "_INPUT_",
+                searchPlaceholder: "Rechercher...",
+                "url": "{{ asset('tradfr.json') }}"
+            },
+            order: [
+                [1, "asc"]
+            ],
+            columns: [{"orderable": false}, null, null, {"orderable": false}],
+            lengthMenu: [
+                [15, 30, 45, -1],
+                [15, 30, 45, "Tout"]
+            ],
+            pageLength: {{ app.user.preferenceNbElementsTableaux }}, <!-- Pour que le nombre d'éléments affichés par défaut soit celui de la préference de l'utilisateur -->
+            info: false,
+        });
 
-  //Activation de Datatables sur le tableau d'ajout des étudiants
-  var tableAjout = $('#etudAjout').DataTable({
-    language: {
-      // Suppression du label Rechercher et ajout du placeholder
-      search: "_INPUT_",
-      searchPlaceholder: "Rechercher...",
-      "url": "{{asset('tradfr.json')}}"
-    },
-    order: [
-      [1, "asc"]
-    ],
-    columns: [{"orderable": false}, null, null, {"orderable": false}],
-    lengthMenu: [
-      [15, 30, 45, -1],
-      [15, 30, 45, "Tout"]
-    ],
-    pageLength : {{ app.user.preferenceNbElementsTableaux }}, <!-- Pour que le nombre d'éléments affichés par défaut soit celui de la préference de l'utilisateur -->
-    info: false,
-  });
+        //Activation de Datatables sur le tableau de suppression des étudiants
+        var tableSuppr = $('#etudSuppr').DataTable({
+            language: {
+                // Suppression du label Rechercher et ajout du placeholder
+                search: "_INPUT_",
+                searchPlaceholder: "Rechercher...",
+                "url": "{{ asset('tradfr.json') }}"
+            },
+            order: [
+                [1, "asc"]
+            ],
+            columns: [{"orderable": false}, null, null, {"orderable": false}],
+            lengthMenu: [
+                [15, 30, 45, -1],
+                [15, 30, 45, "Tout"]
+            ],
+            pageLength: {{ app.user.preferenceNbElementsTableaux }}, <!-- Pour que le nombre d'éléments affichés par défaut soit celui de la préference de l'utilisateur -->
+            info: false,
+        });
 
-  //Activation de Datatables sur le tableau de suppression des étudiants
-  var tableSuppr = $('#etudSuppr').DataTable({
-    language: {
-      // Suppression du label Rechercher et ajout du placeholder
-      search: "_INPUT_",
-      searchPlaceholder: "Rechercher...",
-      "url": "{{asset('tradfr.json')}}"
-    },
-    order: [
-      [1, "asc"]
-    ],
-    columns: [{"orderable": false}, null, null, {"orderable": false}],
-    lengthMenu: [
-      [15, 30, 45, -1],
-      [15, 30, 45, "Tout"]
-    ],
-    pageLength : {{ app.user.preferenceNbElementsTableaux }}, <!-- Pour que le nombre d'éléments affichés par défaut soit celui de la préference de l'utilisateur -->
-    info: false,
-  });
+        //La fonction sera enclenchée lors de la soumission du formulaire
+        $("[name='statut_edit']").on('submit', function () {
+            tableAjout.search("").draw(); //Pour annuler la recherche effectuée dans le champ en haut à droite du tableau
+            tableSuppr.search("").draw(); //Pour annuler la recherche effectuée dans le champ en haut à droite du tableau
+            tableAjout.rows().nodes().page.len(-1).draw(); // Cette fonction permet, avant la soumission du formulaire, d'afficher dans le DOM toutes les lignes du tableau pour qu'aucune ne soit ignorée
+            tableSuppr.rows().nodes().page.len(-1).draw();
 
-  //La fonction sera enclenchée lors de la soumission du formulaire
-  $("[name='statut_edit']").on('submit', function () {
-    tableAjout.search("").draw(); //Pour annuler la recherche effectuée dans le champ en haut à droite du tableau
-    tableSuppr.search("").draw(); //Pour annuler la recherche effectuée dans le champ en haut à droite du tableau
-    tableAjout.rows().nodes().page.len(-1).draw(); // Cette fonction permet, avant la soumission du formulaire, d'afficher dans le DOM toutes les lignes du tableau pour qu'aucune ne soit ignorée
-    tableSuppr.rows().nodes().page.len(-1).draw();
-
-  });
-
-</script>
+        });
+    </script>
 {% endblock %}

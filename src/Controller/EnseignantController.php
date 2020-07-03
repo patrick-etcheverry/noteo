@@ -28,7 +28,7 @@ class EnseignantController extends AbstractController
         $this->denyAccessUnlessGranted('ENSEIGNANT_INDEX', new Enseignant());
         return $this->render('enseignant/index.html.twig', [
             'enseignants' => $enseignantRepository->findAll(),
-        ]); 
+        ]);
     }
 
     /**
