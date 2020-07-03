@@ -449,15 +449,12 @@ function genPDF(callback, portrait){
   pdfMake.createPdf(docDefinition).download("{{titre}}");
 }
 
-var check4Me = undefined;
-
 function getDataForPdfTable(indexGraph, portrait){
   var donnees = []; // Données du tableau
   var source = donneesGraphique[indexGraph];
   var nbEvalsPerRow = (portrait ? 10 : 15);
   var nbRows = Math.floor(nomEvaluations.length / nbEvalsPerRow) + 1;
   var totalCpt = 0;
-  console.log("Graphe index : " + indexGraph + " nbRows : " + nbRows);
   var header = [];
   header.push({text: 'Etudiant', style: (portrait ? 'texte_header_tableau_portrait' : 'texte_header_tableau_paysage')});
   header.push({text: 'Notes', style: (portrait ? 'texte_header_tableau_portrait' : 'texte_header_tableau_paysage')});
@@ -473,19 +470,14 @@ function getDataForPdfTable(indexGraph, portrait){
       for(var i = 0; i < nbEvalsPerRow; i++){
         if(noteCpt < source.notes[etudiantIndex].notes.length){
           body[rowIndex][i] = source.notes[etudiantIndex].notes[noteCpt];
-          console.log("Note de " + source.notes[etudiantIndex].nom + " : " + source.notes[etudiantIndex].notes[noteCpt] + " (notesCpt => " + noteCpt + ")");
         } else {
           body[rowIndex][i] = "";
-          console.log("Note de " + source.notes[etudiantIndex].nom + " : fin des notes (notesCpt => " + noteCpt + ")");
         }
         noteCpt++;
       }
     }
     temp_row.push({table: { body: body}});
     donnees.push(temp_row);
-  }
-  if(indexGraph == 0){
-    check4Me = donnees;
   }
   return donnees;
 }
