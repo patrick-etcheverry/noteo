@@ -683,24 +683,23 @@
             pdfMake.createPdf(docDefinition).download("Fiche étudiant {{ etudiant.nom|e('js')|raw }} {{ etudiant.prenom|e('js')|raw }}");
         }
 
-        var checkOnMe = undefined;
-
         function getDataHistorique(portrait){
           var donnees = []; // Données du tableau
           // 10 notes par ligne portrait - 15 pour paysage
           var nbNotesPerRow = (portrait ? 10 : 15);
           var nbItems = histo.config.data.datasets[0].data.length;
           var nbRows = Math.floor(histo.config.data.datasets[0].data.length / nbNotesPerRow) + 1;
+          var totalCpt = 0;
           var row = [];
           row.push({rowSpan: nbRows, style: (portrait ? 'texte_header_tableau_portrait' : 'texte_header_tableau_paysage'), text: "Notes de l'étudiant"});
           for(var rowIndex = 0; rowIndex < nbRows; rowIndex++){
             for(var i = 0; i < nbNotesPerRow; i++){
-              var goalIndex = i*(rowIndex+1);
-              if(goalIndex < nbItems){
-                row.push(histo.config.data.datasets[0].data[goalIndex]);
+              if(totalCpt < nbItems){
+                row.push(histo.config.data.datasets[0].data[totalCpt]);
               } else {
                 row.push(""); // Case vide ne doit pas être undefined
               }
+              totalCpt++;
             }
             donnees.push(row);
             row = [];
