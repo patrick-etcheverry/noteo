@@ -115,6 +115,12 @@
 
 {% block javascripts %}
 
+<!-- Chart JS -->
+<script src="{{ asset("vendor/chart.js/Chart.min.js") }}"></script>
+<!-- PDFMake -->
+<script type="text/javascript" src="{{ asset("js/pdfmake.min.js") }}"></script>
+<script type="text/javascript" src="{{ asset("js/vfs_fonts.js") }}"></script>
+
 <script type="text/javascript">
   // Liste de couleurs communes
   var noir = "#000000", jaune = "#FFFF00", bleu = "#0000FF", rouge = "#FF0000", vert = "#00FF00",

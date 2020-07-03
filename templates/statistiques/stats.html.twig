@@ -229,9 +229,12 @@
 
 {% block javascripts %}
 
-    <!-- Import de pdfmake -->
+    <!-- Chart JS -->
+    <script src="{{ asset("vendor/chart.js/Chart.min.js") }}"></script>
+    <!-- PDFMake -->
     <script type="text/javascript" src="{{ asset("js/pdfmake.min.js") }}"></script>
     <script type="text/javascript" src="{{ asset("js/vfs_fonts.js") }}"></script>
+
     <!-- Script pour les graphiques de type 'Boîte à moustache' -->
     <script type="text/javascript" src="{{ asset("js/boxplot.js") }}"></script>
 
@@ -240,7 +243,7 @@
 
         // ----- VARIABLES GLOBALES ---------
         {% if plusieursEvals %}
-        var nomEvaluation = "Synthèse des {{ evaluations.count }} evaluation(s)";
+        var nomEvaluation = "Synthèse des {{ evaluations.count }} évaluation(s)";
         {% else %}
         var nomEvaluation = "{{ evaluation.nom|e('js')|raw }}";
         {% endif %}
