@@ -511,7 +511,14 @@
                     body[rowIndex] = [];
                     for (var i = 0; i < nbEvalsPerRow; i++) {
                         if (noteCpt < source.notes[etudiantIndex].notes.length) {
-                            body[rowIndex][i] = source.notes[etudiantIndex].notes[noteCpt];
+                            //Si l'étudiant était absent on l'indique sinon on met sa note
+                            if(isNaN(source.notes[etudiantIndex].notes[noteCpt])) {
+                                body[rowIndex][i] = "Absent";
+                            }
+                            else {
+                                body[rowIndex][i] = source.notes[etudiantIndex].notes[noteCpt];
+                            }
+
                         } else {
                             body[rowIndex][i] = "";
                         }
