@@ -14,7 +14,7 @@ et du Pays Basque par le groupe composé de :
   - Arthur **Murillo** - Chef de projet
 ***
 ## Manuels
- - [Manuel d'installation](https://github.com/dmendiboure/Noteo/blob/master/manuels/manuel_installation_noteo.pdf)
- - [Manuel de maintenance](https://github.com/dmendiboure/Noteo/blob/master/manuels/manuel_maintenance_noteo.pdf)
- - [Manuel d'utilisation](https://github.com/dmendiboure/Noteo/blob/master/manuels/manuel_utilisation_noteo.pdf)
+ - [Manuel d'installation](https://gitlab.com/patrick-etcheverry/noteo/-/blob/master/manuels/manuel_installation_noteo.pdf)
+ - [Manuel de maintenance](https://gitlab.com/patrick-etcheverry/noteo/-/blob/master/manuels/manuel_maintenance_noteo.pdf)
+ - [Manuel d'utilisation](https://gitlab.com/patrick-etcheverry/noteo/-/blob/master/manuels/manuel_utilisation_noteo.pdf)
 ***
